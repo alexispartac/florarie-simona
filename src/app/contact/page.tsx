@@ -3,17 +3,9 @@ import * as React from 'react'
 import emailjs from '@emailjs/browser';
 import { Field, Label, Switch } from '@headlessui/react'
 import { IconArrowBack } from '@tabler/icons-react';
+import { Footer } from '../components/Footer';
 import Link from 'next/link';
-import { Footer } from '../components/Content';
-
-type InfoFormProp = {
-    first_name: string,
-    last_name: string,
-    company?: string,
-    email: string,
-    phone_number: string,
-    message: string
-}
+import { InfoFormProp } from '../types';
 
 export default function Contact() {
     const [agreed, setAgreed] = React.useState<boolean>(false);

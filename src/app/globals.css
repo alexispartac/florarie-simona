@@ -59,6 +59,10 @@
     background-color: #b756a64f;
     color: var(--text-basic)
   }
+  .color-tooltip{
+    background-color: #b756a54f;
+    color: gray;
+  }
   .aurora{
     animation: aurora 10s infinite alternate;
     background: radial-gradient(circle, #e5a5de74, #e7e7e7),
