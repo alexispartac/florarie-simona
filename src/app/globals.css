@@ -63,6 +63,10 @@
     background-color: #b756a54f;
     color: gray;
   }
+  .button{
+    border: 2px;
+    border-color: #b756a5;
+  }
   .aurora{
     animation: aurora 10s infinite alternate;
     background: radial-gradient(circle, #e5a5de74, #e7e7e7),

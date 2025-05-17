@@ -8,12 +8,12 @@ import { ItemProps } from "../types";
 import { Anchor } from '@mantine/core';
 
 const items: ItemProps[] = [
-    { id: '1', title: 'Buchetul Simonei', price: 100 },
-    { id: '2', title: 'Buchete', price: 200 },
-    { id: '3', title: 'Buchete', price: 300 },
-    { id: '4', title: 'Buchete', price: 400 },
-    { id: '5', title: 'Buchete', price: 500 },
-    { id: '6', title: 'Buchete', price: 600 },
+    { id: '1', title: 'Buchetul Simonei', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+    { id: '2', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+    { id: '3', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+    { id: '4', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+    { id: '5', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+    { id: '6', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
 ]
 
 const itemsBread = [

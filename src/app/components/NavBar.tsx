@@ -13,6 +13,178 @@ import {
 import { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { useDisclosure } from '@mantine/hooks';
+import { Modal, Button, TextInput, Group, Checkbox, Anchor} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { IconAt } from "@tabler/icons-react";
+
+const AuthModal = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+  const [check, setCheck] = useState<boolean>(false);
+  const [typeAuth, setTypeAuth] = useState<{ type: 'login' | 'signin'}>({
+    type: 'login'
+  });
+  const formSignUp = useForm({
+    mode:'uncontrolled',
+    initialValues:{
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    },
+    transformValues: (values) => ({
+        name: `${values.name}`,
+        surname: `${values.surname}`,
+        email: `${values.email}`,
+        password: `${values.password}`,
+        confirmPassword: `${values.confirmPassword}`
+    })
+  })
+  const formLogIn = useForm({
+    mode:'uncontrolled',
+    initialValues:{
+        email: '',
+        password: '',
+    },
+    transformValues: (values) => ({
+        email: `${values.email}`,
+        password: `${values.password}`
+    })
+  })
+
+  return (
+    <>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Authentication"
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        {( typeAuth.type === 'signin' &&
+        <form 
+          className="flex flex-col gap-4 my-5"
+          onSubmit={ formSignUp.onSubmit(() => { 
+            console.log(formSignUp.getValues());
+            return close();
+          })}
+          >
+          <Group>
+            <TextInput
+              w={'47%'}
+              label='Nume'
+              required
+              placeholder="Ex: Partac"
+              key={formSignUp.key('name')}
+              {...formSignUp.getInputProps('name')}
+            />
+            <TextInput 
+              w={'47%'}
+              label='Prenume'
+              required
+              placeholder="Ex: Alexis"
+              key={formSignUp.key('surname')}
+              {...formSignUp.getInputProps('surname')}
+            />
+          </Group>
+          <TextInput
+              w={'99%'}
+              leftSection={<IconAt size={16} />}
+              type="email"
+              label='Email'
+              required
+              placeholder="Ex:matei.partac45@gmail.com"
+              key={formSignUp.key('email')}
+              {...formSignUp.getInputProps('email')}
+          />
+          <TextInput
+              w={'99%'}
+              label='Parola'
+              required
+              placeholder="Parola"
+              type="password"
+              autoComplete="off" 
+              key={formSignUp.key('password')}
+              {...formSignUp.getInputProps('password')} 
+            />
+          <TextInput
+              w={'99%'}
+              label='Confirmare parola'
+              required
+              placeholder="Parola"
+              type="password"
+              autoComplete="off"
+              key={formSignUp.key('confirmPassword')}
+              {...formSignUp.getInputProps('confirmPassword')}
+            />
+          <Checkbox 
+            label="Sunt de-acord cu termenii si conditiile"
+            checked={check}
+            onChange={(event) => setCheck(event.currentTarget.checked)}
+          />
+          <Group justify="space-between">
+            <Anchor onClick={() => setTypeAuth({ type : 'login'})} size="xs">
+              Ai deja un cont? Login
+            </Anchor>
+            <Button 
+              type="submit" 
+              disabled={
+                !check ||
+                formSignUp.getValues().password !== formSignUp.getValues().confirmPassword
+              }
+              onClick={close}
+              >Sign in</Button>
+          </Group>
+          
+        </form> )}
+        {( typeAuth.type === 'login' && 
+        <form
+          className="flex flex-col gap-4 my-5"
+          onSubmit={ formLogIn.onSubmit(() => { 
+            console.log(formLogIn.getValues());
+            return close();
+          })}
+          >
+          <TextInput
+              w={'99%'}
+              leftSection={<IconAt size={16} />}
+              label='Email'
+              type="email"
+              required
+              placeholder="Ex: matei.partac45@gmail.com"
+              key={formLogIn.key('email')}
+              {...formLogIn.getInputProps('email')}
+          />
+          <TextInput
+              w={'99%'}
+              label='Parola'
+              required
+              placeholder="Parola"
+              type="password"
+              autoComplete="off"
+              key={formLogIn.key('password')}
+              {...formLogIn.getInputProps('password')}
+            />
+            <Group justify="space-between">
+              <Anchor onClick={() => setTypeAuth({ type: 'signin' })} size="xs">
+                Nu ai cont? SignUp
+              </Anchor>
+              <Button
+                type="submit"
+              >Login</Button>
+            </Group>
+
+        </form>)}
+          
+      </Modal>
+      <NavbarButton variant="secondary" onClick={open}>Login</NavbarButton>
+      
+    </>
+  );
+}
 
 export function NavbarDemo({ children } : { children: React.ReactNode}) {
   const navItems = [
@@ -91,7 +263,7 @@ export function NavbarDemo({ children } : { children: React.ReactNode}) {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
+            <AuthModal />
             <NavbarButton variant="primary">Sună-mă</NavbarButton>
           </div>
         </NavBody>
@@ -137,13 +309,7 @@ export function NavbarDemo({ children } : { children: React.ReactNode}) {
               </div>
             ))}
             <div className="flex w-full flex-col gap-4">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Login
-              </NavbarButton>
+              <AuthModal /> 
               <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"

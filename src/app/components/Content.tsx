@@ -62,9 +62,9 @@ export function AuroraBackgroundDemo() {
     );
 }
 
-const Delivery = () => {
+export const Delivery = () => {
     return (
-        <div className="bg-white py-10 px-6 mt-10 rounded-lg shadow-lg md:px-30">
+        <div className="bg-white py-10 px-6 mt-10 rounded-lg shadow-lg md:px-40">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-30 text-gray-800">
 
                 {/* Livrare Same Day */}
@@ -144,7 +144,6 @@ const NewOfers = () => {
     </div>
   );
 };
-
 
 const Content = () => {
     return (
