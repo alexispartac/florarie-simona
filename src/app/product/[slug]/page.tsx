@@ -1,7 +1,7 @@
 'use client';
 import React from 'react'
 import { usePathname } from "next/navigation";
-import { ItemProps, ItemCartProp } from './../../types';
+import { ItemProps, OrderProduct,  } from './../../types';
 import { NavbarDemo } from '../../components/NavBar';
 import { Footer } from '../../components/Footer';
 import PopUp from '@/app/components/PopUp';
@@ -10,52 +10,66 @@ import { Anchor, Button, TextInput, NumberInput, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { Delivery } from '@/app/components/Content';
 import { Item } from '@/app/components/Products';
+import axios from 'axios';
 
+const URL_COMPOSED_PRODUCTS ='http://localhost:3000/api/products-composed';
 const Product = () => {
     const pathname = usePathname();
     const lastSegment = pathname.split("/").pop();
-    const product: ItemProps = {
-        id: lastSegment?.toString() || '1',
-        title: "Flori de bucătărie",
-        imageSrc: "/flower.jpeg",
-        isPopular: true,
-        stockCode: "123",
-        inStock: true,
-        category: {
-            standard: {
-                price: 150,
+    const [product, setProduct] = React.useState<ItemProps>(
+        {
+            id: '',
+            title: '',
+            imageSrc: '',
+            price_category: {
+                basic: { price: 0 },
+                standard: { price: 0 },
+                premium: { price: 0 }
             },
-            premium: {
-                price: 200,
-            },
-            basic: {
-                price: 100,
-            }
-        },
-        description: "Expertii florariei online Buchetul Simonei au creat buchetul de trandafiri mov si hortensii, o combinatie plina de eleganta si farmec. Trandafirii mov aduc o nota misterioasa si rafinata, cu petalele lor catifelate si culoarea lor unica, simbolizand iubirea profunda. Hortensiile completeaza buchetul cu petalele voluminoase si frumusetea lor uimitoare. Hortensiile transmit o energie pozitiva si un sentiment de apreciere si recunostinta. Buchetul de trandafiri mov si hortensii este perfect pentru a sarbatori iubirea, pentru a aduce bucurie si pentru a impresiona persoana draga. Fie ca este oferit ca un cadou de aniversare, pentru a exprima recunostinta sau pur si simplu pentru a aduce o nota de rafinament in viata cuiva, acest buchet va trezi emotii puternice si va crea un moment deosebit. Comanda online acest buchet de trandafiri mov si hortensii si te bucuri de livrare hand-to-hand, in doar cateva ore, in orice loc din Romania.",
-        composition: "7 x Aspidistra, 1 x Felicitare FDL, 1 x Gypso, 3 x Hydrangea alba, 1 x Monstera, 3 x Panglica inscriptionata FDL, 1 x Perle cu ac, 5 x Trandafir mov, 4 x Trandafir Pink Floyd",
-        flowers: "Hortensii, Trandafiri",
-        colors: "Alb, Crem, Mov, Rosu, Roz",
-        type: "Buchet de flori"
-    }
+            isPopular: false,
+            stockCode: '',
+            inStock: false,
+            description: '',
+            composition: [],
+            colors: '',
+            type: '',
+            promotion: false,
+        }
+    );
+
+    React.useEffect(() => {
+        console.log("Last segment:", lastSegment);
+        if (lastSegment) {
+            axios.get(`${URL_COMPOSED_PRODUCTS}/${lastSegment}`)
+                .then(response => {
+                    const data = response.data as ItemProps;
+                    setProduct(data);
+                })
+                .catch(error => {
+                    console.error("Error fetching product:", error);
+                });
+        }
+    }, [lastSegment]);
+
 
     const itemsRe: ItemProps[] = [
-        { id: '1', title: 'Buchetul Simonei', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
-        { id: '2', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
-        { id: '3', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
-        { id: '4', title: 'Buchete', category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+        { id: '1', title: 'Buchetul Simonei', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+        { id: '2', title: 'Buchete', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+        { id: '3', title: 'Buchete', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
+        { id: '4', title: 'Buchete', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 }} },
     ]
     
 
     const [reviewSubmittedValues, setReviewSubmittedValues] = React.useState('');
-    const [addProductSubmittedValues, setAddProductReviewSubmittedValues] = React.useState<ItemCartProp>({
+    const [addProductSubmittedValues, setAddProductReviewSubmittedValues] = React.useState<OrderProduct>({
         id: '',
         title: '',
-        category: '',
         price: 0,
         quantity: 0,
     });
-    console.log(reviewSubmittedValues, addProductSubmittedValues);
+    console.log("Review Submitted Values:", reviewSubmittedValues);
+    console.log("Add Product Submitted Values:", addProductSubmittedValues);
+
 
     const addForm = useForm({
         mode:'uncontrolled',
@@ -108,26 +122,13 @@ const Product = () => {
 
     const itemsBread = [
         { title: 'Buchetul Simonei', href: '/' },
-        { title: `${product.title}`, href: '/product/${product.id}' },
+        { title: `${product.title}`, href: `/product/${product.id}` },
     ].map((item, index) => (
-        <Anchor className="text-gray-500 hover:text-[#b756a64f]" href={item.href} key={index}>
-            {item.title}
+        <Anchor c={"#b756a6"} href={item.href} key={index}>
+                {item.title}
         </Anchor>
     ));
 
-    // const data = new Date();
-    // data.setHours(data.getHours() + 2);
-    {/* <TextInput
-            label="Introdu Localitatea"
-            placeholder='localitate(Ex: Tamaseni), judet(Ex: Neamt)'
-            mt="md"
-        />
-        <TextInput
-            label="Data livrarii"
-            mt="md"
-            defaultValue={Intl.DateTimeFormat("ro-RO", { month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(data)}
-            />
-        <br />     */}
 
     return (
         <div>
@@ -138,18 +139,26 @@ const Product = () => {
                     <Bread itemsBread={itemsBread}/>
                 </div>
                 <div className="relative mx-8 md:mx-40 grid md:grid-cols-2 grid-cols-1 my-10">
-                    <img src={product.imageSrc} alt={product.title} className="w-[100%] h-80 md:w-[90%] md:h-110 object-cover" />
+                    { product.imageSrc &&
+                        <img 
+                            src={product.imageSrc} 
+                            alt={product.title} 
+                            className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
+                        />
+                    }
                     <form 
                         className='flex flex-col md:px-8 py-8'
                         onSubmit={addForm.onSubmit((values) => setAddProductReviewSubmittedValues(values))}
                     >   
                         {product.isPopular && <span className="text-red-600 font-serif">Popular</span>}       
                         <div className='grid grid-cols-3'>
-                            {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.category.basic.price} RON</p>: null}
-                            {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.category.standard.price} RON</p>: null}
-                            {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.category.premium.price} RON</p>: null}
+                            {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.price_category.basic.price} RON</p>: null}
+                            {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.price_category.standard.price} RON</p>: null}
+                            {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.price_category.premium.price} RON</p>: null}
                             {product.inStock && <span className="flex font-serif justify-end align-bottom">In stoc ~|</span>}
-                            {product.inStock && <span className="flex font-serif align-bottom">~ COD-{ product.id }</span>}
+                            {!product.inStock && <span className="flex font-serif justify-end align-bottom">Stoc epuizat ~|</span>}
+                            <span className="flex font-serif align-bottom">~ COD-{ product.id }</span>
+
                         </div>
                         <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                         <div className='grid grid-cols-3 gap-1.5 my-5'>
@@ -162,7 +171,7 @@ const Product = () => {
                                 size='compact-sm'
                                 onClick={() => (
                                     handleSetCategory({button1: true, button2: false, button3: false}),
-                                    addForm.setValues({ price:product.category.premium.price, category: 'premium'})
+                                    addForm.setValues({ price:product.price_category.premium.price, category: 'premium'})
                                 )}
                             > BASIC </Button>
                             <Button 
@@ -174,7 +183,7 @@ const Product = () => {
                                 key={addForm.key('category2')}
                                 onClick={() => (
                                     handleSetCategory({button1: false, button2: true, button3: false}),
-                                    addForm.setValues({ price:product.category.premium.price, category: 'standard'})
+                                    addForm.setValues({ price:product.price_category.premium.price, category: 'standard'})
                                 )}
                             > STANDARD </Button>
                             <Button 
@@ -186,13 +195,21 @@ const Product = () => {
                                 key={addForm.key('category3')}
                                 onClick={() => (
                                     handleSetCategory({button1: false, button2: false, button3: true}),
-                                    addForm.setValues({price: product.category.premium.price, category: 'basic'})
+                                    addForm.setValues({price: product.price_category.premium.price, category: 'basic'})
                                 )}
                             > PREMIUM </Button>
                         </div>
-                        <div className='mt-3'>
+                        <div className='my-3'>
                             <p> FLORI PRINCIPALE </p>
-                            <p className='px-5'> {product.flowers} </p>
+                            <p className='px-5'> 
+                                {product.composition
+                                    ?.map((flower, idx) => idx < 3 ? (
+                                        <span key={idx}>
+                                            {flower.title} ,
+                                        </span>
+                                    ): '')
+                                }
+                            </p>
                         </div>
                         <div className='mb-3'>
                             <p> CULOARE PREDOMINANTA </p>
@@ -211,7 +228,7 @@ const Product = () => {
                                 w={300}
                                 bg={'#b756a64f'}
                                 type='submit'
-                                disabled={addForm.getValues().quantity < 1}
+                                disabled={!product.inStock || addForm.getValues().quantity < 1 ? true : false}
                             >
                                 Adaugă în coș
                             </Button>
@@ -230,12 +247,16 @@ const Product = () => {
                     <div>
                         <p className='text-xl text-center my-3'> MAI MULTE INFORMATII </p>
                         <div className='my-2'>
-                            <p> COMPONENTE </p>
-                            <p className='pb-3 px-4 text-[15px]'> { product.composition } </p>
-                        </div>
-                        <div className='my-2'>
                             <p> TIPURI DE FLORI </p>
-                            <p className='pb-3 px-4 text-[15px]'> { product.flowers } </p>
+                            <p className='pb-3 px-4 text-[15px]'> 
+                                {product.composition
+                                    ?.map((flower, idx) => (
+                                        <span key={idx}>
+                                            {flower.title} ,
+                                        </span>
+                                    ))
+                                }
+                            </p>
                         </div>
                         <div className='my-2'>
                             <p> CULOARE FLORI </p>

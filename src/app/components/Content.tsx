@@ -3,6 +3,7 @@ import React from 'react'
 import { motion } from "motion/react";
 import { AuroraBackground } from "./ui/aurora-background";
 import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
+import Link from 'next/link';
 
 export function InfiniteMovingCardsDemo() {
   return (
@@ -55,7 +56,9 @@ export function AuroraBackgroundDemo() {
                     Flori care vorbesc sufletului.
                 </div>
                 <button className="bg-white content dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2">
-                    Descoperă
+                    <Link href="/bouquets">
+                        Descoperă
+                    </Link>
                 </button>
             </motion.div>
         </AuroraBackground>
@@ -123,7 +126,7 @@ const NewOfers = () => {
                 cei dragi!
             </p>
             <a
-                href="#"
+                href="features/promotions"
                 className="inline-block mt-3 px-4 py-2 bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
             >
                 Comandă acum
@@ -135,7 +138,7 @@ const NewOfers = () => {
              Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
             </p>
             <a
-                href="#"
+                href="features/weekly"
                 className="inline-block mt-3 px-4 py-2  bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
             >
                 Comandă acum

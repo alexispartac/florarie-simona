@@ -7,17 +7,26 @@ import { Footer } from "@/app/components/Footer";
 import { Anchor } from '@mantine/core';
 import { ItemProps } from "@/app/types";
 import { ContinerItems } from "../../components/Products";
+import axios from "axios";
 
-const items: ItemProps[] = [
-    { id: '1', title: 'Aranjamentul Simonei', price: 100 },
-    { id: '2', title: 'Aranjament', price: 200 },
-    { id: '3', title: 'Aranjament', price: 300 },
-    { id: '4', title: 'Aranjament', price: 400 },
-    { id: '5', title: 'Aranjament', price: 500 },
-    { id: '6', title: 'Aranjament', price: 600 },
-]
-
+const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
 const Content = () => {
+    const [items, setItems] = React.useState<ItemProps[]>([]);
+
+    function fetchItems() {
+        axios.get(URL_COMPOSED_PRODUCTS).then(response => {
+            const data = response.data as ItemProps[];
+            setItems(data);
+        }
+        ).catch(error => {
+            console.error("Error fetching items:", error);
+        });
+    }
+
+    React.useEffect(() => {
+        fetchItems();
+    }, []);
+    
     const pathname = usePathname();
     const lastSegment = pathname.split("/").pop();
     const cleanedText = lastSegment?.replace(/[\d%]+/g, " ");
@@ -27,8 +36,8 @@ const Content = () => {
         { title: 'Aranjamente', href: '/arrangements' },
         { title: `${cleanedText}`, href: `${cleanedText}` },
     ].map((item, index) => (
-        <Anchor className="text-gray-500 hover:text-[#b756a64f]" href={item.href} key={index}>
-            {item.title}
+        <Anchor c={"#b756a6"} href={item.href} key={index}>
+                {item.title}
         </Anchor>
     ));
     

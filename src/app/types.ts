@@ -1,9 +1,11 @@
+import { ProductProps } from "./admin/types";
 
+// props pentru un produs compus cum ar fi buchete, aranjamente florale etc
 export interface ItemProps {
     id: string,
     title: string,
     imageSrc?: string,
-    category: {
+    price_category: {
         standard: {
             price: number;
         },
@@ -13,31 +15,47 @@ export interface ItemProps {
         basic: {
             price: number;
         }
-    }
+    },
     isPopular?: boolean,
     stockCode?: string,
     inStock?: boolean,
     description?: string,
-    composition?: string,
-    flowers?: string,
+    composition?: ProductProps[],
     colors?: string,
-    type?: string, // categoria de flori de exemplu buchete
-
+    type?: string, 
+    category?: string, 
+    promotion?: boolean
 }
 
-export interface ItemCartProp {
+export interface OrderProduct {
     id: string,
     title: string,
-    category: string,
     price: number,
     quantity: number,
 }
 
-export type InfoFormProp = {
-    first_name: string,
-    last_name: string,
-    company?: string,
+export interface Order {
+    id: string,
+    orderNumber: string,
+    clientName: string,
+    clientEmail: string,
+    clientPhone: string,
+    clientAddress: string,
+    orderDate: string,
+    deliveryDate?: string,
+    status: string,
+    totalPrice: number,
+    products: OrderProduct[]
+}
+
+export interface User {
+    id: string,
+    name: string,
+    surname: string,
     email: string,
-    phone_number: string,
-    message: string
+    phone: string,
+    address: string,
+    orders: number,
+    createdAt: string,
+    password: string,
 }

@@ -151,7 +151,7 @@ export const NavItems = ({ items, className, onItemClick, visible }: NavItemsPro
                                 className="relative px-4 py-2 custom dark:text-neutral-300"
                                 href={`/${item.link}`}
                             >
-                                {hovered === idx && idx > 3 && (
+                                {hovered === idx && idx > 4 && (
                                     <motion.div
                                         layoutId="hovered"
                                         className="absolute inset-0 h-full w-full rounded-full bg-gray-100 dark:white"
@@ -167,6 +167,18 @@ export const NavItems = ({ items, className, onItemClick, visible }: NavItemsPro
                                     {
                                         item.category?.map((category, idx) => (
                                             <Link key={idx} className="py-[4px]" href={`/${item.link}/${category.name}`}>{category.name}</Link>
+                                        ))
+                                    }
+                                </motion.div>
+                            )}
+                            {hovered === idx && idx == 4 && (
+                                <motion.div
+                                    layoutId="hovered"
+                                    className="absolute color-tooltip font-extrabold text-[100%] flex flex-col text-start text-xl font-serif top-[52px] px-5 py-4 w-80 h-[200px] bg-white shadow-md dark:white "
+                                >
+                                    {
+                                        item.category?.map((category, idx) => (
+                                            <Link key={idx} className="py-[4px]" href={`/${category.link}`}>{category.name}</Link>
                                         ))
                                     }
                                 </motion.div>

@@ -1,21 +1,11 @@
-"use client";
-import React from "react";
-import PopUp from "../components/PopUp";
-import { Footer } from "../components/Footer";
-import { NavbarDemo } from "../components/NavBar";
-import { Anchor } from '@mantine/core';
-import { ItemProps } from "../types";
-import { ContinerItems } from "../components/Products";
-import axios from "axios";
-
-const itemsBread = [
-    { title: 'Buchetul Simonei', href: '/' },
-    { title: 'Ocazii si evenimente', href: 'occasion&events' },
-].map((item, index) => (
-    <Anchor c={"#b756a6"} href={item.href} key={index}>
-            {item.title}
-    </Anchor>
-));
+import React from 'react'
+import { NavbarDemo } from '../../components/NavBar'
+import { Footer } from '../../components/Footer'
+import PopUp from '../../components/PopUp'
+import { Anchor } from '@mantine/core'
+import { ItemProps } from '@/app/types'
+import { ContinerItems } from '@/app/components/Products'
+import axios from 'axios'
 
 const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
 const Content = () => {
@@ -34,7 +24,16 @@ const Content = () => {
     React.useEffect(() => {
         fetchItems();
     }, []);
-    
+
+    const itemsBread = [
+        { title: 'Buchetul Simonei', href: '/' },
+        { title: 'Promotii saptamanale', href: '/features/weekly' },
+    ].map((item, index) => (
+        <Anchor c={"#b756a6"} href={item.href} key={index}>
+            {item.title}
+        </Anchor>
+    ));
+
     return (
         <div className="relative container mx-auto pt-24">
             <div className="flex justify-center py-3">
@@ -42,23 +41,21 @@ const Content = () => {
                     Comandă flori cadou online cu livrare în aceeași zi – rapid și simplu!  
                 </p>
             </div>
-            <ContinerItems items={items} itemsBread={itemsBread} />
+            <ContinerItems items={items} itemsBread={itemsBread}/>
         </div>
     );
 };
 
-
-const OccasionAndEvents = () => {
-  
+const Feature = () => {
   return (
-    <div className={`relative w-full var(--background)`}>
-        <PopUp />
-        <NavbarDemo>
-            <Content />
-        </NavbarDemo>
-        <Footer />
+    <div>
+      <PopUp />
+      <NavbarDemo>
+        <Content />
+      </NavbarDemo>
+      <Footer />
     </div>
   )
 }
 
-export default OccasionAndEvents;
+export default Feature

@@ -6,26 +6,35 @@ import { NavbarDemo } from "../components/NavBar";
 import PopUp from "../components/PopUp";
 import { ContinerItems } from "../components/Products";
 import { ItemProps } from "../types";
+import axios from "axios";
 
 const itemsBread = [
     { title: 'Buchetul Simonei', href: '/' },
     { title: 'Cadouri', href: 'gifts' },
 ].map((item, index) => (
-    <Anchor className="text-gray-500 hover:text-[#b756a64f]" href={item.href} key={index}>
-        {item.title}
+    <Anchor c={"#b756a6"} href={item.href} key={index}>
+            {item.title}
     </Anchor>
 ));
 
-const items: ItemProps[ ] = [
-  { id: '1', title: 'NumeC Simonei', price: 100 },
-  { id: '2', title: 'NumeC', price: 200 },
-  { id: '3', title: 'NumeC', price: 300 },
-  { id: '4', title: 'NumeC', price: 400 },
-  { id: '5', title: 'NumeC', price: 500 },
-  { id: '6', title: 'NumeC', price: 600 },
-]
-
+const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
 const Content = () => {
+    const [items, setItems] = React.useState<ItemProps[]>([]);
+
+    function fetchItems() {
+        axios.get(URL_COMPOSED_PRODUCTS).then(response => {
+            const data = response.data as ItemProps[];
+            setItems(data);
+        }
+        ).catch(error => {
+            console.error("Error fetching items:", error);
+        });
+    }
+
+    React.useEffect(() => {
+        fetchItems();
+    }, []);
+    
     return (
         <div className="relative container mx-auto pt-24">
             <div className="flex justify-center py-3">
