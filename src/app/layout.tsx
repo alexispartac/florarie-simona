@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MantineProvider } from '@mantine/core';
 import { UserProvider } from "./components/ContextUser";
+import QueryProvider from "./components/QueryProvider";
 import '@mantine/core/styles.css';
 import "./globals.css";
 
@@ -33,7 +34,9 @@ export default function RootLayout({
       >
         <MantineProvider>
             <UserProvider>
-              {children}
+              <QueryProvider>
+                {children}
+              </QueryProvider>
             </UserProvider>
         </MantineProvider>
       </body>

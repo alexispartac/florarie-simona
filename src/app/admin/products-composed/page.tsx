@@ -69,8 +69,8 @@ const ComposedProductRow = ({
                 <p className="w-1/10">{product.stockCode}</p>
                 <p className="w-1/10">{product.inStock ? "Da" : "Nu"}</p>
                 <p className="w-1/10">{product.category}</p>
-                <p className="w-1/10">{product.price_category.standard.price} RON</p>
                 <p className="w-1/10">{product.price_category.premium.price} RON</p>
+                <p className="w-1/10">{product.price_category.standard.price} RON</p>
                 <p className="w-1/10">{product.price_category.basic.price} RON</p>
                 <p className="w-1/10">{product.isPopular ? "⭐" : ""}</p>
                 <p className="w-1/10">{product.promotion ? "⭐" : ""}</p>
@@ -527,8 +527,8 @@ const ListOfProducts = ({
                     <span className="w-1/10">COD STOC</span>
                     <span className="w-1/10">IN STOC</span>
                     <span className="w-1/10">CATEGORIE</span>
-                    <span className="w-1/10">STANDARD</span>
                     <span className="w-1/10">PREMIUM</span>
+                    <span className="w-1/10">STANDARD</span>
                     <span className="w-1/10">BASIC</span>
                     <span className="w-1/10">POPULAR</span>
                     <span className="w-1/10">PROMO</span>
@@ -571,7 +571,7 @@ const CategoryModal = ({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const validPrefixes = ['Buchet', 'Aranjament', 'Ocazii', 'Cadouri'];
+        const validPrefixes = ['Buchet', 'Aranjament', 'Eveniment', 'Cadou'];
         const validLinks = ['bouquets', 'arrangements', 'occasion&events', 'gifts'];
         const isValid = validPrefixes.some((prefix) =>
             categoryName.startsWith(prefix)
@@ -620,15 +620,15 @@ const CategoryModal = ({
                     onChange={(e) => setCategoryName(e.currentTarget.value)}
                     required
                 />
-                <TextInput
+                <Select
                     label="Link"
-                    placeholder="Ex: bouquets | arrangements | occasion&events | gifts"
+                    data={['bouquets', 'arrangements', 'occasion&events', 'gifts']}
                     value={link}
-                    onChange={(e) => setLink(e.currentTarget.value)}
+                    onChange={(value) => value && setLink(value)}
                     required
-                />
+                /> 
                 <p className="text-sm text-gray-500">
-                    Numele categoriei trebuie să înceapă cu unul dintre următoarele cuvinte: Buchet, Aranjament, Ocazii, Cadouri.
+                    Numele categoriei trebuie să înceapă cu unul dintre următoarele cuvinte: Buchet, Aranjament, Eveniment, Cadou.
                 </p>
                 <p className="text-sm text-gray-500">
                     Asigură-te că numele( NU MAI SUNT ALTE CATEGORII CU ACEST NUME) este unic și descriptiv pentru a ajuta la organizarea produselor.
@@ -649,10 +649,58 @@ const CategoryModal = ({
     );
 };
 
+const DeleteCategoryModal = ({
+    opened,
+    onClose,
+    composedCategories,
+    onDeleteCategory,
+}: {
+    opened: boolean;
+    onClose: () => void;
+    composedCategories: string[];
+    onDeleteCategory: (category: string) => void;
+}) => {
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    
+    const handleDelete = () => {
+        if (selectedCategory) {
+            onDeleteCategory(selectedCategory);
+            setSelectedCategory(null);
+            onClose();
+        } else {
+            alert("Te rugăm să selectezi o categorie!");
+        }
+    };
+
+    return (
+        <Modal opened={opened} onClose={onClose} title="Șterge categorie" centered>
+            <div className="flex flex-col gap-4">
+                <Select
+                    label="Alege o categorie"
+                    data={composedCategories}
+                    value={selectedCategory}
+                    onChange={setSelectedCategory}
+                    placeholder="Selectează o categorie"
+                    searchable
+                />
+                <Group justify="flex-end">
+                    <Button variant="default" onClick={onClose}>
+                        Anulează
+                    </Button>
+                    <Button color="red" onClick={handleDelete}>
+                        Șterge
+                    </Button>
+                </Group>
+            </div>
+        </Modal>
+    );
+};
+
 const Page = () => {
     const [products, setProducts] = useState<ComposedProductProps[]>([]);
     const [simpleProducts, setSimpleProducts] = useState<ProductProps[]>([]);
     const [categoryModalOpen, { open: openCategoryModal, close: closeCategoryModal }] = useDisclosure(false);
+    const [deleteCategoryModalOpen, { open: openDeleteCategoryModal, close: closeDeleteCategoryModal }] = useDisclosure(false);
     const [composedCategories, setComposedCategories] = useState<string[]>([]);
 
     const fetchComposedCategories = () => {
@@ -690,6 +738,20 @@ const Page = () => {
         alert(`Categoria "${category}" a fost adăugată cu succes!`);
     };
 
+    const handleDeleteCategory = (category: string) => {
+        if (window.confirm(`Ești sigur că vrei să ștergi categoria "${category}"?`)) {
+            try {
+                axios.delete(URL_COMPOSED_CATEGORIES, { data: { name: category } }).then(() => {
+                    setComposedCategories((prev) => prev.filter((cat) => cat !== category));
+                    alert(`Categoria "${category}" a fost ștearsă cu succes!`);
+                });
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                alert('A apărut o eroare la ștergerea categoriei.');
+            }
+        }
+    };
+
     useEffect(() => {
         fetchSimpleProducts();
         fetchProducts();
@@ -707,15 +769,24 @@ const Page = () => {
                             <h1>STOC ȘI PRODUSE COMPUSE</h1>
                         </div>
                     </div>
-                    <div className="flex justify-start mt-4">
+                    <div className="flex justify-start mt-4 gap-4">
                         <Button color="blue" onClick={openCategoryModal}>
                             Adaugă categorie
+                        </Button>
+                        <Button color="red" onClick={openDeleteCategoryModal}>
+                            Șterge categorie
                         </Button>
                     </div>
                     <CategoryModal
                         opened={categoryModalOpen}
                         onClose={closeCategoryModal}
                         onAddCategory={handleAddCategory}
+                    />
+                    <DeleteCategoryModal
+                        opened={deleteCategoryModalOpen}
+                        onClose={closeDeleteCategoryModal}
+                        composedCategories={composedCategories}
+                        onDeleteCategory={handleDeleteCategory}
                     />
                     <ListOfProducts
                         simpleProducts={simpleProducts}
@@ -727,5 +798,4 @@ const Page = () => {
         </SidebarDemo>
     );
 };
-
 export default Page;

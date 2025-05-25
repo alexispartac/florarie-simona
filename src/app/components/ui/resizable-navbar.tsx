@@ -162,7 +162,7 @@ export const NavItems = ({ items, className, onItemClick, visible }: NavItemsPro
                             {hovered === idx && idx < 4 && (
                                 <motion.div
                                     layoutId="hovered"
-                                    className="absolute color-tooltip font-extrabold text-[100%] flex flex-col text-start text-xl font-serif top-[52px] px-5 py-4 w-80 h-[200px] bg-white shadow-md dark:white "
+                                    className="absolute color-tooltip  text-[100%] flex flex-col text-start text-xl font-serif top-[52px] px-5 py-4 w-80 h-[200px] bg-white shadow-md dark:white "
                                 >
                                     {
                                         item.category?.map((category, idx) => (

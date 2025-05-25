@@ -4,10 +4,9 @@ import { Footer } from "../components/Footer";
 import PopUp from "../components/PopUp";
 import { NavbarDemo } from "../components/NavBar";
 import { ContinerItems } from "../components/Products";
+import { Anchor, Loader } from '@mantine/core';
+import { useProductsGroupedByCategory } from  '../components/hooks/fetchProductsGroupedByCategory'
 import { ItemProps } from "../types";
-import { Anchor } from '@mantine/core';
-import axios from "axios";
-
 
 const itemsBread = [
     { title: 'Buchetul Simonei', href: '/' },
@@ -18,23 +17,31 @@ const itemsBread = [
     </Anchor>
 ));
 
-const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
 const Content = () => {
-    const [items, setItems] = React.useState<ItemProps[]>([]);
+    const { data: groupedProducts, isLoading, isError } = useProductsGroupedByCategory();
 
-    function fetchItems() {
-        axios.get(URL_COMPOSED_PRODUCTS).then(response => {
-            const data = response.data as ItemProps[];
-            setItems(data);
-        }
-        ).catch(error => {
-            console.error("Error fetching items:", error);
-        });
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader color="blue" size="lg" />
+            </div>
+        );
     }
 
-    React.useEffect(() => {
-        fetchItems();
-    }, []);
+    if (isError) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>A apărut o eroare la încărcarea produselor.</p>
+            </div>
+        );
+    }
+
+    const items = Object.entries(groupedProducts).reduce((acc: ItemProps[], [category, products]) => {
+        if (category.includes('Buchet')) {
+            acc.push(...(products as ItemProps[]));
+        }
+        return acc;
+    }, [] as ItemProps[]);
 
     return (
         <div className="relative container mx-auto pt-24">
@@ -57,7 +64,7 @@ const Bouquets = () => {
             </NavbarDemo>
             <Footer />
         </div>
-    )
-}
+    );
+};
 
-export default Bouquets; 
+export default Bouquets;

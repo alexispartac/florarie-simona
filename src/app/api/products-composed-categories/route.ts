@@ -43,13 +43,12 @@ export async function DELETE(req: NextRequest) {
     const db = await connectDB();
     const data = await req.json();
 
-    const { id } = data;
-    console.log('Deleting category with ID:', id);
-    if (!id) {
+    const { name } = data;
+    if (!name) {
         return NextResponse.json({ error: 'Category ID is required' }, { status: 400 });
     }
 
-    const result = await db.collection('products-composed-categories').deleteOne({ id: id });
+    const result = await db.collection('products-composed-categories').deleteOne({ name: name });
     if (!result.acknowledged) {
         return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
     }

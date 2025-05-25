@@ -19,9 +19,15 @@ async function connectDB() {
     return client!.db(dbName);
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
     const db = await connectDB();
-    const { id } = params;
+    const { params } = context;
+
+    const id = params?.id; 
+
+    if (!id) {
+        return NextResponse.json({ error: 'ID-ul produsului lipsește' }, { status: 400 });
+    }
 
     try {
         const product = await db.collection('products-composed').findOne({ id: id });

@@ -4,29 +4,13 @@ import { usePathname } from "next/navigation";
 import PopUp from "../../components/PopUp";
 import { NavbarDemo } from "@/app/components/NavBar";
 import { Footer } from "@/app/components/Footer";
-import { Anchor } from '@mantine/core';
+import { Anchor, Loader } from '@mantine/core';
 import { ContinerItems } from "../../components/Products";
-import { ItemProps } from "../../types";
-import axios from "axios";
+import { useProductsGroupedByCategory } from "../../components/hooks/fetchProductsGroupedByCategory";
 
-const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
 const Content = () => {
-    const [items, setItems] = React.useState<ItemProps[]>([]);
+    const { data: groupedProducts = {}, isLoading, isError } = useProductsGroupedByCategory();
 
-    function fetchItems() {
-        axios.get(URL_COMPOSED_PRODUCTS).then(response => {
-            const data = response.data as ItemProps[];
-            setItems(data);
-        }
-        ).catch(error => {
-            console.error("Error fetching items:", error);
-        });
-    }
-
-    React.useEffect(() => {
-        fetchItems();
-    }, []);
-    
     const pathname = usePathname();
     const lastSegment = pathname.split("/").pop();
     const cleanedText = lastSegment?.replace(/[\d%]+/g, " ");
@@ -41,6 +25,24 @@ const Content = () => {
         </Anchor>
     ));
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader color="blue" size="lg" />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>A apărut o eroare la încărcarea produselor.</p>
+            </div>
+        );
+    }   
+
+    const items = groupedProducts[`${cleanedText}`] || [];
+
     return (
         <div className="relative container mx-auto pt-24">
             <div className="flex justify-center py-3">
@@ -54,7 +56,6 @@ const Content = () => {
 };
 
 const Page = () => {
-   
     return (
         <div className={`relative w-full var(--background)`}>
             <PopUp />
@@ -63,8 +64,7 @@ const Page = () => {
             </NavbarDemo>
             <Footer />
         </div>
-    )
-}
-
+    );
+};
 
 export default Page;

@@ -407,7 +407,7 @@ const URL_COMPOSED_CATEGORIES = 'http://localhost:3000/api/products-composed-cat
 export function NavbarDemo({ children }: { children: React.ReactNode }) {
   const [composedCategories, setComposedCategories] = useState<{name: string, link: string}[]>([]);
 
-  
+
   const fetchComposedCategories = async () => {
     try {
       const response = await axios.get(URL_COMPOSED_CATEGORIES);
@@ -530,11 +530,11 @@ const groupCategoriesByLink = (categories: { name: string; link: string }[]) => 
                 {hovered === idx && idx < 4 && (
                   <motion.div
                     layoutId="hovered"
-                    className="relative font-extrabold text-[100%] flex flex-col text-start font-serif px-5 py-3 w-full bg-white dark:white "
+                    className="relative text-[100%] flex flex-col text-start font-serif px-5 py-3 w-full bg-white dark:white "
                   >
                     {
                       item.category?.map((category, idx) => (
-                        <Link key={idx} className="py-[4px]" href={`/${category.link}`}>{category.name}</Link>
+                        <Link key={idx} className="py-[4px]" href={`/${category.link}/${category.name}`}>{category.name}</Link>
                       ))
                     }
                   </motion.div>
