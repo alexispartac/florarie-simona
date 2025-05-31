@@ -25,6 +25,7 @@ export interface ItemProps {
     type?: string, 
     category?: string, 
     promotion?: boolean
+    newest?: boolean,
 }
 
 export interface OrderProduct {

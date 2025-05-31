@@ -461,17 +461,8 @@ const groupCategoriesByLink = (categories: { name: string; link: string }[]) => 
     },
     {
       name: "Noutati",
-      link: "/",
-      category: [
-        {
-          name: "Promotii",
-          link: "features/promotions",
-        },
-        {
-          name: "Promotii saptamanale",
-          link: "features/weekly",
-        },
-      ]
+      link: "features",
+      category: groupedCategories["features"] || [],
     },
     {
       name: "Blog",
@@ -527,7 +518,7 @@ const groupCategoriesByLink = (categories: { name: string; link: string }[]) => 
                 >
                   <span className="block">{item.name}</span>
                 </Link>
-                {hovered === idx && idx < 4 && (
+                {hovered === idx && idx < 5 && (
                   <motion.div
                     layoutId="hovered"
                     className="relative text-[100%] flex flex-col text-start font-serif px-5 py-3 w-full bg-white dark:white "

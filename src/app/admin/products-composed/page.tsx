@@ -57,10 +57,10 @@ const ComposedProductRow = ({
                     </Group>
                 </div>
             </Modal>
-            <div className="flex flex-row justify-between gap-2 items-center border-b py-2">
+            <div className="flex flex-row justify-between gap-2 items-center text-center border-b py-2">
                 <div className="w-1/10">
                     {product.imageSrc ? (
-                        <img src={product.imageSrc} alt={product.title} className="w-16 h-16 object-cover rounded" />
+                        <img src={product.imageSrc} alt={product.title} className="w-inherit h-16 object-cover rounded" />
                     ) : (
                         <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">Fără imagine</div>
                     )}
@@ -74,6 +74,7 @@ const ComposedProductRow = ({
                 <p className="w-1/10">{product.price_category.basic.price} RON</p>
                 <p className="w-1/10">{product.isPopular ? "⭐" : ""}</p>
                 <p className="w-1/10">{product.promotion ? "⭐" : ""}</p>
+                <p className="w-1/10">{product.newest ? "⭐" : ""}</p>
                 <div className="w-1/10 flex gap-2">
                     <Button color="blue" variant="outline" onClick={() => onEdit(product)}>
                         <IconEdit size={16} />
@@ -207,6 +208,11 @@ const EditComposedProductModal = ({
                     checked={editProduct.promotion}
                     onChange={e => handleChange('promotion', e.currentTarget.checked)}
                 />
+                <Checkbox
+                    label="Nou"
+                    checked={editProduct.newest}
+                    onChange={e => handleChange('newest', e.currentTarget.checked)}
+                />
                 <div>
                     <label className="block mb-1 font-medium">Imagine produs</label>
                     <input
@@ -297,6 +303,7 @@ const ListOfProducts = ({
         colors: '',
         category: composedCategories[0],
         promotion: false,
+        newest: false
     });
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editProduct, setEditProduct] = useState<ComposedProductProps | null>(null);
@@ -335,6 +342,7 @@ const ListOfProducts = ({
                 colors: '',
                 category: composedCategories[0],
                 promotion: false,
+                newest: false
             });
             close();
         } catch (error) {
@@ -443,6 +451,11 @@ const ListOfProducts = ({
                             checked={newProduct.promotion}
                             onChange={e => handleNewProductChange('promotion', e.currentTarget.checked)}
                         />
+                        <Checkbox
+                            label="Produs nou"
+                            checked={newProduct.newest}
+                            onChange={e => handleNewProductChange('newest', e.currentTarget.checked)}
+                        />
                         <div>
                             <label className="block mb-1 font-medium">Imagine produs</label>
                             <input
@@ -532,6 +545,7 @@ const ListOfProducts = ({
                     <span className="w-1/10">BASIC</span>
                     <span className="w-1/10">POPULAR</span>
                     <span className="w-1/10">PROMO</span>
+                    <span className="w-1/10">NOU</span>
                     <span className="w-1/10">ACTUALIZARE</span>
                 </div>
                 <div className="h-1 border-b border-neutral-200 dark:border-neutral-700" />
@@ -571,8 +585,8 @@ const CategoryModal = ({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const validPrefixes = ['Buchet', 'Aranjament', 'Eveniment', 'Cadou'];
-        const validLinks = ['bouquets', 'arrangements', 'occasion&events', 'gifts'];
+        const validPrefixes = ['Buchet', 'Aranjament', 'Eveniment', 'Cadou', ''];
+        const validLinks = ['bouquets', 'arrangements', 'occasion&events', 'gifts', 'features'];
         const isValid = validPrefixes.some((prefix) =>
             categoryName.startsWith(prefix)
         );
@@ -622,13 +636,14 @@ const CategoryModal = ({
                 />
                 <Select
                     label="Link"
-                    data={['bouquets', 'arrangements', 'occasion&events', 'gifts']}
+                    data={['bouquets', 'arrangements', 'occasion&events', 'gifts', 'features']}
                     value={link}
                     onChange={(value) => value && setLink(value)}
                     required
                 /> 
                 <p className="text-sm text-gray-500">
                     Numele categoriei trebuie să înceapă cu unul dintre următoarele cuvinte: Buchet, Aranjament, Eveniment, Cadou.
+                    Daca vrem sa se afle in Noutati nu trebuie sa respecte ce este mai sus.
                 </p>
                 <p className="text-sm text-gray-500">
                     Asigură-te că numele( NU MAI SUNT ALTE CATEGORII CU ACEST NUME) este unic și descriptiv pentru a ajuta la organizarea produselor.

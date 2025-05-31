@@ -45,6 +45,7 @@ export interface ComposedProductProps {
     colors: string,
     category: string,
     promotion: boolean,
+    newest: boolean,
 }
 
 export interface OrderProductProps {
