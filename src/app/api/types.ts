@@ -69,3 +69,15 @@ export interface OrderProps {
     totalPrice: number,
     products: OrderProductProps[],
 }
+
+export interface BlogPostProps {
+    id: string;
+    title: string;
+    date: string;
+    description: string;
+    image: string | null;
+    likes: number;
+    dislikes: number;
+    likedBy: string[]; 
+    dislikedBy: string[];
+}

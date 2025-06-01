@@ -97,7 +97,7 @@ const AuthModal = () => {
               address: response.data.user.address,
               order: response.data.user.order,
               createdAt: response.data.user.createdAt,
-              password: '', 
+              password: '',
             },
             isAuthenticated: true,
           });
@@ -405,7 +405,7 @@ const CallModal = () => {
 }
 const URL_COMPOSED_CATEGORIES = 'http://localhost:3000/api/products-composed-categories';
 export function NavbarDemo({ children }: { children: React.ReactNode }) {
-  const [composedCategories, setComposedCategories] = useState<{name: string, link: string}[]>([]);
+  const [composedCategories, setComposedCategories] = useState<{ name: string, link: string }[]>([]);
 
 
   const fetchComposedCategories = async () => {
@@ -423,7 +423,7 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
     fetchComposedCategories();
   }, []);
 
-const groupCategoriesByLink = (categories: { name: string; link: string }[]) => {
+  const groupCategoriesByLink = (categories: { name: string; link: string }[]) => {
     const grouped: Record<string, { name: string; link: string }[]> = {};
 
     categories.forEach((category) => {
@@ -466,7 +466,7 @@ const groupCategoriesByLink = (categories: { name: string; link: string }[]) => 
     },
     {
       name: "Blog",
-      link: "about",
+      link: "blog",
       category: [],
     },
     {
@@ -475,10 +475,10 @@ const groupCategoriesByLink = (categories: { name: string; link: string }[]) => 
       category: [],
     },
   ];
-    
+
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [hovered, setHovered] = useState<number | null>(null); 
+  const [hovered, setHovered] = useState<number | null>(null);
   return (
     <div className={`relative w-full var(--background)`}>
       <Navbar>
