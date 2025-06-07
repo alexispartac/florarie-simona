@@ -4,7 +4,7 @@ import { SidebarDemo } from '../components/SideBar';
 import { OrderProps } from '../../api/types';
 import axios from 'axios';
 
-const URL_ORDERS = 'http://localhost:3000/api/orders';
+const URL_ORDERS = '/api/orders';
 
 const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: string) => void }) => {
     return (

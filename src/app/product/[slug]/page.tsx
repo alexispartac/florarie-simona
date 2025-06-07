@@ -17,8 +17,8 @@ import { addItem, RootState, setCart } from '@/app/cart/components/CartRedux';
 import ReviewForm from '../../components/ReviewForm'
 import Reviews from '@/app/components/Reviews';
 
-const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
-const URL_REVIEW = 'http://localhost:3000/api/review';
+const URL_COMPOSED_PRODUCTS = '/api/products-composed';
+const URL_REVIEW = '/api/review';
 
 const Product = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -104,17 +104,17 @@ const Product = () => {
     };
 
     const handleSubmitedReview = async (values: { name: string; email: string; message: string }) => {
-    try {
-        const response = await axios.post(URL_REVIEW, values);
-        if (response.status === 200) {
-            console.log('Review submitted successfully:', response.data);
-        } else {
-            console.error('Unexpected response:', response);
+        try {
+            const response = await axios.post(URL_REVIEW, values);
+            if (response.status === 200) {
+                console.log('Review submitted successfully:', response.data);
+            } else {
+                console.error('Unexpected response:', response);
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
         }
-    } catch (error) {
-        console.error('Error submitting review:', error);
-    }
-};
+    };
 
     if (loading) {
         return (

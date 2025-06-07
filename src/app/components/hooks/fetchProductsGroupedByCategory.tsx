@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ItemProps } from '../../types'
 
 
-const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
+const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const fetchProductsGroupedByCategory = async () => {
     const response = await axios.get(URL_COMPOSED_PRODUCTS);
     const products = response.data;

@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-const URL_ORDERS = 'http://localhost:3000/api/orders';
+const URL_ORDERS = '/api/orders';
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const CheckoutPage = () => {
             clientAddress: '',
             orderDate: new Date().toISOString(),
             deliveryDate: '',
-            info:'',
+            info: '',
             status: 'Pending',
             totalPrice: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
             products: cartItems.map((item) => ({
@@ -47,10 +47,10 @@ const CheckoutPage = () => {
 
     const handleSubmit = async (values: OrderProps) => {
         setLoading(true);
-        try{
+        try {
             axios.post(URL_ORDERS, values);
             console.log('Order placed successfully:', values);
-        }catch(error){
+        } catch (error) {
             console.error('Error placing order:', error);
         }
         router.push('/');
@@ -71,7 +71,7 @@ const CheckoutPage = () => {
         <div className="max-w-4xl mx-auto p-6">
             <Button
                 variant="outline"
-                color={'#b756a64f'} 
+                color={'#b756a64f'}
                 onClick={() => router.back()} // Navighează la pagina anterioară
             >
                 Înapoi
@@ -122,7 +122,7 @@ const CheckoutPage = () => {
                     </p>
                 </div>
                 <div className="flex justify-between mt-6">
-                    <Button type="submit" color={'#b756a64f'}  fullWidth>
+                    <Button type="submit" color={'#b756a64f'} fullWidth>
                         Trimite Comanda
                     </Button>
                 </div>

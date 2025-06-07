@@ -52,7 +52,7 @@ const ClientRow = ({ client }: { client: ClientProps }) => {
     );
 };
 
-const URL_USERS = 'http://localhost:3000/api/users';
+const URL_USERS = '/api/users';
 const Page = () => {
     const [clients, setClients] = useState<ClientProps[]>([]);
     const [sortBy, setSortBy] = useState('createdAt');

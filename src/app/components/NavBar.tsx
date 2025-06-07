@@ -23,9 +23,9 @@ import { jwtDecode } from "jwt-decode";
 import { v4 as uuidv4 } from 'uuid';
 import { motion } from "motion/react";
 
-const URL_SIGN = "http://localhost:3000/api/users";
-const URL_LOGIN = "http://localhost:3000/api/users/login";
-const URL_VERIFY_TOKEN = "http://localhost:3000/api/users/login/verify-token";
+const URL_SIGN = "/api/users";
+const URL_LOGIN = "/api/users/login";
+const URL_VERIFY_TOKEN = "/api/users/login/verify-token";
 
 const ForgotPasswordModal = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -116,8 +116,8 @@ const ForgotPasswordModal = () => {
           step === 'email'
             ? 'Resetare Parolă'
             : step === 'verify'
-            ? 'Verificare Cod'
-            : 'Setare Parolă Nouă'
+              ? 'Verificare Cod'
+              : 'Setare Parolă Nouă'
         }
         overlayProps={{
           backgroundOpacity: 0.55,
@@ -259,38 +259,38 @@ const AuthModal = () => {
 
   const login = useCallback(
     async (data: { email: string; password: string }) => {
-        if (user.isAuthenticated) return;
-        setLoginError(null);
-        setLoading(true);
-        try {
-            const response = await axios.post(URL_LOGIN, data);
-            if (mounted && response.status === 200) {
-                setUser({
-                    userInfo: {
-                        id: response.data.user.id,
-                        name: response.data.user.name,
-                        surname: response.data.user.surname,
-                        email: response.data.user.email,
-                        phone: response.data.user.phone,
-                        address: response.data.user.address,
-                        order: response.data.user.order,
-                        createdAt: response.data.user.createdAt,
-                        password: '',
-                    },
-                    isAuthenticated: true,
-                });
-                setCookie('login', response.data.token, { path: '/' });
-                close();
-            }
-        } catch (error) {
-            console.error('Error logging in', error);
-            setLoginError("Eroare la autentificare.");
-        } finally {
-            setLoading(false);
+      if (user.isAuthenticated) return;
+      setLoginError(null);
+      setLoading(true);
+      try {
+        const response = await axios.post(URL_LOGIN, data);
+        if (mounted && response.status === 200) {
+          setUser({
+            userInfo: {
+              id: response.data.user.id,
+              name: response.data.user.name,
+              surname: response.data.user.surname,
+              email: response.data.user.email,
+              phone: response.data.user.phone,
+              address: response.data.user.address,
+              order: response.data.user.order,
+              createdAt: response.data.user.createdAt,
+              password: '',
+            },
+            isAuthenticated: true,
+          });
+          setCookie('login', response.data.token, { path: '/' });
+          close();
         }
+      } catch (error) {
+        console.error('Error logging in', error);
+        setLoginError("Eroare la autentificare.");
+      } finally {
+        setLoading(false);
+      }
     },
     [mounted, setUser, setCookie, close, user.isAuthenticated]
-);
+  );
 
   const handleLogout = useCallback(() => {
     removeCookie("login", { path: '/' });
@@ -324,16 +324,16 @@ const AuthModal = () => {
           console.error('Error verifying token', error);
           handleLogout();
         });
-    } 
+    }
   }, [cookies.login, user.isAuthenticated, login, handleLogout]);
 
   useEffect(() => {
     if (!user.isAuthenticated) {
-        setMounted(true);
-        verifyToken();
-  }
+      setMounted(true);
+      verifyToken();
+    }
 
-}, [verifyToken, user.isAuthenticated]);
+  }, [verifyToken, user.isAuthenticated]);
 
   const formSignUp = useForm({
     mode: 'uncontrolled',
@@ -577,7 +577,7 @@ const CallModal = () => {
     </>
   );
 }
-const URL_COMPOSED_CATEGORIES = 'http://localhost:3000/api/products-composed-categories';
+const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
 export function NavbarDemo({ children }: { children: React.ReactNode }) {
   const [composedCategories, setComposedCategories] = useState<{ name: string, link: string }[]>([]);
 

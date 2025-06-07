@@ -8,20 +8,20 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import axios from 'axios';
 
-const URL_SIMPLE_PRODUCTS = 'http://localhost:3000/api/products';
-const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
-const URL_COMPOSED_CATEGORIES = 'http://localhost:3000/api/products-composed-categories';
+const URL_SIMPLE_PRODUCTS = '/api/products';
+const URL_COMPOSED_PRODUCTS = '/api/products-composed';
+const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
 
 if (typeof window !== 'undefined') {
-  const resizeObserverErrorHandler = () => {
-    console.warn('ResizeObserver loop limit exceeded');
-  };
-  window.addEventListener('error', (e) => {
-    if (e.message === 'ResizeObserver loop limit exceeded') {
-      e.stopImmediatePropagation();
-      resizeObserverErrorHandler();
-    }
-  });
+    const resizeObserverErrorHandler = () => {
+        console.warn('ResizeObserver loop limit exceeded');
+    };
+    window.addEventListener('error', (e) => {
+        if (e.message === 'ResizeObserver loop limit exceeded') {
+            e.stopImmediatePropagation();
+            resizeObserverErrorHandler();
+        }
+    });
 }
 
 const ComposedProductRow = ({
@@ -593,7 +593,7 @@ const CategoryModal = ({
 
         const isValidLink = validLinks.includes(link);
 
-        if(!isValidLink){
+        if (!isValidLink) {
             alert(
                 `Link-ul trebuie să fie una dintre următoarele: ${validLinks.join(
                     ', '
@@ -640,7 +640,7 @@ const CategoryModal = ({
                     value={link}
                     onChange={(value) => value && setLink(value)}
                     required
-                /> 
+                />
                 <p className="text-sm text-gray-500">
                     Numele categoriei trebuie să înceapă cu unul dintre următoarele cuvinte: Buchet, Aranjament, Eveniment, Cadou.
                     Daca vrem sa se afle in Noutati nu trebuie sa respecte ce este mai sus.
@@ -676,7 +676,7 @@ const DeleteCategoryModal = ({
     onDeleteCategory: (category: string) => void;
 }) => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    
+
     const handleDelete = () => {
         if (selectedCategory) {
             onDeleteCategory(selectedCategory);

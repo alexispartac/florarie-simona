@@ -16,7 +16,7 @@ const categories = [
   'Plante de perete cu ierburi', 'Plante de perete cu arbuști'
 ];
 
-const URL_SIMPLE_PRODUCTS = 'http://localhost:3000/api/products';
+const URL_SIMPLE_PRODUCTS = '/api/products';
 const SimpleProductRow = ({
   product,
   onDelete,
@@ -166,7 +166,7 @@ const SimpleProductRow = ({
 
 const ListOfProducts = (
   { products, categories }:
-  { products: ProductProps[]; categories: string[] }
+    { products: ProductProps[]; categories: string[] }
 ) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categories[0]);
@@ -223,7 +223,7 @@ const ListOfProducts = (
       .catch((error) => {
         console.error('Error deleting product:', error);
       });
-  };  
+  };
 
   // Adaugă această funcție pentru update local
   const handleUpdateProduct = (updatedProduct: ProductProps) => {

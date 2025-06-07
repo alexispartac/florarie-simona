@@ -7,7 +7,7 @@ import { Notification } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 
 
-const URL_NEWSLETTER = 'http://localhost:3000/api/newsletter';
+const URL_NEWSLETTER = '/api/newsletter';
 export const Footer = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export const Footer = () => {
                     type: 'success',
                     message: 'Te-ai abonat cu succes la newsletter!',
                 });
-                setEmail(''); 
+                setEmail('');
             }
         } catch (err) {
             console.log('Error subscribing to newsletter:', err);

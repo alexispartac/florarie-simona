@@ -11,7 +11,7 @@ interface Review {
     createdAt: string;
 }
 
-const URL_REVIEW = 'http://localhost:3000/api/review';
+const URL_REVIEW = '/api/review';
 const Reviews: React.FC<{ product: string }> = ({ product }) => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                 const response = await axios.get(URL_REVIEW);
                 const data = response.data as Review[];
                 setReviews(data);
-                
+
             } catch (err) {
                 console.error('Error fetching reviews:', err);
                 setError('A apărut o eroare la încărcarea recenziilor.');
@@ -72,8 +72,8 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                 ))}
             </ul>
             {visibleReviews < reviews.length && (
-                <button 
-                    onClick={loadMore} 
+                <button
+                    onClick={loadMore}
                     className="mt-6 px-4 py-2 bg-[#b756a64f] text-white rounded-md shadow-md hover:bg-[#b756a56f] transition"
                 >
                     Vezi mai multe recenzii

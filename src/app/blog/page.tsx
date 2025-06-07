@@ -13,7 +13,7 @@ import { IconDotsVertical } from '@tabler/icons-react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-const URL_BLOG_POSTS = 'http://localhost:3000/api/post';
+const URL_BLOG_POSTS = '/api/post';
 const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: string) => void }) => {
   const { user } = useUser();
   const surname = user.userInfo.surname;
@@ -91,7 +91,7 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
             <Menu.Target>
               <ActionIcon>
                 <div className='bg-white'>
-                  <IconDotsVertical color='black'/>
+                  <IconDotsVertical color='black' />
                 </div>
               </ActionIcon>
             </Menu.Target>

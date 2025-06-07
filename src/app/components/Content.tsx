@@ -35,7 +35,7 @@ export function InfiniteMovingCardsDemo() {
         <InfiniteMovingCards
             items={testimonials}
             direction="right"
-            speed="slow"
+            speed="fast"
         />
         </div>
     );

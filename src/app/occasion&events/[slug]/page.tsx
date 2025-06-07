@@ -47,7 +47,7 @@ const Content = () => {
     return (
         <div className="relative container mx-auto pt-24">
             <div className="flex justify-center py-3">
-                <p className="font-extrabold text-gray-500 text-center">
+                <p className="font-extrabold text-gray-500 px-3 text-center">
                     Comandă flori cadou online cu livrare în aceeași zi – rapid și simplu!
                 </p>
             </div>
