@@ -17,7 +17,7 @@
     --background: #ffffff91;
     --foreground: #ededed;
     --text-color: #575757;
-    --text-important: #f948489f;
+    --text-important: #c80101;
     --animate-aurora: aurora 60s linear infinite;
     --text-basic: rgb(130, 128, 128);
     --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
@@ -88,7 +88,13 @@
     gap: 2rem; /* Spațiere între elemente */
     animation: scroll var(--animation-duration, 30s) var(--animation-direction, forwards) linear infinite;
   }
-  
+    .zoom-effect {
+      transition: transform 0.3s ease-in-out;
+  }
+
+  .zoom-effect:hover {
+    transform: scale(1.05);
+  }
 }
 
 body {

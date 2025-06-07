@@ -16,21 +16,21 @@ import { v4 as uuidv4 } from 'uuid';
 const URL_BLOG_POSTS = 'http://localhost:3000/api/post';
 const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: string) => void }) => {
   const { user } = useUser();
-  const name = user.userInfo.name;
+  const surname = user.userInfo.surname;
   const [post, setPost] = useState<BlogPostProps>(blogPost);
 
   const handleLike = async () => {
-    if (!post.likedBy.includes(name)) {
+    if (!post.likedBy.includes(surname)) {
       setPost({
         ...post,
         likes: post.likes + 1,
-        likedBy: [...post.likedBy, name],
+        likedBy: [...post.likedBy, surname],
       });
       try {
         await axios.put(URL_BLOG_POSTS, {
           id: post.id,
           likes: post.likes + 1,
-          likedBy: [...post.likedBy, name],
+          likedBy: [...post.likedBy, surname],
         });
       } catch (error) {
         console.error('Eroare la actualizarea like-ului:', error);
@@ -39,17 +39,17 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
   };
 
   const handleDislike = async () => {
-    if (!post.dislikedBy.includes(name)) {
+    if (!post.dislikedBy.includes(surname)) {
       setPost({
         ...post,
         dislikes: post.dislikes + 1,
-        dislikedBy: [...post.dislikedBy, name],
+        dislikedBy: [...post.dislikedBy, surname],
       });
       try {
         await axios.put(URL_BLOG_POSTS, {
           id: post.id,
           dislikes: post.dislikes + 1,
-          dislikedBy: [...post.dislikedBy, name],
+          dislikedBy: [...post.dislikedBy, surname],
         });
       } catch (error) {
         console.error('Eroare la actualizarea dislike-ului:', error);
@@ -90,7 +90,9 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           <Menu>
             <Menu.Target>
               <ActionIcon>
-                <IconDotsVertical color='black'/>
+                <div className='bg-white'>
+                  <IconDotsVertical color='black'/>
+                </div>
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
@@ -121,16 +123,16 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           >
             <button
               onClick={handleLike}
-              disabled={post.likedBy.includes(name) || post.dislikedBy.includes(name) || !user.isAuthenticated}
+              disabled={post.likedBy.includes(surname) || post.dislikedBy.includes(surname) || !user.isAuthenticated}
               className="flex items-center space-x-2 cursor-pointer"
             >
-              <IconHeartFilled color={post.likedBy.includes(name) ? 'red' : 'gray'} />
+              <IconHeartFilled color={post.likedBy.includes(surname) ? 'red' : 'gray'} />
               <span className="text-gray-500">{post.likes}</span>
             </button>
           </Tooltip>
           <button
             onClick={handleDislike}
-            disabled={post.dislikedBy.includes(name) || post.likedBy.includes(name) || !user.isAuthenticated}
+            disabled={post.dislikedBy.includes(surname) || post.likedBy.includes(surname) || !user.isAuthenticated}
             className="flex items-center space-x-2 cursor-pointer"
           >
             <IconHeartBroken />
@@ -339,7 +341,7 @@ const Blog = () => {
             </Button>
           </div>
         )}
-        <Content blogPosts={blogPosts} onDelete={handleDeletePost} />
+        <Content blogPosts={blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())} onDelete={handleDeletePost} />
       </NavbarDemo>
       <Footer />
       <CreatePostModal

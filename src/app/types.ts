@@ -4,7 +4,7 @@ import { ProductProps } from "./admin/types";
 export interface ItemProps {
     id: string,
     title: string,
-    imageSrc?: string,
+    imageSrc: string,
     price_category: {
         standard: {
             price: number;
@@ -22,17 +22,18 @@ export interface ItemProps {
     description?: string,
     composition?: ProductProps[],
     colors?: string,
-    type?: string, 
-    category?: string, 
+    category: string, 
     promotion?: boolean
     newest?: boolean,
 }
 
-export interface OrderProduct {
+export interface CartItem {
     id: string,
     title: string,
     price: number,
+    category: string,
     quantity: number,
+    image: string,
 }
 
 export interface Order {
@@ -46,7 +47,7 @@ export interface Order {
     deliveryDate?: string,
     status: string,
     totalPrice: number,
-    products: OrderProduct[]
+    products: CartItem[]
 }
 
 export interface User {

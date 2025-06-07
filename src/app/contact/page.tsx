@@ -1,14 +1,22 @@
-'use client'
-import * as React from 'react'
-import emailjs from '@emailjs/browser';
+'use client';
+import * as React from 'react';
 import { IconArrowBack } from '@tabler/icons-react';
 import { Footer } from '../components/Footer';
 import Link from 'next/link';
 import { useForm } from '@mantine/form';
-import { Button, Checkbox, Textarea, TextInput } from '@mantine/core';
+import { Button, Checkbox, Textarea, TextInput, Notification, Loader } from '@mantine/core';
+import { IconCheck, IconX } from '@tabler/icons-react';
+import axios from 'axios';
 
 export default function Contact() {
     const [agreed, setAgreed] = React.useState<boolean>(false);
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const [notification, setNotification] = React.useState<{
+        visible: boolean;
+        type: 'success' | 'error';
+        message: string;
+    }>({ visible: false, type: 'success', message: '' });
+
     const formContact = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -27,35 +35,39 @@ export default function Contact() {
         })
     });
 
-
-    React.useEffect(() => {
-        emailjs.init({
-            publicKey: 'aKQS4bLVSyXfhE0Rc',
-        });
-    }, []);
-
-    const SendEmail = (value: {
+    const sendEmail = async (value: {
         first_name: string;
         last_name: string;
         email: string;
         phone_number: string;
         message: string;
     }) => {
-        // modifica aici
-        emailjs.send('service_m7xm4on', 'template_zael9ym', value)
-            .then((result) => {
-                // modal cu trimitere cu succes
-                console.log('Email successfully sent:', result.text);
-            })
-            .catch(() => {
-                console.error('Error sending email:');
-                alert('Failed to send email. Please check the console for details.');
+        setLoading(true); // Activăm indicatorul de încărcare
+        try {
+            const response = await axios.post('/api/contact', value);
+            if (response.status === 200) {
+                setNotification({
+                    visible: true,
+                    type: 'success',
+                    message: 'Mesajul a fost trimis cu succes!',
+                });
+                formContact.reset(); // Resetăm formularul după succes
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            setNotification({
+                visible: true,
+                type: 'error',
+                message: 'A apărut o eroare la trimiterea mesajului.',
             });
+        } finally {
+            setLoading(false); // Dezactivăm indicatorul de încărcare
+        }
     };
 
     return (
         <div>
-            <Link href="/" className='p-5 md:p-10  absolute z-20'>
+            <Link href="/" className='p-5 md:p-10 absolute z-20'>
                 <IconArrowBack />
             </Link>
             <div className="h-screen flex items-center justify-center mb-80 md:mb-120">
@@ -65,7 +77,7 @@ export default function Contact() {
                         <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repde posibil la mesajul tau.</p>
                     </div>
                     <form 
-                        onSubmit={ formContact.onSubmit((value) => SendEmail(value))}
+                        onSubmit={formContact.onSubmit((value) => sendEmail(value))}
                         className="mx-auto mt-16 max-w-xl sm:mt-20"
                     >
                         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -105,7 +117,7 @@ export default function Contact() {
                                         required 
                                         key={formContact.key('email')}
                                         {...formContact.getInputProps('email')}
-                                        placeholder={"Ex: matei.partac45@gmail.com"}
+                                        placeholder={"Ex: exemplu@gmail.com"}
                                         className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                                     />
                                 </div>
@@ -140,8 +152,6 @@ export default function Contact() {
                                 </div>
                             </div>
                             <div className="flex gap-x-4 sm:col-span-2">
-                                <div className="flex h-6 items-center">
-                                </div>
                                 <Checkbox 
                                     className="text-sm/6 text-gray-600"
                                     onChange={() => setAgreed(!agreed)}
@@ -154,17 +164,32 @@ export default function Contact() {
                         <div className="mt-10">
                             <Button
                                 type="submit"
-                                disabled={!agreed}
+                                disabled={!agreed || loading}
                                 className="block w-full rounded-md color-theme px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-gray-300 hover:text-white  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                Trimite
+                                {loading ? <Loader size="sm" color="white" /> : 'Trimite'}
                             </Button>
                         </div>
                     </form>
                     <br /><br /><br />
                 </div>
             </div>
+
+            {/* Notificare */}
+            {notification.visible && (
+                <div className="fixed bottom-4 right-4">
+                    <Notification
+                        icon={notification.type === 'success' ? <IconCheck size={18} /> : <IconX size={18} />}
+                        color={notification.type === 'success' ? 'teal' : 'red'}
+                        title={notification.type === 'success' ? 'Succes!' : 'Eroare!'}
+                        onClose={() => setNotification({ ...notification, visible: false })}
+                    >
+                        {notification.message}
+                    </Notification>
+                </div>
+            )}
+
             <Footer />
         </div>
-    )
+    );
 }

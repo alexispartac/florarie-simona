@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { MantineProvider } from '@mantine/core';
 import { UserProvider } from "./components/ContextUser";
 import QueryProvider from "./components/QueryProvider";
+import ReduxProvider from "./cart/components/ReduxProvider";
 import '@mantine/core/styles.css';
 import "./globals.css";
 
@@ -35,7 +36,9 @@ export default function RootLayout({
         <MantineProvider>
             <UserProvider>
               <QueryProvider>
-                {children}
+                <ReduxProvider>
+                  {children}
+                </ReduxProvider>
               </QueryProvider>
             </UserProvider>
         </MantineProvider>

@@ -52,7 +52,7 @@ const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: s
                 <ul className="list-disc ml-6">
                     {order.products.map(p => (
                         <li key={p.id}>
-                            {p.title} x {p.quantity} | {p.title_category} - {p.price_category} RON
+                            {p.title} x {p.quantity} | {p.category} - {p.price} RON
                         </li>
                     ))}
                 </ul>
@@ -120,19 +120,7 @@ const Page = () => {
         }
     }
 
-    // function addOrder(order: OrderProps) {
-    //     // Adaugă comanda în baza de date
-    //     axios.post(URL_ORDERS, order).then((response) => {
-    //         setOrders(prev => [...prev, { ...order, id: response.data.insertedId }]);
-    //     }).catch(error => {
-    //         console.error('Error adding order:', error);
-    //     });
-    // }
-
-
     useEffect(() => {
-        // Adaugă o comandă demo la început
-        // addOrder(demoOrder);
         fetchOrders();
     }, []);
 

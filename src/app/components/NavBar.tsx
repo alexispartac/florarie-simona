@@ -25,6 +25,184 @@ import { motion } from "motion/react";
 
 const URL_SIGN = "http://localhost:3000/api/users";
 const URL_LOGIN = "http://localhost:3000/api/users/login";
+const URL_VERIFY_TOKEN = "http://localhost:3000/api/users/login/verify-token";
+
+const ForgotPasswordModal = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [step, setStep] = useState<'email' | 'verify' | 'reset'>('email'); // Etapele: email, verificare, resetare parolă
+
+  const handleForgotPassword = async () => {
+    setLoading(true);
+    setMessage('');
+    setError('');
+
+    try {
+      const response = await axios.post('/api/users/login/forgot-password', { email });
+      if (response.status === 200) {
+        setMessage('Codul de resetare a fost trimis pe email.');
+        setStep('verify'); // Trecem la etapa de verificare
+      }
+    } catch (err) {
+      console.error(err);
+      setError('A apărut o eroare.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    setLoading(true);
+    setMessage('');
+    setError('');
+
+    try {
+      const response = await axios.post('/api/users/login/verify-code', { email, code });
+      if (response.status === 200) {
+        setMessage('Codul a fost verificat cu succes!');
+        setStep('reset'); // Trecem la etapa de resetare a parolei
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Codul este invalid sau a expirat.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    setLoading(true);
+    setMessage('');
+    setError('');
+
+    if (newPassword !== confirmPassword) {
+      setError('Parolele nu coincid.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/users/login/reset-password', { email, newPassword });
+      if (response.status === 200) {
+        setMessage('Parola a fost resetată cu succes!');
+        close(); // Închidem modalul după resetare
+      }
+    } catch (err) {
+      console.error(err);
+      setError('A apărut o eroare la resetarea parolei.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Anchor pentru deschiderea modalului */}
+      <Anchor onClick={open} size="xs">
+        Ai uitat parola?
+      </Anchor>
+
+      {/* Modal */}
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={
+          step === 'email'
+            ? 'Resetare Parolă'
+            : step === 'verify'
+            ? 'Verificare Cod'
+            : 'Setare Parolă Nouă'
+        }
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        {step === 'email' && (
+          <div>
+            <TextInput
+              label="Email"
+              placeholder="Introdu adresa ta de email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Button
+              onClick={handleForgotPassword}
+              className="mt-4"
+              fullWidth
+              disabled={loading || !email}
+            >
+              {loading ? <Loader size="sm" /> : 'Trimite Codul'}
+            </Button>
+            {message && <p className="text-green-600 mt-4">{message}</p>}
+            {error && <p className="text-red-600 mt-4">{error}</p>}
+          </div>
+        )}
+
+        {step === 'verify' && (
+          <div>
+            <TextInput
+              label="Cod de verificare"
+              placeholder="Introdu codul primit pe email"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+            />
+            <Button
+              onClick={handleVerifyCode}
+              className="mt-4"
+              fullWidth
+              disabled={loading || !code}
+            >
+              {loading ? <Loader size="sm" /> : 'Verifică Codul'}
+            </Button>
+            {message && <p className="text-green-600 mt-4">{message}</p>}
+            {error && <p className="text-red-600 mt-4">{error}</p>}
+          </div>
+        )}
+
+        {step === 'reset' && (
+          <div>
+            <TextInput
+              label="Parolă Nouă"
+              placeholder="Introdu parola nouă"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+            <TextInput
+              label="Confirmare Parolă"
+              placeholder="Confirmă parola nouă"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="mt-4"
+            />
+            <Button
+              onClick={handleResetPassword}
+              className="mt-4"
+              fullWidth
+              disabled={loading || !newPassword || !confirmPassword}
+            >
+              {loading ? <Loader size="sm" /> : 'Resetează Parola'}
+            </Button>
+            {message && <p className="text-green-600 mt-4">{message}</p>}
+            {error && <p className="text-red-600 mt-4">{error}</p>}
+          </div>
+        )}
+      </Modal>
+    </>
+  );
+};
 
 const AuthModal = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -56,7 +234,6 @@ const AuthModal = () => {
         close();
       }
     } catch (error: unknown) {
-      // Verifică dacă răspunsul este 409 (email deja folosit)
       formSignUp.reset();
       if (
         typeof error === "object" &&
@@ -81,54 +258,39 @@ const AuthModal = () => {
   }
 
   const login = useCallback(
-    async (data: { email: string; password: string; }) => {
-      setLoginError(null);
-      setLoading(true);
-      try {
-        const response = await axios.post(URL_LOGIN, data);
-        if (mounted && response.status === 200) {
-          setUser({
-            userInfo: {
-              id: response.data.user.id,
-              name: response.data.user.name,
-              surname: response.data.user.surname,
-              email: response.data.user.email,
-              phone: response.data.user.phone,
-              address: response.data.user.address,
-              order: response.data.user.order,
-              createdAt: response.data.user.createdAt,
-              password: '',
-            },
-            isAuthenticated: true,
-          });
-          setCookie('login', response.data.token, { path: '/' });
-          close();
-          return response.status;
-        }
-      } catch (error: unknown) {
-        if (
-          typeof error === "object" &&
-          error !== null &&
-          "response" in error &&
-          typeof (error as { response?: { status?: number } }).response === "object" &&
-          (error as { response?: { status?: number } }).response !== null &&
-          "status" in (error as { response?: { status?: number } }).response!
-        ) {
-          if ((error as { response: { status: number } }).response.status === 401) {
-            setLoginError("Email sau parolă greșită!");
-          } else {
+    async (data: { email: string; password: string }) => {
+        if (user.isAuthenticated) return;
+        setLoginError(null);
+        setLoading(true);
+        try {
+            const response = await axios.post(URL_LOGIN, data);
+            if (mounted && response.status === 200) {
+                setUser({
+                    userInfo: {
+                        id: response.data.user.id,
+                        name: response.data.user.name,
+                        surname: response.data.user.surname,
+                        email: response.data.user.email,
+                        phone: response.data.user.phone,
+                        address: response.data.user.address,
+                        order: response.data.user.order,
+                        createdAt: response.data.user.createdAt,
+                        password: '',
+                    },
+                    isAuthenticated: true,
+                });
+                setCookie('login', response.data.token, { path: '/' });
+                close();
+            }
+        } catch (error) {
+            console.error('Error logging in', error);
             setLoginError("Eroare la autentificare.");
-          }
-        } else {
-          setLoginError("Eroare la autentificare.");
+        } finally {
+            setLoading(false);
         }
-        console.log('Error logging in', error);
-      } finally {
-        setLoading(false);
-      }
     },
-    [close, mounted, setCookie, setUser]
-  );
+    [mounted, setUser, setCookie, close, user.isAuthenticated]
+);
 
   const handleLogout = useCallback(() => {
     removeCookie("login", { path: '/' });
@@ -148,19 +310,30 @@ const AuthModal = () => {
     });
   }, [removeCookie, setUser]);
 
+  const verifyToken = useCallback(() => {
+    const token = cookies.login;
+    if (token && !user.isAuthenticated) {
+      axios.post(URL_VERIFY_TOKEN, { token })
+        .then(response => {
+          if (response.status === 200) {
+            const decoded: { email: string; password: string; } = jwtDecode(token);
+            login({ email: decoded.email, password: decoded.password });
+          }
+        })
+        .catch(error => {
+          console.error('Error verifying token', error);
+          handleLogout();
+        });
+    } 
+  }, [cookies.login, user.isAuthenticated, login, handleLogout]);
+
   useEffect(() => {
-    setMounted(true);
-    if (cookies.login) {
-      try {
-        const decodedToken = jwtDecode<{ email: string, password: string }>(cookies.login);
-        const { email, password } = decodedToken;
-        login({ email, password });
-      } catch (err) {
-        handleLogout();
-        console.error('Error decoding token', err);
-      }
-    }
-  }, [cookies.login, setUser, removeCookie, handleLogout, login]);
+    if (!user.isAuthenticated) {
+        setMounted(true);
+        verifyToken();
+  }
+
+}, [verifyToken, user.isAuthenticated]);
 
   const formSignUp = useForm({
     mode: 'uncontrolled',
@@ -337,6 +510,7 @@ const AuthModal = () => {
               <Anchor onClick={() => setTypeAuth({ type: 'signin' })} size="xs">
                 Nu ai cont? SignUp
               </Anchor>
+              <ForgotPasswordModal />
               <Button
                 type="submit"
                 disabled={loading}

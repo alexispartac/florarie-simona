@@ -49,11 +49,12 @@ export interface ComposedProductProps {
 }
 
 export interface OrderProductProps {
-    id: string,
-    title: string,
-    title_category: string,
-    price_category: number
-    quantity: number,
+    id: string;
+    title: string;
+    price: number;
+    category: string;
+    quantity: number;
+    image?: string;
 }
 
 export interface OrderProps {
@@ -65,6 +66,7 @@ export interface OrderProps {
     clientAddress: string,
     orderDate: string,
     deliveryDate?: string,
+    info?: string,
     status: string,
     totalPrice: number,
     products: OrderProductProps[],

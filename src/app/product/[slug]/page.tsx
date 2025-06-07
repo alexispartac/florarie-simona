@@ -1,89 +1,120 @@
 'use client';
 import React from 'react';
 import { usePathname } from "next/navigation";
-import { ItemProps, OrderProduct } from './../../types';
+import { ItemProps, CartItem } from './../../types';
 import { NavbarDemo } from '../../components/NavBar';
 import { Footer } from '../../components/Footer';
 import PopUp from '@/app/components/PopUp';
 import { Bread } from '@/app/components/Products';
-import { Anchor, Button, TextInput, NumberInput, Textarea, Loader } from '@mantine/core';
+import { Anchor, Button, NumberInput, Loader } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Delivery } from '@/app/components/Content';
 import { Item } from '@/app/components/Products';
 import axios from 'axios';
+import { useProductsGroupedByCategory } from '@/app/components/hooks/fetchProductsGroupedByCategory';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, RootState, setCart } from '@/app/cart/components/CartRedux';
+import ReviewForm from '../../components/ReviewForm'
+import Reviews from '@/app/components/Reviews';
 
 const URL_COMPOSED_PRODUCTS = 'http://localhost:3000/api/products-composed';
+const URL_REVIEW = 'http://localhost:3000/api/review';
 
 const Product = () => {
+    const cartItems = useSelector((state: RootState) => state.cart.items);
     const pathname = usePathname();
     const lastSegment = pathname.split("/").pop();
     const [product, setProduct] = React.useState<ItemProps | null>(null);
     const [loading, setLoading] = React.useState(true); // Stare pentru încărcare
-    const [reviewSubmittedValues, setReviewSubmittedValues] = React.useState('');
-    const [addProductSubmittedValues, setAddProductReviewSubmittedValues] = React.useState<OrderProduct>({
-        id: '',
-        title: '',
-        price: 0,
-        quantity: 0,
-    });
     const [activeButton, setActiveButton] = React.useState({
         button1: true,
         button2: false,
         button3: false,
     });
-    console.log(reviewSubmittedValues, addProductSubmittedValues);
-    React.useEffect(() => {
-        console.log("Last segment:", lastSegment);
-        if (lastSegment) {
-            setLoading(true); // Setează loading pe true înainte de request
-            axios.get(`${URL_COMPOSED_PRODUCTS}/${lastSegment}`)
-                .then(response => {
-                    const data = response.data as ItemProps;
-                    setProduct(data);
-                })
-                .catch(error => {
-                    console.error("Error fetching product:", error);
-                })
-                .finally(() => {
-                    setLoading(false); // Setează loading pe false după request
-                });
-        }
-    }, [lastSegment]);
 
-    // Move hooks here so they are always called
+    const { data: categoryproducts, isLoading, isError } = useProductsGroupedByCategory();
+
     const addForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
             id: product?.id ?? '',
             title: product?.title ?? '',
-            category: '',
-            price: 0,
+            category: 'basic',
+            price: product?.price_category.basic.price,
             quantity: 0,
+            image: product?.imageSrc,
         },
         transformValues: (values) => ({
             id: `${values.id}`,
             title: `${values.title}`,
             category: `${values.category}`,
-            price: values.price,
+            price: values.price ?? 0,
             quantity: values.quantity,
+            image: values.image,
         })
     });
 
-    const reviewForm = useForm({
-        mode: 'uncontrolled',
-        initialValues: {
-            name: '',
-            email: '',
-            cod: '',
-            message: '',
-        },
-        transformValues: (values) => ({
-            name: `${values.name}`,
-            email: `${values.email}`,
-            cod: `${values.cod}`,
-            message: `${values.message}`
-        })
-    });
+    React.useEffect(() => {
+        if (lastSegment) {
+            setLoading(true);
+            axios.get(`${URL_COMPOSED_PRODUCTS}/${lastSegment}`)
+                .then(response => {
+                    const data = response.data as ItemProps;
+                    setProduct(data);
+                    addForm.setValues({
+                        id: data.id,
+                        title: data.title,
+                        category: 'basic',
+                        price: data.price_category.basic.price,
+                        quantity: 0,
+                        image: data.imageSrc,
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching product:", error);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+    }, [lastSegment]);
+
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedCart = localStorage.getItem('cartItems');
+            if (savedCart) {
+                const items = JSON.parse(savedCart);
+                dispatch(setCart(items));
+            }
+        }
+    }, [dispatch]);
+
+    const handleAddToCart = () => {
+        const values = addForm.getValues();
+        const itemForCart: CartItem = {
+            id: values.id,
+            title: values.title,
+            category: values.category,
+            price: values.price ?? 0,
+            quantity: values.quantity,
+            image: product?.imageSrc ?? '',
+        };
+        dispatch(addItem(itemForCart));
+    };
+
+    const handleSubmitedReview = async (values: { name: string; email: string; message: string }) => {
+    try {
+        const response = await axios.post(URL_REVIEW, values);
+        if (response.status === 200) {
+            console.log('Review submitted successfully:', response.data);
+        } else {
+            console.error('Unexpected response:', response);
+        }
+    } catch (error) {
+        console.error('Error submitting review:', error);
+    }
+};
 
     if (loading) {
         return (
@@ -101,13 +132,21 @@ const Product = () => {
         );
     }
 
-    const itemsRe: ItemProps[] = [
-        { id: '1', title: 'Buchetul Simonei', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 } } },
-        { id: '2', title: 'Buchete', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 } } },
-        { id: '3', title: 'Buchete', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 } } },
-        { id: '4', title: 'Buchete', price_category: { basic: { price: 100 }, standard: { price: 100 }, premium: { price: 100 } } },
-    ];
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader color="blue" size="lg" />
+            </div>
+        );
+    }
 
+    if (isError) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>A apărut o eroare la încărcarea produselor.</p>
+            </div>
+        );
+    }
 
     const handleSetCategory = ({ button1, button2, button3 }: { button1: boolean, button2: boolean, button3: boolean }) => {
         setActiveButton({
@@ -125,6 +164,13 @@ const Product = () => {
             {item.title}
         </Anchor>
     ));
+
+    const isInCart = cartItems.some((cartItem) => cartItem.id === product?.id);
+
+    const itemsRe: ItemProps[] = (Object.values(categoryproducts)
+        .flat() as ItemProps[])
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4);
 
     return (
         <div>
@@ -144,16 +190,16 @@ const Product = () => {
                     }
                     <form
                         className='flex flex-col md:px-8 py-8'
-                        onSubmit={addForm.onSubmit((values) => setAddProductReviewSubmittedValues(values))}
+                        onSubmit={addForm.onSubmit(() => handleAddToCart())}
                     >
-                        {product.isPopular && <span className="text-red-600 font-serif">Popular</span>}
+                        {product.isPopular && <span className="text-red-600 font-serif py-4">Popular</span>}
                         <div className='grid grid-cols-3'>
                             {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.price_category.basic.price} RON</p> : null}
                             {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.price_category.standard.price} RON</p> : null}
                             {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.price_category.premium.price} RON</p> : null}
                             {product.inStock && <span className="flex font-serif justify-end align-bottom">In stoc ~|</span>}
                             {!product.inStock && <span className="flex font-serif justify-end align-bottom">Stoc epuizat ~|</span>}
-                            <span className="flex font-serif align-bottom">~ COD-{product.id}</span>
+                            <span className="flex font-serif align-bottom">~ COD-{product.id.substring(0, 8)}</span>
                         </div>
                         <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                         <div className='grid grid-cols-3 gap-1.5 my-5'>
@@ -166,7 +212,7 @@ const Product = () => {
                                 size='compact-sm'
                                 onClick={() => (
                                     handleSetCategory({ button1: true, button2: false, button3: false }),
-                                    addForm.setValues({ price: product.price_category.premium.price, category: 'premium' })
+                                    addForm.setValues({ price: product.price_category.basic.price, category: 'basic' })
                                 )}
                             > BASIC </Button>
                             <Button
@@ -178,7 +224,7 @@ const Product = () => {
                                 key={addForm.key('category2')}
                                 onClick={() => (
                                     handleSetCategory({ button1: false, button2: true, button3: false }),
-                                    addForm.setValues({ price: product.price_category.premium.price, category: 'standard' })
+                                    addForm.setValues({ price: product.price_category.standard.price, category: 'standard' })
                                 )}
                             > STANDARD </Button>
                             <Button
@@ -190,7 +236,7 @@ const Product = () => {
                                 key={addForm.key('category3')}
                                 onClick={() => (
                                     handleSetCategory({ button1: false, button2: false, button3: true }),
-                                    addForm.setValues({ price: product.price_category.premium.price, category: 'basic' })
+                                    addForm.setValues({ price: product.price_category.premium.price, category: 'premium' })
                                 )}
                             > PREMIUM </Button>
                         </div>
@@ -223,9 +269,12 @@ const Product = () => {
                                 w={300}
                                 bg={'#b756a64f'}
                                 type='submit'
-                                disabled={!product.inStock || addForm.getValues().quantity < 1 ? true : false}
+                                disabled={!product.inStock || isInCart || addForm.getValues().quantity < 1 ? true : false}
+                                onClick={() => {
+                                    addForm.setValues({ image: product?.imageSrc });
+                                }}
                             >
-                                Adaugă în coș
+                                {isInCart ? 'În coș' : product.inStock ? 'Adaugă în coș' : 'Indisponibil'}
                             </Button>
                         </div>
                         <div className='grid grid-cols-2 mt-4'>
@@ -234,6 +283,7 @@ const Product = () => {
                         </div>
                     </form>
                 </div>
+                {/* detalii */}
                 <div className="relative mx-8 md:mx-40 my-10" >
                     <div className='my-5'>
                         <p className='text-xl text-center my-3'> DETALII </p>
@@ -259,70 +309,23 @@ const Product = () => {
                         </div>
                         <div className='my-2'>
                             <p> TIP DE PRODUS </p>
-                            <p className='pb-3 px-4 text-[15px]'> {product.type} </p>
+                            <p className='pb-3 px-4 text-[15px]'> {product.category} </p>
                         </div>
                         <div className='my-2'>
                             <p> COD PRODUS </p>
                             <p className='pb-3 px-4 text-[15px]'> {product.id} </p>
                         </div>
                     </div>
-
                 </div>
-                <div className="relative color-theme md:px-10 py-10 mx-8 md:mx-40 my-10" >
-                    <div className='my-5'>
-                        <p className='text-xl text-center my-3'> RECENZIE </p>
-                        <p className='text-center'> Scrie recenzia ta pentru ”{product.title}” </p>
-                    </div>
-                    <form
-                        className='grid md:grid-cols-2 grid-cols-1 px-6 md:px-0'
-                        onSubmit={reviewForm.onSubmit((values) => setReviewSubmittedValues(JSON.stringify(values, null, 2)))}
-                    >
-                        <div className='md:pr-40'>
-                            <TextInput
-                                label="NUME"
-                                required
-                                placeholder="Nume"
-                                key={reviewForm.key('name')}
-                                {...reviewForm.getInputProps('name')}
-                            />
-                            <TextInput
-                                label="EMAIL"
-                                required
-                                placeholder="Email"
-                                key={reviewForm.key('email')}
-                                {...reviewForm.getInputProps('email')}
-                            />
-                            <TextInput
-                                label="COD COMANDA"
-                                required
-                                placeholder="COD..."
-                                key={reviewForm.key('cod')}
-                                {...reviewForm.getInputProps('cod')}
-                            />
-                        </div>
-                        <div>
-                            <Textarea
-                                label="MESAJ"
-                                required
-                                placeholder="Mesaj..."
-                                key={reviewForm.key('message')}
-                                {...reviewForm.getInputProps('message')}
-                            />
-                            <br /><br />
-                            <Button
-                                variant='fill'
-                                w={280}
-                                bg={'gray'}
-                                type='submit'
-                            >
-                                TRIMITE RECENZIE
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                {/* recenzie */}
+                <ReviewForm
+                    productTitle={product.title}
+                    onSubmit={handleSubmitedReview}
+                />
+                <Reviews product={`${lastSegment}`} />
                 {/* recomandari */}
                 <div className="relative mx-8 md:mx-40 my-20">
-                    <p className='text-center' >PRODUSE RECOMANDATE</p>
+                    <p className='text-center'>PRODUSE RECOMANDATE</p>
                     <div className='grid xl:grid-cols-4 grid-cols-2 gap-4 xl:mx-22 xl:gap-8 my-6'>
                         {itemsRe.map(
                             (item: ItemProps, idx: number) => (

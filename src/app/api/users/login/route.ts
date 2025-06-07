@@ -20,7 +20,7 @@ async function connectDB() {
     return client!.db(dbName);
 }
 
-// PUT /api/users - interogheaza userul dupa email si parola
+// POST /api/users/login - interogheaza userul dupa email si parola
 export async function POST(req: NextRequest) {
     const db = await connectDB();
     const data = await req.json();
@@ -43,3 +43,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ user, token }, { status: 200 });
 }
+
+
+

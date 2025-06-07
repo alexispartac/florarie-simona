@@ -83,9 +83,10 @@ export const InfiniteMovingCards = ({
           pauseOnHover && "hover:[animation-play-state:paused]",
         )}
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <li
-            className="relative shadow-xl flex w-[150px] h-[200px] max-w-full shrink-0 border border-b-0 border-zinc-200 bg-[linear-gradient(180deg,rgba(183,86,166,0.31),#e5a5de74)] px-8 py-6 md:w-[300px] dark:border-zinc-200 dark:bg-[linear-gradient(180deg,rgba(183,86,166,0.31),#e5a5de74)]"
+            className="relative shadow-pink-200 shadow-xl flex w-[15rem] h-[200px] max-w-full shrink-0 border border-b-0 border-zinc-200 bg-cover bg-center"
+            style={{ backgroundImage: `url('/c${(index%5)}.jpg')` }} // Construim URL-ul dinamic
             key={item.title}
           >
             <blockquote className="flex w-full h-full flex-col justify-center">
@@ -93,14 +94,9 @@ export const InfiniteMovingCards = ({
                 aria-hidden="true"
                 className="user-select-none pointer-events-none absolute -top-0.5 -left-0.5 -z-1 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
               ></div>
-              <span className="text-center relative z-20 text-md leading-[1.6] font-normal text-neutral-200 dark:text-gray-100">
+              <span className="text-center bg-amber-100 important relative z-20 text-md leading-[1.6] font-normal text-[#a62c2c]">
                 {item.title}
               </span>
-              <img
-                src="/flower.jpeg"
-                alt="Flower"
-                className="w-full h-full pt-5"
-              />
             </blockquote>
           </li>
         ))}
