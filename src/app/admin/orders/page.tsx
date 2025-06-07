@@ -6,19 +6,7 @@ import axios from 'axios';
 
 const URL_ORDERS = 'http://localhost:3000/api/orders';
 
-export const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    // Dacă dateString nu conține timp, va fi 00:00:00
-    return date.toLocaleString('ro-RO', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-    });
-};
+
 
 const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: string) => void }) => {
     return (
@@ -32,11 +20,10 @@ const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: s
                 <div className="flex flex-col items-end gap-2">
                     <span className="font-semibold">{order.status}</span>
                     <div className="text-xs">Total: {order.totalPrice} RON</div>
-                    <div className="text-xs">Plasată: {formatDateTime(order.orderDate)}</div>
+                    <div className="text-xs">Plasată: {order.orderDate}</div>
                     {order.status === 'Delivered' && (
                         <div className="text-xs">Livrata: {order.deliveryDate}</div>
                     )}
-                    {/* <div className="text-xs">Livrare: {formatDateTime(order.deliveryDate)}</div> */}
                     {order.status !== 'Delivered' && (
                         <button
                             className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
@@ -69,41 +56,13 @@ const ListOfOrders = ({
     onFinalize: (id: string) => void;
 }) => {
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 overflow-y-auto">
             {orders.map(order => (
                 <OrderRow key={order.id} order={order} onFinalize={onFinalize} />
             ))}
         </div>
     );
 };
-
-// const demoOrder = {
-//     id: '1',
-//     orderNumber: 'ORD123456',
-//     clientName: 'Ion Popescu',
-//     clientEmail: 'ion.popescu@example.com',
-//     clientPhone: '000000000000',
-//     clientAddress: 'Strada Principala, Nr. 123',
-//     orderDate: '2024-03-15T10:30:00',
-//     status: 'Pending',
-//     totalPrice: 100,
-//     products: [
-//         {
-//             id: '1',
-//             title: 'Florarie',
-//             title_category: 'Florarie',
-//             price_category: 50,
-//             quantity: 2,
-//         },
-//         {
-//             id: '2',
-//             title: 'Florarie',
-//             title_category: 'Florarie',
-//             price_category: 50,
-//             quantity: 1,
-//         },
-//     ],
-// } as OrderProps;
 
 
 const Page = () => {
@@ -137,7 +96,7 @@ const Page = () => {
                         ? {
                             ...order,
                             status: 'Delivered',
-                            deliveryDate: formatDateTime(new Date().toISOString()),
+                            deliveryDate: new Date().toISOString(),
                         }
                         : order
                 )
