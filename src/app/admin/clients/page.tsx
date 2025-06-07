@@ -3,9 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { SidebarDemo } from '../components/SideBar'
 import { Modal, Button, Group, Select } from '@mantine/core'
 import { ClientProps } from '../types';
-import { formatDateTime } from '../orders/page';
-
-// Exemplu demo clienți
 
 const sortOptions = [
     { value: 'createdAt', label: 'Data creare' },
@@ -29,7 +26,7 @@ const ClientRow = ({ client }: { client: ClientProps }) => {
                 centered
             >
                 <div className="flex flex-col gap-2">
-                    <div><b>Creat:</b> {formatDateTime(client.createdAt)}</div>
+                    <div><b>Creat:</b> {client.createdAt}</div>
                     <div><b>Nume:</b> {client.name}</div>
                     <div><b>Prenume:</b> {client.surname}</div>
                     <div><b>Email:</b> {client.email}</div>

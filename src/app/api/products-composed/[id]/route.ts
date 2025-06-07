@@ -19,11 +19,11 @@ async function connectDB() {
     return client!.db(dbName);
 }
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     const db = await connectDB();
-    const { params } = context;
+    const params = await context.params; 
+    const id = params?.id;
 
-    const id = params?.id; 
 
     if (!id) {
         return NextResponse.json({ error: 'ID-ul produsului lipsește' }, { status: 400 });
@@ -42,9 +42,9 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
     }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const db = await connectDB();
-    const { id } = params;
+    const { id } = await params;
     const data = await req.json();
 
     try {
@@ -62,9 +62,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const db = await connectDB();
-    const { id } = params;
+    const { id } = await params;
 
     try {
         const result = await db.collection('products-composed').deleteOne({ _id: new ObjectId(id) });

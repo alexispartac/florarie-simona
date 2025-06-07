@@ -6,8 +6,6 @@ import axios from 'axios';
 
 const URL_ORDERS = 'http://localhost:3000/api/orders';
 
-
-
 const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: string) => void }) => {
     return (
         <div key={order.id} className="border rounded p-4 bg-gray-50 dark:bg-neutral-800">
