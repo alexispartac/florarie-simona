@@ -1,35 +1,20 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
-
 import { BlogPostProps } from '../types';
-
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-// Singleton pattern pentru MongoClient
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
+import clientPromise from '@/app/components/lib/mongodb'
 
 // GET /api/post - returnează toate post-urile
 export async function GET() {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const posts = await db.collection('blog_posts').find().toArray();
     return NextResponse.json(posts, { status: 200 });
 }
 
 // POST /api/post - adaugă un post nou
 export async function POST(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const post_data: BlogPostProps = {
@@ -49,7 +34,8 @@ export async function POST(req: NextRequest) {
 
 // PUT /api/post - actualizează un post existent
 export async function PUT(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const { id, ...updateData } = data;
@@ -78,7 +64,8 @@ export async function PUT(req: NextRequest) {
 
 // DELETE /api/post 
 export async function DELETE(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const { id } = data;

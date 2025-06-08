@@ -1,21 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
-
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  await clientPromise;
-  return client!.db(dbName);
-}
+import clientPromise from '@/app/components/lib/mongodb';
 
 // POST /api/newsletter
 export async function POST(req: NextRequest) {
@@ -26,7 +11,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email-ul este obligatoriu' }, { status: 400 });
     }
 
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const newsletterCollection = db.collection('newsletter');
 
     // Verificăm dacă email-ul există deja
@@ -54,7 +40,8 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Email-ul este obligatoriu' }, { status: 400 });
     }
 
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const newsletterCollection = db.collection('newsletter');
 
     // Ștergem email-ul din baza de date

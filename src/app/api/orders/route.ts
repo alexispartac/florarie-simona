@@ -1,36 +1,20 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
-
 import { OrderProps } from '../types';
-
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-// Singleton pattern pentru MongoClient
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
-
+import clientPromise from '@/app/components/lib/mongodb';
 
 // GET /api/orders - returnează toate comenzile
 export async function GET() {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const orders = await db.collection('orders').find().toArray();
     return NextResponse.json(orders, { status: 200 });
 }
 
 // POST /api/orders - adaugă o comandă nouă
 export async function POST(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data: OrderProps = await req.json();
 
     const result = await db.collection('orders').insertOne(data);
@@ -43,7 +27,8 @@ export async function POST(req: NextRequest) {
 
 // PUT /api/orders - finalizeaza o comandă existentă
 export async function PUT(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const { id, status } = await req.json();
 
     // Găsește comanda după id-ul custom (nu după _id-ul Mongo)
@@ -68,7 +53,8 @@ export async function PUT(req: NextRequest) {
 
 // DELETE /api/orders - șterge o comandă existentă
 export async function DELETE(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const { id } = await req.json();
 
     // Găsește comanda după id-ul custom (nu după _id-ul Mongo)

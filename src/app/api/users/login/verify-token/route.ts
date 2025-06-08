@@ -1,28 +1,14 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
 import { jwtDecode } from 'jwt-decode';
+import clientPromise from '@/app/components/lib/mongodb';
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-// Singleton pattern pentru MongoClient
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
 
 // POST /api/users/login/verify-token
 export async function POST(req: NextRequest) {
     try {
-        const db = await connectDB();
+        const client = await clientPromise;
+    const db = client.db('florarie'); 
         const usersCollection = db.collection('users');
         const { token } = await req.json();
 

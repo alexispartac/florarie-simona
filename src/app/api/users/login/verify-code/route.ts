@@ -1,21 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
-
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
+import clientPromise from '@/app/components/lib/mongodb';
 
 // POST /api/users/login/verify-code
 export async function POST(req: NextRequest) {
@@ -26,7 +11,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Email-ul și codul sunt obligatorii' }, { status: 400 });
         }
 
-        const db = await connectDB();
+        const client = await clientPromise;
+    const db = client.db('florarie'); 
         const usersCollection = db.collection('users');
 
         // Verificăm dacă utilizatorul există și codul este valid

@@ -1,34 +1,22 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
 import { User } from '../types';
+import clientPromise from '@/app/components/lib/mongodb'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-// Singleton pattern pentru MongoClient
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
 
 // GET /api/users - returnează toți userii
 export async function GET() {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const users = await db.collection('users').find().toArray();
+
     return NextResponse.json(users);
 }
 
 // POST /api/users - adaugă un user nou și returnează un JWT
 export async function POST(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     // Verifică dacă există deja un user cu același email
@@ -54,7 +42,8 @@ export async function POST(req: NextRequest) {
 
 // PUT /api/users - actualizează un user existent
 export async function PUT(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const { id, ...updateData } = data;
@@ -69,7 +58,8 @@ export async function PUT(req: NextRequest) {
 
 // DELETE /api/users - șterge un user
 export async function DELETE(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const { id } = data;

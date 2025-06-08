@@ -1,26 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
-
-
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-// Singleton pattern pentru MongoClient
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
+import clientPromise from '@/app/components/lib/mongodb';
 
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const params = await context.params;
     const id = params?.id;
 
@@ -43,7 +27,8 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const { id } = await params;
     const data = await req.json();
 
@@ -63,7 +48,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const { id } = await params;
 
     try {

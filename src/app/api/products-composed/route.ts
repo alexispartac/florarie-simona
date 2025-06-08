@@ -1,35 +1,20 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
-
 import { ComposedProductProps } from '../types';
-
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
-const dbName = process.env.MONGODB_DB || 'florarie';
-
-// Singleton pattern pentru MongoClient
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
-
-async function connectDB() {
-    if (!clientPromise) {
-        client = new MongoClient(uri);
-        clientPromise = client.connect();
-    }
-    await clientPromise;
-    return client!.db(dbName);
-}
+import clientPromise from '@/app/components/lib/mongodb';
 
 // GET /api/products-composed - returnează toate produsele compuse
 export async function GET() {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const products = await db.collection('products-composed').find().toArray();
     return NextResponse.json(products, { status: 200 });
 }
 
 // POST /api/products-composed - adaugă un produs compus nou
 export async function POST(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const post_data: ComposedProductProps = {
@@ -56,7 +41,8 @@ export async function POST(req: NextRequest) {
 
 // PUT /api/products-composed - actualizează un produs compus existent
 export async function PUT(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const { id, ...updateData } = data;
@@ -85,7 +71,8 @@ export async function PUT(req: NextRequest) {
 
 // DELETE /api/products-composed - șterge un produs compus existent
 export async function DELETE(req: NextRequest) {
-    const db = await connectDB();
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
     const data = await req.json();
 
     const { id } = data;
