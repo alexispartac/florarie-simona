@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 const dbName = process.env.MONGODB_DB || 'florarie';
 
 let client: MongoClient | null = null;
@@ -58,20 +58,20 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-    try {
+  try {
 
-        const db = await connectDB();
-        const reviewsCollection = db.collection('reviews');
+    const db = await connectDB();
+    const reviewsCollection = db.collection('reviews');
 
-        const reviews = await reviewsCollection.find().toArray();
+    const reviews = await reviewsCollection.find().toArray();
 
-        // Răspuns cu toate recenziile
-        return NextResponse.json(reviews, { status: 200 });
-    } catch (error) {
-        console.error('Eroare la obținerea recenziilor:', error);
-        return NextResponse.json(
-            { error: 'A apărut o eroare la obținerea recenziilor.' },
-            { status: 500 }
-        );
-    }
+    // Răspuns cu toate recenziile
+    return NextResponse.json(reviews, { status: 200 });
+  } catch (error) {
+    console.error('Eroare la obținerea recenziilor:', error);
+    return NextResponse.json(
+      { error: 'A apărut o eroare la obținerea recenziilor.' },
+      { status: 500 }
+    );
+  }
 }

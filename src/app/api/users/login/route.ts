@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 const dbName = process.env.MONGODB_DB || 'florarie';
 const JWT_SECRET = process.env.JWT_SECRET || 'secretul_tau_super_secret';
 
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     if (!user) {
         return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
-    
+
     // Generează JWT cu id, email și nume
     const token = jwt.sign(
         {

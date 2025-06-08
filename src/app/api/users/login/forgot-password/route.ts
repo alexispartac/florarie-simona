@@ -4,7 +4,7 @@ import { MongoClient } from 'mongodb';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 const dbName = process.env.MONGODB_DB || 'florarie';
 const EMAIL_USER = process.env.EMAIL_USER || 'simonabuzau2@gmail.com';
 const EMAIL_PASS = process.env.EMAIL_PASS || 'qpqz bneu qlfi ehvc';

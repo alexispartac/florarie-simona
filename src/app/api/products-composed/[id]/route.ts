@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
 
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 const dbName = process.env.MONGODB_DB || 'florarie';
 
 // Singleton pattern pentru MongoClient
@@ -21,7 +21,7 @@ async function connectDB() {
 
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     const db = await connectDB();
-    const params = await context.params; 
+    const params = await context.params;
     const id = params?.id;
 
 
