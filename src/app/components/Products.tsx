@@ -33,6 +33,10 @@ export const Item = ({ item }: { item: ItemProps }) => {
     price: item.info_category.standard.price,
     category: "standard",
     quantity: 1,
+    composition: item.info_category.standard.composition.map((comp) => ({
+      id: comp.id,
+      quantity: 1, 
+    })),
     image: item.info_category.standard.imageSrc || '',
   };
 
