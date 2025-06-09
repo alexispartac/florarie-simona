@@ -6,7 +6,7 @@ import clientPromise from '@/app/components/lib/mongodb';
 // GET /api/products-composed - returnează toate produsele compuse
 export async function GET() {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const products = await db.collection('products-composed').find().toArray();
     return NextResponse.json(products, { status: 200 });
 }
@@ -14,20 +14,20 @@ export async function GET() {
 // POST /api/products-composed - adaugă un produs compus nou
 export async function POST(req: NextRequest) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const data = await req.json();
 
     const post_data: ComposedProductProps = {
         ...data,
-        price_category: {
+        info_category: {
             standard: {
-                price: data.price_category.standard.price || 0,
+                price: data.info_category.standard.price || 0,
             },
             premium: {
-                price: data.price_category.premium.price || 0,
+                price: data.info_category.premium.price || 0,
             },
             basic: {
-                price: data.price_category.basic.price || 0,
+                price: data.info_category.basic.price || 0,
             }
         }
     }
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 // PUT /api/products-composed - actualizează un produs compus existent
 export async function PUT(req: NextRequest) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const data = await req.json();
 
     const { id, ...updateData } = data;
@@ -72,7 +72,7 @@ export async function PUT(req: NextRequest) {
 // DELETE /api/products-composed - șterge un produs compus existent
 export async function DELETE(req: NextRequest) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const data = await req.json();
 
     const { id } = data;

@@ -25,16 +25,18 @@ export interface SimpleProductProps {
 export interface ComposedProductProps {
     id: string,
     title: string,
-    imageSrc: string,
-    price_category: {
+    info_category: {
         standard: {
             price: number;
+            imageSrc: string,
         },
         premium: {
             price: number;
+            imageSrc: string,
         },
         basic: {
             price: number;
+            imageSrc: string,
         }
     }
     isPopular: boolean,
@@ -80,6 +82,6 @@ export interface BlogPostProps {
     image: string | null;
     likes: number;
     dislikes: number;
-    likedBy: string[]; 
+    likedBy: string[];
     dislikedBy: string[];
 }

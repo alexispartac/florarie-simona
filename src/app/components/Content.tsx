@@ -60,9 +60,11 @@ export function AuroraBackgroundDemo() {
                 <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
                     Flori care vorbesc sufletului.
                 </div>
-                <button className="bg-white content dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2">
+                <button className="bg-white content dark:bg-white rounded-full h-[70px] w-[200px] text-white dark:text-black px-4 py-2">
                     <Link href="/features">
-                        Descoperă
+                        <p className="text-2xl font-bold">
+                            Descoperă
+                        </p>
                     </Link>
                 </button>
             </motion.div>
@@ -89,7 +91,7 @@ export const Delivery = () => {
                     <div className="text-3xl">🚛</div>
                     <div>
                         <h3 className="font-bold text-lg">Livrare gratuită</h3>
-                        <p className="text-sm">Livrare gratuită de flori în orice localitățe din România.</p>
+                        <p className="text-sm">Livrare gratuită de flori în orice localitate din Judetul Neamt.</p>
                     </div>
                 </div>
 
@@ -106,15 +108,15 @@ export const Delivery = () => {
                 <div className="flex items-center space-x-4">
                     <div className="text-3xl">⏳</div>
                     <div>
-                        <h3 className="font-bold text-lg">Livrare Express In Judetul Neamt</h3>
-                        <p className="text-sm">Livrăm florile comandate online în maximum 2 ore, oriunde în Judetul Neamt.</p>
+                        <h3 className="font-bold text-lg">Livrare Express In Tamaseni</h3>
+                        <p className="text-sm">Livrăm florile comandate online în maximum 2 ore, oriunde în comuna Tamaseni.</p>
                     </div>
                 </div>
 
             </div>
             <div className="mt-10 text-center">
-                <button className="bg-white text-2xl color-theme dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2">
-                Flori deosebite pentru momente de neuitat! Livrare rapida in Romania si garantie 100% la orice comanda
+                <button className="bg-[#b756a64f] text-2xl text-shadow-xl rounded-md w-fit text-white px-4 py-3">
+                    Flori deosebite pentru momente de neuitat! Livrare rapida in Romania si garantie 100% la orice comanda
                 </button>
             </div>
         </div>
@@ -125,8 +127,8 @@ const NewOfers = () => {
   return (
     <div className='grid md:grid-cols-2 grid-cols-1 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40'>
         <div style={{ backgroundImage: "url('/dashbordflower.jpg')"}} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-lg text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
-            <h3 className="text-lg important font-semibold mt-2 max-w-[5rem] shadow-2xl m-auto bg-amber-100">Ofertă!</h3>
-            <p className="text-white">
+            <h3 className="text-lg important font-semibold mt-2 w-[100%] shadow-2xl m-auto bg-amber-100">Ofertă!</h3>
+            <p className="text-white shadow-5xl text-shadow-xl font-semibold">
                 Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru
                 cei dragi!
             </p>
@@ -138,8 +140,8 @@ const NewOfers = () => {
             </a>
         </div>
         <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-lg text-center transition-transform duration-300 ease-in-out hover:scale-110">
-            <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descopera ofertele saptamanii!</h3>
-            <p className="text-white">
+            <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descoperă ofertele saptamanii!</h3>
+            <p className="text-white shadow-5xl text-shadow-xl font-semibold">
              Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
             </p>
             <a

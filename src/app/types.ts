@@ -4,25 +4,29 @@ import { ProductProps } from "./admin/types";
 export interface ItemProps {
     id: string,
     title: string,
-    imageSrc: string,
-    price_category: {
+    info_category: {
         standard: {
             price: number;
+            imageSrc: string,
+            composition: ProductProps[],
         },
         premium: {
             price: number;
+            imageSrc: string,
+            composition: ProductProps[],
         },
         basic: {
             price: number;
+            imageSrc: string,
+            composition: ProductProps[],
         }
     },
     isPopular?: boolean,
     stockCode?: string,
     inStock?: boolean,
     description?: string,
-    composition?: ProductProps[],
     colors?: string,
-    category: string, 
+    category: string,
     promotion?: boolean
     newest?: boolean,
 }
@@ -32,6 +36,7 @@ export interface CartItem {
     title: string,
     price: number,
     category: string,
+    composition: { id: string, quantity: number }[],
     quantity: number,
     image: string,
 }
@@ -63,13 +68,13 @@ export interface User {
 }
 
 export interface BlogPostProps {
-  id: string;
-  title: string;
-  date: string;
-  description: string;
-  image: string | null;
-  likes: number;
-  dislikes: number;
-  likedBy: string[]; 
-  dislikedBy: string[];
+    id: string;
+    title: string;
+    date: string;
+    description: string;
+    image: string | null;
+    likes: number;
+    dislikes: number;
+    likedBy: string[];
+    dislikedBy: string[];
 }

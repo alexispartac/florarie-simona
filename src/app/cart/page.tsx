@@ -1,18 +1,24 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Group, Text, Divider, Loader } from '@mantine/core';
+import { Button, Group, Text, Divider, Loader, Modal } from '@mantine/core';
 import { RootState, removeItem, setCart, updateQuantity } from './components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useUser } from '../components/ContextUser';
+import axios from 'axios';
+
+const URL_CHECK_COMPOSITION = '/api/check-composition';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const router = useRouter();
   const { user } = useUser();
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [isChecking, setIsChecking] = useState(false); // Loader pentru verificarea stocului
+  const [modalOpened, setModalOpened] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -38,6 +44,44 @@ const Cart = () => {
     dispatch(removeItem(id));
   };
 
+  const handleFinalizeOrder = async () => {
+    setIsChecking(true); // Activează loader-ul
+    try {
+      // verificare pentru fiecare produs din coș
+      for (const item of cartItems) {
+        const response = await axios.post(URL_CHECK_COMPOSITION, {
+          composition: item.composition,
+          quantity: item.quantity,
+        });
+
+        if (response.status === 200) {
+          continue;
+        }
+
+        if (response.status === 201) {
+          const insufficientItems = response.data.insufficientItems;
+          const messages = insufficientItems.map(
+            (i: { title: string; required: number; available: number }) =>
+              `${i.title} - Necesită ${i.required}, dar doar ${i.available} sunt disponibile.`
+          ).join('\n');
+          setModalMessage(messages);
+          setModalOpened(true);
+          setIsChecking(false);
+          return; 
+        }
+      }
+      setIsChecking(false); 
+      if (!modalOpened) {
+        router.push('/checkout');
+      }
+    } catch (error) {
+      console.log('Eroare la verificarea cantității:', error);
+      setModalMessage('A apărut o eroare. Te rugăm să încerci din nou.');
+      setIsChecking(false);
+      setModalOpened(true);
+    } 
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -45,10 +89,6 @@ const Cart = () => {
       </div>
     );
   }
-
-  const handleCheckout = () => {
-    router.push('/checkout');
-  };
 
   return (
     <div className="px-4 md:px-8">
@@ -128,17 +168,19 @@ const Cart = () => {
               <Text className="text-lg md:text-xl font-bold mb-4 md:mb-0">
                 Total: {totalPrice} RON
               </Text>
-              { !user.isAuthenticated && <Text c='red' className="mb-4 md:mb-0 md:ml-4 text-center">
-                Pentru a finaliza comanda, te rugăm să te autentifici.
-              </Text>}
-              <Button 
-                color={'#b756a64f'} 
-                size="lg" 
+              {!user.isAuthenticated && (
+                <Text c="red" className="mb-4 md:mb-0 md:ml-4 text-center">
+                  Pentru a finaliza comanda, te rugăm să te autentifici.
+                </Text>
+              )}
+              <Button
+                color={'#b756a64f'}
+                size="lg"
                 className="w-full md:w-auto"
-                onClick={() => handleCheckout()}
-                disabled={!user.isAuthenticated}
-                >
-                Finalizează comanda
+                onClick={handleFinalizeOrder}
+                disabled={!user.isAuthenticated || isChecking}
+              >
+                {isChecking ? <Loader color="white" size="sm" /> : 'Finalizează comanda'}
               </Button>
             </>
           ) : (
@@ -154,6 +196,14 @@ const Cart = () => {
           )}
         </div>
       </div>
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Verificare cantitate insuficientă"
+        centered
+      >
+        <p>{modalMessage}</p>
+      </Modal>
     </div>
   );
 };

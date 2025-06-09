@@ -7,30 +7,25 @@ import { ProductProps } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-// adaugare optiune de a adauga si crea categoria
-const categories = [
-  'Trandafiri', 'Decoratiuni', 'Ghivece', 'Ingrijire', 'Plante de apartament', 'Plante de gradina',
-  'Plante de interior', 'Plante de exterior', 'Plante de birou', 'Plante de balcon', 'Plante de terasa',
-  'Plante de gradina verticala', 'Plante de acoperis', 'Plante de perete verde', 'Plante de perete vertical',
-  'Plante de perete decorativ', 'Plante de perete cu flori', 'Plante de perete cu frunze',
-  'Plante de perete cu ierburi', 'Plante de perete cu arbuști'
-];
 
 const URL_SIMPLE_PRODUCTS = '/api/products';
+const URL_SIMPLE_CATEGORIES = '/api/simple-products-categories';
+
 const SimpleProductRow = ({
   product,
   onDelete,
-  onUpdate, // adaugă această prop
+  onUpdate,
+  categories,
 }: {
   product: ProductProps;
   onDelete: (id: string) => void;
-  onUpdate: (updatedProduct: ProductProps) => void; // nou
+  onUpdate: (updatedProduct: ProductProps) => void;
+  categories: string[];
 }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editProduct, setEditProduct] = useState<ProductProps>({ ...product });
 
-  // Actualizează local valorile din formular
   const handleChange = (field: keyof ProductProps, value: unknown) => {
     setEditProduct((prev) => ({
       ...prev,
@@ -38,17 +33,17 @@ const SimpleProductRow = ({
     }));
   };
 
-  // Salvează modificările și notifică lista
   const handleSave = () => {
-    axios.put(URL_SIMPLE_PRODUCTS, editProduct)
-      .then(response => {
+    axios
+      .put(URL_SIMPLE_PRODUCTS, editProduct)
+      .then((response) => {
         if (response.status === 200) {
-          onUpdate(editProduct); // notifică lista cu produsul actualizat
+          onUpdate(editProduct);
         }
         close();
       })
-      .catch(error => {
-        console.error('Error updating product:', error);
+      .catch((error) => {
+        console.error("Error updating product:", error);
       });
   };
 
@@ -114,7 +109,6 @@ const SimpleProductRow = ({
           </Group>
         </form>
       </Modal>
-      {/* Modal de confirmare ștergere */}
       <Modal
         opened={confirmDelete}
         onClose={() => setConfirmDelete(false)}
@@ -123,7 +117,9 @@ const SimpleProductRow = ({
         withCloseButton={false}
       >
         <div className="flex flex-col gap-4">
-          <p>Ești sigur că vrei să ștergi produsul <b>{product.title}</b>?</p>
+          <p>
+            Ești sigur că vrei să ștergi produsul <b>{product.title}</b>?
+          </p>
           <Group justify="flex-end">
             <Button variant="default" onClick={() => setConfirmDelete(false)}>
               Anulează
@@ -134,7 +130,8 @@ const SimpleProductRow = ({
           </Group>
         </div>
       </Modal>
-      <div className="flex flex-row justify-between gap-2">
+      {/* Design pentru desktop */}
+      <div className="hidden sm:flex flex-row justify-between gap-2">
         <p className="w-1/6">{product.stockCode}</p>
         <h2 className="w-1/6">{product.title}</h2>
         <p className="w-1/6">{product.inStock ? "Da" : "Nu"}</p>
@@ -160,6 +157,30 @@ const SimpleProductRow = ({
           </Button>
         </div>
       </div>
+      {/* Design pentru telefon */}
+      <div className="flex flex-col sm:hidden gap-2 p-2 border rounded-md shadow-md">
+        <h2 className="text-lg font-bold">{product.title}</h2>
+        <p className="text-sm">Cantitate: {product.quantity}</p>
+        <p className="text-sm">Preț: {product.price} RON</p>
+        <div className="flex justify-between gap-2">
+          <Button
+            variant="outline"
+            color="blue"
+            className="bg-blue-500 text-white hover:bg-blue-600 flex-1"
+            onClick={open}
+          >
+            EDITARE
+          </Button>
+          <Button
+            variant="outline"
+            color="red"
+            className="bg-red-500 text-white hover:bg-red-600 flex-1"
+            onClick={() => setConfirmDelete(true)}
+          >
+            Șterge
+          </Button>
+        </div>
+      </div>
     </>
   );
 };
@@ -169,7 +190,7 @@ const ListOfProducts = (
     { products: ProductProps[]; categories: string[] }
 ) => {
   const [opened, { open, close }] = useDisclosure(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(categories[0]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [allProducts, setAllProducts] = useState<ProductProps[]>(products);
   const [newProduct, setNewProduct] = useState<ProductProps>({
     id: "",
@@ -300,7 +321,7 @@ const ListOfProducts = (
       </div>
       <Select
         label="Alege o categorie"
-        data={categories}
+        data={[{ value: "", label: 'Toate categoriile' }, ...categories.map(cat => ({ value: cat, label: cat }))]}
         value={selectedCategory}
         onChange={setSelectedCategory}
         allowDeselect={false}
@@ -309,7 +330,7 @@ const ListOfProducts = (
         }}
       />
       <div className="flex flex-col gap-2 my-2">
-        <div className="flex flex-row justify-between gap-2">
+        <div className="hidden sm:flex flex-row justify-between gap-2">
           <p className="w-1/6 text-lg font-bold">COD STOC</p>
           <p className="w-1/6 text-lg font-bold">DENUMIRE</p>
           <p className="w-1/6 text-lg font-bold">IN STOC</p>
@@ -321,13 +342,14 @@ const ListOfProducts = (
         <div className="h-1 border-b border-neutral-200 dark:border-neutral-700" />
         <div className="flex flex-col gap-2 overflow-y-auto h-[calc(100vh-400px)]">
           {allProducts
-            .filter(product => product.category === selectedCategory)
+            .filter(product => !selectedCategory || product.category === selectedCategory)
             .map((product) => (
               <div key={product.id} className="flex flex-col gap-2">
                 <SimpleProductRow
                   product={product}
                   onDelete={handleDeleteProduct}
-                  onUpdate={handleUpdateProduct} // adaugă prop-ul aici
+                  onUpdate={handleUpdateProduct}
+                  categories={categories}
                 />
               </div>
             ))}
@@ -337,8 +359,129 @@ const ListOfProducts = (
   );
 };
 
+const CategoryModal = ({
+  opened,
+  onClose,
+  onAddCategory,
+}: {
+  opened: boolean;
+  onClose: () => void;
+  onAddCategory: (category: string) => void;
+}) => {
+  const [categoryName, setCategoryName] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!categoryName.trim()) {
+      alert('Numele categoriei nu poate fi gol!');
+      return;
+    }
+    onAddCategory(categoryName.trim());
+    setCategoryName('');
+    onClose();
+  };
+
+  return (
+    <Modal opened={opened} onClose={onClose} title="Adaugă categorie nouă" centered>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <TextInput
+          label="Nume categorie"
+          placeholder="Ex: Trandafiri"
+          value={categoryName}
+          onChange={(e) => setCategoryName(e.currentTarget.value)}
+          required
+        />
+        <Group justify="flex-end">
+          <Button variant="default" onClick={onClose}>
+            Anulează
+          </Button>
+          <Button type="submit" color="blue">
+            Adaugă
+          </Button>
+        </Group>
+      </form>
+    </Modal>
+  );
+};
+
+const DeleteCategoryModal = ({
+  opened,
+  onClose,
+  categories,
+  onDeleteCategory,
+}: {
+  opened: boolean;
+  onClose: () => void;
+  categories: string[];
+  onDeleteCategory: (category: string) => void;
+}) => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const handleDelete = () => {
+    if (!selectedCategory) {
+      alert('Te rugăm să selectezi o categorie!');
+      return;
+    }
+    onDeleteCategory(selectedCategory);
+    setSelectedCategory(null);
+    onClose();
+  };
+
+  return (
+    <Modal opened={opened} onClose={onClose} title="Șterge categorie" centered>
+      <div className="flex flex-col gap-4">
+        <Select
+          label="Alege o categorie"
+          data={categories}
+          value={selectedCategory}
+          onChange={setSelectedCategory}
+          placeholder="Selectează o categorie"
+          searchable
+        />
+        <Group justify="flex-end">
+          <Button variant="default" onClick={onClose}>
+            Anulează
+          </Button>
+          <Button color="red" onClick={handleDelete}>
+            Șterge
+          </Button>
+        </Group>
+      </div>
+    </Modal>
+  );
+};
+
 const Page = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  const [categoryModalOpen, { open: openCategoryModal, close: closeCategoryModal }] = useDisclosure(false);
+  const [deleteCategoryModalOpen, { open: openDeleteCategoryModal, close: closeDeleteCategoryModal }] =
+    useDisclosure(false);
+
+  const handleAddCategory = (category: string) => {
+    setCategories((prev) => [...prev, category]);
+    axios.post(URL_SIMPLE_CATEGORIES, { name: category })
+      .then(() => {
+        alert(`Categoria "${category}" a fost adăugată cu succes!`);
+      })
+      .catch((error) => {
+        console.error('Error adding category:', error);
+        alert('A apărut o eroare la adăugarea categoriei. Te rugăm să încerci din nou.');
+      });
+  };
+
+  const handleDeleteCategory = (category: string) => {
+    setCategories((prev) => prev.filter((cat) => cat !== category));
+    axios.delete(URL_SIMPLE_CATEGORIES, { data: { name: category } })
+      .then(() => {
+        alert(`Categoria "${category}" a fost ștearsă cu succes!`);
+      })
+      .catch((error) => {
+        console.error('Error deleting category:', error);
+        alert('A apărut o eroare la ștergerea categoriei. Te rugăm să încerci din nou.');
+      });
+  };
 
   function fetchProducts() {
     axios.get(URL_SIMPLE_PRODUCTS).then((response) => {
@@ -346,8 +489,15 @@ const Page = () => {
     });
   }
 
+  function fetchCategories() {
+    axios.get(URL_SIMPLE_CATEGORIES).then((response) => {
+      setCategories(response.data.map((cat: { name: string }) => cat.name));
+    });
+  }
+
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
   return (
@@ -361,6 +511,25 @@ const Page = () => {
               <h1>STOC SI PRODUSE SIMPLE</h1>
             </div>
           </div>
+          <div className="flex justify-start gap-4 mb-4">
+            <Button color="blue" onClick={openCategoryModal}>
+              Adaugă categorie
+            </Button>
+            <Button color="red" onClick={openDeleteCategoryModal}>
+              Șterge categorie
+            </Button>
+          </div>
+          <CategoryModal
+            opened={categoryModalOpen}
+            onClose={closeCategoryModal}
+            onAddCategory={handleAddCategory}
+          />
+          <DeleteCategoryModal
+            opened={deleteCategoryModalOpen}
+            onClose={closeDeleteCategoryModal}
+            categories={categories}
+            onDeleteCategory={handleDeleteCategory}
+          />
           <ListOfProducts products={products} categories={categories} />
         </div>
       </div>

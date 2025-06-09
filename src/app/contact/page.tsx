@@ -73,8 +73,8 @@ export default function Contact() {
             <div className="h-screen flex items-center justify-center mb-80 md:mb-120">
                 <div className="isolate h-screen bg-white px-6 py-24 sm:py-32 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
-                        <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Contacteaza-ma</h2>
-                        <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repde posibil la mesajul tau.</p>
+                        <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Contacteaza-mă</h2>
+                        <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repde posibil la mesajul tău.</p>
                     </div>
                     <form 
                         onSubmit={formContact.onSubmit((value) => sendEmail(value))}

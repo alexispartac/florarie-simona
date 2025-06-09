@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { TextInput, Textarea, Button, Loader } from '@mantine/core';
+import { TextInput, Textarea, Loader } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconCheck, IconX } from '@tabler/icons-react';
 
@@ -110,11 +110,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
                         {...reviewForm.getInputProps('message')}
                     />
                     <br />
-                    <Button
-                        variant="fill"
-                        w={280}
-                        bg="#b756a64f"
+                    <button
                         type="submit"
+                        className="mt-6 px-4 py-2 bg-[#b756a64f] text-white rounded-md shadow-md hover:bg-[#b756a56f] transition"
                         disabled={loading}
                     >
                         {loading ? (
@@ -126,7 +124,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
                         ) : (
                             'TRIMITE RECENZIE'
                         )}
-                    </Button>
+                    </button>
                 </div>
             </form>
         </div>

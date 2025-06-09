@@ -30,10 +30,10 @@ export const Item = ({ item }: { item: ItemProps }) => {
   const itemForCart: CartItem = {
     id: item.id,
     title: item.title,
-    price: item.price_category.standard.price,
+    price: item.info_category.standard.price,
     category: "standard",
     quantity: 1,
-    image: item.imageSrc,
+    image: item.info_category.standard.imageSrc || '',
   };
 
   const handleAddToCart = () => {
@@ -48,9 +48,9 @@ export const Item = ({ item }: { item: ItemProps }) => {
   return (
     <div className="relative flex flex-col shadow-md p-4">
       <Link href={`/product/${item.id}`}>
-        {item.imageSrc && (
+        {item.info_category.standard.imageSrc && (
           <img
-            src={item.imageSrc}
+            src={item.info_category.standard.imageSrc}
             alt="flower"
             className="h-[130px] w-[180px] md:h-[200px]"
           />
@@ -66,16 +66,16 @@ export const Item = ({ item }: { item: ItemProps }) => {
         {item.title}
       </p>
       <p className="flex text-center text-xs pb-[10px] text-[12px] font-bold md:text-[18px]">
-        {item.price_category.standard.price} RON
+        {item.info_category.standard.price} RON
       </p>
       <Button
         w={'100%'}
         size="compact-md"
-        bg={isInCart ? '#b756a63f' : '#b756a64f'} 
-        disabled={isOutOfStock || isInCart} 
+        bg={isInCart ? '#b756a63f' : '#b756a64f'}
+        disabled={isOutOfStock || isInCart}
         onClick={handleAddToCart}
       >
-      {isOutOfStock ? 'Indisponibil' : isInCart ? 'În coș' : 'Adaugă'}
+        {isOutOfStock ? 'Indisponibil' : isInCart ? 'În coș' : 'Adaugă'}
       </Button>
     </div>
   );

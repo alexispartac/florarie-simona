@@ -1,13 +1,14 @@
 'use client';
-import { IconBrandFacebook, IconBrandInstagram, IconBrandTwitter } from "@tabler/icons-react";
+import { IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
+import { IconCheck, IconX } from "@tabler/icons-react";
+import { Notification } from "@mantine/core";
 import { motion } from "motion/react";
 import { useState } from "react";
+import Link from "next/link";
 import axios from "axios";
-import { Notification } from "@mantine/core";
-import { IconCheck, IconX } from "@tabler/icons-react";
-
 
 const URL_NEWSLETTER = '/api/newsletter';
+
 export const Footer = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
@@ -69,7 +70,6 @@ export const Footer = () => {
                     </div>
                 </div>
 
-                {/* Logo și descriere */}
                 <motion.div
                     className="text-center md:text-left"
                     initial={{ opacity: 0, y: 20 }}
@@ -78,6 +78,9 @@ export const Footer = () => {
                 >
                     <h2 className="text-2xl font-bold">Buchetul Simonei</h2>
                     <p className="text-sm mt-2">Povești scrise în petale, emoții transmise prin flori.</p>
+                    <p className="text-sm mt-2">Adresa: Str. Unirii 240, Tămșeni, Neamt</p>
+                    <p className="text-sm mt-2">Program: Luni–Sâmbătă, 09:00–20:00 </p>
+                    <p className="text-sm mt-2">Duminica, 10:00-18:00 </p>
                 </motion.div>
 
                 {/* Linkuri principale */}
@@ -87,9 +90,9 @@ export const Footer = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
                 >
-                    <a href="#" className="hover:text-gray-300">Acasă</a>
-                    <a href="#" className="hover:text-gray-300">Despre Noi</a>
-                    <a href="#" className="hover:text-gray-300">Contact</a>
+                    <Link href="/" className="hover:text-gray-300">Acasă</Link>
+                    <Link href="/blog" className="hover:text-gray-300">Blog</Link>
+                    <Link href="/contact" className="hover:text-gray-300">Contact</Link>
                 </motion.div>
 
                 {/* Social media */}
@@ -99,10 +102,11 @@ export const Footer = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.8, ease: "easeInOut" }}
                 >
-                    <a href="#" className="hover:text-gray-300"><IconBrandFacebook /></a>
-                    <a href="#" className="hover:text-gray-300"><IconBrandInstagram /></a>
-                    <a href="#" className="hover:text-gray-300"><IconBrandTwitter /></a>
+                    <Link href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" className="hover:text-gray-300"><IconBrandFacebook /></Link>
+                    <Link href="https://www.instagram.com/poeziaflorilor/" className="hover:text-gray-300"><IconBrandInstagram /></Link>
                 </motion.div>
+
+                
 
             </div>
 
@@ -122,10 +126,9 @@ export const Footer = () => {
 
             {/* Linkuri suplimentare */}
             <div className="mt-8 text-center text-sm">
-                <a href="#" className="hover:text-gray-300 mx-2">Termeni & Condiții</a>
-                <a href="#" className="hover:text-gray-300 mx-2">Politica de cookies</a>
-                <a href="#" className="hover:text-gray-300 mx-2">GDPR</a>
-                <a href="#" className="hover:text-gray-300 mx-2">Blog</a>
+                <Link href="/terms&conditions" className="hover:text-gray-300 mx-2">Termeni&Condiții</Link>
+                <Link href="https://www.cookiebot.com/" className="hover:text-gray-300 mx-2">Politica de cookies</Link>
+                <Link href="https://gdpr.eu/" className="hover:text-gray-300 mx-2">GDPR</Link>
             </div>
 
             {/* Copyright */}

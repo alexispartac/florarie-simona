@@ -1,11 +1,11 @@
 'use client';
+import { Modal, Button, TextInput, NumberInput, Checkbox, Group, Select, Textarea, MultiSelect } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { SidebarDemo } from '../components/SideBar';
-import { Modal, Button, TextInput, NumberInput, Checkbox, Group, Select, Textarea, MultiSelect } from '@mantine/core';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { v4 as uuidv4 } from 'uuid';
 import type { ComposedProductProps, ProductProps } from '../types';
 import { useDisclosure } from '@mantine/hooks';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
 import axios from 'axios';
 
 const URL_SIMPLE_PRODUCTS = '/api/products';
@@ -57,25 +57,25 @@ const ComposedProductRow = ({
                     </Group>
                 </div>
             </Modal>
-            <div className="flex flex-row justify-between gap-2 items-center text-center border-b py-2">
-                <div className="w-1/10">
-                    {product.imageSrc ? (
-                        <img src={product.imageSrc} alt={product.title} className="w-inherit h-16 object-cover rounded" />
+            <div className="flex flex-col sm:flex-row justify-between gap-2 items-center text-center border-b py-2">
+                <div className="w-full sm:w-1/10">
+                    {product.info_category.standard.imageSrc ? (
+                        <img src={product.info_category.standard.imageSrc} alt={product.title} className="w-full h-30 md:h-16 object-cover rounded" />
                     ) : (
                         <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">Fără imagine</div>
                     )}
                 </div>
-                <h2 className="w-1/10">{product.title}</h2>
-                <p className="w-1/10">{product.stockCode}</p>
-                <p className="w-1/10">{product.inStock ? "Da" : "Nu"}</p>
-                <p className="w-1/10">{product.category}</p>
-                <p className="w-1/10">{product.price_category.premium.price} RON</p>
-                <p className="w-1/10">{product.price_category.standard.price} RON</p>
-                <p className="w-1/10">{product.price_category.basic.price} RON</p>
-                <p className="w-1/10">{product.isPopular ? "⭐" : ""}</p>
-                <p className="w-1/10">{product.promotion ? "⭐" : ""}</p>
-                <p className="w-1/10">{product.newest ? "⭐" : ""}</p>
-                <div className="w-1/10 flex gap-2">
+                <h2 className="w-full sm:w-1/10 text-sm sm:text-base">{product.title}</h2>
+                <p className="w-full sm:w-1/10 text-sm">{product.stockCode}</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.inStock ? "Da" : "Nu"}</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.category}</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.info_category.premium.price} RON</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.info_category.standard.price} RON</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.info_category.basic.price} RON</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.isPopular ? "⭐" : ""}</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.promotion ? "⭐" : ""}</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.newest ? "⭐" : ""}</p>
+                <div className="w-full sm:w-1/10 flex gap-2 justify-center">
                     <Button color="blue" variant="outline" onClick={() => onEdit(product)}>
                         <IconEdit size={16} />
                     </Button>
@@ -112,33 +112,23 @@ const EditComposedProductModal = ({
     if (!editProduct) return null;
 
     const handleChange = (field: keyof ComposedProductProps, value: unknown) => {
-        setEditProduct((prev) => prev ? { ...prev, [field]: value } : prev);
-    };
-
-    const handlePriceCategoryChange = (cat: 'standard' | 'premium' | 'basic', value: number) => {
-        setEditProduct((prev) =>
-            prev
-                ? {
-                    ...prev,
-                    price_category: {
-                        ...prev.price_category,
-                        [cat]: { price: value }
+        if (field === 'info_category') {
+            setEditProduct((prev) =>
+                prev
+                    ? {
+                        ...prev,
+                        info_category: {
+                            ...prev.info_category,
+                            ...(value as Partial<typeof prev.info_category>),
+                        },
                     }
-                }
-                : prev
-        );
-    };
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                handleChange('imageSrc', ev.target?.result as string);
-            };
-            reader.readAsDataURL(file);
+                    : prev
+            );
+        } else {
+            setEditProduct((prev) => (prev ? { ...prev, [field]: value } : prev));
         }
     };
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -180,19 +170,6 @@ const EditComposedProductModal = ({
                     value={editProduct.description}
                     onChange={e => handleChange('description', e.currentTarget.value)}
                 />
-                <MultiSelect
-                    label="Compoziție"
-                    data={simpleProducts.map(p => ({ value: p.id, label: p.title }))}
-                    value={editProduct.composition.map((p: ProductProps) => p.id)}
-                    onChange={ids => {
-                        // Caută produsele simple selectate după id și setează ca array de ProductProps
-                        const selected = simpleProducts.filter(p => ids.includes(p.id));
-                        handleChange('composition', selected);
-                    }}
-                    searchable
-                    nothingFoundMessage="Niciun produs găsit"
-                    placeholder="Alege produsele componente"
-                />
                 <TextInput
                     label="Culori"
                     value={editProduct.colors}
@@ -214,57 +191,369 @@ const EditComposedProductModal = ({
                     onChange={e => handleChange('newest', e.currentTarget.checked)}
                 />
                 <div>
-                    <label className="block mb-1 font-medium">Imagine produs</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
-                    />
-                    {editProduct.imageSrc && (
-                        <img
-                            src={editProduct.imageSrc}
-                            alt="Preview"
-                            className="mt-2 w-32 h-32 object-cover rounded border"
-                        />
-                    )}
-                    {editProduct.imageSrc && (
-                        <Button
-                            variant="outline"
-                            color="red"
-                            onClick={() => handleChange('imageSrc', '')}
-                            className="mt-2"
-                        >
-                            Șterge imaginea
-                        </Button>
-                    )}
+                    <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
+                        <legend className="text-lg font-medium px-2">Categorie Standard</legend>
+                        {/* Imagine pentru categoria Standard */}
+                        <div className="mb-4">
+                            <label className="block mb-1 font-medium">Imagine</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (ev) => {
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                standard: {
+                                                    ...editProduct.info_category.standard,
+                                                    imageSrc: ev.target?.result as string,
+                                                },
+                                            });
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                                className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
+                            />
+                            {editProduct.info_category.standard.imageSrc && (
+                                <div className="mt-2">
+                                    <img
+                                        src={editProduct.info_category.standard.imageSrc}
+                                        alt="Preview Standard"
+                                        className="w-32 h-32 object-cover rounded border"
+                                    />
+                                    <Button
+                                        variant="outline"
+                                        color="red"
+                                        onClick={() =>
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                standard: {
+                                                    ...editProduct.info_category.standard,
+                                                    imageSrc: '',
+                                                },
+                                            })
+                                        }
+                                        className="mt-2"
+                                    >
+                                        Șterge imaginea
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Compoziție pentru categoria Standard */}
+                        <div className="mb-4">
+                            <label className="block mb-1 font-medium">Compoziție</label>
+                            {editProduct.info_category.standard.composition.map((item, idx) => (
+                                <div key={item.id} className="flex items-center gap-4 mb-2">
+                                    <p className="flex-1">{item.title}</p>
+                                    <NumberInput
+                                        label="Cantitate"
+                                        value={item.quantity}
+                                        onChange={(value) => {
+                                            const updatedComposition = [...editProduct.info_category.standard.composition];
+                                            updatedComposition[idx].quantity = Number(value) ?? 0;
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                standard: {
+                                                    ...editProduct.info_category.standard,
+                                                    composition: updatedComposition,
+                                                },
+                                            });
+                                        }}
+                                        min={0}
+                                        step={1}
+                                    />
+                                </div>
+                            ))}
+                            <MultiSelect
+                                label="Adaugă produse componente"
+                                data={simpleProducts.map((p) => ({ value: p.id, label: p.title }))}
+                                value={editProduct.info_category.standard.composition.map((p) => p.id)}
+                                onChange={(ids) => {
+                                    const selected = simpleProducts
+                                        .filter((p) => ids.includes(p.id))
+                                        .map((p) => ({ ...p, quantity: 1 })); // Setăm cantitatea implicită la 1
+                                    handleChange('info_category', {
+                                        ...editProduct.info_category,
+                                        standard: {
+                                            ...editProduct.info_category.standard,
+                                            composition: selected,
+                                        },
+                                    });
+                                }}
+                                searchable
+                                nothingFoundMessage="Niciun produs găsit"
+                                placeholder="Alege produsele componente"
+                            />
+                        </div>
+
+                        {/* Preț pentru categoria Standard */}
+                        <div className="mb-4">
+                            <NumberInput
+                                label="Preț"
+                                value={editProduct.info_category.standard.price}
+                                onChange={(value) =>
+                                    handleChange('info_category', {
+                                        ...editProduct.info_category,
+                                        standard: {
+                                            ...editProduct.info_category.standard,
+                                            price: value ?? 0,
+                                        },
+                                    })
+                                }
+                                required
+                                min={0}
+                                step={1}
+                            />
+                        </div>
+                    </fieldset>
+
+                    <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
+                        <legend className="text-lg font-medium px-2">Categorie Premium</legend>
+                        {/* Imagine pentru categoria Premium */}
+                        <div className="mb-4">
+                            <label className="block mb-1 font-medium">Imagine</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (ev) => {
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                premium: {
+                                                    ...editProduct.info_category.premium,
+                                                    imageSrc: ev.target?.result as string,
+                                                },
+                                            });
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                                className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
+                            />
+                            {editProduct.info_category.premium.imageSrc && (
+                                <div className="mt-2">
+                                    <img
+                                        src={editProduct.info_category.premium.imageSrc}
+                                        alt="Preview Premium"
+                                        className="w-32 h-32 object-cover rounded border"
+                                    />
+                                    <Button
+                                        variant="outline"
+                                        color="red"
+                                        onClick={() =>
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                premium: {
+                                                    ...editProduct.info_category.premium,
+                                                    imageSrc: '',
+                                                },
+                                            })
+                                        }
+                                        className="mt-2"
+                                    >
+                                        Șterge imaginea
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Compoziție pentru categoria Premium */}
+                        <div className="mb-4">
+                            <label className="block mb-1 font-medium">Compoziție</label>
+                            {editProduct.info_category.premium.composition.map((item, idx) => (
+                                <div key={item.id} className="flex items-center gap-4 mb-2">
+                                    <p className="flex-1">{item.title}</p>
+                                    <NumberInput
+                                        label="Cantitate"
+                                        value={item.quantity}
+                                        onChange={(value) => {
+                                            const updatedComposition = [...editProduct.info_category.premium.composition];
+                                            updatedComposition[idx].quantity = Number(value) ?? 0;
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                premium: {
+                                                    ...editProduct.info_category.premium,
+                                                    composition: updatedComposition,
+                                                },
+                                            });
+                                        }}
+                                        min={0}
+                                        step={1}
+                                    />
+                                </div>
+                            ))}
+                            <MultiSelect
+                                label="Adaugă produse componente"
+                                data={simpleProducts.map((p) => ({ value: p.id, label: p.title }))}
+                                value={editProduct.info_category.premium.composition.map((p) => p.id)}
+                                onChange={(ids) => {
+                                    const selected = simpleProducts
+                                        .filter((p) => ids.includes(p.id))
+                                        .map((p) => ({ ...p, quantity: 1 })); // Setăm cantitatea implicită la 1
+                                    handleChange('info_category', {
+                                        ...editProduct.info_category,
+                                        premium: {
+                                            ...editProduct.info_category.premium,
+                                            composition: selected,
+                                        },
+                                    });
+                                }}
+                                searchable
+                                nothingFoundMessage="Niciun produs găsit"
+                                placeholder="Alege produsele componente"
+                            />
+                        </div>
+
+                        {/* Preț pentru categoria Premium */}
+                        <div className="mb-4">
+                            <NumberInput
+                                label="Preț"
+                                value={editProduct.info_category.premium.price}
+                                onChange={(value) =>
+                                    handleChange('info_category', {
+                                        ...editProduct.info_category,
+                                        premium: {
+                                            ...editProduct.info_category.premium,
+                                            price: value ?? 0,
+                                        },
+                                    })
+                                }
+                                required
+                                min={0}
+                                step={1}
+                            />
+                        </div>
+                    </fieldset>
+
+                    <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
+                        <legend className="text-lg font-medium px-2">Categorie Basic</legend>
+                        {/* Imagine pentru categoria Basic */}
+                        <div className="mb-4">
+                            <label className="block mb-1 font-medium">Imagine</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (ev) => {
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                basic: {
+                                                    ...editProduct.info_category.basic,
+                                                    imageSrc: ev.target?.result as string,
+                                                },
+                                            });
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                                className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
+                            />
+                            {editProduct.info_category.basic.imageSrc && (
+                                <div className="mt-2">
+                                    <img
+                                        src={editProduct.info_category.basic.imageSrc}
+                                        alt="Preview Basic"
+                                        className="w-32 h-32 object-cover rounded border"
+                                    />
+                                    <Button
+                                        variant="outline"
+                                        color="red"
+                                        onClick={() =>
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                basic: {
+                                                    ...editProduct.info_category.basic,
+                                                    imageSrc: '',
+                                                },
+                                            })
+                                        }
+                                        className="mt-2"
+                                    >
+                                        Șterge imaginea
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Compoziție pentru categoria Basic */}
+                        <div className="mb-4">
+                            <label className="block mb-1 font-medium">Compoziție</label>
+                            {editProduct.info_category.basic.composition.map((item, idx) => (
+                                <div key={item.id} className="flex items-center gap-4 mb-2">
+                                    <p className="flex-1">{item.title}</p>
+                                    <NumberInput
+                                        label="Cantitate"
+                                        value={item.quantity}
+                                        onChange={(value) => {
+                                            const updatedComposition = [...editProduct.info_category.basic.composition];
+                                            updatedComposition[idx].quantity = Number(value) ?? 0;
+                                            handleChange('info_category', {
+                                                ...editProduct.info_category,
+                                                basic: {
+                                                    ...editProduct.info_category.basic,
+                                                    composition: updatedComposition,
+                                                },
+                                            });
+                                        }}
+                                        min={0}
+                                        step={1}
+                                    />
+                                </div>
+                            ))}
+                            <MultiSelect
+                                label="Adaugă produse componente"
+                                data={simpleProducts.map((p) => ({ value: p.id, label: p.title }))}
+                                value={editProduct.info_category.basic.composition.map((p) => p.id)}
+                                onChange={(ids) => {
+                                    const selected = simpleProducts
+                                        .filter((p) => ids.includes(p.id))
+                                        .map((p) => ({ ...p, quantity: 1 })); // Setăm cantitatea implicită la 1
+                                    handleChange('info_category', {
+                                        ...editProduct.info_category,
+                                        basic: {
+                                            ...editProduct.info_category.basic,
+                                            composition: selected,
+                                        },
+                                    });
+                                }}
+                                searchable
+                                nothingFoundMessage="Niciun produs găsit"
+                                placeholder="Alege produsele componente"
+                            />
+                        </div>
+
+                        {/* Preț pentru categoria Basic */}
+                        <div className="mb-4">
+                            <NumberInput
+                                label="Preț"
+                                value={editProduct.info_category.basic.price}
+                                onChange={(value) =>
+                                    handleChange('info_category', {
+                                        ...editProduct.info_category,
+                                        basic: {
+                                            ...editProduct.info_category.basic,
+                                            price: value ?? 0,
+                                        },
+                                    })
+                                }
+                                required
+                                min={0}
+                                step={1}
+                            />
+                        </div>
+                    </fieldset>
                 </div>
-                <Group>
-                    <NumberInput
-                        label="Preț standard"
-                        value={editProduct.price_category.standard.price}
-                        onChange={value => handlePriceCategoryChange('standard', typeof value === 'number' ? value : Number(value) || 0)}
-                        required
-                        min={0}
-                        step={1}
-                    />
-                    <NumberInput
-                        label="Preț premium"
-                        value={editProduct.price_category.premium.price}
-                        onChange={value => handlePriceCategoryChange('premium', typeof value === 'number' ? value : Number(value) || 0)}
-                        required
-                        min={0}
-                        step={1}
-                    />
-                    <NumberInput
-                        label="Preț basic"
-                        value={editProduct.price_category.basic.price}
-                        onChange={value => handlePriceCategoryChange('basic', typeof value === 'number' ? value : Number(value) || 0)}
-                        required
-                        min={0}
-                        step={1}
-                    />
-                </Group>
                 <Group justify="flex-end">
                     <Button variant="default" onClick={onClose}>Anulează</Button>
                     <Button type="submit" color="blue">Salvează</Button>
@@ -289,17 +578,15 @@ const ListOfProducts = ({
     const [newProduct, setNewProduct] = useState<ComposedProductProps>({
         id: uuidv4(),
         title: '',
-        imageSrc: '',
-        price_category: {
-            standard: { price: 0 },
-            premium: { price: 0 },
-            basic: { price: 0 },
+        info_category: {
+            standard: { price: 0, imageSrc: '', composition: [] },
+            premium: { price: 0, imageSrc: '', composition: [] },
+            basic: { price: 0, imageSrc: '', composition: [] }
         },
         isPopular: false,
         stockCode: '',
         inStock: false,
         description: '',
-        composition: [],
         colors: '',
         category: composedCategories[0],
         promotion: false,
@@ -313,10 +600,20 @@ const ListOfProducts = ({
     }, [products]);
 
     const handleNewProductChange = (field: keyof ComposedProductProps, value: unknown) => {
-        setNewProduct((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
+        if (field === 'info_category') {
+            setNewProduct((prev) => ({
+                ...prev,
+                info_category: {
+                    ...prev.info_category,
+                    ...(value as Partial<typeof prev.info_category>),
+                },
+            }));
+        } else {
+            setNewProduct((prev) => ({
+                ...prev,
+                [field]: value,
+            }));
+        }
     };
 
     const handleAddProduct = async (e: React.FormEvent) => {
@@ -328,21 +625,19 @@ const ListOfProducts = ({
             setNewProduct({
                 id: uuidv4(),
                 title: '',
-                imageSrc: '',
-                price_category: {
-                    standard: { price: 0 },
-                    premium: { price: 0 },
-                    basic: { price: 0 },
+                info_category: {
+                    standard: { price: 0, imageSrc: '', composition: [] },
+                    premium: { price: 0, imageSrc: '', composition: [] },
+                    basic: { price: 0, imageSrc: '', composition: [] },
                 },
                 isPopular: false,
                 stockCode: '',
                 inStock: false,
                 description: '',
-                composition: [],
                 colors: '',
                 category: composedCategories[0],
                 promotion: false,
-                newest: false
+                newest: false,
             });
             close();
         } catch (error) {
@@ -424,18 +719,6 @@ const ListOfProducts = ({
                             value={newProduct.description}
                             onChange={e => handleNewProductChange('description', e.currentTarget.value)}
                         />
-                        <MultiSelect
-                            label="Compoziție"
-                            data={simpleProducts.map(p => ({ value: p.id, label: p.title }))}
-                            value={newProduct.composition.map((p: ProductProps) => p.id)}
-                            onChange={ids => {
-                                const selected = simpleProducts.filter(p => ids.includes(p.id));
-                                handleNewProductChange('composition', selected);
-                            }}
-                            searchable
-                            nothingFoundMessage="Niciun produs găsit"
-                            placeholder="Alege produsele componente"
-                        />
                         <TextInput
                             label="Culori"
                             value={newProduct.colors}
@@ -457,56 +740,368 @@ const ListOfProducts = ({
                             onChange={e => handleNewProductChange('newest', e.currentTarget.checked)}
                         />
                         <div>
-                            <label className="block mb-1 font-medium">Imagine produs</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = (ev) => {
-                                            handleNewProductChange('imageSrc', ev.target?.result as string);
-                                        };
-                                        reader.readAsDataURL(file);
-                                    }
-                                }}
-                                className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
-                            />
-                            {newProduct.imageSrc && (
-                                <img
-                                    src={newProduct.imageSrc}
-                                    alt="Preview"
-                                    className="mt-2 w-32 h-32 object-cover rounded border"
-                                />
-                            )}
+                            <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
+                                <legend className="text-lg font-medium px-2">Categorie Standard</legend>
+                                {/* Imagine pentru categoria Standard */}
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Imagine</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onload = (ev) => {
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        standard: {
+                                                            ...newProduct.info_category.standard,
+                                                            imageSrc: ev.target?.result as string,
+                                                        },
+                                                    });
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                        className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
+                                    />
+                                    {newProduct.info_category.standard.imageSrc && (
+                                        <div className="mt-2">
+                                            <img
+                                                src={newProduct.info_category.standard.imageSrc}
+                                                alt="Preview Standard"
+                                                className="w-32 h-32 object-cover rounded border"
+                                            />
+                                            <Button
+                                                variant="outline"
+                                                color="red"
+                                                onClick={() =>
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        standard: {
+                                                            ...newProduct.info_category.standard,
+                                                            imageSrc: '',
+                                                        },
+                                                    })
+                                                }
+                                                className="mt-2"
+                                            >
+                                                Șterge imaginea
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Compoziție pentru categoria Standard */}
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Compoziție</label>
+                                    {newProduct.info_category.standard.composition.map((item, idx) => (
+                                        <div key={item.id} className="flex items-center gap-4 mb-2">
+                                            <p className="flex-1">{item.title}</p>
+                                            <NumberInput
+                                                label="Cantitate"
+                                                value={item.quantity}
+                                                onChange={(value) => {
+                                                    const updatedComposition = [...newProduct.info_category.standard.composition];
+                                                    updatedComposition[idx].quantity = Number(value) ?? 0;
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        standard: {
+                                                            ...newProduct.info_category.standard,
+                                                            composition: updatedComposition,
+                                                        },
+                                                    });
+                                                }}
+                                                min={0}
+                                                step={1}
+                                            />
+                                        </div>
+                                    ))}
+                                    <MultiSelect
+                                        label="Adaugă produse componente"
+                                        data={simpleProducts.map((p) => ({ value: p.id, label: p.title }))}
+                                        value={newProduct.info_category.standard.composition.map((p) => p.id)}
+                                        onChange={(ids) => {
+                                            const selected = simpleProducts
+                                                .filter((p) => ids.includes(p.id))
+                                                .map((p) => ({ ...p, quantity: 1 })); // Setăm cantitatea implicită la 1
+                                            handleNewProductChange('info_category', {
+                                                ...newProduct.info_category,
+                                                standard: {
+                                                    ...newProduct.info_category.standard,
+                                                    composition: selected,
+                                                },
+                                            });
+                                        }}
+                                        searchable
+                                        nothingFoundMessage="Niciun produs găsit"
+                                        placeholder="Alege produsele componente"
+                                    />
+                                </div>
+
+                                {/* Preț pentru categoria Standard */}
+                                <div className="mb-4">
+                                    <NumberInput
+                                        label="Preț"
+                                        value={newProduct.info_category.standard.price}
+                                        onChange={(value) =>
+                                            handleNewProductChange('info_category', {
+                                                ...newProduct.info_category,
+                                                standard: {
+                                                    ...newProduct.info_category.standard,
+                                                    price: value ?? 0,
+                                                },
+                                            })
+                                        }
+                                        required
+                                        min={0}
+                                        step={1}
+                                    />
+                                </div>
+                            </fieldset>
+
+                            <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
+                                <legend className="text-lg font-medium px-2">Categorie Premium</legend>
+                                {/* Imagine pentru categoria Premium */}
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Imagine</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onload = (ev) => {
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        premium: {
+                                                            ...newProduct.info_category.premium,
+                                                            imageSrc: ev.target?.result as string,
+                                                        },
+                                                    });
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                        className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
+                                    />
+                                    {newProduct.info_category.premium.imageSrc && (
+                                        <div className="mt-2">
+                                            <img
+                                                src={newProduct.info_category.premium.imageSrc}
+                                                alt="Preview Premium"
+                                                className="w-32 h-32 object-cover rounded border"
+                                            />
+                                            <Button
+                                                variant="outline"
+                                                color="red"
+                                                onClick={() =>
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        premium: {
+                                                            ...newProduct.info_category.premium,
+                                                            imageSrc: '',
+                                                        },
+                                                    })
+                                                }
+                                                className="mt-2"
+                                            >
+                                                Șterge imaginea
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Compoziție pentru categoria Premium */}
+                                    <div className="mb-4">
+                                        <label className="block mb-1 font-medium">Compoziție</label>
+                                        {newProduct.info_category.premium.composition.map((item, idx) => (
+                                            <div key={item.id} className="flex items-center gap-4 mb-2">
+                                                <p className="flex-1">{item.title}</p>
+                                                <NumberInput
+                                                    label="Cantitate"
+                                                    value={item.quantity}
+                                                    onChange={(value) => {
+                                                        const updatedComposition = [...newProduct.info_category.premium.composition];
+                                                        updatedComposition[idx].quantity = Number(value) ?? 0;
+                                                        handleNewProductChange('info_category', {
+                                                            ...newProduct.info_category,
+                                                            premium: {
+                                                                ...newProduct.info_category.premium,
+                                                                composition: updatedComposition,
+                                                            },
+                                                        });
+                                                    }}
+                                                    min={0}
+                                                    step={1}
+                                                />
+                                            </div>
+                                        ))}
+                                        <MultiSelect
+                                            label="Adaugă produse componente"
+                                            data={simpleProducts.map((p) => ({ value: p.id, label: p.title }))}
+                                            value={newProduct.info_category.premium.composition.map((p) => p.id)}
+                                            onChange={(ids) => {
+                                                const selected = simpleProducts
+                                                    .filter((p) => ids.includes(p.id))
+                                                    .map((p) => ({ ...p, quantity: 1 })); // Setăm cantitatea implicită la 1
+                                                handleNewProductChange('info_category', {
+                                                    ...newProduct.info_category,
+                                                    premium: {
+                                                        ...newProduct.info_category.premium,
+                                                        composition: selected,
+                                                    },
+                                                });
+                                            }}
+                                            searchable
+                                            nothingFoundMessage="Niciun produs găsit"
+                                            placeholder="Alege produsele componente"
+                                        />
+                                    </div>
+
+                                {/* Preț pentru categoria Premium */}
+                                <div className="mb-4">
+                                    <NumberInput
+                                        label="Preț"
+                                        value={newProduct.info_category.premium.price}
+                                        onChange={(value) =>
+                                            handleNewProductChange('info_category', {
+                                                ...newProduct.info_category,
+                                                premium: {
+                                                    ...newProduct.info_category.premium,
+                                                    price: value ?? 0,
+                                                },
+                                            })
+                                        }
+                                        required
+                                        min={0}
+                                        step={1}
+                                    />
+                                </div>
+                            </fieldset>
+
+                            <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
+                                <legend className="text-lg font-medium px-2">Categorie Basic</legend>
+                                {/* Imagine pentru categoria Basic */}
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Imagine</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onload = (ev) => {
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        basic: {
+                                                            ...newProduct.info_category.basic,
+                                                            imageSrc: ev.target?.result as string,
+                                                        },
+                                                    });
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                        className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
+                                    />
+                                    {newProduct.info_category.basic.imageSrc && (
+                                        <div className="mt-2">
+                                            <img
+                                                src={newProduct.info_category.basic.imageSrc}
+                                                alt="Preview Basic"
+                                                className="w-32 h-32 object-cover rounded border"
+                                            />
+                                            <Button
+                                                variant="outline"
+                                                color="red"
+                                                onClick={() =>
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        basic: {
+                                                            ...newProduct.info_category.basic,
+                                                            imageSrc: '',
+                                                        },
+                                                    })
+                                                }
+                                                className="mt-2"
+                                            >
+                                                Șterge imaginea
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Compoziție pentru categoria Basic */}
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Compoziție</label>
+                                    {newProduct.info_category.basic.composition.map((item, idx) => (
+                                        <div key={item.id} className="flex items-center gap-4 mb-2">
+                                            <p className="flex-1">{item.title}</p>
+                                            <NumberInput
+                                                label="Cantitate"
+                                                value={item.quantity}
+                                                onChange={(value) => {
+                                                    const updatedComposition = [...newProduct.info_category.basic.composition];
+                                                    updatedComposition[idx].quantity = Number(value) ?? 0;
+                                                    handleNewProductChange('info_category', {
+                                                        ...newProduct.info_category,
+                                                        basic: {
+                                                            ...newProduct.info_category.basic,
+                                                            composition: updatedComposition,
+                                                        },
+                                                    });
+                                                }}
+                                                min={0}
+                                                step={1}
+                                            />
+                                        </div>
+                                    ))}
+                                    <MultiSelect
+                                        label="Adaugă produse componente"
+                                        data={simpleProducts.map((p) => ({ value: p.id, label: p.title }))}
+                                        value={newProduct.info_category.basic.composition.map((p) => p.id)}
+                                        onChange={(ids) => {
+                                            const selected = simpleProducts
+                                                .filter((p) => ids.includes(p.id))
+                                                .map((p) => ({ ...p, quantity: 1 })); // Setăm cantitatea implicită la 1
+                                            handleNewProductChange('info_category', {
+                                                ...newProduct.info_category,
+                                                basic: {
+                                                    ...newProduct.info_category.basic,
+                                                    composition: selected,
+                                                },
+                                            });
+                                        }}
+                                        searchable
+                                        nothingFoundMessage="Niciun produs găsit"
+                                        placeholder="Alege produsele componente"
+                                    />
+                                </div>
+
+                                {/* Preț pentru categoria Basic */}
+                                <div className="mb-4">
+                                    <NumberInput
+                                        label="Preț"
+                                        value={newProduct.info_category.basic.price}
+                                        onChange={(value) =>
+                                            handleNewProductChange('info_category', {
+                                                ...newProduct.info_category,
+                                                basic: {
+                                                    ...newProduct.info_category.basic,
+                                                    price: value ?? 0,
+                                                },
+                                            })
+                                        }
+                                        required
+                                        min={0}
+                                        step={1}
+                                    />
+                                </div>
+                            </fieldset>
                         </div>
-                        <Group>
-                            <NumberInput
-                                label="Preț standard"
-                                value={newProduct.price_category.standard.price}
-                                onChange={value => handleNewProductChange('price_category', { ...newProduct.price_category, standard: { price: value ?? 0 }, premium: newProduct.price_category.premium, basic: newProduct.price_category.basic })}
-                                required
-                                min={0}
-                                step={1}
-                            />
-                            <NumberInput
-                                label="Preț premium"
-                                value={newProduct.price_category.premium.price}
-                                onChange={value => handleNewProductChange('price_category', { ...newProduct.price_category, premium: { price: value ?? 0 }, standard: newProduct.price_category.standard, basic: newProduct.price_category.basic })}
-                                required
-                                min={0}
-                                step={1}
-                            />
-                            <NumberInput
-                                label="Preț basic"
-                                value={newProduct.price_category.basic.price}
-                                onChange={value => handleNewProductChange('price_category', { ...newProduct.price_category, basic: { price: value ?? 0 }, standard: newProduct.price_category.standard, premium: newProduct.price_category.premium })}
-                                required
-                                min={0}
-                                step={1}
-                            />
-                        </Group>
                         <Group justify="flex-end">
                             <Button variant="default" onClick={close}>Anulează</Button>
                             <Button type="submit" color="blue">Adaugă</Button>

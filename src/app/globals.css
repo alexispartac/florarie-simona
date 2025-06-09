@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #eaeab79d;
-  --foreground: #ededed;
+  --background: #ffffff;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -14,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff91;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #ffffff;
     --text-color: #575757;
     --text-important: #c80101;
     --animate-aurora: aurora 60s linear infinite;

@@ -14,23 +14,27 @@ export interface ProductProps {
 export interface ComposedProductProps {
     id: string,
     title: string,
-    imageSrc: string,
-    price_category: {
+    info_category: {
         standard: {
             price: number;
+            imageSrc: string,
+            composition: ProductProps[],
         },
         premium: {
             price: number;
+            imageSrc: string,
+            composition: ProductProps[],
         },
         basic: {
             price: number;
+            imageSrc: string,
+            composition: ProductProps[],
         }
     }
     isPopular: boolean,
     stockCode: string,
     inStock: boolean,
     description: string,
-    composition: ProductProps[],
     colors: string,
     category: string,
     promotion: boolean,
@@ -41,7 +45,7 @@ export interface OrderProductProps {
     id: string,
     title: string,
     title_category: string,
-    price_category: number,
+    info_category: number,
     quantity: number,
 }
 

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { OrderProps } from "../api/types";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, Textarea, Loader } from '@mantine/core';
+import { TextInput, Button, Textarea, Loader, Modal } from '@mantine/core';
 import { useSelector } from 'react-redux';
 import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
@@ -10,9 +10,12 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
 const URL_ORDERS = '/api/orders';
+
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const [loading, setLoading] = useState(false);
+    const [modalOpened, setModalOpened] = useState(false); // Controlează afișarea modalului
+    const [modalMessage, setModalMessage] = useState(''); // Mesajul afișat în modal
     const router = useRouter();
 
     const checkoutForm = useForm<OrderProps>({
@@ -48,15 +51,39 @@ const CheckoutPage = () => {
     const handleSubmit = async (values: OrderProps) => {
         setLoading(true);
         try {
-            axios.post(URL_ORDERS, values);
+            // Actualizează stocurile produselor
+            const modifyStockResponse = await axios.put('/api/modify-stock', {
+                items: values.products.map((product) => ({
+                    id: product.id,
+                    category: product.category,
+                    quantity: product.quantity,
+                })),
+            });
+
+            if (!modifyStockResponse.data.success) {
+                console.log('Error updating stock:', modifyStockResponse.data.message);
+                setModalMessage('Stocurile nu sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
+                setModalOpened(true);
+                setLoading(false);
+                return;
+            }
+
+            // Trimite comanda către backend
+            await axios.post(URL_ORDERS, values);
             console.log('Order placed successfully:', values);
+
+            // Resetează formularul și curăță coșul
+            router.push('/');
+            checkoutForm.reset();
+            localStorage.removeItem('cartItems');
+            clearCart();
         } catch (error) {
-            console.error('Error placing order:', error);
+            console.log('Error placing order:', error);
+            setModalMessage('A apărut o eroare. Te rugăm să încerci din nou.');
+            setModalOpened(true);
+        } finally {
+            setLoading(false);
         }
-        router.push('/');
-        checkoutForm.reset();
-        localStorage.removeItem('cartItems');
-        clearCart();
     };
 
     if (loading) {
@@ -127,6 +154,15 @@ const CheckoutPage = () => {
                     </Button>
                 </div>
             </form>
+
+            {/* Modal pentru afișarea mesajelor */}
+            <Modal
+                opened={modalOpened}
+                onClose={() => setModalOpened(false)}
+                title="Notificare"
+            >
+                <p>{modalMessage}</p>
+            </Modal>
         </div>
     );
 };

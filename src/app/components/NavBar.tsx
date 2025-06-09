@@ -1,42 +1,33 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  Navbar,
-  NavBody,
-  NavItems,
-  MobileNav,
-  NavbarLogo,
-  NavbarButton,
-  MobileNavHeader,
-  MobileNavToggle,
-  MobileNavMenu,
-} from "../components/ui/resizable-navbar";
-import Link from "next/link";
-import { useDisclosure } from '@mantine/hooks';
+import { Navbar, NavBody, NavItems, MobileNav, NavbarLogo, NavbarButton, MobileNavHeader, MobileNavToggle, MobileNavMenu } from "../components/ui/resizable-navbar";
 import { Modal, Button, TextInput, Group, Checkbox, Anchor, CopyButton, Tooltip, ActionIcon, Loader } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { IconAt, IconCheck, IconCopy, IconFlower, IconShoppingCart } from "@tabler/icons-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDisclosure } from '@mantine/hooks';
+import { useForm } from '@mantine/form';
 import { useCookies } from "react-cookie";
 import { useUser } from "./ContextUser";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { v4 as uuidv4 } from 'uuid';
 import { motion } from "motion/react";
+import axios from "axios";
+import Link from "next/link";
 
-const URL_SIGN = "/api/users";
-const URL_LOGIN = "/api/users/login";
+const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
 const URL_VERIFY_TOKEN = "/api/users/login/verify-token";
+const URL_LOGIN = "/api/users/login";
+const URL_SIGN = "/api/users";
 
 const ForgotPasswordModal = () => {
-  const [opened, { open, close }] = useDisclosure(false);
-  const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [step, setStep] = useState<'email' | 'verify' | 'reset'>('email'); 
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [opened, { open, close }] = useDisclosure(false);
+  const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [step, setStep] = useState<'email' | 'verify' | 'reset'>('email'); // Etapele: email, verificare, resetare parolă
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
 
   const handleForgotPassword = async () => {
     setLoading(true);
@@ -47,7 +38,7 @@ const ForgotPasswordModal = () => {
       const response = await axios.post('/api/users/login/forgot-password', { email });
       if (response.status === 200) {
         setMessage('Codul de resetare a fost trimis pe email.');
-        setStep('verify'); // Trecem la etapa de verificare
+        setStep('verify'); 
       }
     } catch (err) {
       console.error(err);
@@ -66,7 +57,7 @@ const ForgotPasswordModal = () => {
       const response = await axios.post('/api/users/login/verify-code', { email, code });
       if (response.status === 200) {
         setMessage('Codul a fost verificat cu succes!');
-        setStep('reset'); // Trecem la etapa de resetare a parolei
+        setStep('reset'); 
       }
     } catch (err) {
       console.error(err);
@@ -91,7 +82,7 @@ const ForgotPasswordModal = () => {
       const response = await axios.post('/api/users/login/reset-password', { email, newPassword });
       if (response.status === 200) {
         setMessage('Parola a fost resetată cu succes!');
-        close(); // Închidem modalul după resetare
+        close(); 
       }
     } catch (err) {
       console.error(err);
@@ -103,12 +94,9 @@ const ForgotPasswordModal = () => {
 
   return (
     <>
-      {/* Anchor pentru deschiderea modalului */}
       <Anchor onClick={open} size="xs">
         Ai uitat parola?
       </Anchor>
-
-      {/* Modal */}
       <Modal
         opened={opened}
         onClose={close}
@@ -572,12 +560,12 @@ const CallModal = () => {
       </Modal>
 
       <Button variant="transparent" color="red" onClick={open}>
-        Suna-ma
+        Suna-mă
       </Button>
     </>
   );
 }
-const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
+
 export function NavbarDemo({ children }: { children: React.ReactNode }) {
   const [composedCategories, setComposedCategories] = useState<{ name: string, link: string }[]>([]);
 
