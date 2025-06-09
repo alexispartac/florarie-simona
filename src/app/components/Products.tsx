@@ -33,10 +33,12 @@ export const Item = ({ item }: { item: ItemProps }) => {
     price: item.info_category.standard.price,
     category: "standard",
     quantity: 1,
-    composition: item.info_category.standard.composition.map((comp) => ({
-      id: comp.id,
-      quantity: 1, 
-    })),
+    composition: item.info_category.standard.composition
+      ? item.info_category.standard.composition.map((comp) => ({
+        id: comp.id,
+        quantity: 1,
+      }))
+      : [], 
     image: item.info_category.standard.imageSrc || '',
   };
 
@@ -92,11 +94,12 @@ export const ContinerItems = ({
   items: ItemProps[];
   itemsBread: React.JSX.Element[];
 }) => {
+  console.log('Items:', items);
   return (
     <div className="bg-white mx-10 my-6 md:mx-20">
-      <Bread itemsBread={itemsBread} />
+      {itemsBread && <Bread itemsBread={itemsBread} />}
       <div className="grid xl:grid-cols-6 grid-cols-2 gap-4">
-        {items.map((item: ItemProps, idx: number) => (
+        {items && items.map((item: ItemProps, idx: number) => (
           <Item item={item} key={idx} />
         ))}
       </div>

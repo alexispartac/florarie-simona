@@ -22,12 +22,18 @@ export async function POST(req: NextRequest) {
         info_category: {
             standard: {
                 price: data.info_category.standard.price || 0,
+                composition: data.info_category.standard.composition || [],
+                imageSrc: data.info_category.standard.imageSrc || '',
             },
             premium: {
                 price: data.info_category.premium.price || 0,
+                composition: data.info_category.premium.composition || [],
+                imageSrc: data.info_category.premium.imageSrc || '',
             },
             basic: {
                 price: data.info_category.basic.price || 0,
+                composition: data.info_category.basic.composition || [],
+                imageSrc: data.info_category.basic.imageSrc || '',
             }
         }
     }

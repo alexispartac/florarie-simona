@@ -81,7 +81,6 @@ const Page = () => {
         fetchOrders();
     }, []);
 
-    // Considerăm status "Delivered" ca finalizat, restul ca nefinalizat
     const finalizedOrders = orders.filter(order => order.status === 'Delivered');
     const unfinalizedOrders = orders.filter(order => order.status !== 'Delivered');
 
@@ -106,26 +105,34 @@ const Page = () => {
 
     return (
         <SidebarDemo>
-            <div className="flex flex-1">
+            <div className="flex flex-1 h-full">
                 <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
                     <div className="flex gap-2">
                         <div
-                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${!showFinalized ? 'bg-blue-200 dark:bg-blue-900' : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'}`}
+                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${!showFinalized
+                                    ? 'bg-blue-200 dark:bg-blue-900'
+                                    : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
+                                }`}
                             onClick={() => setShowFinalized(false)}
                         >
                             <h1>COMENZI NEFINALIZATE</h1>
                         </div>
                         <div
-                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${showFinalized ? 'bg-blue-200 dark:bg-blue-900' : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'}`}
+                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${showFinalized
+                                    ? 'bg-blue-200 dark:bg-blue-900'
+                                    : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
+                                }`}
                             onClick={() => setShowFinalized(true)}
                         >
                             <h1>COMENZI FINALIZATE</h1>
                         </div>
                     </div>
-                    <ListOfOrders
-                        orders={showFinalized ? finalizedOrders : unfinalizedOrders}
-                        onFinalize={handleFinalizeOrder}
-                    />
+                    <div className="flex-1 overflow-y-auto">
+                        <ListOfOrders
+                            orders={showFinalized ? finalizedOrders : unfinalizedOrders}
+                            onFinalize={handleFinalizeOrder}
+                        />
+                    </div>
                 </div>
             </div>
         </SidebarDemo>
