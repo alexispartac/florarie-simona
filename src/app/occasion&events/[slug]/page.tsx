@@ -2,7 +2,6 @@
 import { usePathname } from "next/navigation";
 import PopUp from "../../components/PopUp";
 import { Footer } from "@/app/components/Footer";
-import { NavbarDemo } from "@/app/components/NavBar";
 import React from "react";
 import { Anchor, Loader } from '@mantine/core';
 import { ContinerItems } from "@/app/components/Products";
@@ -52,7 +51,6 @@ const Content = () => {
                 </p>
             </div>
             <ContinerItems items={items} itemsBread={itemsBread} />
-            <Footer />
         </div>
     );
 };
@@ -62,9 +60,8 @@ const Page = () => {
     return (
         <div className={`relative w-full var(--background)`}>
             <PopUp />
-            <NavbarDemo>
-                <Content />
-            </NavbarDemo>
+            <Content />
+            <Footer />
         </div>
     )
 }

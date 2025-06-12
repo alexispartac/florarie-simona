@@ -1,17 +1,17 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { NavbarDemo } from '../components/NavBar';
-import { Footer } from '../components/Footer';
 import { IconBrandFacebook, IconBrandInstagram, IconBrandWhatsapp, IconHeartBroken, IconHeartFilled } from '@tabler/icons-react';
-import { useUser } from '../components/ContextUser'; // Presupunem că ai un context pentru utilizatorul curent
-import { Loader, Tooltip } from '@mantine/core';
-import { BlogPostProps } from '../types';
 import { Modal, TextInput, Textarea, Button, Group } from '@mantine/core';
 import { useBlogPosts } from '../components/hooks/fetchBlogPosts';
-import { Menu, ActionIcon } from '@mantine/core';
 import { IconDotsVertical } from '@tabler/icons-react';
-import axios from 'axios';
+import { useUser } from '../components/ContextUser'; 
+import React, { useState, useEffect } from 'react';
+import { Menu, ActionIcon } from '@mantine/core';
+import { Loader, Tooltip } from '@mantine/core';
+import { Footer } from '../components/Footer';
+import { BlogPostProps } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+
 
 const URL_BLOG_POSTS = '/api/post';
 const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: string) => void }) => {
@@ -232,7 +232,7 @@ const CreatePostModal = ({
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Creează o postare nouă" fullScreen>
+    <Modal opened={opened} onClose={onClose} title="Creează o postare nouă" centered>
       <form className="flex flex-col gap-4 max-w-md mx-auto mt-10" onSubmit={handleSubmit}>
         <TextInput
           label="Titlu"
@@ -333,16 +333,14 @@ const Blog = () => {
 
   return (
     <div>
-      <NavbarDemo>
-        {user.isAuthenticated && user.userInfo.email === 'matei.partac45@gmail.com' && (
-          <div className="flex pl-5 justify-start mt-28">
-            <Button color="pink" onClick={() => setModalOpened(true)}>
-              Creează o postare
-            </Button>
-          </div>
-        )}
-        <Content blogPosts={blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())} onDelete={handleDeletePost} />
-      </NavbarDemo>
+      {user.isAuthenticated && user.userInfo.email === 'matei.partac45@gmail.com' && (
+        <div className="flex pl-5 justify-center mt-28">
+          <Button color="pink" onClick={() => setModalOpened(true)}>
+            Creează o postare
+          </Button>
+        </div>
+      )}
+      <Content blogPosts={blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())} onDelete={handleDeletePost} />
       <Footer />
       <CreatePostModal
         opened={modalOpened}

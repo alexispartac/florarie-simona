@@ -1,18 +1,18 @@
 'use client'
-import React from 'react'
-import { motion } from "motion/react";
-import { AuroraBackground } from "./ui/aurora-background";
-import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
 import { useProductsGroupedByCategory } from './hooks/fetchProductsGroupedByCategory';
-import Link from 'next/link';
+import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
+import { AuroraBackground } from "./ui/aurora-background";
 import { Loader } from '@mantine/core';
+import { motion } from "motion/react";
+import Link from 'next/link';
+import React from 'react'
 
 
 export function InfiniteMovingCardsDemo() {
     const { data: groupedProducts, isLoading, isError } = useProductsGroupedByCategory();
     const testimonials = groupedProducts
-    ? Object.keys(groupedProducts).map((category) => ({ title: category }))
-    : [];
+        ? Object.keys(groupedProducts).map((category) => ({ title: category }))
+        : [];
 
     if (isLoading) {
         return (
@@ -32,11 +32,11 @@ export function InfiniteMovingCardsDemo() {
 
     return (
         <div className="h-[30rem] rounded-md flex flex-col antialiased bg-white dark:bg-white dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-        <InfiniteMovingCards
-            items={testimonials}
-            direction="right"
-            speed="fast"
-        />
+            <InfiniteMovingCards
+                items={testimonials}
+                direction="right"
+                speed="fast"
+            />
         </div>
     );
 }
@@ -124,25 +124,25 @@ export const Delivery = () => {
 }
 
 const NewOfers = () => {
-  return (
-    <div className='grid md:grid-cols-2 grid-cols-1 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40'>
-        <div style={{ backgroundImage: "url('/dashbordflower.jpg')"}} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-lg text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
-            <h3 className="text-lg important font-semibold mt-2 w-[100%] shadow-2xl m-auto bg-amber-100">Ofertă!</h3>
-            <p className="text-white shadow-5xl text-shadow-xl font-semibold">
-                Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru
-                cei dragi!
-            </p>
-            <a
-                href="features/Promotions"
-                className="inline-block mt-3 px-4 py-2 bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
-            >
-                Comandă acum
-            </a>
-        </div>
-        <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-lg text-center transition-transform duration-300 ease-in-out hover:scale-110">
+    return (
+        <div className='grid md:grid-cols-2 grid-cols-1 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40'>
+            <div style={{ backgroundImage: "url('/dashbordflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
+                <h3 className="text-lg important font-semibold mt-2 w-[100%] shadow-2xl m-auto bg-amber-100">Ofertă!</h3>
+                <p className="text-white shadow-5xl text-shadow-xl font-semibold">
+                    Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru
+                    cei dragi!
+                </p>
+                <a
+                    href="features/Promotions"
+                    className="inline-block mt-3 px-4 py-2 bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
+                >
+                    Comandă acum
+                </a>
+            </div>
+            <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110" >
             <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descoperă ofertele saptamanii!</h3>
             <p className="text-white shadow-5xl text-shadow-xl font-semibold">
-             Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
+                Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
             </p>
             <a
                 href="features/Promotii%20saptamanale"
@@ -151,7 +151,7 @@ const NewOfers = () => {
                 Comandă acum
             </a>
         </div>
-    </div>
+    </div >
   );
 };
 
@@ -177,7 +177,7 @@ const Content = () => {
                 </p>
             </motion.div>
             <AuroraBackgroundDemo />
-            <NewOfers />           
+            <NewOfers />
             <InfiniteMovingCardsDemo />
             <Delivery />
         </div>

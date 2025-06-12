@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
-import { Footer } from "../components/Footer";
-import PopUp from "../components/PopUp";
-import { NavbarDemo } from "../components/NavBar";
+import { useProductsGroupedByCategory } from  '../components/hooks/fetchProductsGroupedByCategory'
 import { ContinerItems } from "../components/Products";
 import { Anchor, Loader } from '@mantine/core';
-import { useProductsGroupedByCategory } from  '../components/hooks/fetchProductsGroupedByCategory'
+import { Footer } from "../components/Footer";
+import PopUp from "../components/PopUp";
 import { ItemProps } from "../types";
+import React from "react";
 
 const itemsBread = [
     { title: 'Buchetul Simonei', href: '/' },
@@ -59,9 +58,7 @@ const Bouquets = () => {
     return (
         <div className={`relative w-full var(--background)`}>
             <PopUp />
-            <NavbarDemo>
-                <Content />
-            </NavbarDemo>
+            <Content />
             <Footer />
         </div>
     );

@@ -8,7 +8,6 @@ import {
     useMotionValueEvent,
 } from "motion/react";
 import Link from "next/link";
-
 import React, { useRef, useState } from "react";
 
 
@@ -49,7 +48,7 @@ interface MobileNavHeaderProps {
 }
 
 interface MobileNavMenuProps {
-    children: React.ReactNode;
+    items: { name: string, link: string, category: { name: string, link: string }[] }[];
     className?: string;
     isOpen: boolean;
     onClose: () => void;
@@ -108,7 +107,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
                 minWidth: "800px",
             }}
             className={cn(
-                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 lg:flex dark:bg-transparent",
+                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-0.5 lg:flex dark:bg-transparent",
                 visible && "bg-white/80 dark:custom",
                 !visible && "color-theme dark:custom",
 
@@ -199,7 +198,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
                 damping: 50,
             }}
             className={cn(
-                "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0  lg:hidden",
+                "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 lg:hidden",
                 visible && "bg-white/80 dark:color-theme",
                 className,
             )}
@@ -226,10 +225,12 @@ export const MobileNavHeader = ({
 };
 
 export const MobileNavMenu = ({
-    children,
+    items,
     className,
     isOpen,
 }: MobileNavMenuProps) => {
+    const [hovered, setHovered] = useState<number | null>(null);
+    
     return (
         <AnimatePresence>
             {isOpen && (
@@ -242,7 +243,33 @@ export const MobileNavMenu = ({
                         className,
                     )}
                 >
-                    {children}
+                    {
+                        items.map((item, idx) => (
+                            <div
+                                onMouseLeave={() => setHovered(null)}
+                                key={`mobile-link-${idx}`}
+                            >
+                                <Link
+                                    onMouseEnter={() => setHovered(idx)}
+                                    href={`/${item.link}`}
+                                    className="relative text-neutral-800 dark:text-neutral-600"
+                                >
+                                    <span className="block">{item.name}</span>
+                                </Link>
+                                {hovered === idx && idx < 5 && (
+                                    <motion.div
+                                        layoutId="hovered"
+                                        className="relative text-[100%] flex flex-col text-start font-serif px-5 py-3 w-full bg-white dark:white "
+                                    >
+                                        {
+                                            item.category?.map((category, idx) => (
+                                                <Link key={idx} className="py-[4px]" href={`/${category.link}/${category.name}`}>{category.name}</Link>
+                                            ))
+                                        }
+                                    </motion.div>
+                                )}
+                            </div>
+                        ))}
                 </motion.div>
             )}
         </AnimatePresence>
@@ -257,9 +284,9 @@ export const MobileNavToggle = ({
     onClick: () => void;
 }) => {
     return isOpen ? (
-        <IconX className="text-black dark:color-theme" onClick={onClick} />
+        <IconX className="text-black dark:color-theme" onClick={onClick} size={28} />
     ) : (
-        <IconMenu2 className="text-black dark:color-theme" onClick={onClick} />
+        <IconMenu2 className="text-black dark:color-theme" onClick={onClick} size={28} />
     );
 };
 

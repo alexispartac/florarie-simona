@@ -1,0 +1,194 @@
+'use client';
+import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader } from '@mantine/core';
+import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-react";
+import React, { useCallback, useState, useMemo } from "react";
+import { ForgotPasswordModal } from "./ForgotPassword";
+import { NavbarButton } from "./ui/resizable-navbar";
+import { useDisclosure } from '@mantine/hooks';
+import { useForm } from '@mantine/form';
+import { useCookies } from "react-cookie";
+import { useUser } from "./ContextUser";
+import { v4 as uuidv4 } from 'uuid';
+import Link from "next/link";
+import axios from "axios";
+
+const URL_LOGIN = "/api/users/login";
+const URL_SIGN = "/api/users";
+
+export const useHandleLogout = () => {
+    const [, removeCookie] = useCookies(['login']);
+    const { setUser } = useUser();
+
+    const logout = useCallback(() => {
+        removeCookie("login", { path: '/' });
+        setUser({
+            userInfo: {
+                id: '',
+                name: '',
+                surname: '',
+                email: '',
+                password: '',
+                phone: '',
+                address: '',
+                order: 0,
+                createdAt: '',
+            },
+            isAuthenticated: false,
+        });
+    }, [removeCookie, setUser]);
+
+    return logout;
+};
+
+export const AuthModal = React.memo(() => {
+    const [opened, { open, close }] = useDisclosure(false);
+    const [check, setCheck] = useState(false);
+    const [, setCookie] = useCookies(['login']);
+    const { user, setUser } = useUser();
+    const [typeAuth, setTypeAuth] = useState<'login' | 'signin'>('login');
+    const [loginError, setLoginError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const logout = useHandleLogout();
+
+    const formSignUp = useForm({
+        initialValues: {
+            name: '',
+            surname: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        },
+    });
+
+    const formLogIn = useForm({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+    });
+
+    const login = useCallback(async (data: { email: string; password: string }) => {
+        if (user.isAuthenticated) return;
+        setLoginError(null);
+        setLoading(true);
+        try {
+            const response = await axios.post(URL_LOGIN, data);
+            if (response.status === 200) {
+                setUser({
+                    userInfo: response.data.user,
+                    isAuthenticated: true,
+                });
+                setCookie('login', response.data.token, { path: '/' });
+                close();
+            }
+        } catch (error) {
+            console.error('Error logging in', error);
+            setLoginError("Eroare la autentificare.");
+        } finally {
+            setLoading(false);
+        }
+    }, [setUser, setCookie, close, user.isAuthenticated]);
+
+    const signup = useCallback(async (data: { id: string; name: string; surname: string; email: string; password: string }) => {
+        setLoading(true);
+        try {
+            const response = await axios.post(URL_SIGN, data);
+            if (response.status === 200 || response.status === 201) {
+                login({ email: data.email, password: data.password });
+                formSignUp.reset();
+                close();
+            }
+        } catch (error) {
+            console.error('Error signing up', error);
+            setLoginError("Eroare la înregistrare.");
+        } finally {
+            setLoading(false);
+        }
+    }, [login, close, formSignUp]);
+
+    const handleSignUp = useCallback((event: React.FormEvent) => {
+        event.preventDefault();
+        setLoginError(null);
+        const { name, surname, email, password, confirmPassword } = formSignUp.values;
+        if (password !== confirmPassword) {
+            setLoginError("Parolele nu coincid!");
+            return;
+        }
+        signup({ id: uuidv4(), name, surname, email, password });
+    }, [signup, formSignUp]);
+
+    const handleLogin = useCallback((event: React.FormEvent) => {
+        event.preventDefault();
+        setLoginError(null);
+        const { email, password } = formLogIn.values;
+        login({ email, password });
+        formLogIn.reset();
+    }, [login, formLogIn]);
+
+    const renderForm = useMemo(() => {
+        if (!user.isAuthenticated && typeAuth === 'signin') {
+            return (
+                <form className="flex flex-col gap-4 my-5" onSubmit={handleSignUp}>
+                    <Group>
+                        <TextInput w={'47%'} label='Nume' required placeholder="Ex: Partac" {...formSignUp.getInputProps('name')} />
+                        <TextInput w={'47%'} label='Prenume' required placeholder="Ex: Alexis" {...formSignUp.getInputProps('surname')} />
+                    </Group>
+                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: matei.partac45@gmail.com" {...formSignUp.getInputProps('email')} />
+                    <TextInput w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
+                    <TextInput w={'99%'} label='Confirmare parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
+                    <Checkbox label="Sunt de-acord cu termenii si conditiile" checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
+                    {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
+                    <Group justify="space-between">
+                        <Anchor onClick={() => setTypeAuth('login')} size="xs">Ai deja un cont? Login</Anchor>
+                        <Button type="submit" disabled={loading || !check}>Sign in</Button>
+                    </Group>
+                </form>
+            );
+        } else if (!user.isAuthenticated && typeAuth === 'login') {
+            return (
+                <form className="flex flex-col gap-4 my-5" onSubmit={handleLogin}>
+                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="Ex: matei.partac45@gmail.com" {...formLogIn.getInputProps('email')} />
+                    <TextInput w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
+                    {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
+                    <Group justify="space-between">
+                        <Anchor onClick={() => setTypeAuth('signin')} size="xs">Nu ai cont? SignUp</Anchor>
+                        <ForgotPasswordModal />
+                        <Button type="submit" disabled={loading}>Login</Button>
+                    </Group>
+                </form>
+            );
+        } else if (user.isAuthenticated) {
+            return (
+                <div className="flex flex-col gap-4 my-5">
+                    <Group justify="space-between">
+                        <Button onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
+                    </Group>
+                </div>
+            );
+        }
+    }, [user.isAuthenticated, typeAuth, handleSignUp, handleLogin, formSignUp, formLogIn, check, loginError, loading, logout, close]);
+
+    return (
+        <>
+            <Modal opened={opened} onClose={close} title="Cont de utilizator" withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
+                {loading && <Group justify="center" my="md"><Loader color="blue" /></Group>}
+                {renderForm}
+            </Modal>
+            {user.isAuthenticated && user.userInfo.email === "matei.partac45@gmail.com" && (
+                <Button variant="transparent" p={0} color="red">
+                    <Link href="/admin"><IconFlower size={18} /></Link>
+                </Button>
+            )}
+            {user.userInfo.email !== "matei.partac45@gmail.com" && (
+                <Button variant="transparent" p={0} color="red">
+                    <Link href="/cart"><IconShoppingCart size={18} /></Link>
+                </Button>
+            )}
+            <NavbarButton variant="secondary" onClick={open}>
+                <IconUser size={18} />
+            </NavbarButton>
+        </>
+    );
+});
+
+AuthModal.displayName = "AuthModal";

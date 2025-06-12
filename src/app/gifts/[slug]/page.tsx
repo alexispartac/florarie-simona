@@ -1,12 +1,11 @@
 'use client';
+import { useProductsGroupedByCategory } from "@/app/components/hooks/fetchProductsGroupedByCategory";
+import { ContinerItems } from "../../components/Products";
+import { Footer } from "@/app/components/Footer";
+import { Anchor, Loader } from '@mantine/core';
 import { usePathname } from "next/navigation";
 import PopUp from "../../components/PopUp";
-import { Footer } from "@/app/components/Footer";
 import React from "react";
-import { Anchor, Loader } from '@mantine/core';
-import { NavbarDemo } from "@/app/components/NavBar";
-import { ContinerItems } from "../../components/Products";
-import { useProductsGroupedByCategory } from "@/app/components/hooks/fetchProductsGroupedByCategory";
 
 const Content = () => {
     const { data: groupedProducts = {}, isLoading, isError } = useProductsGroupedByCategory();
@@ -51,7 +50,6 @@ const Content = () => {
                 </p>
             </div>
             <ContinerItems items={items} itemsBread={itemsBread} />
-            <Footer />
         </div>
     );
 };
@@ -61,9 +59,8 @@ const Page = () => {
     return (
         <div className={`relative w-full var(--background)`}>
             <PopUp />
-            <NavbarDemo>
-                <Content />
-            </NavbarDemo>
+            <Content />
+            <Footer />
         </div>
     )
 }

@@ -1,11 +1,9 @@
 'use client';
-import * as React from 'react';
-import { IconArrowBack } from '@tabler/icons-react';
-import { Footer } from '../components/Footer';
-import Link from 'next/link';
-import { useForm } from '@mantine/form';
 import { Button, Checkbox, Textarea, TextInput, Notification, Loader } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { Footer } from '../components/Footer';
+import { useForm } from '@mantine/form';
+import * as React from 'react';
 import axios from 'axios';
 
 export default function Contact() {
@@ -67,9 +65,6 @@ export default function Contact() {
 
     return (
         <div>
-            <Link href="/" className='p-5 md:p-10 absolute z-20'>
-                <IconArrowBack />
-            </Link>
             <div className="h-screen flex items-center justify-center mb-80 md:mb-120">
                 <div className="isolate h-screen bg-white px-6 py-24 sm:py-32 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">

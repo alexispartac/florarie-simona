@@ -46,7 +46,6 @@ export const Item = ({ item }: { item: ItemProps }) => {
     dispatch(addItem(itemForCart)); // Adaugă produsul cu cantitatea 1
   };
 
-  // Verificăm dacă produsul este deja în coș
   const isInCart = cartItems.some((cartItem) => cartItem.id === item.id);
 
   const isOutOfStock = !item.inStock;
@@ -94,7 +93,7 @@ export const ContinerItems = ({
   items: ItemProps[];
   itemsBread: React.JSX.Element[];
 }) => {
-  console.log('Items:', items);
+  
   return (
     <div className="bg-white mx-10 my-6 md:mx-20">
       {itemsBread && <Bread itemsBread={itemsBread} />}

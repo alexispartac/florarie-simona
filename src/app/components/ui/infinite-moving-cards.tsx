@@ -85,7 +85,7 @@ export const InfiniteMovingCards = ({
       >
         {items.map((item, index) => (
           <li
-            className="relative shadow-pink-200 shadow-xl flex w-[15rem] h-[200px] max-w-full shrink-0 border border-b-0 border-zinc-200 bg-cover bg-center"
+            className="relative shadow-[#b756a64f] shadow-xl flex w-[15rem] h-[200px] max-w-full shrink-0 border border-b-0 border-zinc-200 bg-cover bg-center"
             style={{ backgroundImage: `url('/c${(index%5)}.jpg')` }} // Construim URL-ul dinamic
             key={item.title}
           >

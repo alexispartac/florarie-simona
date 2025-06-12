@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
+import { useProductsGroupedByCategory } from "../components/hooks/fetchProductsGroupedByCategory";
+import { ContinerItems } from "../components/Products";
+import { Anchor, Loader } from '@mantine/core';
 import { Footer } from "../components/Footer";
 import PopUp from "../components/PopUp";
-import { NavbarDemo } from "../components/NavBar";
-import { Anchor, Loader } from '@mantine/core';
-import { ContinerItems } from "../components/Products";
 import { ItemProps } from "../types";
-import { useProductsGroupedByCategory } from "../components/hooks/fetchProductsGroupedByCategory";
+import React from "react";
 
 const itemsBread = [
     { title: 'Buchetul Simonei', href: '/' },
@@ -59,9 +58,7 @@ const Arrangements = () => {
     return (
         <div>
             <PopUp />
-            <NavbarDemo>
-                <Content />
-            </NavbarDemo>
+            <Content />
             <Footer />
         </div>
     );

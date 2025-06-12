@@ -1,12 +1,11 @@
 'use client';
-import React from 'react'
-import { NavbarDemo } from '../components/NavBar'
+import { useNewestProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory'
+import { ContinerItems } from '@/app/components/Products'
+import { Anchor, Loader } from '@mantine/core'
 import { Footer } from '../components/Footer'
 import PopUp from '../components/PopUp'
 import { ItemProps } from '@/app/types'
-import { Anchor, Loader } from '@mantine/core'
-import { ContinerItems } from '@/app/components/Products'
-import { useNewestProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory'
+import React from 'react'
 
 const Content = () => {
     const { data: promotionProducts, isLoading, isError } = useNewestProducts();
@@ -54,9 +53,7 @@ const Feature = () => {
     return (
         <div>
             <PopUp />
-            <NavbarDemo>
-                <Content />
-            </NavbarDemo>
+            <Content />
             <Footer />
         </div>
     )

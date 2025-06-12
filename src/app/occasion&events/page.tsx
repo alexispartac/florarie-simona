@@ -2,7 +2,6 @@
 import React from "react";
 import PopUp from "../components/PopUp";
 import { Footer } from "../components/Footer";
-import { NavbarDemo } from "../components/NavBar";
 import { Anchor, Loader } from '@mantine/core';
 import { ItemProps } from "../types";
 import { ContinerItems } from "../components/Products";
@@ -61,9 +60,7 @@ const OccasionAndEvents = () => {
   return (
     <div className={`relative w-full var(--background)`}>
         <PopUp />
-        <NavbarDemo>
-            <Content />
-        </NavbarDemo>
+        <Content />
         <Footer />
     </div>
   )

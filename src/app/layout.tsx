@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { MantineProvider } from '@mantine/core';
+import { RestrictedComponents } from "./components/RestrictedComponents";
+import { AutoConnectWithToken } from "./components/AutoConnectWithToken";
+import ReduxProvider from "./cart/components/ReduxProvider";
 import { UserProvider } from "./components/ContextUser";
 import QueryProvider from "./components/QueryProvider";
-import ReduxProvider from "./cart/components/ReduxProvider";
+import { Geist, Geist_Mono } from "next/font/google";
+import { MantineProvider } from '@mantine/core';
+import type { Metadata } from "next";
 import '@mantine/core/styles.css';
 import "./globals.css";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +31,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body
@@ -37,7 +41,10 @@ export default function RootLayout({
             <UserProvider>
               <QueryProvider>
                 <ReduxProvider>
-                  {children}
+                  <AutoConnectWithToken />
+                  <RestrictedComponents>
+                    {children}
+                  </RestrictedComponents>
                 </ReduxProvider>
               </QueryProvider>
             </UserProvider>

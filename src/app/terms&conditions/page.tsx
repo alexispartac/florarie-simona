@@ -1,10 +1,7 @@
 "use client";
-import React from "react";
 import { Footer } from "../components/Footer";
 import PopUp from "../components/PopUp";
-import { NavbarDemo } from "../components/NavBar";
-
-
+import React from "react";
 
 const Content = () => {
     
@@ -86,9 +83,7 @@ const Bouquets = () => {
     return (
         <div className={`relative w-full var(--background)`}>
             <PopUp />
-            <NavbarDemo>
-                <Content />
-            </NavbarDemo>
+            <Content />
             <Footer />
         </div>
     );

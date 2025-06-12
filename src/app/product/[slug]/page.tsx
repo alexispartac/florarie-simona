@@ -1,21 +1,20 @@
 'use client';
-import React from 'react';
-import { usePathname } from "next/navigation";
-import { ItemProps, CartItem } from './../../types';
-import { NavbarDemo } from '../../components/NavBar';
-import { Footer } from '../../components/Footer';
-import PopUp from '@/app/components/PopUp';
-import { Bread } from '@/app/components/Products';
-import { Anchor, Button, NumberInput, Loader, Modal } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { Delivery } from '@/app/components/Content';
-import { Item } from '@/app/components/Products';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { addItem, RootState, setCart } from '@/app/cart/components/CartRedux';
-import ReviewForm from '../../components/ReviewForm';
-import Reviews from '@/app/components/Reviews';
 import { useProductsGroupedByCategory } from '@/app/components/hooks/fetchProductsGroupedByCategory';
+import { addItem, RootState, setCart } from '@/app/cart/components/CartRedux';
+import { Anchor, Button, NumberInput, Loader, Modal } from '@mantine/core';
+import { useDispatch, useSelector } from 'react-redux';
+import ReviewForm from '../../components/ReviewForm';
+import { Delivery } from '@/app/components/Content';
+import { ItemProps, CartItem } from './../../types';
+import { Bread } from '@/app/components/Products';
+import { Footer } from '../../components/Footer';
+import { Item } from '@/app/components/Products';
+import Reviews from '@/app/components/Reviews';
+import { usePathname } from "next/navigation";
+import PopUp from '@/app/components/PopUp';
+import { useForm } from '@mantine/form';
+import axios from 'axios';
+import React from 'react';
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const URL_REVIEW = '/api/review';
@@ -208,8 +207,6 @@ const Product = () => {
     return (
         <div>
             <PopUp />
-            <NavbarDemo>
-                <br /><br /><br />
                 <div className='mx-8 md:mx-30'>
                     <Bread itemsBread={itemsBread} />
                 </div>
@@ -401,13 +398,13 @@ const Product = () => {
                         )}
                     </div>
                 </div>
-            </NavbarDemo>
             <Delivery />
             <Footer />
             <Modal
                 opened={modalOpened}
                 onClose={() => setModalOpened(false)}
                 title="Notificare"
+                centered
             >
                 <p>{modalMessage}</p>
             </Modal>
