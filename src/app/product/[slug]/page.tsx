@@ -103,26 +103,20 @@ const Product = () => {
                 setModalOpened(true);
                 return;
             }
-
-            // Trimite cererea către backend pentru verificarea cantității
-            const response = await axios.post(URL_CHECK_COMPOSITION, {
-                composition: product.info_category[category].composition,
+            const itemForCart: CartItem = {
+                id: values.id,
+                title: values.title,
+                category: values.category,
+                price: values.price ?? 0,
                 quantity: values.quantity,
-            });
-
+                composition: product.info_category[category].composition,
+                image: values.image || '',
+            };
+            // Trimite cererea către backend pentru verificarea cantității
+            const response = await axios.post(URL_CHECK_COMPOSITION, [itemForCart]);
             if (response.status === 200) {
-                // Dacă cantitatea este suficientă, adaugă produsul în coș
-                const itemForCart: CartItem = {
-                    id: values.id,
-                    title: values.title,
-                    category: values.category,
-                    price: values.price ?? 0,
-                    quantity: values.quantity,
-                    composition: product.info_category[category].composition,
-                    image: values.image || '',
-                };
                 dispatch(addItem(itemForCart));
-                setModalMessage('Produsul a fost adăugat în coș!');
+                setModalMessage('Produsul a fost adăugat în coș!'); 
             } else if (response.status === 201) {;
                 setModalMessage(`Cantitatea necesară nu este disponibilă`);
             }

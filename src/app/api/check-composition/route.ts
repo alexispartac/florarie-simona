@@ -1,53 +1,63 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/app/components/lib/mongodb';
+import { CartItem } from '@/app/cart/types';
+import { SimpleProductProps } from '../types';
 
 // POST /api/check-composition - verifică cantitatea produselor componente
 export async function POST(req: NextRequest) {
     const client = await clientPromise;
     const db = client.db('florarie');
-    const data = await req.json();
+    const items: CartItem[] = await req.json();
+    const totalQuantitiesForEveryProductsOfComposition: { id: string; quantity: number }[] = [];
 
-    // Verifică dacă cererea conține compoziția și cantitatea totală
-    const { composition, quantity } = data;
-    if (!composition || !Array.isArray(composition) || typeof quantity !== 'number') {
-        return NextResponse.json({ success: false, message: 'Datele trimise nu sunt valide.' }, { status: 400 });
-    }
+    for (const item of items) {
+        const productQuantity = item.quantity;
+        const composition = item.composition;
 
-    try {
-        // Verifică cantitatea pentru fiecare produs component
-        const insufficientItems = [];
+        if (!composition || !productQuantity) {
+            return NextResponse.json({ success: false, message: 'Datele trimise nu sunt valide.' }, { status: 400 });
+        }
 
-        for (const item of composition) {
-            const product = await db.collection('products').findOne({ id: item.id });
-            
-            if (!product) {
-                insufficientItems.push({ id: item.id, message: 'Produsul nu a fost găsit.' });
-            } else {
-                const requiredQuantity = item.quantity * quantity; // Cantitatea necesară totală
-                if (product.quantity < requiredQuantity) {
-                    insufficientItems.push({
-                        id: item.id,
-                        title: product.title,
-                        required: requiredQuantity,
-                        available: product.quantity, // Cantitatea disponibilă
+        for (const component of composition) {
+            const componentQuantity = component.quantity;
+            const componentId = component.id;
+            const isInTotalQuantitiesForEveryProductsOfComposition = totalQuantitiesForEveryProductsOfComposition.find(p => p.id === componentId);
+            let product: SimpleProductProps;
+
+            if (!isInTotalQuantitiesForEveryProductsOfComposition) {
+                // Caută produsul în baza de date
+                product = await db.collection('products').findOne({ id: componentId }) as unknown as SimpleProductProps;
+
+                if (!product) {
+                    return NextResponse.json({ success: false, message: `Produsul nu mai este valabil pe site!` }, { status: 401 });
+                }
+                // adauga la totalQuantitiesForEveryProductsOfComposition
+                const existingProduct = totalQuantitiesForEveryProductsOfComposition.find(p => p.id === componentId);
+                if (existingProduct) {
+                    existingProduct.quantity += productQuantity * componentQuantity;
+                } else {
+                    totalQuantitiesForEveryProductsOfComposition.push({
+                        id: componentId,
+                        quantity: productQuantity * componentQuantity
                     });
                 }
             }
         }
-        // Dacă există produse cu cantitate insuficientă, returnează eroare
-        if (insufficientItems.length > 0) {
-            return NextResponse.json({
-                success: false,
-                message: 'Cantitatea necesară nu este disponibilă pentru unele produse.',
-                insufficientItems,
-            }, { status: 201 });
+    }
+    // Verifică dacă există suficiente produse în stoc pentru fiecare componentă
+    try {
+        for (const product of totalQuantitiesForEveryProductsOfComposition) {
+            const dbProduct = await db.collection('products').findOne({ id: product.id }) as unknown as SimpleProductProps;
+            if (!dbProduct || dbProduct.quantity < product.quantity) {
+                return NextResponse.json({ success: false, message: `Stoc insuficient pentru produsul ${dbProduct?.title || 'necunoscut'}.` }, { status: 403 });
+            }
         }
 
-        // Dacă toate produsele au cantitatea necesară, returnează succes
-        return NextResponse.json({ success: true, message: 'Cantitatea este suficientă pentru toate produsele.' }, { status: 200 });
+        return NextResponse.json({ success: true, message: 'Produsul a fost adaugat cu succes in cos!' }, { status: 200 });
     } catch (error) {
-        console.error('Eroare la verificarea cantității:', error);
-        return NextResponse.json({ success: false, message: 'A apărut o eroare internă.' }, { status: 500 });
+        console.error('Eroare la verificarea stocului:', error);
+        return NextResponse.json({ success: false, message: 'A apărut o eroare la verificarea stocului.' }, { status: 500 });
     }
+
 }

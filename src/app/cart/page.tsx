@@ -19,7 +19,7 @@ const Cart = () => {
   const [isChecking, setIsChecking] = useState(false); // Loader pentru verificarea stocului
   const [modalOpened, setModalOpened] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-
+  
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedCart = localStorage.getItem('cartItems');
@@ -47,33 +47,17 @@ const Cart = () => {
   const handleFinalizeOrder = async () => {
     setIsChecking(true); // Activează loader-ul
     try {
-      // verificare pentru fiecare produs din coș
-      for (const item of cartItems) {
-        const response = await axios.post(URL_CHECK_COMPOSITION, {
-          composition: item.composition,
-          quantity: item.quantity,
-        });
-
+      console.log(cartItems)
+      axios.post(URL_CHECK_COMPOSITION, cartItems).then((response) => {
         if (response.status === 200) {
-          continue;
-        }
-
-        if (response.status === 201) {
-          const insufficientItems = response.data.insufficientItems;
-          const messages = insufficientItems.map(
-            (i: { title: string; required: number; available: number }) =>
-              `${i.title} - Necesită ${i.required}, dar doar ${i.available} sunt disponibile.`
-          ).join('\n');
-          setModalMessage(messages);
+          router.push('/checkout');
+          setModalOpened(false);
+        } else {
+          setModalMessage('Stocurile nu sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
           setModalOpened(true);
-          setIsChecking(false);
-          return; 
         }
-      }
+      });
       setIsChecking(false); 
-      if (!modalOpened) {
-        router.push('/checkout');
-      }
     } catch (error) {
       console.log('Eroare la verificarea cantității:', error);
       setModalMessage('A apărut o eroare. Te rugăm să încerci din nou.');

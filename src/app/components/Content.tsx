@@ -31,7 +31,7 @@ export function InfiniteMovingCardsDemo() {
     }
 
     return (
-        <div className="h-[30rem] rounded-md flex flex-col antialiased bg-white dark:bg-white dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+        <div className="h-[20rem] rounded-md flex flex-col antialiased bg-white dark:bg-white dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
             <InfiniteMovingCards
                 items={testimonials}
                 direction="right"
@@ -125,7 +125,7 @@ export const Delivery = () => {
 
 const NewOfers = () => {
     return (
-        <div className='grid md:grid-cols-2 grid-cols-1 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40'>
+        <div className='grid md:grid-cols-2 grid-cols-1 pb-5 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40'>
             <div style={{ backgroundImage: "url('/dashbordflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
                 <h3 className="text-lg important font-semibold mt-2 w-[100%] shadow-2xl m-auto bg-amber-100">Ofertă!</h3>
                 <p className="text-white shadow-5xl text-shadow-xl font-semibold">
@@ -139,7 +139,7 @@ const NewOfers = () => {
                     Comandă acum
                 </a>
             </div>
-            <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110" >
+            <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
             <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descoperă ofertele saptamanii!</h3>
             <p className="text-white shadow-5xl text-shadow-xl font-semibold">
                 Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
