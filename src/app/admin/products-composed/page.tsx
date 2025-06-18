@@ -382,7 +382,7 @@ const EditComposedProductModal = ({
                     <Button variant="default" onClick={onClose}>
                         Anulează
                     </Button>
-                    <Button type="submit" color="blue">
+                    <Button type="submit" color="blue" onClick={handleSubmit}>
                         Salvează
                     </Button>
                 </Group>
