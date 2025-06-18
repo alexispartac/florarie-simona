@@ -58,7 +58,7 @@ const SimpleProductRow = ({
         opened={opened}
         onClose={close}
         title="Actualizare produs"
-        fullScreen={true}
+        fullScreen={false}
       >
         <form
           className="flex flex-col gap-4 max-w-md mx-auto mt-10"
@@ -271,7 +271,7 @@ const ListOfProducts = (
           opened={opened}
           onClose={close}
           title="Adaugă produs"
-          fullScreen={true}
+          fullScreen={false}
         >
           <form
             className="flex flex-col gap-4 max-w-md mx-auto mt-10"

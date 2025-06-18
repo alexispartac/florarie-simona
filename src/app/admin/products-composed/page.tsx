@@ -289,7 +289,7 @@ const EditComposedProductModal = ({
     };
 
     return (
-        <Modal opened={opened} onClose={onClose} title="Editează produs compus" fullScreen>
+        <Modal opened={opened} onClose={onClose} title="Editează produs compus" centered>
             <form className="flex flex-col gap-4 max-w-md mx-auto mt-10" onSubmit={handleSubmit}>
                 <TextInput
                     label="Denumire"
@@ -534,7 +534,7 @@ const ListOfProducts = ({
                     opened={opened}
                     onClose={close}
                     title="Adaugă produs"
-                    fullScreen={true}
+                    fullScreen={false}
                 >
                     <form
                         className="flex flex-col gap-4 max-w-md mx-auto mt-10"
