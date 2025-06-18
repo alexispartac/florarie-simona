@@ -16,11 +16,11 @@ const URL_LOGIN = "/api/users/login";
 const URL_SIGN = "/api/users";
 
 export const useHandleLogout = () => {
-    const [, removeCookie] = useCookies(['login']);
+    const [, setCookie] = useCookies(['login']);
     const { setUser } = useUser();
 
     const logout = useCallback(() => {
-        removeCookie("login", { path: '/' });
+        setCookie('login', '', { path: '/', maxAge: -1 }); 
         setUser({
             userInfo: {
                 id: '',
@@ -35,7 +35,7 @@ export const useHandleLogout = () => {
             },
             isAuthenticated: false,
         });
-    }, [removeCookie, setUser]);
+    }, [setUser, setCookie]);
 
     return logout;
 };
@@ -69,6 +69,10 @@ export const AuthModal = React.memo(() => {
 
     const login = useCallback(async (data: { email: string; password: string }) => {
         if (user.isAuthenticated) return;
+        if (!data.email || !data.password) {
+            setLoginError("Email și parola sunt obligatorii.");
+            return;
+        }
         setLoginError(null);
         setLoading(true);
         try {
@@ -130,12 +134,12 @@ export const AuthModal = React.memo(() => {
             return (
                 <form className="flex flex-col gap-4 my-5" onSubmit={handleSignUp}>
                     <Group>
-                        <TextInput w={'47%'} label='Nume' required placeholder="Ex: Partac" {...formSignUp.getInputProps('name')} />
-                        <TextInput w={'47%'} label='Prenume' required placeholder="Ex: Alexis" {...formSignUp.getInputProps('surname')} />
+                        <TextInput autoFocus={false} w={'47%'} label='Nume' required placeholder="Ex: Partac" {...formSignUp.getInputProps('name')} />
+                        <TextInput autoFocus={false} w={'47%'} label='Prenume' required placeholder="Ex: Alexis" {...formSignUp.getInputProps('surname')} />
                     </Group>
-                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: matei.partac45@gmail.com" {...formSignUp.getInputProps('email')} />
-                    <TextInput w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
-                    <TextInput w={'99%'} label='Confirmare parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
+                    <TextInput autoFocus={false} w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: matei.partac45@gmail.com" {...formSignUp.getInputProps('email')} />
+                    <TextInput autoFocus={false} w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
+                    <TextInput autoFocus={false} w={'99%'} label='Confirmare parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
                     <Checkbox label="Sunt de-acord cu termenii si conditiile" checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
                     {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
                     <Group justify="space-between">
@@ -147,8 +151,8 @@ export const AuthModal = React.memo(() => {
         } else if (!user.isAuthenticated && typeAuth === 'login') {
             return (
                 <form className="flex flex-col gap-4 my-5" onSubmit={handleLogin}>
-                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="Ex: matei.partac45@gmail.com" {...formLogIn.getInputProps('email')} />
-                    <TextInput w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
+                    <TextInput autoFocus={false} w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="Ex: matei.partac45@gmail.com" {...formLogIn.getInputProps('email')} />
+                    <TextInput autoFocus={false} w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
                     {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
                     <Group justify="space-between">
                         <Anchor onClick={() => setTypeAuth('signin')} size="xs">Nu ai cont? SignUp</Anchor>

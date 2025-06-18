@@ -104,6 +104,7 @@ export const ForgotPasswordModal = () => {
           <div>
             <TextInput
               label="Email"
+              autoFocus={false}
               placeholder="Introdu adresa ta de email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -128,6 +129,7 @@ export const ForgotPasswordModal = () => {
               label="Cod de verificare"
               placeholder="Introdu codul primit pe email"
               value={code}
+              autoFocus={false}
               onChange={(e) => setCode(e.target.value)}
               required
             />
@@ -151,6 +153,7 @@ export const ForgotPasswordModal = () => {
               placeholder="Introdu parola nouă"
               type="password"
               value={newPassword}
+              autoFocus={false}
               onChange={(e) => setNewPassword(e.target.value)}
               required
             />
@@ -161,6 +164,7 @@ export const ForgotPasswordModal = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              autoFocus={false}
               className="mt-4"
             />
             <Button

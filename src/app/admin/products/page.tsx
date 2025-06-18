@@ -69,12 +69,16 @@ const SimpleProductRow = ({
             value={editProduct.title}
             onChange={e => handleChange('title', e.currentTarget.value)}
             required
+            autoFocus={false}
+          />
+          <TextInput
           />
           <TextInput
             label="Cod stoc"
             value={editProduct.stockCode}
             onChange={e => handleChange('stockCode', e.currentTarget.value)}
             required
+            autoFocus={false}
           />
           <Checkbox
             label="În stoc"
@@ -278,12 +282,14 @@ const ListOfProducts = (
               value={newProduct.title}
               onChange={e => handleNewProductChange('title', e.currentTarget.value)}
               required
+              autoFocus={false}
             />
             <TextInput
               label="Cod stoc"
               value={newProduct.stockCode}
               onChange={e => handleNewProductChange('stockCode', e.currentTarget.value)}
               required
+              autoFocus={false}
             />
             <Checkbox
               label="În stoc"
@@ -390,6 +396,7 @@ const CategoryModal = ({
           value={categoryName}
           onChange={(e) => setCategoryName(e.currentTarget.value)}
           required
+          autoFocus={false}
         />
         <Group justify="flex-end">
           <Button variant="default" onClick={onClose}>

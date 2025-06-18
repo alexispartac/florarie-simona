@@ -7,8 +7,13 @@ import clientPromise from '@/app/components/lib/mongodb';
 export async function GET() {
     const client = await clientPromise;
     const db = client.db('florarie');
-    const products = await db.collection('products-composed').find().toArray();
-    return NextResponse.json(products, { status: 200 });
+    try {
+        const products = await db.collection('products-composed').find().toArray();
+        return NextResponse.json(products, { status: 200 });
+    }catch (error) {
+        console.error('Error fetching products:', error);
+        return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    }
 }
 
 // POST /api/products-composed - adaugă un produs compus nou
@@ -37,6 +42,7 @@ export async function POST(req: NextRequest) {
             }
         }
     }
+    
     const result = await db.collection('products-composed').insertOne(post_data);
     if (!result.acknowledged) {
         return NextResponse.json({ error: 'Failed to insert product' }, { status: 500 });

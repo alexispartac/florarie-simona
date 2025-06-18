@@ -61,7 +61,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
         offset: ["start start", "end start"],
     });
     const [visible, setVisible] = useState<boolean>(false);
-
+    
     useMotionValueEvent(scrollY, "change", (latest) => {
         if (latest > 100) {
             setVisible(true);
@@ -228,6 +228,7 @@ export const MobileNavMenu = ({
     items,
     className,
     isOpen,
+    onClose,
 }: MobileNavMenuProps) => {
     const [hovered, setHovered] = useState<number | null>(null);
     
@@ -263,7 +264,7 @@ export const MobileNavMenu = ({
                                     >
                                         {
                                             item.category?.map((category, idx) => (
-                                                <Link key={idx} className="py-[4px]" href={`/${category.link}/${category.name}`}>{category.name}</Link>
+                                                <Link key={idx} onClick={() => onClose()} className="py-[4px]" href={`/${category.link}/${category.name}`}>{category.name}</Link>
                                             ))
                                         }
                                     </motion.div>

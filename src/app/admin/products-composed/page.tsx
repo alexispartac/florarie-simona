@@ -296,12 +296,14 @@ const EditComposedProductModal = ({
                     value={editProduct.title}
                     onChange={(e) => handleChange('title', e.currentTarget.value)}
                     required
+                    autoFocus={false}
                 />
                 <TextInput
                     label="Cod stoc"
                     value={editProduct.stockCode}
                     onChange={(e) => handleChange('stockCode', e.currentTarget.value)}
                     required
+                    autoFocus={false}
                 />
                 <Checkbox
                     label="În stoc"
@@ -322,6 +324,7 @@ const EditComposedProductModal = ({
                 />
                 <TextInput
                     label="Culori"
+                    autoFocus={false}
                     value={editProduct.colors}
                     onChange={(e) => handleChange('colors', e.currentTarget.value)}
                 />
@@ -539,12 +542,14 @@ const ListOfProducts = ({
                     >
                         <TextInput
                             label="Denumire"
+                            autoFocus={false}
                             value={newProduct.title}
                             onChange={e => handleNewProductChange('title', e.currentTarget.value)}
                             required
                         />
                         <TextInput
                             label="Cod stoc"
+                            autoFocus={false}
                             value={newProduct.stockCode}
                             onChange={e => handleNewProductChange('stockCode', e.currentTarget.value)}
                             required
@@ -569,6 +574,7 @@ const ListOfProducts = ({
                         <TextInput
                             label="Culori"
                             value={newProduct.colors}
+                            autoFocus={false}
                             onChange={e => handleNewProductChange('colors', e.currentTarget.value)}
                         />
                         <Checkbox
@@ -648,7 +654,7 @@ const ListOfProducts = ({
                 }}
             />
             <div className="flex flex-col gap-2 my-2">
-                <div className="flex flex-row justify-between gap-2">
+                <div className="flex flex-row justify-between gap-2 md:visible invisible">
                     <span className="w-1/10">IMAGINE</span>
                     <span className="w-1/10">DENUMIRE</span>
                     <span className="w-1/10">COD STOC</span>
@@ -747,6 +753,7 @@ const CategoryModal = ({
                     value={categoryName}
                     onChange={(e) => setCategoryName(e.currentTarget.value)}
                     required
+                    autoFocus={false}
                 />
                 <Select
                     label="Link"

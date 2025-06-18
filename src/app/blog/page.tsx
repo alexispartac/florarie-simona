@@ -239,6 +239,7 @@ const CreatePostModal = ({
           value={newPost.title}
           onChange={(e) => handleChange('title', e.currentTarget.value)}
           required
+          autoFocus={false}
         />
         <Textarea
           label="Descriere"

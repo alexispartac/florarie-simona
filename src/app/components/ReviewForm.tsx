@@ -90,6 +90,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
                         label="NUME"
                         required
                         placeholder="Nume"
+                        autoFocus={false}
                         key={reviewForm.key('name')}
                         {...reviewForm.getInputProps('name')}
                     />
@@ -97,6 +98,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
                         label="EMAIL"
                         required
                         placeholder="Email"
+                        autoFocus={false}
+                        type="email"
                         key={reviewForm.key('email')}
                         {...reviewForm.getInputProps('email')}
                     />

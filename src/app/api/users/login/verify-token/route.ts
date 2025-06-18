@@ -8,7 +8,7 @@ import clientPromise from '@/app/components/lib/mongodb';
 export async function POST(req: NextRequest) {
     try {
         const client = await clientPromise;
-    const db = client.db('florarie'); 
+        const db = client.db('florarie'); 
         const usersCollection = db.collection('users');
         const { token } = await req.json();
 

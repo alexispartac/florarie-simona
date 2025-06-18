@@ -83,6 +83,7 @@ export default function Contact() {
                                     name="first_name"
                                     type="text"     
                                     required 
+                                    autoFocus={false}
                                     key={formContact.key('first_name')}
                                     {...formContact.getInputProps('first_name')}
                                     placeholder={"Ex: Partac"}
@@ -96,6 +97,7 @@ export default function Contact() {
                                     name="last_name"
                                     type="text"
                                     required
+                                    autoFocus={false}
                                     key={formContact.key('last_name')}
                                     {...formContact.getInputProps('last_name')}
                                     placeholder={"Ex: Alexis-Matei"}
@@ -110,6 +112,7 @@ export default function Contact() {
                                         name="email"
                                         type="email"
                                         required 
+                                        autoFocus={false}
                                         key={formContact.key('email')}
                                         {...formContact.getInputProps('email')}
                                         placeholder={"Ex: exemplu@gmail.com"}
@@ -124,6 +127,7 @@ export default function Contact() {
                                     id="phone-number"
                                     name="phone_number"
                                     required
+                                    autoFocus={false}
                                     key={formContact.key('phone_number')}
                                     {...formContact.getInputProps('phone_number')}
                                     type="text"

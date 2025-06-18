@@ -110,24 +110,28 @@ const CheckoutPage = () => {
                     placeholder="Introdu numele tău"
                     required
                     {...checkoutForm.getInputProps('clientName')}
+                    autoFocus={false}
                 />
                 <TextInput
                     label="Email"
                     placeholder="Introdu email-ul tău"
                     required
                     {...checkoutForm.getInputProps('clientEmail')}
+                    autoFocus={false}
                 />
                 <TextInput
                     label="Telefon"
                     placeholder="Introdu numărul de telefon"
                     required
                     {...checkoutForm.getInputProps('clientPhone')}
+                    autoFocus={false}
                 />
                 <TextInput
                     label="Adresă"
                     placeholder="Introdu adresa de livrare"
                     required
                     {...checkoutForm.getInputProps('clientAddress')}
+                    autoFocus={false}
                 />
                 <Textarea
                     label="Note"

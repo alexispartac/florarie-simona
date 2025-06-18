@@ -201,7 +201,7 @@ const Product = () => {
     return (
         <div>
             <PopUp />
-                <div className='mx-8 md:mx-30'>
+                <div className='mx-8 mt-28 md:mx-30'>
                     <Bread itemsBread={itemsBread} />
                 </div>
                 <div className="relative mx-8 md:mx-40 grid md:grid-cols-2 grid-cols-1 my-10">
