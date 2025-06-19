@@ -47,13 +47,12 @@ const Cart = () => {
   const handleFinalizeOrder = async () => {
     setIsChecking(true); // Activează loader-ul
     try {
-      console.log(cartItems)
       axios.post(URL_CHECK_COMPOSITION, cartItems).then((response) => {
         if (response.status === 200) {
           router.push('/checkout');
           setModalOpened(false);
         } else {
-          setModalMessage('Stocurile nu sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
+          setModalMessage('Ne pare rau stocurile nu sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
           setModalOpened(true);
         }
       });

@@ -42,7 +42,7 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('cartItems'); // Golim localStorage
+        localStorage.setItem('cartItems', JSON.stringify([]));
       }
     },
     setCart: (state, action: PayloadAction<CartItem[]>) => {

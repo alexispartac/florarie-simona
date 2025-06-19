@@ -1,5 +1,5 @@
 'use client';
-import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader } from '@mantine/core';
+import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar } from '@mantine/core';
 import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-react";
 import React, { useCallback, useState, useMemo } from "react";
 import { ForgotPasswordModal } from "./ForgotPassword";
@@ -164,13 +164,21 @@ export const AuthModal = React.memo(() => {
         } else if (user.isAuthenticated) {
             return (
                 <div className="flex flex-col gap-4 my-5">
+                    <Group>
+                        <Avatar size={50} radius="xl" src={user.userInfo.avatar} alt={`${user.userInfo.name} ${user.userInfo.surname}`} />
+                        <div>
+                            <h1 className="text-lg font-bold">Salut, </h1>
+                            <h3>{user.userInfo.name} {user.userInfo.surname}</h3>
+                        </div>
+                    </Group>
+                    <Anchor href='/user'> Actualizeaza Profilul</Anchor>
                     <Group justify="space-between">
                         <Button onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
-                    </Group>
+                    </Group> 
                 </div>
             );
         }
-    }, [user.isAuthenticated, typeAuth, handleSignUp, handleLogin, formSignUp, formLogIn, check, loginError, loading, logout, close]);
+    }, [user.isAuthenticated, user.userInfo.avatar, user.userInfo.name, user.userInfo.surname, typeAuth, handleSignUp, formSignUp, check, loginError, loading, handleLogin, formLogIn, logout, close]);
 
     return (
         <>
@@ -189,7 +197,11 @@ export const AuthModal = React.memo(() => {
                 </Button>
             )}
             <NavbarButton variant="secondary" onClick={open}>
-                <IconUser size={18} />
+                {
+                    user.isAuthenticated ?
+                    <IconUser color='blue' size={18} /> :
+                    <IconUser size={18} />
+                }
             </NavbarButton>
         </>
     );

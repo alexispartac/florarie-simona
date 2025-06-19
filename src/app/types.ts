@@ -65,6 +65,7 @@ export interface User {
     orders: number,
     createdAt: string,
     password: string,
+    avatar?: string; 
 }
 
 export interface BlogPostProps {

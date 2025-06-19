@@ -14,6 +14,7 @@ export interface User {
         address?: string;
         order?: number;
         createdAt?: string;
+        avatar?: string; 
     }
     isAuthenticated: boolean;
 }
@@ -35,6 +36,7 @@ const UserContext = createContext<UserContextType>({
             address: '',
             order: 0,
             createdAt: '',
+            avatar: '',
         },
         isAuthenticated: false,
     },
@@ -53,6 +55,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             address: '',
             order: 0,
             createdAt: '',
+            avatar: '',
         },
         isAuthenticated: false,
     });
