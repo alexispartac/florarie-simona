@@ -133,26 +133,26 @@ const NewOfers = () => {
                     cei dragi!
                 </p>
                 <a
-                    href="features/Promotions"
+                    href="features/Promotii"
                     className="inline-block mt-3 px-4 py-2 bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
                 >
                     Comandă acum
                 </a>
             </div>
             <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
-            <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descoperă ofertele saptamanii!</h3>
-            <p className="text-white shadow-5xl text-shadow-xl font-semibold">
-                Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
-            </p>
-            <a
-                href="features/Promotii%20saptamanale"
-                className="inline-block mt-3 px-4 py-2  bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
-            >
-                Comandă acum
-            </a>
-        </div>
-    </div >
-  );
+                <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descoperă ofertele saptamanii!</h3>
+                <p className="text-white shadow-5xl text-shadow-xl font-semibold">
+                    Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
+                </p>
+                <a
+                    href="features/Promotii%20saptamanale"
+                    className="inline-block mt-3 px-4 py-2  bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
+                >
+                    Comandă acum
+                </a>
+            </div>
+        </div >
+    );
 };
 
 const Content = () => {
