@@ -69,6 +69,7 @@ const CheckoutPage = () => {
                 router.push('/cart'); 
                 return;
             }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }catch(error: any) {
             if (error?.response?.data?.message) {
                 setModalMessage(
