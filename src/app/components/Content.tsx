@@ -7,7 +7,6 @@ import { motion } from "motion/react";
 import Link from 'next/link';
 import React from 'react'
 
-
 export function InfiniteMovingCardsDemo() {
     const { data: groupedProducts, isLoading, isError } = useProductsGroupedByCategory();
     const testimonials = groupedProducts

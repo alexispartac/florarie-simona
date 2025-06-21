@@ -43,7 +43,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
   };
 
   const handleAddToCart = () => {
-    dispatch(addItem(itemForCart)); // Adaugă produsul cu cantitatea 1
+    dispatch(addItem(itemForCart)); 
   };
 
   const isInCart = cartItems.some((cartItem) => cartItem.id === item.id);
@@ -76,7 +76,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
       <Button
         w={'100%'}
         size="compact-md"
-        bg={isInCart ? '#b756a63f' : '#b756a64f'}
+        bg={isInCart ? '#b756a63f' : '#b756a6'}
         disabled={isOutOfStock || isInCart}
         onClick={handleAddToCart}
       >

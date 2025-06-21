@@ -93,8 +93,12 @@ const Cart = () => {
               <div
                 key={item.id}
                 className="flex flex-col md:flex-row items-center justify-between border-b pb-4"
-              >
-                <Group className="flex items-center mb-2">
+                >
+                <Group 
+                  className="flex items-center mb-2"
+                  onClick={() => router.push(`/product/${item.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <img
                     src={item.image}
                     alt={item.title}

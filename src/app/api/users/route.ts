@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
         address: data.address || '',
         order: data.order || 0,
         createdAt: new Date(),
+
     }
     const result = await db.collection('users').insertOne(post_data);
     if (!result.acknowledged) {
@@ -44,11 +45,21 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     const client = await clientPromise;
     const db = client.db('florarie'); 
-    const data = await req.json();
+    const data: User = await req.json();
 
     const { id, ...updateData } = data;
+    const updateDataWithoutPassword: Partial<User> = {
+        name: updateData.name,
+        surname: updateData.surname,
+        email: updateData.email,
+        phone: updateData.phone || '',
+        address: updateData.address || '',
+        orders: updateData.orders || 0,
+        
+    };
 
-    const result = await db.collection('users').updateOne({ _id: id }, { $set: updateData });
+    const result = await db.collection('users').updateOne({ id: id }, { $set: updateDataWithoutPassword });
+
     if (!result.acknowledged) {
         return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
     }

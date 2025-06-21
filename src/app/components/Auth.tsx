@@ -32,6 +32,7 @@ export const useHandleLogout = () => {
                 address: '',
                 order: 0,
                 createdAt: '',
+                avatar: '', 
             },
             isAuthenticated: false,
         });
@@ -171,7 +172,7 @@ export const AuthModal = React.memo(() => {
                             <h3>{user.userInfo.name} {user.userInfo.surname}</h3>
                         </div>
                     </Group>
-                    <Anchor href='/user'> Actualizeaza Profilul</Anchor>
+                    <Anchor component={Link} onClick={() => close()} href='/user'> Actualizeaza Profilul</Anchor>
                     <Group justify="space-between">
                         <Button onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
                     </Group> 

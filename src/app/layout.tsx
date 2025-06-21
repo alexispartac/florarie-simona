@@ -1,5 +1,6 @@
 import { RestrictedComponents } from "./components/RestrictedComponents";
 import { AutoConnectWithToken } from "./components/AutoConnectWithToken";
+import AnimateForBegin from "./components/ui/animate-for-begin";
 import ReduxProvider from "./cart/components/ReduxProvider";
 import { UserProvider } from "./components/ContextUser";
 import QueryProvider from "./components/QueryProvider";
@@ -42,6 +43,7 @@ export default function RootLayout({
               <QueryProvider>
                 <ReduxProvider>
                   <AutoConnectWithToken />
+                  <AnimateForBegin />
                   <RestrictedComponents>
                     {children}
                   </RestrictedComponents>

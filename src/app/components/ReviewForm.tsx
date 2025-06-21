@@ -74,7 +74,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
     return (
         <div
             ref={reviewRef}
-            className={`relative color-theme md:px-10 py-10 mx-8 md:mx-16 my-10 transition-transform duration-300 ease-in-out ${isVisible ? 'scale-105' : 'scale-100'
+            className={`relative color-theme md:px-10 py-10 mx-8 md:mx-16 rounded-2xl shadow-sm my-10 transition-transform duration-300 ease-in-out ${isVisible ? 'scale-105' : 'scale-100'
                 }`}
         >
             <div className="my-5">

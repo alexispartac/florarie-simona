@@ -36,6 +36,7 @@ export const AutoConnectWithToken = () => {
                                     order: loginResponse.data.user.order,
                                     createdAt: loginResponse.data.user.createdAt,
                                     password: '',
+                                    avatar: loginResponse.data.user.avatar || '',
                                 },
                                 isAuthenticated: true,
                             });
