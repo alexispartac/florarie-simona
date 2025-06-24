@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { SidebarDemo } from '../components/SideBar';
-import { Modal, Button, Group, Select } from '@mantine/core';
+import { Modal, Button, Group, Select, TextInput } from '@mantine/core';
 import { ClientProps } from '../types';
 
 const sortOptions = [
@@ -55,9 +55,9 @@ const Page = () => {
     const [clients, setClients] = useState<ClientProps[]>([]);
     const [sortBy, setSortBy] = useState('createdAt');
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        // Fetch clients from API
         const fetchClients = async () => {
             const response = await fetch(URL_USERS);
             const data = await response.json();
@@ -66,8 +66,12 @@ const Page = () => {
         fetchClients();
     }, []);
 
-    // Sortare clienți după opțiuni
-    const sortedClients = [...clients].sort((a, b) => {
+    // Filtrare clienți după termenul de căutare
+    const filteredClients = clients.filter(client =>
+        `${client.name} ${client.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const sortedClients = [...filteredClients].sort((a, b) => {
         let aValue: number | string = '';
         let bValue: number | string = '';
         if (sortBy === 'createdAt') {
@@ -88,8 +92,16 @@ const Page = () => {
                 <div className="flex h-full w-full flex-1 flex-col gap-4 rounded-tl-2xl border border-neutral-200 bg-white p-4 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
                     <div className="text-center py-4 bg-gray-100 dark:bg-neutral-800 rounded-lg">
                         <h1 className="text-lg font-bold">CONTURI DE UTILIZATORI</h1>
+                        <p>NUMAR DE CLIENTI: {clients.length} </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-2">
+                        <TextInput
+                            label="Caută după nume"
+                            placeholder="Ex: Ion Popescu"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full sm:w-48"
+                        />
                         <Select
                             label="Sortează după"
                             data={sortOptions}
@@ -111,7 +123,7 @@ const Page = () => {
                         <span className="w-1/4">Email</span>
                         <span className="w-1/4 text-right">Acțiuni</span>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col overflow-y-auto h-[calc(100vh-400px)]">
                         {sortedClients.map(client => (
                             <ClientRow key={client.id} client={client} />
                         ))}

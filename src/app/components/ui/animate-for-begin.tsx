@@ -8,7 +8,7 @@ export default function AnimateForBegin() {
     React.useEffect(() => {
         const timer = setTimeout(() => {
             setShow(false);
-        }, 2000); // Hide after 3 seconds
+        }, 2000); 
 
         return () => clearTimeout(timer); // Cleanup the timer on unmount
     }, []);

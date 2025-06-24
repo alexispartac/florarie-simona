@@ -1,9 +1,11 @@
 'use client';
 import { IconBrandFacebook, IconBrandInstagram, IconBrandWhatsapp, IconHeartBroken, IconHeartFilled } from '@tabler/icons-react';
 import { Modal, TextInput, Textarea, Button, Group } from '@mantine/core';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useBlogPosts } from '../components/hooks/fetchBlogPosts';
 import { IconDotsVertical } from '@tabler/icons-react';
-import { useUser } from '../components/ContextUser'; 
+import { storage } from '../components/lib/firebase'; 
+import { useUser } from '../components/ContextUser';
 import React, { useState, useEffect } from 'react';
 import { Menu, ActionIcon } from '@mantine/core';
 import { Loader, Tooltip } from '@mantine/core';
@@ -12,8 +14,15 @@ import { BlogPostProps } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-
+// Initialize Firebase
 const URL_BLOG_POSTS = '/api/post';
+
+// Funcția de upload în Firebase Storage
+const uploadImageToFirebase = async (file: File) => {
+  const storageRef = ref(storage, `images/blog/${file.name}`); // pot adauga uuidv4()
+  await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
+}
+// Funcția de get din Firebase Storage (opțională, dacă vrei să listezi imaginile)
 const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: string) => void }) => {
   const { user } = useUser();
   const surname = user.userInfo.surname;
@@ -57,19 +66,13 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
     }
   };
 
-  const getPageUrl = () => {
-    return window.location.href;
-  }
-
   const shareOnWhatsApp = () => {
-    const pageUrl = getPageUrl();
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(pageUrl)}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(window.location.href)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const shareOnFacebook = () => {
-    const pageUrl = getPageUrl();
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
     window.open(facebookUrl, '_blank');
   };
 
@@ -90,16 +93,11 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           <Menu>
             <Menu.Target>
               <ActionIcon>
-                <div className='bg-white'>
-                  <IconDotsVertical color='black' />
-                </div>
+                <IconDotsVertical color="black" />
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item
-                color="red"
-                onClick={() => onDelete(post.id)}
-              >
+              <Menu.Item color="red" onClick={() => onDelete(post.id)}>
                 Șterge postarea
               </Menu.Item>
             </Menu.Dropdown>
@@ -113,17 +111,12 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           className="w-full rounded-xl h-50dvh object-cover pb-5"
         />
       )}
-      {/* likes */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-5">
-          <Tooltip
-            withArrow
-            transitionProps={{ duration: 200 }}
-            label={`${user.isAuthenticated ? 'Like' : 'Trebuie să intri în cont'}`}
-          >
+          <Tooltip label={user.isAuthenticated ? 'Like' : 'Trebuie să intri în cont'}>
             <button
               onClick={handleLike}
-              disabled={post.likedBy.includes(surname) || post.dislikedBy.includes(surname) || !user.isAuthenticated}
+              disabled={!user.isAuthenticated || post.likedBy.includes(surname) || post.dislikedBy.includes(surname)}
               className="flex items-center space-x-2 cursor-pointer"
             >
               <IconHeartFilled color={post.likedBy.includes(surname) ? 'red' : 'gray'} />
@@ -132,7 +125,7 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           </Tooltip>
           <button
             onClick={handleDislike}
-            disabled={post.dislikedBy.includes(surname) || post.likedBy.includes(surname) || !user.isAuthenticated}
+            disabled={!user.isAuthenticated || post.dislikedBy.includes(surname) || post.likedBy.includes(surname)}
             className="flex items-center space-x-2 cursor-pointer"
           >
             <IconHeartBroken />
@@ -141,26 +134,27 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
         </div>
         <div className="flex items-center space-x-2">
           <p>Share on</p>
-          <button className="flex items-center space-x-2 cursor-pointer" onClick={shareOnWhatsApp}>
+          <button onClick={shareOnWhatsApp}>
             <IconBrandWhatsapp />
           </button>
-          <button className="flex items-center space-x-2 cursor-pointer" onClick={shareOnFacebook}>
+          <button onClick={shareOnFacebook}>
             <IconBrandFacebook />
           </button>
-          <button className="flex items-center space-x-2 cursor-pointer" onClick={shareOnInstagram}>
+          <button onClick={shareOnInstagram}>
             <IconBrandInstagram />
           </button>
         </div>
       </div>
       <p className="text-gray-400 text-xs">
         Utilizatori care au dat like: {post.likedBy.slice(0, 3).join(', ')}{' '}
-        {post.likedBy.length - 3 > 0 ? `+${post.likedBy.length - 3}` : ''}
+        {post.likedBy.length > 3 ? `+${post.likedBy.length - 3}` : ''}
       </p>
     </div>
   );
 };
 
 const Content = ({ blogPosts, onDelete }: { blogPosts: BlogPostProps[], onDelete: (id: string) => void }) => {
+
   return (
     <div className="my-20 md:mx-[25%] p-4">
       <div className="flex flex-col">
@@ -213,14 +207,16 @@ const CreatePostModal = ({
     setNewPost((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        handleChange('image', ev.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        await uploadImageToFirebase(file); 
+        const imageUrl = await getDownloadURL(ref(storage, `images/blog/${file.name}`)); 
+        handleChange('image', imageUrl); 
+      } catch (error) {
+        console.error('Eroare la încărcarea imaginii:', error);
+      }
     }
   };
 
@@ -239,7 +235,6 @@ const CreatePostModal = ({
           value={newPost.title}
           onChange={(e) => handleChange('title', e.currentTarget.value)}
           required
-          autoFocus={false}
         />
         <Textarea
           label="Descriere"
@@ -300,6 +295,14 @@ const Blog = () => {
     }
   };
 
+  const handleCreatePost = async (newPost: BlogPostProps) => {
+    try {
+      await axios.post(URL_BLOG_POSTS, newPost);
+    } catch (error) {
+      console.error('Error creating blog post:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -311,7 +314,7 @@ const Blog = () => {
   if (isError) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p>A apărut o eroare la încărcarea produselor.</p>
+        <p>A apărut o eroare la încărcarea postărilor.</p>
       </div>
     );
   }
@@ -323,14 +326,6 @@ const Blog = () => {
       </div>
     );
   }
-
-  const handleCreatePost = async (newPost: BlogPostProps) => {
-    try {
-      await axios.post(URL_BLOG_POSTS, newPost);
-    } catch (error) {
-      console.error('Error creating blog post:', error);
-    }
-  };
 
   return (
     <div>

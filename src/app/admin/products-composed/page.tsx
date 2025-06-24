@@ -17,6 +17,8 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ComposedProductProps, ProductProps } from '../types';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from '../../components/lib/firebase'; 
 
 const URL_SIMPLE_PRODUCTS = '/api/products';
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
@@ -34,6 +36,13 @@ if (typeof window !== 'undefined') {
     });
 }
 
+const uploadImageToFirebase = async (file: File): Promise<string> => {
+    const storageRef = ref(storage, `images/${uuidv4()}`); // Creează un path unic pentru imagine
+    await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
+    const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
+    return downloadURL;
+};
+
 // Componentă reutilizabilă pentru gestionarea unei categorii
 const CategoryFormSection = ({
     categoryName,
@@ -50,6 +59,21 @@ const CategoryFormSection = ({
     onChange: (updatedCategory: typeof categoryData) => void;
     simpleProducts: ProductProps[];
 }) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            try {
+                const imageUrl = await uploadImageToFirebase(file); 
+                onChange({
+                    ...categoryData,
+                    imageSrc: imageUrl, 
+                });
+            } catch (error) {
+                console.error('Eroare la încărcarea imaginii:', error);
+            }
+        }
+    };
+
     return (
         <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
             <legend className="text-lg font-medium px-2">Categorie {categoryName}</legend>
@@ -60,19 +84,7 @@ const CategoryFormSection = ({
                 <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (ev) => {
-                                onChange({
-                                    ...categoryData,
-                                    imageSrc: ev.target?.result as string,
-                                });
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    }}
+                    onChange={handleImageChange}
                     className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
                 />
                 {categoryData.imageSrc && (
