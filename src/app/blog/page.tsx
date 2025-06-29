@@ -1,10 +1,10 @@
 'use client';
 import { IconBrandFacebook, IconBrandInstagram, IconBrandWhatsapp, IconHeartBroken, IconHeartFilled } from '@tabler/icons-react';
 import { Modal, TextInput, Textarea, Button, Group } from '@mantine/core';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { useBlogPosts } from '../components/hooks/fetchBlogPosts';
 import { IconDotsVertical } from '@tabler/icons-react';
-import { storage } from '../components/lib/firebase'; 
+import { storage } from '../components/lib/firebase';
 import { useUser } from '../components/ContextUser';
 import React, { useState, useEffect } from 'react';
 import { Menu, ActionIcon } from '@mantine/core';
@@ -14,15 +14,26 @@ import { BlogPostProps } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-// Initialize Firebase
 const URL_BLOG_POSTS = '/api/post';
 
 // Funcția de upload în Firebase Storage
-const uploadImageToFirebase = async (file: File) => {
-  const storageRef = ref(storage, `images/blog/${file.name}`); // pot adauga uuidv4()
+const uploadImageToFirebase = async (file: File): Promise<string> => {
+  const storageRef = ref(storage, `images/blog/${uuidv4()}`); // Creează un path unic pentru imagine
   await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
-}
-// Funcția de get din Firebase Storage (opțională, dacă vrei să listezi imaginile)
+  const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
+  return downloadURL;
+};
+
+// Funcția de ștergere a imaginii din Firebase Storage
+const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
+  try {
+    const imageRef = ref(storage, imagePath); 
+    await deleteObject(imageRef); console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
+  } catch (error) {
+    console.error(`Eroare la ștergerea imaginii ${imagePath}:`, error);
+  }
+};
+
 const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: string) => void }) => {
   const { user } = useUser();
   const surname = user.userInfo.surname;
@@ -175,6 +186,7 @@ const CreatePostModal = ({
   onClose: () => void;
   onSave: (newPost: BlogPostProps) => void;
 }) => {
+  const [addImage, setAddImage] = React.useState<boolean>(false);
   const [newPost, setNewPost] = useState<BlogPostProps>({
     id: uuidv4(),
     title: '',
@@ -210,12 +222,24 @@ const CreatePostModal = ({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setAddImage(true);
       try {
-        await uploadImageToFirebase(file); 
-        const imageUrl = await getDownloadURL(ref(storage, `images/blog/${file.name}`)); 
-        handleChange('image', imageUrl); 
+        const imageUrl = await uploadImageToFirebase(file); // Încarcă imaginea în Firebase Storage
+        setAddImage(false);
+        handleChange('image', imageUrl); // Salvează URL-ul imaginii
       } catch (error) {
         console.error('Eroare la încărcarea imaginii:', error);
+      }
+    }
+  };
+
+  const handleDeleteImage = async (imagePath: string) => {
+    if (newPost.image) {
+      try {
+        await deleteImageFromFirebase(imagePath); // Șterge imaginea din Firebase Storage
+        handleChange('image', null); // Elimină URL-ul imaginii din starea locală
+      } catch (error) {
+        console.error('Eroare la ștergerea imaginii:', error);
       }
     }
   };
@@ -251,17 +275,24 @@ const CreatePostModal = ({
             className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
           />
           {newPost.image && (
-            <img
-              src={newPost.image as string}
-              alt="Preview"
-              className="mt-2 w-32 h-32 object-cover rounded border"
-            />
+            <>
+              <img
+                src={newPost.image as string}
+                alt="Preview"
+                className="mt-2 w-32 h-32 object-cover rounded border"
+                />
+              <p className="text-gray-500 text-xs mt-1">Imaginea a fost încărcată cu succes, daca doriti sa anulati postrea stergeti mai intai imaginea.</p>
+            </>
+
+          )}
+          {!newPost.image && addImage && (
+            <Loader type='dots' />
           )}
           {newPost.image && (
             <Button
               variant="outline"
               color="red"
-              onClick={() => handleChange('image', null)}
+              onClick={() => handleDeleteImage(newPost.image as string)}
               className="mt-2"
             >
               Șterge imaginea

@@ -9,6 +9,7 @@ import {
     Select,
     Textarea,
     MultiSelect,
+    Loader,
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { SidebarDemo } from '../components/SideBar';
@@ -17,10 +18,11 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ComposedProductProps, ProductProps } from '../types';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
 import { storage } from '../../components/lib/firebase'; 
+import { useAllProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory';
+import { useSimpleProducts } from '@/app/components/hooks/fetchSimpleProducts';
 
-const URL_SIMPLE_PRODUCTS = '/api/products';
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
 
@@ -37,10 +39,20 @@ if (typeof window !== 'undefined') {
 }
 
 const uploadImageToFirebase = async (file: File): Promise<string> => {
-    const storageRef = ref(storage, `images/${uuidv4()}`); // Creează un path unic pentru imagine
+    const storageRef = ref(storage, `images/compose-products/${uuidv4()}`); // Creează un path unic pentru imagine
     await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
     const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
     return downloadURL;
+};
+
+const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
+    try {
+        const imageRef = ref(storage, imagePath); // Creează referința către imaginea din Firebase Storage
+        await deleteObject(imageRef); // Șterge imaginea
+        console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
+    } catch (error) {
+        console.error(`Eroare la ștergerea imaginii ${imagePath}:`, error);
+    }
 };
 
 // Componentă reutilizabilă pentru gestionarea unei categorii
@@ -59,11 +71,14 @@ const CategoryFormSection = ({
     onChange: (updatedCategory: typeof categoryData) => void;
     simpleProducts: ProductProps[];
 }) => {
+    const [addImage, setAddImage] = React.useState<boolean>(false);
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        setAddImage(true);
         if (file) {
             try {
                 const imageUrl = await uploadImageToFirebase(file); 
+                setAddImage(false);
                 onChange({
                     ...categoryData,
                     imageSrc: imageUrl, 
@@ -77,7 +92,6 @@ const CategoryFormSection = ({
     return (
         <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
             <legend className="text-lg font-medium px-2">Categorie {categoryName}</legend>
-
             {/* Imagine */}
             <div className="mb-4">
                 <label className="block mb-1 font-medium">Imagine</label>
@@ -87,28 +101,36 @@ const CategoryFormSection = ({
                     onChange={handleImageChange}
                     className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
                 />
-                {categoryData.imageSrc && (
-                    <div className="mt-2">
-                        <img
-                            src={categoryData.imageSrc}
-                            alt={`Preview ${categoryName}`}
-                            className="w-32 h-32 object-cover rounded border"
-                        />
-                        <Button
-                            variant="outline"
-                            color="red"
-                            onClick={() =>
-                                onChange({
-                                    ...categoryData,
-                                    imageSrc: '',
-                                })
-                            }
-                            className="mt-2"
-                        >
-                            Șterge imaginea
-                        </Button>
-                    </div>
-                )}
+                {
+                    !categoryData.imageSrc && addImage && (
+                        <Loader type='dots'/>
+                    )
+                }
+                {
+                    categoryData.imageSrc && (
+                        <div className="mt-2">
+                            <img
+                                src={categoryData.imageSrc}
+                                alt={`Preview ${categoryName}`}
+                                className="w-32 h-32 object-cover rounded border"
+                            />
+                            <Button
+                                variant="outline"
+                                color="red"
+                                onClick={async () => {
+                                    await deleteImageFromFirebase(categoryData.imageSrc); 
+                                    onChange({
+                                        ...categoryData,
+                                        imageSrc: '',
+                                    });
+                                }}
+                                className="mt-2"
+                            >
+                                Șterge imaginea
+                            </Button>
+                        </div>
+                    )
+                }
             </div>
 
             {/* Compoziție */}
@@ -845,11 +867,11 @@ const DeleteCategoryModal = ({
 };
 
 const Page = () => {
-    const [products, setProducts] = useState<ComposedProductProps[]>([]);
-    const [simpleProducts, setSimpleProducts] = useState<ProductProps[]>([]);
     const [categoryModalOpen, { open: openCategoryModal, close: closeCategoryModal }] = useDisclosure(false);
     const [deleteCategoryModalOpen, { open: openDeleteCategoryModal, close: closeDeleteCategoryModal }] = useDisclosure(false);
     const [composedCategories, setComposedCategories] = useState<string[]>([]);
+    const { data: composedProducts, isLoading, isError } = useAllProducts();
+    const { data: simpleProducts,} = useSimpleProducts();
 
     const fetchComposedCategories = () => {
         try {
@@ -861,25 +883,27 @@ const Page = () => {
         }
     };
 
-    function fetchSimpleProducts() {
-        try {
-            axios.get(URL_SIMPLE_PRODUCTS).then((response) => {
-                setSimpleProducts(response.data);
-            });
-        } catch (error) {
-            console.error('Error fetching simple products:', error);
-        }
+    useEffect(() => {
+        fetchComposedCategories();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader color="blue" size="lg" />
+            </div>
+        );
     }
 
-    function fetchProducts() {
-        try {
-            axios.get(URL_COMPOSED_PRODUCTS).then((response) => {
-                setProducts(response.data);
-            });
-        } catch (error) {
-            console.error('Error fetching composed products:', error);
-        }
+    if (isError) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>A apărut o eroare la încărcarea produselor.</p>
+            </div>
+        );
     }
+
+
 
     const handleAddCategory = (category: string) => {
         setComposedCategories((prev) => [...prev, category]);
@@ -900,11 +924,7 @@ const Page = () => {
         }
     };
 
-    useEffect(() => {
-        fetchSimpleProducts();
-        fetchProducts();
-        fetchComposedCategories();
-    }, []);
+    
 
     return (
         <SidebarDemo>
@@ -938,7 +958,7 @@ const Page = () => {
                     />
                     <ListOfProducts
                         simpleProducts={simpleProducts}
-                        products={products}
+                        products={composedProducts}
                         composedCategories={composedCategories}
                     />
                 </div>

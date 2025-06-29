@@ -5,6 +5,8 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import { useUser } from "../components/ContextUser";
 import React, { useState, useCallback } from "react";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { storage } from "../components/lib/firebase"; // Importă configurația Firebase
 
 const URL_UPDATE_USER = "/api/users";
 
@@ -21,11 +23,31 @@ type UserFormValues = {
     order: number;
 };
 
+// Funcția pentru încărcarea imaginii în Firebase Storage
+const uploadImageToFirebase = async (file: File): Promise<string> => {
+    const storageRef = ref(storage, `avatars/${file.name}-${Date.now()}`); // Creează un path unic pentru imagine
+    await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
+    const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
+    return downloadURL;
+};
+
+// Funcția pentru ștergerea imaginii din Firebase Storage
+const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
+    try {
+        const imageRef = ref(storage, imagePath); // Creează referința către imaginea din Firebase Storage
+        await deleteObject(imageRef); // Șterge imaginea
+        console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
+    } catch (error) {
+        console.error(`Eroare la ștergerea imaginii ${imagePath}:`, error);
+    }
+};
+
 const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFormValues>> }) => {
     const [notification, setNotification] = useState<string | null>(null);
+    const [addImage, setAddImage] = useState<boolean>(false); // Starea pentru încărcarea imaginii
     const [loading, setLoading] = useState(false); // Starea pentru loader
     const [modalOpened, setModalOpened] = useState(false); // Starea pentru modal
-    const { setUser } = useUser();
+    const {setUser } = useUser();
 
     const handleUpdateUser = useCallback(async () => {
         setLoading(true); // Activează loader-ul
@@ -47,22 +69,42 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
             console.error("Error updating user data:", error);
             setNotification("A apărut o eroare. Te rugăm să încerci din nou.");
         } finally {
-            setLoading(false); 
-            setModalOpened(false); 
+            setLoading(false);
+            setModalOpened(false);
             setTimeout(() => setNotification(null), 2000);
         }
     }, [form.values]);
 
-    const handleAvatarChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                form.setFieldValue("avatar", reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            setLoading(true);
+            setAddImage(true)
+            try {
+                const imageUrl = await uploadImageToFirebase(file); // Încarcă imaginea în Firebase Storage
+                setAddImage(false);
+                form.setFieldValue("avatar", imageUrl); // Salvează URL-ul imaginii
+            } catch (error) {
+                console.error("Eroare la încărcarea avatarului:", error);
+            } finally {
+                setLoading(false);
+            }
         }
-    }, []);
+    }, [form]);
+
+    const handleDeleteAvatar = useCallback(async (imagePath: string) => {
+        if (form.values.avatar) {
+            setLoading(true);
+            try {
+                await deleteImageFromFirebase(imagePath); // Șterge imaginea din Firebase Storage
+                form.setFieldValue("avatar", ""); // Elimină URL-ul imaginii din starea locală
+            } catch (error) {
+                console.error("Eroare la ștergerea avatarului:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [form]);
 
     return (
         <>
@@ -101,6 +143,23 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                     style={{ display: "none" }}
                     id="avatar-upload"
                 />
+                {form.values.avatar && (
+                    <Button
+                        variant="outline"
+                        color="red"
+                        onClick={() => handleDeleteAvatar(form.values.avatar as string)}
+                        disabled={loading}
+                        size="xs"
+                        className="m-2 block"
+                    >
+                        {loading ? <Loader size="xs" color="white" /> : "Șterge avatar"}
+                    </Button>
+                )}
+                {
+                    !form.values.avatar && addImage && (
+                        <Loader size="xs" mx={5} color="blue" className="mt-2" />
+                    )
+                }
                 <TextInput w={'99%'} label="Nume" {...form.getInputProps("name")} />
                 <TextInput w={'99%'} label="Prenume" {...form.getInputProps("surname")} />
                 <TextInput w={'99%'} label="Email" type="email" {...form.getInputProps("email")} disabled />

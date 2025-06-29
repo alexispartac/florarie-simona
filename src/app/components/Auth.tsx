@@ -20,7 +20,7 @@ export const useHandleLogout = () => {
     const { setUser } = useUser();
 
     const logout = useCallback(() => {
-        setCookie('login', '', { path: '/', maxAge: -1 }); 
+        setCookie('login', '', { path: '/', maxAge: -1 });
         setUser({
             userInfo: {
                 id: '',
@@ -32,7 +32,7 @@ export const useHandleLogout = () => {
                 address: '',
                 order: 0,
                 createdAt: '',
-                avatar: '', 
+                avatar: '',
             },
             isAuthenticated: false,
         });
@@ -49,6 +49,8 @@ export const AuthModal = React.memo(() => {
     const [typeAuth, setTypeAuth] = useState<'login' | 'signin'>('login');
     const [loginError, setLoginError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [successModalOpened, setSuccessModalOpened] = useState(false); // Modal pentru mesajul de succes
+    const [successMessage, setSuccessMessage] = useState<string>(''); // Mesajul de succes
     const logout = useHandleLogout();
 
     const formSignUp = useForm({
@@ -84,6 +86,8 @@ export const AuthModal = React.memo(() => {
                     isAuthenticated: true,
                 });
                 setCookie('login', response.data.token, { path: '/' });
+                setSuccessMessage('Autentificare reușită! Bine ai venit!');
+                setSuccessModalOpened(true); // Deschide modalul de succes
                 close();
             }
         } catch (error) {
@@ -101,6 +105,8 @@ export const AuthModal = React.memo(() => {
             if (response.status === 200 || response.status === 201) {
                 login({ email: data.email, password: data.password });
                 formSignUp.reset();
+                setSuccessMessage('Înregistrare reușită! Bine ai venit!');
+                setSuccessModalOpened(true); // Deschide modalul de succes
                 close();
             }
         } catch (error) {
@@ -175,7 +181,7 @@ export const AuthModal = React.memo(() => {
                     <Anchor component={Link} onClick={() => close()} href='/user'> Actualizeaza Profilul</Anchor>
                     <Group justify="space-between">
                         <Button onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
-                    </Group> 
+                    </Group>
                 </div>
             );
         }
@@ -186,6 +192,17 @@ export const AuthModal = React.memo(() => {
             <Modal opened={opened} onClose={close} title="Cont de utilizator" withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
                 {loading && <Group justify="center" my="md"><Loader color="blue" /></Group>}
                 {renderForm}
+            </Modal>
+            <Modal
+                opened={successModalOpened}
+                onClose={() => setSuccessModalOpened(false)}
+                centered
+                overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+            >
+                <p className='flex justify-center'>{successMessage}</p>
+                <Group justify="center" mt="md">
+                    <Button onClick={() => setSuccessModalOpened(false)}>OK</Button>
+                </Group>
             </Modal>
             {user.isAuthenticated && user.userInfo.email === "matei.partac45@gmail.com" && (
                 <Button variant="transparent" p={0} color="red">
@@ -200,8 +217,8 @@ export const AuthModal = React.memo(() => {
             <NavbarButton variant="secondary" onClick={open}>
                 {
                     user.isAuthenticated ?
-                    <IconUser color='blue' size={18} /> :
-                    <IconUser size={18} />
+                        <IconUser color='blue' size={18} /> :
+                        <IconUser size={18} />
                 }
             </NavbarButton>
         </>

@@ -5,6 +5,12 @@ import { ItemProps } from '../../types'
 
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
+
+const fetchAllProducts = async () => {
+    const response = await axios.get(URL_COMPOSED_PRODUCTS);
+    return response.data;
+}
+
 const fetchProductsGroupedByCategory = async () => {
     const response = await axios.get(URL_COMPOSED_PRODUCTS);
     const products = response.data;
@@ -36,6 +42,13 @@ const fetchPromotionProducts = async () => {
 
     return promotionProducts;
 }
+
+export const useAllProducts = () => {
+    return useQuery({
+        queryKey: ['allProducts'],
+        queryFn: fetchAllProducts,
+    });
+};
 
 export const useProductsGroupedByCategory = () => {
     return useQuery({

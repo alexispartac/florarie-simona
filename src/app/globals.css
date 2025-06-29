@@ -94,36 +94,43 @@
 }
 
 @layer utilities {
-  .custom{
+  .custom {
     color: var(--text-color);
     background-color: transparent;
   }
-  .important{
+
+  .important {
     color: var(--text-important)
   }
-  .content{
+
+  .content {
     background-color: var(--foreground);
     color: var(--text-color);
   }
-  .color-theme{
+
+  .color-theme {
     background-color: #b756a64f;
     color: var(--text-basic)
   }
-  .color-tooltip{
+
+  .color-tooltip {
     background-color: #b756a54f;
     color: gray;
   }
-  .button{
+
+  .button {
     border: 2px;
     border-color: #b756a5;
   }
-  .aurora{
+
+  .aurora {
     animation: aurora 10s infinite alternate;
     background: radial-gradient(circle, #e5a5de74, #e7e7e7),
-                radial-gradient(circle, #ff7eb43e, #fafafa);
+      radial-gradient(circle, #ff7eb43e, #fafafa);
     background-size: 200% 200%;
 
   }
+
   .scroll-container {
     overflow: hidden;
     white-space: nowrap;
@@ -131,10 +138,10 @@
     align-items: center;
     position: relative;
   }
-  
+
   .scroll-content {
     display: inline-flex;
-    gap: 2rem; /* Spațiere între elemente */
+    gap: 2rem;
     animation: scroll var(--animation-duration, 30s) var(--animation-direction, forwards) linear infinite;
   }
 
@@ -157,116 +164,131 @@
     background: #fdf6f0;
   }
 
-.flower {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
+  .flower {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
 
-.center {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 40px; height: 40px;
-  background: #ffcc00;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  animation: bloom 2s ease-in-out infinite;
-}
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    background: #ffcc00;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: 0 0 10px rgb(255, 255, 255);
+    animation: bloom 2s ease-in-out infinite;
+  }
 
-.petal {
-  position: absolute;
-  left:37%;
-  width: 40px; height: 40px;
-  visibility: hidden;
-  background: linear-gradient(to bottom, #ff7eb4, #b756a54f);
-  border-radius: 50% 50% 0 0;
-  transform-origin: bottom center;
-  animation: bloom 2s ease-in-out infinite;
-}
+  .petal {
+    position: absolute;
+    left: 37%;
+    width: 40px;
+    height: 40px;
+    visibility: hidden;
+    background: linear-gradient(to bottom, #ff7eb4, #ff77e689);
+    border-radius: 50% 50% 0 0;
+    transform-origin: bottom center;
+    animation: bloom 2s ease-in-out infinite;
+  }
 
-.petal::before {
-  content: '';
-  position: absolute;
-  visibility: visible;
-  width: 50px;
-  height: 100px;
-  background: linear-gradient(to bottom, #ff7eb4, #b756a54f);
-  border-radius: 50% 50% 0 0;
-  transform-origin: bottom center;
-  transform: rotate(180deg) ;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  .petal::before {
+    content: '';
+    position: absolute;
+    visibility: visible;
+    width: 50px;
+    height: 100px;
+    background: linear-gradient(to bottom, #ff7eb4, #ff77e689);
+    border-radius: 50% 50% 0 0;
+    transform-origin: bottom center;
+    transform: rotate(180deg);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
-}
+  }
 
-.petal:nth-child(0)::before {
-  transform: rotate(0deg);
-  animation-delay: 0s;
-}
-.petal:nth-child(1)::before {
-  transform: rotate(24deg);
-  animation-delay: 0.1s;
-}
-.petal:nth-child(2)::before {
-  transform: rotate(48deg);
-  animation-delay: 0.2s;
-}
-.petal:nth-child(3)::before {
-  transform: rotate(72deg);
-  animation-delay: 0.3s;
-}
-.petal:nth-child(4)::before {
-  transform: rotate(96deg);
-  animation-delay: 0.4s;
-}
-.petal:nth-child(5)::before {
-  transform: rotate(120deg);
-  animation-delay: 0.5s;
-}
-.petal:nth-child(6)::before {
-  transform: rotate(144deg);
-  animation-delay: 0.6s;
-}
-.petal:nth-child(7)::before {
-  transform: rotate(168deg);
-  animation-delay: 0.7s;
-}   
-.petal:nth-child(8)::before {
-  transform: rotate(192deg);
-  animation-delay: 0.8s;
-}
-.petal:nth-child(9)::before {
-  transform: rotate(216deg);
-  animation-delay: 0.9s;
-}
-.petal:nth-child(10)::before {
-  transform: rotate(240deg);
-  animation-delay: 1s;
-}
-.petal:nth-child(11)::before {
-  transform: rotate(264deg);
-  animation-delay: 1.1s;
-}
-.petal:nth-child(12)::before {
-  transform: rotate(288deg);
-  animation-delay: 1.2s;
-}
-.petal:nth-child(13)::before {
-  transform: rotate(312deg);
-  animation-delay: 1.3s;
-}
-.petal:nth-child(14)::before {
-  transform: rotate(336deg);
-  animation-delay: 1.4s;
-}
-.petal:nth-child(15)::before {
-  transform: rotate(360deg);
-  animation-delay: 1.5s;
-}
+  .petal:nth-child(0)::before {
+    transform: rotate(0deg);
+    animation-delay: 0s;
+  }
 
-/* Poziționare și delay manual pentru 15 petale */
+  .petal:nth-child(1)::before {
+    transform: rotate(24deg);
+    animation-delay: 0.1s;
+  }
 
+  .petal:nth-child(2)::before {
+    transform: rotate(48deg);
+    animation-delay: 0.2s;
+  }
+
+  .petal:nth-child(3)::before {
+    transform: rotate(72deg);
+    animation-delay: 0.3s;
+  }
+
+  .petal:nth-child(4)::before {
+    transform: rotate(96deg);
+    animation-delay: 0.4s;
+  }
+
+  .petal:nth-child(5)::before {
+    transform: rotate(120deg);
+    animation-delay: 0.5s;
+  }
+
+  .petal:nth-child(6)::before {
+    transform: rotate(144deg);
+    animation-delay: 0.6s;
+  }
+
+  .petal:nth-child(7)::before {
+    transform: rotate(168deg);
+    animation-delay: 0.7s;
+  }
+
+  .petal:nth-child(8)::before {
+    transform: rotate(192deg);
+    animation-delay: 0.8s;
+  }
+
+  .petal:nth-child(9)::before {
+    transform: rotate(216deg);
+    animation-delay: 0.9s;
+  }
+
+  .petal:nth-child(10)::before {
+    transform: rotate(240deg);
+    animation-delay: 1s;
+  }
+
+  .petal:nth-child(11)::before {
+    transform: rotate(264deg);
+    animation-delay: 1.1s;
+  }
+
+  .petal:nth-child(12)::before {
+    transform: rotate(288deg);
+    animation-delay: 1.2s;
+  }
+
+  .petal:nth-child(13)::before {
+    transform: rotate(312deg);
+    animation-delay: 1.3s;
+  }
+
+  .petal:nth-child(14)::before {
+    transform: rotate(336deg);
+    animation-delay: 1.4s;
+  }
+
+  .petal:nth-child(15)::before {
+    transform: rotate(360deg);
+    animation-delay: 1.5s;
+  }
 }
 
 body {

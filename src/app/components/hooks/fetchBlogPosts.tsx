@@ -8,7 +8,8 @@ const URL_BLOG_POSTS = '/api/post';
 const fetchBlogPosts = async () => {
     const response = await axios.get(URL_BLOG_POSTS);
     const posts: BlogPostProps[] = response.data;
-    return posts;
+    const reversePosts = posts.reverse();
+    return reversePosts;
 }
 
 export const useBlogPosts = () => {

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Group, Text, Divider, Loader, Modal } from '@mantine/core';
+import { Button, Group, Text, Divider, Loader, Modal, Stack } from '@mantine/core';
 import { RootState, removeItem, setCart, updateQuantity } from './components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { IconArrowLeft } from '@tabler/icons-react';
@@ -151,8 +151,8 @@ const Cart = () => {
         <Divider my="sm" />
         <div className="flex flex-col md:flex-row justify-center items-center mt-6">
           {cartItems.length > 0 ? (
-            <>
-              <Text className="text-lg md:text-xl font-bold mb-4 md:mb-0">
+            <Stack align='center' m={'auto'} >
+              <Text className="text-lg md:text-xl font-bold mb-4 md:mb-0">  
                 Total: {totalPrice} RON
               </Text>
               {!user.isAuthenticated && (
@@ -169,7 +169,7 @@ const Cart = () => {
               >
                 {isChecking ? <Loader color="white" size="sm" /> : 'Finalizează comanda'}
               </Button>
-            </>
+            </Stack>
           ) : (
             <Button
               color="blue"

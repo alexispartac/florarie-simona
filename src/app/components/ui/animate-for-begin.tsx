@@ -23,7 +23,6 @@ export default function AnimateForBegin() {
                 ))}
                 <div className="center"></div>
             </div>
-            {/* vreau sa coboare logoul cu motion.div sub floare */}
             <div className="w-[50%] md:w-[20%] flex justify-center items-center mt-4">
                 <img src="/logo.jpg" alt="Logo" className="logo" />
             </div>

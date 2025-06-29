@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest) {
         phone: updateData.phone || '',
         address: updateData.address || '',
         orders: updateData.orders || 0,
-        
+        avatar: updateData.avatar || '',
     };
 
     const result = await db.collection('users').updateOne({ id: id }, { $set: updateDataWithoutPassword });
