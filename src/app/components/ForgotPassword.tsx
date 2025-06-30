@@ -29,7 +29,7 @@ export const ForgotPasswordModal = () => {
         setStep('verify'); 
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
       setError('A apărut o eroare.');
     } finally {
       setLoading(false);
@@ -48,7 +48,7 @@ export const ForgotPasswordModal = () => {
         setStep('reset'); 
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
       setError('Codul este invalid sau a expirat.');
     } finally {
       setLoading(false);
@@ -73,7 +73,7 @@ export const ForgotPasswordModal = () => {
         close(); 
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
       setError('A apărut o eroare la resetarea parolei.');
     } finally {
       setLoading(false);
@@ -82,7 +82,7 @@ export const ForgotPasswordModal = () => {
 
   return (
     <>
-      <Anchor onClick={open} size="xs">
+      <Anchor c={"#b756a6"} onClick={open} size="xs">
         Ai uitat parola?
       </Anchor>
       <Modal
@@ -113,6 +113,8 @@ export const ForgotPasswordModal = () => {
             <Button
               onClick={handleForgotPassword}
               className="mt-4"
+              variant='filled'
+              color={"#b756a6"}
               fullWidth
               disabled={loading || !email}
             >
@@ -136,6 +138,8 @@ export const ForgotPasswordModal = () => {
             <Button
               onClick={handleVerifyCode}
               className="mt-4"
+              variant='filled'
+              color={"#b756a6"}
               fullWidth
               disabled={loading || !code}
             >
@@ -171,6 +175,8 @@ export const ForgotPasswordModal = () => {
               onClick={handleResetPassword}
               className="mt-4"
               fullWidth
+              variant='filled'
+              color={"#b756a6"}
               disabled={loading || !newPassword || !confirmPassword}
             >
               {loading ? <Loader size="sm" /> : 'Resetează Parola'}

@@ -44,7 +44,7 @@ const SimpleProductRow = ({
         close();
       })
       .catch((error) => {
-        console.error("Error updating product:", error);
+        console.log("Error updating product:", error);
       });
   };
 
@@ -236,7 +236,7 @@ const ListOfProducts = (
       close();
       alert("Produs adăugat cu succes!");
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.log('Error adding product:', error);
     }
   };
 
@@ -247,7 +247,7 @@ const ListOfProducts = (
         alert("Produs șters cu succes!");
       })
       .catch((error) => {
-        console.error('Error deleting product:', error);
+        console.log('Error deleting product:', error);
       });
   };
 
@@ -472,7 +472,7 @@ const Page = () => {
         alert(`Categoria "${category}" a fost adăugată cu succes!`);
       })
       .catch((error) => {
-        console.error('Error adding category:', error);
+        console.log('Error adding category:', error);
         alert('A apărut o eroare la adăugarea categoriei. Te rugăm să încerci din nou.');
       });
   };
@@ -484,7 +484,7 @@ const Page = () => {
         alert(`Categoria "${category}" a fost ștearsă cu succes!`);
       })
       .catch((error) => {
-        console.error('Error deleting category:', error);
+        console.log('Error deleting category:', error);
         alert('A apărut o eroare la ștergerea categoriei. Te rugăm să încerci din nou.');
       });
   };

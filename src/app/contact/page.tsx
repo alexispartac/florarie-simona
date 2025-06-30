@@ -52,7 +52,7 @@ export default function Contact() {
                 formContact.reset(); // Resetăm formularul după succes
             }
         } catch (error) {
-            console.error('Error sending email:', error);
+            console.log('Error sending email:', error);
             setNotification({
                 visible: true,
                 type: 'error',
@@ -154,8 +154,10 @@ export default function Contact() {
                                 <Checkbox
                                     className="text-sm/6 text-gray-600"
                                     onChange={() => setAgreed(!agreed)}
+                                    c={"#b756a6"} 
+                                    color={"#b756a6"} 
                                     required
-                                    label="Sunt de acord cu Termenii si conditiile."
+                                    label="Sunt de-acord cu termenii si conditiile."
                                 />
                             </div>
                         </div>
@@ -163,6 +165,8 @@ export default function Contact() {
                         <div className="mt-10">
                             <Button
                                 type="submit"
+                                variant="filled"
+                                color={"#b756a6"}
                                 disabled={!agreed || loading}
                                 className="block w-full rounded-md color-theme px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-gray-300 hover:text-white  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >

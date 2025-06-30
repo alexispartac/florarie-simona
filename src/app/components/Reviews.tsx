@@ -30,7 +30,7 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                 setReviews(data);
 
             } catch (err) {
-                console.error('Error fetching reviews:', err);
+                console.log('Error fetching reviews:', err);
                 setError('A apărut o eroare la încărcarea recenziilor.');
             } finally {
                 setLoading(false);
@@ -45,20 +45,16 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
     }
 
     if (error) {
-        <Link href={'/404'}/>
+        <Link href={'/404'} />
     }
 
     if (reviews.length === 0) {
         return <p className='flex justify-center'>Nu există recenzii pentru acest produs.</p>;
     }
 
-
-
     const loadMore = () => {
         setVisibleReviews((prev) => Math.min(prev + 5, reviews.length));
     };
-
-    console.log('Reviews:', reviews);
 
     return (
         <div className="reviews bg-gray-25 p-8 md:p-15 rounded-lg shadow-md">
@@ -67,7 +63,7 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                 {reviews.slice(0, visibleReviews).map((review) => (
                     <li key={review.id} className="p-6 bg-[#b756a64f] shadow-md rounded-lg">
                         <Group dir='row' w={"100%"}>
-                            <Avatar w={"3%"} src={review.avatar}/>
+                            <Avatar w={"3%"} src={review.avatar} />
                             <Stack w={"80%"} gap={0}>
                                 <Group justify='space-between' w={"100%"}>
                                     <p className="font-sans text-lg text-gray-900">{review.name}</p>

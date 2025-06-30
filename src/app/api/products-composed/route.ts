@@ -10,8 +10,8 @@ export async function GET() {
     try {
         const products = await db.collection('products-composed').find().toArray();
         return NextResponse.json(products, { status: 200 });
-    }catch (error) {
-        console.error('Error fetching products:', error);
+    } catch (error) {
+        console.log('Error fetching products:', error);
         return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
     }
 }
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
             }
         }
     }
-    
+
     const result = await db.collection('products-composed').insertOne(post_data);
     if (!result.acknowledged) {
         return NextResponse.json({ error: 'Failed to insert product' }, { status: 500 });

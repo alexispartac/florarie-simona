@@ -45,7 +45,7 @@ export const AutoConnectWithToken = () => {
                     }
                 })
                 .catch((error) => {
-                    console.error('Error verifying token', error);
+                    console.log('Error verifying token', error);
                     logout();
                 });
         } else {
@@ -53,7 +53,7 @@ export const AutoConnectWithToken = () => {
         }
     }, []);
 
-    return null; 
+    return null;
 };
 
 

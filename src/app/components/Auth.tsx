@@ -91,7 +91,7 @@ export const AuthModal = React.memo(() => {
                 close();
             }
         } catch (error) {
-            console.error('Error logging in', error);
+            console.log('Error logging in', error);
             setLoginError("Eroare la autentificare.");
         } finally {
             setLoading(false);
@@ -110,7 +110,7 @@ export const AuthModal = React.memo(() => {
                 close();
             }
         } catch (error) {
-            console.error('Error signing up', error);
+            console.log('Error signing up', error);
             setLoginError("Eroare la înregistrare.");
         } finally {
             setLoading(false);
@@ -147,11 +147,11 @@ export const AuthModal = React.memo(() => {
                     <TextInput autoFocus={false} w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: matei.partac45@gmail.com" {...formSignUp.getInputProps('email')} />
                     <TextInput autoFocus={false} w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
                     <TextInput autoFocus={false} w={'99%'} label='Confirmare parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
-                    <Checkbox label="Sunt de-acord cu termenii si conditiile" checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
+                    <Checkbox c={"#b756a6"} color={"#b756a6"} label="Sunt de-acord cu termenii si conditiile" checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
                     {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
                     <Group justify="space-between">
-                        <Anchor onClick={() => setTypeAuth('login')} size="xs">Ai deja un cont? Login</Anchor>
-                        <Button type="submit" disabled={loading || !check}>Sign in</Button>
+                        <Anchor c={"#b756a6"} onClick={() => setTypeAuth('login')} size="xs">Ai deja un cont? Login</Anchor>
+                        <Button type="submit" variant='filled' color='#b756a6' disabled={loading || !check}>Sign in</Button>
                     </Group>
                 </form>
             );
@@ -162,9 +162,9 @@ export const AuthModal = React.memo(() => {
                     <TextInput autoFocus={false} w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
                     {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
                     <Group justify="space-between">
-                        <Anchor onClick={() => setTypeAuth('signin')} size="xs">Nu ai cont? SignUp</Anchor>
+                        <Anchor c={"#b756a6"} onClick={() => setTypeAuth('signin')} size="xs">Nu ai cont? SignUp</Anchor>
                         <ForgotPasswordModal />
-                        <Button type="submit" disabled={loading}>Login</Button>
+                        <Button type="submit" variant='filled' color='#b756a6' disabled={loading}>Login</Button>
                     </Group>
                 </form>
             );

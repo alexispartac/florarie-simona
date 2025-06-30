@@ -4,7 +4,7 @@ import clientPromise from '@/app/components/lib/mongodb';
 
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const params = await context.params;
     const id = params?.id;
 
@@ -16,19 +16,19 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
     try {
         const product = await db.collection('products-composed').findOne({ id: id });
         if (!product) {
-            console.error("Product not found");
+            console.log("Product not found");
             return NextResponse.json({ error: 'Produsul nu a fost găsit' }, { status: 404 });
         }
         return NextResponse.json(product, { status: 200 });
     } catch (error) {
-        console.error('Error fetching product:', error);
+        console.log('Error fetching product:', error);
         return NextResponse.json({ error: 'Eroare la preluarea produsului' }, { status: 500 });
     }
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const { id } = await params;
     const data = await req.json();
 
@@ -42,14 +42,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         }
         return NextResponse.json({ message: 'Produs actualizat cu succes' }, { status: 200 });
     } catch (error) {
-        console.error('Error updating product:', error);
+        console.log('Error updating product:', error);
         return NextResponse.json({ error: 'Eroare la actualizarea produsului' }, { status: 500 });
     }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const { id } = await params;
 
     try {
@@ -59,7 +59,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
         return NextResponse.json({ message: 'Produs șters cu succes' }, { status: 200 });
     } catch (error) {
-        console.error('Error deleting product:', error);
+        console.log('Error deleting product:', error);
         return NextResponse.json({ error: 'Eroare la ștergerea produsului' }, { status: 500 });
     }
 }

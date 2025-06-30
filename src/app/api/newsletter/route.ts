@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const newsletterCollection = db.collection('newsletter');
 
     // Verificăm dacă email-ul există deja
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: 'Email-ul a fost adăugat cu succes la newsletter' });
   } catch (error) {
-    console.error('Eroare la adăugarea email-ului:', error);
+    console.log('Eroare la adăugarea email-ului:', error);
     return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
   }
 }
@@ -41,7 +41,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const newsletterCollection = db.collection('newsletter');
 
     // Ștergem email-ul din baza de date
@@ -53,7 +53,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ message: 'Email-ul a fost șters cu succes din newsletter' });
   } catch (error) {
-    console.error('Eroare la ștergerea email-ului:', error);
+    console.log('Eroare la ștergerea email-ului:', error);
     return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
   }
 }

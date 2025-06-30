@@ -20,7 +20,7 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
           setComposedCategories(response.data);
         }
       } catch (error) {
-        console.error('Error fetching composed categories', error);
+        console.log('Error fetching composed categories', error);
       }
     };
     fetchComposedCategories();
@@ -41,7 +41,7 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
 
   const groupedCategories = groupCategoriesByLink(composedCategories);
 
-  const navItems : { name: string, link: string, category: { name: string, link: string }[] }[] = [
+  const navItems: { name: string, link: string, category: { name: string, link: string }[] }[] = [
     {
       name: "Buchete",
       link: "bouquets",
@@ -109,7 +109,7 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
             items={navItems}
             isOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-           />
+          />
         </MobileNav>
       </Navbar>
       {children}

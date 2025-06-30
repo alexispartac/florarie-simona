@@ -7,7 +7,7 @@ import { useUser } from './ContextUser';
 
 interface ReviewFormProps {
     productTitle: string;
-    onSubmit: (values: { name: string; email: string; message: string; avatar: string}) => Promise<void>;
+    onSubmit: (values: { name: string; email: string; message: string; avatar: string }) => Promise<void>;
 }
 
 const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
@@ -16,7 +16,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle'); // Stare pentru succes sau eroare
     const [isVisible, setIsVisible] = useState(false); // Stare pentru vizibilitatea completă a secțiunii
     const reviewRef = useRef<HTMLDivElement>(null); // Referință pentru secțiunea de recenzie
-    
+
     const reviewForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -42,7 +42,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
             setStatus('success'); // Setăm starea la succes
             reviewForm.reset(); // Resetăm formularul după succes
         } catch (error) {
-            console.error('Error submitting review:', error);
+            console.log('Error submitting review:', error);
             setStatus('error'); // Setăm starea la eroare
         } finally {
             setLoading(false);

@@ -8,6 +8,7 @@ import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import { useUser } from '../components/ContextUser';
 
 const URL_ORDERS = '/api/orders';
 
@@ -18,15 +19,16 @@ const CheckoutPage = () => {
     const [modalMessage, setModalMessage] = useState(''); // Mesajul afișat în modal
     const router = useRouter();
     const dispatch = useDispatch();
+    const { user } = useUser();
 
     const checkoutForm = useForm<OrderProps>({
         initialValues: {
             id: uuidv4(),
             orderNumber: 'neimplementat',
-            clientName: '',
-            clientEmail: '',
-            clientPhone: '',
-            clientAddress: '',
+            clientName: user.userInfo.name + ' ' + user.userInfo.surname || '',
+            clientEmail: user.userInfo.email || '',
+            clientPhone: user.userInfo.phone || '',
+            clientAddress: user.userInfo.address || '',
             orderDate: new Date().toISOString(),
             deliveryDate: '',
             info: '',
@@ -124,14 +126,14 @@ const CheckoutPage = () => {
             >
                 Înapoi
             </Button>
-            <h1 className="text-2xl font-bold mb-4">Finalizare Comandă</h1>
+            <h1 className="text-2xl font-bold my-4">Finalizare Comandă</h1>
             <form onSubmit={checkoutForm.onSubmit(handleSubmit)}>
                 <TextInput
                     label="Nume"
                     placeholder="Introdu numele tău"
-                    required
                     {...checkoutForm.getInputProps('clientName')}
                     autoFocus={false}
+                    required
                 />
                 <TextInput
                     label="Email"
@@ -164,7 +166,7 @@ const CheckoutPage = () => {
                     <ul className="border rounded p-4">
                         {checkoutForm.values.products.map((product, idx) => (
                             <li key={idx} className="flex justify-between mb-2">
-                                <span>{product.title} (x{product.quantity})</span>
+                                <span>{product.title} - {product.category}  (x{product.quantity})</span>
                                 <span>{product.price * product.quantity} RON</span>
                             </li>
                         ))}

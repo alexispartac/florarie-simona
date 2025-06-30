@@ -19,7 +19,7 @@ import type { ComposedProductProps, ProductProps } from '../types';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
 import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
-import { storage } from '../../components/lib/firebase'; 
+import { storage } from '../../components/lib/firebase';
 import { useAllProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory';
 import { useSimpleProducts } from '@/app/components/hooks/fetchSimpleProducts';
 
@@ -51,7 +51,7 @@ const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
         await deleteObject(imageRef); // Șterge imaginea
         console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
     } catch (error) {
-        console.error(`Eroare la ștergerea imaginii ${imagePath}:`, error);
+        console.log(`Eroare la ștergerea imaginii ${imagePath}:`, error);
     }
 };
 
@@ -79,14 +79,14 @@ const CategoryFormSection = ({
         setAddImage(true);
         if (file) {
             try {
-                const imageUrl = await uploadImageToFirebase(file, idProduct); 
+                const imageUrl = await uploadImageToFirebase(file, idProduct);
                 setAddImage(false);
                 onChange({
                     ...categoryData,
-                    imageSrc: imageUrl, 
+                    imageSrc: imageUrl,
                 });
             } catch (error) {
-                console.error('Eroare la încărcarea imaginii:', error);
+                console.log('Eroare la încărcarea imaginii:', error);
             }
         }
     };
@@ -105,7 +105,7 @@ const CategoryFormSection = ({
                 />
                 {
                     !categoryData.imageSrc && addImage && (
-                        <Loader type='dots'/>
+                        <Loader type='dots' />
                     )
                 }
                 {
@@ -120,7 +120,7 @@ const CategoryFormSection = ({
                                 variant="outline"
                                 color="red"
                                 onClick={async () => {
-                                    await deleteImageFromFirebase(categoryData.imageSrc); 
+                                    await deleteImageFromFirebase(categoryData.imageSrc);
                                     onChange({
                                         ...categoryData,
                                         imageSrc: '',
@@ -530,7 +530,7 @@ const ListOfProducts = ({
             });
             close();
         } catch (error) {
-            console.error('Error adding product:', error);
+            console.log('Error adding product:', error);
         }
     };
 
@@ -547,7 +547,7 @@ const ListOfProducts = ({
             );
             setEditModalOpen(false);
         } catch (error) {
-            console.error('Error updating product:', error);
+            console.log('Error updating product:', error);
         }
     };
 
@@ -559,7 +559,7 @@ const ListOfProducts = ({
                 alert('Produs șters cu succes!');
             })
             .catch((error) => {
-                console.error('Error deleting product:', error);
+                console.log('Error deleting product:', error);
             });
     };
 
@@ -776,7 +776,7 @@ const CategoryModal = ({
         try {
             axios.post(URL_COMPOSED_CATEGORIES, { name: categoryName, link: link });
         } catch (error) {
-            console.error('Error adding category:', error);
+            console.log('Error adding category:', error);
             alert('A apărut o eroare la adăugarea categoriei. Te rugăm să încerci din nou.');
             return;
         }
@@ -879,7 +879,7 @@ const Page = () => {
     const [deleteCategoryModalOpen, { open: openDeleteCategoryModal, close: closeDeleteCategoryModal }] = useDisclosure(false);
     const [composedCategories, setComposedCategories] = useState<string[]>([]);
     const { data: composedProducts, isLoading, isError } = useAllProducts();
-    const { data: simpleProducts,} = useSimpleProducts();
+    const { data: simpleProducts, } = useSimpleProducts();
 
     const fetchComposedCategories = () => {
         try {
@@ -887,7 +887,7 @@ const Page = () => {
                 setComposedCategories(response.data.map((cat: { name: string }) => cat.name));
             });
         } catch (error) {
-            console.error('Error fetching composed categories:', error);
+            console.log('Error fetching composed categories:', error);
         }
     };
 
@@ -926,13 +926,13 @@ const Page = () => {
                     alert(`Categoria "${category}" a fost ștearsă cu succes!`);
                 });
             } catch (error) {
-                console.error('Error deleting category:', error);
+                console.log('Error deleting category:', error);
                 alert('A apărut o eroare la ștergerea categoriei.');
             }
         }
     };
 
-    
+
 
     return (
         <SidebarDemo>

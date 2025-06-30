@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const usersCollection = db.collection('users');
 
     // Verificăm dacă utilizatorul există
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: 'Parola a fost resetată cu succes' });
   } catch (error) {
-    console.error('Eroare la resetarea parolei:', error);
+    console.log('Eroare la resetarea parolei:', error);
     return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
   }
 }

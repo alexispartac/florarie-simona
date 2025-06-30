@@ -8,7 +8,7 @@ import clientPromise from '@/app/components/lib/mongodb';
 export async function POST(req: NextRequest) {
     try {
         const client = await clientPromise;
-        const db = client.db('florarie'); 
+        const db = client.db('florarie');
         const usersCollection = db.collection('users');
         const { token } = await req.json();
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: `Token invalid sau expirat: ${error}` }, { status: 401 });
         }
     } catch (error) {
-        console.error('Eroare la verificarea token-ului:', error);
+        console.log('Eroare la verificarea token-ului:', error);
         return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
     }
 }

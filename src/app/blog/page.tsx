@@ -27,10 +27,10 @@ const uploadImageToFirebase = async (file: File): Promise<string> => {
 // Funcția de ștergere a imaginii din Firebase Storage
 const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
   try {
-    const imageRef = ref(storage, imagePath); 
+    const imageRef = ref(storage, imagePath);
     await deleteObject(imageRef); console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
   } catch (error) {
-    console.error(`Eroare la ștergerea imaginii ${imagePath}:`, error);
+    console.log(`Eroare la ștergerea imaginii ${imagePath}:`, error);
   }
 };
 
@@ -53,7 +53,7 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           likedBy: [...post.likedBy, surname],
         });
       } catch (error) {
-        console.error('Eroare la actualizarea like-ului:', error);
+        console.log('Eroare la actualizarea like-ului:', error);
       }
     }
   };
@@ -72,7 +72,7 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           dislikedBy: [...post.dislikedBy, surname],
         });
       } catch (error) {
-        console.error('Eroare la actualizarea dislike-ului:', error);
+        console.log('Eroare la actualizarea dislike-ului:', error);
       }
     }
   };
@@ -228,7 +228,7 @@ const CreatePostModal = ({
         setAddImage(false);
         handleChange('image', imageUrl); // Salvează URL-ul imaginii
       } catch (error) {
-        console.error('Eroare la încărcarea imaginii:', error);
+        console.log('Eroare la încărcarea imaginii:', error);
       }
     }
   };
@@ -239,7 +239,7 @@ const CreatePostModal = ({
         await deleteImageFromFirebase(imagePath); // Șterge imaginea din Firebase Storage
         handleChange('image', null); // Elimină URL-ul imaginii din starea locală
       } catch (error) {
-        console.error('Eroare la ștergerea imaginii:', error);
+        console.log('Eroare la ștergerea imaginii:', error);
       }
     }
   };
@@ -280,7 +280,7 @@ const CreatePostModal = ({
                 src={newPost.image as string}
                 alt="Preview"
                 className="mt-2 w-32 h-32 object-cover rounded border"
-                />
+              />
               <p className="text-gray-500 text-xs mt-1">Imaginea a fost încărcată cu succes, daca doriti sa anulati postrea stergeti mai intai imaginea.</p>
             </>
 
@@ -322,7 +322,7 @@ const Blog = () => {
       await axios.delete(URL_BLOG_POSTS, { data: { id } });
       window.location.reload();
     } catch (error) {
-      console.error('Error deleting blog post:', error);
+      console.log('Error deleting blog post:', error);
     }
   };
 
@@ -330,7 +330,7 @@ const Blog = () => {
     try {
       await axios.post(URL_BLOG_POSTS, newPost);
     } catch (error) {
-      console.error('Error creating blog post:', error);
+      console.log('Error creating blog post:', error);
     }
   };
 

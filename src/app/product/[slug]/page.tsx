@@ -73,7 +73,7 @@ const Product = () => {
                     });
                 })
                 .catch(error => {
-                    console.error("Error fetching product:", error);
+                    console.log("Error fetching product:", error);
                 })
                 .finally(() => {
                     setLoading(false);
@@ -116,8 +116,9 @@ const Product = () => {
             const response = await axios.post(URL_CHECK_COMPOSITION, [itemForCart]);
             if (response.status === 200) {
                 dispatch(addItem(itemForCart));
-                setModalMessage('Produsul a fost adăugat în coș!'); 
-            } else if (response.status === 201) {;
+                setModalMessage('Produsul a fost adăugat în coș!');
+            } else if (response.status === 201) {
+                ;
                 setModalMessage(`Cantitatea necesară nu este disponibilă`);
             }
         } catch (error) {
@@ -135,10 +136,10 @@ const Product = () => {
             if (response.status === 200) {
                 console.log('Review submitted successfully:', response.data);
             } else {
-                console.error('Unexpected response:', response);
+                console.log('Unexpected response:', response);
             }
         } catch (error) {
-            console.error('Error submitting review:', error);
+            console.log('Error submitting review:', error);
         }
     };
 
@@ -201,198 +202,198 @@ const Product = () => {
     return (
         <div>
             <PopUp />
-                <div className='mx-8 mt-28 md:mx-30'>
-                    <Bread itemsBread={itemsBread} />
-                </div>
-                <div className="relative mx-8 md:mx-40 grid md:grid-cols-2 grid-cols-1 my-10">
-                    {/* Afișarea imaginii în funcție de categoria selectată */}
-                    {activeButton.button1 && product.info_category.basic.imageSrc && (
-                        <img
-                            src={product.info_category.basic.imageSrc}
-                            alt={`${product.title} - Basic`}
-                            className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
-                        />
-                    )}
-                    {activeButton.button2 && product.info_category.standard.imageSrc && (
-                        <img
-                            src={product.info_category.standard.imageSrc}
-                            alt={`${product.title} - Standard`}
-                            className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
-                        />
-                    )}
-                    {activeButton.button3 && product.info_category.premium.imageSrc && (
-                        <img
-                            src={product.info_category.premium.imageSrc}
-                            alt={`${product.title} - Premium`}
-                            className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
-                        />
-                    )}
-                    <form
-                        className='flex flex-col md:px-8 py-8'
-                        onSubmit={addForm.onSubmit(() => handleAddToCart())}
-                    >
-                        {product.isPopular && <span className="text-red-600 font-serif py-4">Popular</span>}
-                        <div className='grid grid-cols-3'>
-                            {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.basic.price} RON</p> : null}
-                            {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.standard.price} RON</p> : null}
-                            {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.premium.price} RON</p> : null}
-                            {product.inStock && <span className="flex font-serif justify-end align-bottom">In stoc ~|</span>}
-                            {!product.inStock && <span className="flex font-serif justify-end align-bottom">Stoc epuizat ~|</span>}
-                            <span className="flex font-serif align-bottom">~ COD-{product.id.substring(0, 8)}</span>
-                        </div>
-                        <h2 className="text-3xl font-thin my-2">{product.title}</h2>
-                        <div className='grid grid-cols-3 gap-1.5 my-5'>
-                            <Button
-                                bg={activeButton.button1 ? '#b756a6' : 'white'}
-                                disabled={activeButton.button1}
-                                color={activeButton.button1 ? 'white' : '#b756a6'}
-                                variant='outline'
-                                key={addForm.key('category1')}
-                                size='compact-sm'
-                                onClick={() => (
-                                    handleSetCategory({ button1: true, button2: false, button3: false }),
-                                    addForm.setValues({ price: product.info_category.basic.price, category: 'basic' })
-                                )}
-                            > BASIC </Button>
-                            <Button
-                                bg={activeButton.button2 ? '#b756a6' : 'white'}
-                                disabled={activeButton.button2} 
-                                color={activeButton.button2 ? 'white' : '#b756a6'}
-                                variant='outline'
-                                size='compact-sm'
-                                key={addForm.key('category2')}
-                                onClick={() => (
-                                    handleSetCategory({ button1: false, button2: true, button3: false }),
-                                    addForm.setValues({ price: product.info_category.standard.price, category: 'standard' })
-                                )}
-                            > STANDARD </Button>
-                            <Button
-                                bg={activeButton.button3 ? '#b756a6' : 'white'}
-                                disabled={activeButton.button3}
-                                color={activeButton.button3 ? 'white' : '#b756a6'}
-                                variant='outline'
-                                size='compact-sm'
-                                key={addForm.key('category3')}
-                                onClick={() => (
-                                    handleSetCategory({ button1: false, button2: false, button3: true }),
-                                    addForm.setValues({ price: product.info_category.premium.price, category: 'premium' })
-                                )}
-                            > PREMIUM </Button>
-                        </div>
-                        <div className='my-3'>
-                            <p> COMPOZIȚIE </p>
-                            <div className='px-5'>
-                                {activeButton.button1 &&
-                                    product.info_category.basic.composition.map((item, idx) => (
-                                        <p key={idx}>
-                                            {item.title} - Cantitate: {item.quantity}
-                                        </p>
-                                    ))}
-                                {activeButton.button2 &&
-                                    product.info_category.standard.composition.map((item, idx) => (
-                                        <p key={idx}>
-                                            {item.title} - Cantitate: {item.quantity}
-                                        </p>
-                                    ))}
-                                {activeButton.button3 &&
-                                    product.info_category.premium.composition.map((item, idx) => (
-                                        <p key={idx}>
-                                            {item.title} - Cantitate: {item.quantity}
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-                        <div className='flex flex-row gap-10'>
-                            <NumberInput
-                                min={0}
-                                max={100}
-                                defaultValue={0}
-                                key={addForm.key('quantity')}
-                                {...addForm.getInputProps('quantity')}
-                            />
-                            <Button 
-                                className='w-full'
-                                variant='fill'
-                                w={300}
-                                bg={'#b756a6'}
-                                type='submit'
-                                disabled={!product.inStock || isInCart || addForm.getValues().quantity < 1}
-                                onClick={() => {
-                                    const category = addForm.getValues().category as 'basic' | 'standard' | 'premium';
-                                    addForm.setValues({ image: product.info_category[category].imageSrc });
-                                }}
-                            >
-                                 {isAdding ? <Loader color="white" size="sm" /> : isInCart ? 'În coș' : 'Adaugă în coș'}
-                            </Button>
-                        </div>
-                        <div className='grid grid-cols-2 mt-4'>
-                            <p className='flex justify-end'> <a href=""> Cum comanzi ~ </a></p>
-                            <p className='flex justify-start'> <a href="">|~ Cum livram </a></p>
-                        </div>
-                    </form>
-                </div>
-                {/* detalii */}
-                <div className="relative mx-8 md:mx-40 my-10" >
-                    <div className='my-5'>
-                        <p className='text-xl text-center my-3'> DETALII </p>
-                        <p> {product.description} </p>
+            <div className='mx-8 mt-28 md:mx-30'>
+                <Bread itemsBread={itemsBread} />
+            </div>
+            <div className="relative mx-8 md:mx-40 grid md:grid-cols-2 grid-cols-1 my-10">
+                {/* Afișarea imaginii în funcție de categoria selectată */}
+                {activeButton.button1 && product.info_category.basic.imageSrc && (
+                    <img
+                        src={product.info_category.basic.imageSrc}
+                        alt={`${product.title} - Basic`}
+                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
+                    />
+                )}
+                {activeButton.button2 && product.info_category.standard.imageSrc && (
+                    <img
+                        src={product.info_category.standard.imageSrc}
+                        alt={`${product.title} - Standard`}
+                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
+                    />
+                )}
+                {activeButton.button3 && product.info_category.premium.imageSrc && (
+                    <img
+                        src={product.info_category.premium.imageSrc}
+                        alt={`${product.title} - Premium`}
+                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
+                    />
+                )}
+                <form
+                    className='flex flex-col md:px-8 py-8'
+                    onSubmit={addForm.onSubmit(() => handleAddToCart())}
+                >
+                    {product.isPopular && <span className="text-red-600 font-serif py-4">Popular</span>}
+                    <div className='grid grid-cols-3'>
+                        {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.basic.price} RON</p> : null}
+                        {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.standard.price} RON</p> : null}
+                        {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.premium.price} RON</p> : null}
+                        {product.inStock && <span className="flex font-serif justify-end align-bottom">In stoc ~|</span>}
+                        {!product.inStock && <span className="flex font-serif justify-end align-bottom">Stoc epuizat ~|</span>}
+                        <span className="flex font-serif align-bottom">~ COD-{product.id.substring(0, 8)}</span>
                     </div>
-                    <div>
-                        <p className='text-xl text-center my-3'> MAI MULTE INFORMATII </p>
-                        <div className='my-3'>
-                            <p> COMPOZIȚIE </p>
-                            <div className='px-5'>
-                                {activeButton.button1 &&
-                                    product.info_category.basic.composition.map((item, idx) => (
-                                        <p key={idx}>
-                                            {product.info_category.basic.composition[idx].title} - Cantitate: {product.info_category.basic.composition[idx].quantity}
-                                        </p>
-                                    ))}
-                                {activeButton.button2 &&
-                                    product.info_category.standard.composition.map((item, idx) => (
-                                        <p key={idx}>
-                                            {product.info_category.standard.composition[idx].title} - Cantitate: {product.info_category.standard.composition[idx].quantity}
-                                        </p>
-                                    ))}
-                                {activeButton.button3 &&
-                                    product.info_category.premium.composition.map((item, idx) => (
-                                        <p key={idx}>
-                                            {product.info_category.premium.composition[idx].title} - Cantitate: {product.info_category.premium.composition[idx].quantity}
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-                        <div className='my-2'>
-                            <p> CULOARE FLORI </p>
-                            <p className='pb-3 px-4 text-[15px]'> {product.colors} </p>
-                        </div>
-                        <div className='my-2'>
-                            <p> TIP DE PRODUS </p>
-                            <p className='pb-3 px-4 text-[15px]'> {product.category} </p>
-                        </div>
-                        <div className='my-2'>
-                            <p> COD PRODUS </p>
-                            <p className='pb-3 px-4 text-[15px]'> {product.id} </p>
+                    <h2 className="text-3xl font-thin my-2">{product.title}</h2>
+                    <div className='grid grid-cols-3 gap-1.5 my-5'>
+                        <Button
+                            bg={activeButton.button1 ? '#b756a6' : 'white'}
+                            disabled={activeButton.button1}
+                            color={activeButton.button1 ? 'white' : '#b756a6'}
+                            variant='outline'
+                            key={addForm.key('category1')}
+                            size='compact-sm'
+                            onClick={() => (
+                                handleSetCategory({ button1: true, button2: false, button3: false }),
+                                addForm.setValues({ price: product.info_category.basic.price, category: 'basic' })
+                            )}
+                        > BASIC </Button>
+                        <Button
+                            bg={activeButton.button2 ? '#b756a6' : 'white'}
+                            disabled={activeButton.button2}
+                            color={activeButton.button2 ? 'white' : '#b756a6'}
+                            variant='outline'
+                            size='compact-sm'
+                            key={addForm.key('category2')}
+                            onClick={() => (
+                                handleSetCategory({ button1: false, button2: true, button3: false }),
+                                addForm.setValues({ price: product.info_category.standard.price, category: 'standard' })
+                            )}
+                        > STANDARD </Button>
+                        <Button
+                            bg={activeButton.button3 ? '#b756a6' : 'white'}
+                            disabled={activeButton.button3}
+                            color={activeButton.button3 ? 'white' : '#b756a6'}
+                            variant='outline'
+                            size='compact-sm'
+                            key={addForm.key('category3')}
+                            onClick={() => (
+                                handleSetCategory({ button1: false, button2: false, button3: true }),
+                                addForm.setValues({ price: product.info_category.premium.price, category: 'premium' })
+                            )}
+                        > PREMIUM </Button>
+                    </div>
+                    <div className='my-3'>
+                        <p> COMPOZIȚIE </p>
+                        <div className='px-5'>
+                            {activeButton.button1 &&
+                                product.info_category.basic.composition.map((item, idx) => (
+                                    <p key={idx}>
+                                        {item.title} - Cantitate: {item.quantity}
+                                    </p>
+                                ))}
+                            {activeButton.button2 &&
+                                product.info_category.standard.composition.map((item, idx) => (
+                                    <p key={idx}>
+                                        {item.title} - Cantitate: {item.quantity}
+                                    </p>
+                                ))}
+                            {activeButton.button3 &&
+                                product.info_category.premium.composition.map((item, idx) => (
+                                    <p key={idx}>
+                                        {item.title} - Cantitate: {item.quantity}
+                                    </p>
+                                ))}
                         </div>
                     </div>
+                    <div className='flex flex-row gap-10'>
+                        <NumberInput
+                            min={0}
+                            max={100}
+                            defaultValue={0}
+                            key={addForm.key('quantity')}
+                            {...addForm.getInputProps('quantity')}
+                        />
+                        <Button
+                            className='w-full'
+                            variant='fill'
+                            w={300}
+                            bg={'#b756a6'}
+                            type='submit'
+                            disabled={!product.inStock || isInCart || addForm.getValues().quantity < 1}
+                            onClick={() => {
+                                const category = addForm.getValues().category as 'basic' | 'standard' | 'premium';
+                                addForm.setValues({ image: product.info_category[category].imageSrc });
+                            }}
+                        >
+                            {isAdding ? <Loader color="white" size="sm" /> : isInCart ? 'În coș' : 'Adaugă în coș'}
+                        </Button>
+                    </div>
+                    <div className='grid grid-cols-2 mt-4'>
+                        <p className='flex justify-end'> <a href=""> Cum comanzi ~ </a></p>
+                        <p className='flex justify-start'> <a href="">|~ Cum livram </a></p>
+                    </div>
+                </form>
+            </div>
+            {/* detalii */}
+            <div className="relative mx-8 md:mx-40 my-10" >
+                <div className='my-5'>
+                    <p className='text-xl text-center my-3'> DETALII </p>
+                    <p> {product.description} </p>
                 </div>
-                {/* recenzie */}
-                <ReviewForm
-                    productTitle={product.title}
-                    onSubmit={handleSubmitedReview}
-                />
-                <Reviews product={`${lastSegment}`} />
-                {/* recomandari */}
-                <div className="relative mx-8 md:mx-40 my-20">
-                    <p className='text-center'>PRODUSE RECOMANDATE</p>
-                    <div className='grid xl:grid-cols-4 grid-cols-2 gap-4 xl:mx-22 xl:gap-8 my-6'>
-                        {itemsRe.map(
-                            (item: ItemProps, idx: number) => (
-                                <Item item={item} key={idx} />
-                            )
-                        )}
+                <div>
+                    <p className='text-xl text-center my-3'> MAI MULTE INFORMATII </p>
+                    <div className='my-3'>
+                        <p> COMPOZIȚIE </p>
+                        <div className='px-5'>
+                            {activeButton.button1 &&
+                                product.info_category.basic.composition.map((item, idx) => (
+                                    <p key={idx}>
+                                        {product.info_category.basic.composition[idx].title} - Cantitate: {product.info_category.basic.composition[idx].quantity}
+                                    </p>
+                                ))}
+                            {activeButton.button2 &&
+                                product.info_category.standard.composition.map((item, idx) => (
+                                    <p key={idx}>
+                                        {product.info_category.standard.composition[idx].title} - Cantitate: {product.info_category.standard.composition[idx].quantity}
+                                    </p>
+                                ))}
+                            {activeButton.button3 &&
+                                product.info_category.premium.composition.map((item, idx) => (
+                                    <p key={idx}>
+                                        {product.info_category.premium.composition[idx].title} - Cantitate: {product.info_category.premium.composition[idx].quantity}
+                                    </p>
+                                ))}
+                        </div>
+                    </div>
+                    <div className='my-2'>
+                        <p> CULOARE FLORI </p>
+                        <p className='pb-3 px-4 text-[15px]'> {product.colors} </p>
+                    </div>
+                    <div className='my-2'>
+                        <p> TIP DE PRODUS </p>
+                        <p className='pb-3 px-4 text-[15px]'> {product.category} </p>
+                    </div>
+                    <div className='my-2'>
+                        <p> COD PRODUS </p>
+                        <p className='pb-3 px-4 text-[15px]'> {product.id} </p>
                     </div>
                 </div>
+            </div>
+            {/* recenzie */}
+            <ReviewForm
+                productTitle={product.title}
+                onSubmit={handleSubmitedReview}
+            />
+            <Reviews product={`${lastSegment}`} />
+            {/* recomandari */}
+            <div className="relative mx-8 md:mx-40 my-20">
+                <p className='text-center'>PRODUSE RECOMANDATE</p>
+                <div className='grid xl:grid-cols-4 grid-cols-2 gap-4 xl:mx-22 xl:gap-8 my-6'>
+                    {itemsRe.map(
+                        (item: ItemProps, idx: number) => (
+                            <Item item={item} key={idx} />
+                        )
+                    )}
+                </div>
+            </div>
             <Delivery />
             <Footer />
             <Modal

@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         }
 
         const client = await clientPromise;
-    const db = client.db('florarie'); 
+        const db = client.db('florarie');
         const usersCollection = db.collection('users');
 
         // Verificăm dacă utilizatorul există în baza de date
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ message: 'Codul de verificare a fost trimis pe email' });
     } catch (error) {
-        console.error('Eroare la trimiterea codului de verificare:', error);
+        console.log('Eroare la trimiterea codului de verificare:', error);
         return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
     }
 }

@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     // Conectare la baza de date
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const reviewsCollection = db.collection('reviews');
 
     // Inserare recenzie în baza de date
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Eroare la salvarea recenziei:', error);
+    console.log('Eroare la salvarea recenziei:', error);
     return NextResponse.json(
       { error: 'A apărut o eroare la salvarea recenziei.' },
       { status: 500 }
@@ -48,7 +48,7 @@ export async function GET() {
   try {
 
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const reviewsCollection = db.collection('reviews');
 
     const reviews = await reviewsCollection.find().toArray();
@@ -56,7 +56,7 @@ export async function GET() {
     // Răspuns cu toate recenziile
     return NextResponse.json(reviews, { status: 200 });
   } catch (error) {
-    console.error('Eroare la obținerea recenziilor:', error);
+    console.log('Eroare la obținerea recenziilor:', error);
     return NextResponse.json(
       { error: 'A apărut o eroare la obținerea recenziilor.' },
       { status: 500 }

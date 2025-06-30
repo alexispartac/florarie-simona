@@ -47,23 +47,25 @@ const Cart = () => {
   const handleFinalizeOrder = async () => {
     setIsChecking(true); // Activează loader-ul
     try {
-      axios.post(URL_CHECK_COMPOSITION, cartItems).then((response) => {
+        const response = await axios.post(URL_CHECK_COMPOSITION, cartItems, {
+            validateStatus: (status) => status >= 200 && status < 500, 
+        });
+
         if (response.status === 200) {
-          router.push('/checkout');
-          setModalOpened(false);
-        } else {
-          setModalMessage('Ne pare rau stocurile nu sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
-          setModalOpened(true);
+            router.push('/checkout');
+            setModalOpened(false);
+        } else if (response.status === 403) {
+            setModalMessage('Ne pare rău, stocurile nu mai sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
+            setModalOpened(true);
         }
-      });
-      setIsChecking(false); 
+        setIsChecking(false);
     } catch (error) {
-      console.log('Eroare la verificarea cantității:', error);
-      setModalMessage('A apărut o eroare. Te rugăm să încerci din nou.');
-      setIsChecking(false);
-      setModalOpened(true);
-    } 
-  };
+        console.log('Eroare la verificarea stocului:', error);
+        setModalMessage('A apărut o eroare la verificarea stocului. Te rugăm să încerci din nou.');
+        setIsChecking(false);
+        setModalOpened(true);
+    }
+};
 
   if (loading) {
     return (
@@ -95,7 +97,7 @@ const Cart = () => {
                 className="flex flex-col md:flex-row items-center justify-between border-b pb-4"
                 >
                 <Group 
-                  className="flex items-center mb-2"
+                  className="flex items-center mb-2 md:px-10"
                   onClick={() => router.push(`/product/${item.id}`)}
                   style={{ cursor: 'pointer' }}
                 >
@@ -112,6 +114,7 @@ const Cart = () => {
                   <Button
                     variant="outline"
                     size="xs"
+                    color='#b756a6'
                     onClick={() =>
                       handleUpdateQuantity(item.id, item.quantity - 1)
                     }
@@ -122,6 +125,7 @@ const Cart = () => {
                   <Button
                     variant="outline"
                     size="xs"
+                    color='#b756a6'
                     onClick={() =>
                       handleUpdateQuantity(item.id, item.quantity + 1)
                     }

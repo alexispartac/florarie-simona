@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
         }
 
         const client = await clientPromise;
-    const db = client.db('florarie'); 
+        const db = client.db('florarie');
         const usersCollection = db.collection('users');
 
         // Verificăm dacă utilizatorul există și codul este valid
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         // Cod valid - putem continua cu resetarea parolei sau alte acțiuni
         return NextResponse.json({ message: 'Cod valid' });
     } catch (error) {
-        console.error('Eroare la verificarea codului:', error);
+        console.log('Eroare la verificarea codului:', error);
         return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
     }
 }

@@ -38,7 +38,7 @@ const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
         await deleteObject(imageRef); // Șterge imaginea
         console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
     } catch (error) {
-        console.error(`Eroare la ștergerea imaginii ${imagePath}:`, error);
+        console.log(`Eroare la ștergerea imaginii ${imagePath}:`, error);
     }
 };
 
@@ -47,10 +47,10 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
     const [addImage, setAddImage] = useState<boolean>(false); // Starea pentru încărcarea imaginii
     const [loading, setLoading] = useState(false); // Starea pentru loader
     const [modalOpened, setModalOpened] = useState(false); // Starea pentru modal
-    const {user, setUser } = useUser();
+    const { user, setUser } = useUser();
 
     const handleUpdateUser = useCallback(async () => {
-        setLoading(true); 
+        setLoading(true);
         try {
             const response = await axios.put(URL_UPDATE_USER, form.values);
             if (response.status === 200) {
@@ -66,7 +66,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                 setNotification("A apărut o eroare la actualizarea datelor.");
             }
         } catch (error) {
-            console.error("Error updating user data:", error);
+            console.log("Error updating user data:", error);
             setNotification("A apărut o eroare. Te rugăm să încerci din nou.");
         } finally {
             setLoading(false);
@@ -85,7 +85,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                 setAddImage(false);
                 form.setFieldValue("avatar", imageUrl); // Salvează URL-ul imaginii
             } catch (error) {
-                console.error("Eroare la încărcarea avatarului:", error);
+                console.log("Eroare la încărcarea avatarului:", error);
             } finally {
                 setLoading(false);
             }
@@ -99,7 +99,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                 await deleteImageFromFirebase(imagePath); // Șterge imaginea din Firebase Storage
                 form.setFieldValue("avatar", ""); // Elimină URL-ul imaginii din starea locală
             } catch (error) {
-                console.error("Eroare la ștergerea avatarului:", error);
+                console.log("Eroare la ștergerea avatarului:", error);
             } finally {
                 setLoading(false);
             }
@@ -154,7 +154,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                         className="m-2 block"
                     >
                         {loading && <Loader size="xs" color="white" />}
-                        {!loading && (user.userInfo.avatar || form.values.avatar ) && "Șterge avatar"}
+                        {!loading && (user.userInfo.avatar || form.values.avatar) && "Șterge avatar"}
                     </Button>
                 )}
                 {

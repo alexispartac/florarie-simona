@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
         const mailOptions = {
             from: EMAIL_USER,
-            to: 'simonabuzau2@gmail.com', 
+            to: 'simonabuzau2@gmail.com',
             subject: `Mesaj de la ${first_name} ${last_name}`,
             text: `
                 Nume: ${first_name} ${last_name}
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ message: 'Email trimis cu succes' });
     } catch (error) {
-        console.error('Eroare la trimiterea email-ului:', error);
+        console.log('Eroare la trimiterea email-ului:', error);
         return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
     }
 }

@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest) {
             if (!findItem) {
                 return NextResponse.json({ success: false, message: `Produsul cu ID ${item.id} nu a fost găsit.` }, { status: 404 });
             }
-            
+
             for (const simpleItems of findItem.info_category[item.category].composition) {
                 const compositionItem = {
                     id: simpleItems.id,
@@ -60,7 +60,7 @@ export async function PUT(req: NextRequest) {
         // Returnează succes
         return NextResponse.json({ success: true, message: 'Stocul a fost modificat cu succes.' }, { status: 200 });
     } catch (error) {
-        console.error('Eroare la modificarea stocului:', error);
+        console.log('Eroare la modificarea stocului:', error);
         return NextResponse.json({ success: false, message: 'A apărut o eroare internă.' }, { status: 500 });
     }
 }

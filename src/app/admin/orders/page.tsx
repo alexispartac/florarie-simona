@@ -73,7 +73,7 @@ const Page = () => {
                 setOrders(response.data);
             });
         } catch (error) {
-            console.error('Error fetching orders:', error);
+            console.log('Error fetching orders:', error);
         }
     }
 
@@ -99,7 +99,7 @@ const Page = () => {
                 )
             );
         }).catch(error => {
-            console.error('Error finalizing order:', error);
+            console.log('Error finalizing order:', error);
         });
     };
 
@@ -110,8 +110,8 @@ const Page = () => {
                     <div className="flex gap-2">
                         <div
                             className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${!showFinalized
-                                    ? 'bg-blue-200 dark:bg-blue-900'
-                                    : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
+                                ? 'bg-blue-200 dark:bg-blue-900'
+                                : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
                                 }`}
                             onClick={() => setShowFinalized(false)}
                         >
@@ -119,8 +119,8 @@ const Page = () => {
                         </div>
                         <div
                             className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${showFinalized
-                                    ? 'bg-blue-200 dark:bg-blue-900'
-                                    : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
+                                ? 'bg-blue-200 dark:bg-blue-900'
+                                : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
                                 }`}
                             onClick={() => setShowFinalized(true)}
                         >
