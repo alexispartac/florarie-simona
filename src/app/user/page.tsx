@@ -24,8 +24,8 @@ type UserFormValues = {
 };
 
 // Funcția pentru încărcarea imaginii în Firebase Storage
-const uploadImageToFirebase = async (file: File): Promise<string> => {
-    const storageRef = ref(storage, `avatars/${file.name}-${Date.now()}`); // Creează un path unic pentru imagine
+const uploadImageToFirebase = async (file: File, email: string): Promise<string> => {
+    const storageRef = ref(storage, `image/avatars/${email}`); // Creează un path unic pentru imagine
     await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
     const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
     return downloadURL;
@@ -47,10 +47,10 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
     const [addImage, setAddImage] = useState<boolean>(false); // Starea pentru încărcarea imaginii
     const [loading, setLoading] = useState(false); // Starea pentru loader
     const [modalOpened, setModalOpened] = useState(false); // Starea pentru modal
-    const {setUser } = useUser();
+    const {user, setUser } = useUser();
 
     const handleUpdateUser = useCallback(async () => {
-        setLoading(true); // Activează loader-ul
+        setLoading(true); 
         try {
             const response = await axios.put(URL_UPDATE_USER, form.values);
             if (response.status === 200) {
@@ -81,7 +81,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
             setLoading(true);
             setAddImage(true)
             try {
-                const imageUrl = await uploadImageToFirebase(file); // Încarcă imaginea în Firebase Storage
+                const imageUrl = await uploadImageToFirebase(file, user.userInfo.email); // Încarcă imaginea în Firebase Storage
                 setAddImage(false);
                 form.setFieldValue("avatar", imageUrl); // Salvează URL-ul imaginii
             } catch (error) {
@@ -106,6 +106,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
         }
     }, [form]);
 
+    console.log("Form values:", form.values);
     return (
         <>
             {notification && (
@@ -134,7 +135,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                             className="w-24 h-24 mb-4"
                         />
                     )}
-                    <span className="text-blue-500">Schimbă avatar</span>
+                    <span className="text-[#b756a6]">Schimbă avatar</span>
                 </label>
                 <input
                     type="file"
@@ -145,14 +146,15 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                 />
                 {form.values.avatar && (
                     <Button
-                        variant="outline"
-                        color="red"
+                        variant="filled"
+                        color='#b756a6'
                         onClick={() => handleDeleteAvatar(form.values.avatar as string)}
                         disabled={loading}
                         size="xs"
                         className="m-2 block"
                     >
-                        {loading ? <Loader size="xs" color="white" /> : "Șterge avatar"}
+                        {loading && <Loader size="xs" color="white" />}
+                        {!loading && (user.userInfo.avatar || form.values.avatar ) && "Șterge avatar"}
                     </Button>
                 )}
                 {
@@ -170,7 +172,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                 <TextInput w={'99%'} label="Data creării contului" value={form.values.createdAt} disabled />
                 <TextInput w={'99%'} label="Număr de comenzi" value={form.values.order?.toString() || "0"} disabled />
                 <Group mt="md">
-                    <Button type="submit" color="blue" disabled={loading}>
+                    <Button type="submit" color='#b756a6' disabled={loading}>
                         {loading ? <Loader size="xs" color="white" /> : "Actualizează datele"}
                     </Button>
                 </Group>
@@ -185,7 +187,7 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
             >
                 <p>Ești sigur că dorești să modifici datele?</p>
                 <Group mt="md">
-                    <Button variant="default" onClick={() => setModalOpened(false)}>
+                    <Button variant="default" color='#b756a6' onClick={() => setModalOpened(false)}>
                         Anulează
                     </Button>
                     <Button color="blue" onClick={handleUpdateUser} disabled={loading}>

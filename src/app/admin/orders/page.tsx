@@ -11,7 +11,6 @@ const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: s
         <div key={order.id} className="border rounded p-4 bg-gray-50 dark:bg-neutral-800">
             <div className="flex flex-row justify-between">
                 <div>
-                    {/* <b>{order.orderNumber}</b> - {order.clientName} */}
                     <b> {order.clientName} </b>
                     <div className="text-xs text-gray-500">{order.clientEmail} | {order.clientPhone}</div>
                     <div className="text-xs text-gray-500">{order.clientAddress}</div>

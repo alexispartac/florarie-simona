@@ -1,8 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SidebarDemo } from '../components/SideBar';
-import { Modal, Button, Group, Select, TextInput } from '@mantine/core';
+import { Modal, Button, Group, Select, TextInput, Loader } from '@mantine/core';
 import { ClientProps } from '../types';
+import { useUsers } from '@/app/components/hooks/fetchUsers';
+import { User } from '@/app/types';
 
 const sortOptions = [
     { value: 'createdAt', label: 'Data creare' },
@@ -50,24 +52,30 @@ const ClientRow = ({ client }: { client: ClientProps }) => {
     );
 };
 
-const URL_USERS = '/api/users';
 const Page = () => {
-    const [clients, setClients] = useState<ClientProps[]>([]);
     const [sortBy, setSortBy] = useState('createdAt');
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
     const [searchTerm, setSearchTerm] = useState('');
+    const { data: clients, isLoading, isError } = useUsers();
 
-    useEffect(() => {
-        const fetchClients = async () => {
-            const response = await fetch(URL_USERS);
-            const data = await response.json();
-            setClients(data);
-        };
-        fetchClients();
-    }, []);
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader color="blue" size="lg" />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>A apărut o eroare la încărcarea datelor.</p>
+            </div>
+        );
+    }
 
     // Filtrare clienți după termenul de căutare
-    const filteredClients = clients.filter(client =>
+    const filteredClients = clients.filter(( client : User )=>
         `${client.name} ${client.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 

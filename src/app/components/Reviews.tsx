@@ -1,12 +1,15 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Avatar, Group, Stack } from '@mantine/core';
+import Link from 'next/link';
 
 interface Review {
     id: string;
     name: string;
     email: string;
     product: string;
+    avatar: string;
     message: string;
     createdAt: string;
 }
@@ -22,7 +25,6 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
         const fetchReviews = async () => {
             try {
                 setLoading(true);
-                console.log(product)
                 const response = await axios.get(URL_REVIEW);
                 const data = response.data as Review[];
                 setReviews(data);
@@ -39,15 +41,15 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
     }, [product]);
 
     if (loading) {
-        return <p>Se încarcă recenziile...</p>;
+        return <p className='flex justify-center'>Se încarcă recenziile...</p>;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        <Link href={'/404'}/>
     }
 
     if (reviews.length === 0) {
-        return <p>Nu există recenzii pentru acest produs.</p>;
+        return <p className='flex justify-center'>Nu există recenzii pentru acest produs.</p>;
     }
 
 
@@ -56,17 +58,24 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
         setVisibleReviews((prev) => Math.min(prev + 5, reviews.length));
     };
 
+    console.log('Reviews:', reviews);
+
     return (
         <div className="reviews bg-gray-25 p-8 md:p-15 rounded-lg shadow-md">
             <h2 className="text-2xl font-sans text-gray-800 mb-6">Recenzii</h2>
             <ul className="space-y-6">
                 {reviews.slice(0, visibleReviews).map((review) => (
                     <li key={review.id} className="p-6 bg-[#b756a64f] shadow-md rounded-lg">
-                        <div className="flex justify-between items-center">
-                            <p className="font-sans text-lg text-gray-900">{review.name}</p>
-                            <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
-                        </div>
-                        <p className="font-sans text-sm text-gray-900">{review.email}</p>
+                        <Group dir='row' w={"100%"}>
+                            <Avatar w={"3%"} src={review.avatar}/>
+                            <Stack w={"80%"} gap={0}>
+                                <Group justify='space-between' w={"100%"}>
+                                    <p className="font-sans text-lg text-gray-900">{review.name}</p>
+                                    <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
+                                </Group>
+                                <p className="font-sans text-sm text-gray-900">{review.email}</p>
+                            </Stack>
+                        </Group>
                         <p className="mt-4 text-gray-700">{review.message}</p>
                     </li>
                 ))}

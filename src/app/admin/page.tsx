@@ -2,7 +2,7 @@ import React from 'react';
 import { SidebarDemo } from './components/SideBar';
 import Link from 'next/link';
 
-// Dummy dashboard component with content
+
 const Dashboard = () => {
   return (
     <div className="flex flex-1">

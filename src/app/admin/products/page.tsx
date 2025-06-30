@@ -1,11 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { SidebarDemo } from "../components/SideBar";
-import { Select, Button, Modal, TextInput, NumberInput, Checkbox, Group } from '@mantine/core';
+import { Select, Button, Modal, TextInput, NumberInput, Checkbox, Group, Loader } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ProductProps } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import { useSimpleProducts } from '@/app/components/hooks/fetchSimpleProducts';
 
 
 const URL_SIMPLE_PRODUCTS = '/api/products';
@@ -459,12 +460,10 @@ const DeleteCategoryModal = ({
 };
 
 const Page = () => {
-  const [products, setProducts] = useState<ProductProps[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-
   const [categoryModalOpen, { open: openCategoryModal, close: closeCategoryModal }] = useDisclosure(false);
-  const [deleteCategoryModalOpen, { open: openDeleteCategoryModal, close: closeDeleteCategoryModal }] =
-    useDisclosure(false);
+  const [deleteCategoryModalOpen, { open: openDeleteCategoryModal, close: closeDeleteCategoryModal }] = useDisclosure(false);
+  const { data: products, isLoading, isError } = useSimpleProducts();
 
   const handleAddCategory = (category: string) => {
     setCategories((prev) => [...prev, category]);
@@ -490,12 +489,6 @@ const Page = () => {
       });
   };
 
-  function fetchProducts() {
-    axios.get(URL_SIMPLE_PRODUCTS).then((response) => {
-      setProducts(response.data);
-    });
-  }
-
   function fetchCategories() {
     axios.get(URL_SIMPLE_CATEGORIES).then((response) => {
       setCategories(response.data.map((cat: { name: string }) => cat.name));
@@ -503,9 +496,25 @@ const Page = () => {
   }
 
   useEffect(() => {
-    fetchProducts();
     fetchCategories();
   }, []);
+
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader color="blue" size="lg" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>A apărut o eroare la încărcarea produselor.</p>
+      </div>
+    );
+  }
 
   return (
     <SidebarDemo>

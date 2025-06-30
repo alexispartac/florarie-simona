@@ -3,33 +3,37 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TextInput, Textarea, Loader } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { useUser } from './ContextUser';
 
 interface ReviewFormProps {
     productTitle: string;
-    onSubmit: (values: { name: string; email: string; message: string }) => Promise<void>;
+    onSubmit: (values: { name: string; email: string; message: string; avatar: string}) => Promise<void>;
 }
 
 const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
+    const { user } = useUser();
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle'); // Stare pentru succes sau eroare
     const [isVisible, setIsVisible] = useState(false); // Stare pentru vizibilitatea completă a secțiunii
     const reviewRef = useRef<HTMLDivElement>(null); // Referință pentru secțiunea de recenzie
-
+    
     const reviewForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
+            avatar: user.userInfo.avatar,
             name: '',
             email: '',
             message: '',
         },
         transformValues: (values) => ({
+            avatar: `${values.avatar}`,
             name: `${values.name}`,
             email: `${values.email}`,
             message: `${values.message}`,
         }),
     });
 
-    const handleSubmit = async (values: { name: string; email: string; message: string }) => {
+    const handleSubmit = async (values: { name: string; email: string; message: string; avatar: string }) => {
         setLoading(true);
         setStatus('idle'); // Resetăm starea înainte de trimitere
 
@@ -50,10 +54,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.intersectionRatio === 1) {
-                        setIsVisible(true);
-                    } else {
-                        setIsVisible(false); // Resetăm vizibilitatea la `false` când secțiunea nu este complet vizibilă
+                    const isCurrentlyVisible = entry.intersectionRatio === 1;
+                    if (isCurrentlyVisible !== isVisible) {
+                        setIsVisible(isCurrentlyVisible);
                     }
                 });
             },
@@ -69,7 +72,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
                 observer.unobserve(reviewRef.current);
             }
         };
-    }, []);
+    }, [isVisible]);
 
     return (
         <div
@@ -116,7 +119,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
                     <button
                         type="submit"
                         className="mt-6 px-4 py-2 bg-[#b756a64f] text-white rounded-md shadow-md hover:bg-[#b756a56f] transition"
-                        disabled={loading}
+                        disabled={loading || !user.isAuthenticated}
                     >
                         {loading ? (
                             <Loader size="sm" color="white" />

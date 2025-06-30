@@ -243,9 +243,9 @@ const Product = () => {
                         <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                         <div className='grid grid-cols-3 gap-1.5 my-5'>
                             <Button
-                                bg={activeButton.button1 ? '#b756a64f' : 'white'}
+                                bg={activeButton.button1 ? '#b756a6' : 'white'}
                                 disabled={activeButton.button1}
-                                color={'#b756a64f'}
+                                color={activeButton.button1 ? 'white' : '#b756a6'}
                                 variant='outline'
                                 key={addForm.key('category1')}
                                 size='compact-sm'
@@ -255,9 +255,9 @@ const Product = () => {
                                 )}
                             > BASIC </Button>
                             <Button
-                                bg={activeButton.button2 ? '#b756a64f' : 'white'}
-                                disabled={activeButton.button2}
-                                color={'#b756a64f'}
+                                bg={activeButton.button2 ? '#b756a6' : 'white'}
+                                disabled={activeButton.button2} 
+                                color={activeButton.button2 ? 'white' : '#b756a6'}
                                 variant='outline'
                                 size='compact-sm'
                                 key={addForm.key('category2')}
@@ -267,9 +267,9 @@ const Product = () => {
                                 )}
                             > STANDARD </Button>
                             <Button
-                                bg={activeButton.button3 ? '#b756a64f' : 'white'}
+                                bg={activeButton.button3 ? '#b756a6' : 'white'}
                                 disabled={activeButton.button3}
-                                color={'#b756a64f'}
+                                color={activeButton.button3 ? 'white' : '#b756a6'}
                                 variant='outline'
                                 size='compact-sm'
                                 key={addForm.key('category3')}
@@ -310,10 +310,11 @@ const Product = () => {
                                 key={addForm.key('quantity')}
                                 {...addForm.getInputProps('quantity')}
                             />
-                            <Button className='w-full'
+                            <Button 
+                                className='w-full'
                                 variant='fill'
                                 w={300}
-                                bg={'#b756a64f'}
+                                bg={'#b756a6'}
                                 type='submit'
                                 disabled={!product.inStock || isInCart || addForm.getValues().quantity < 1}
                                 onClick={() => {

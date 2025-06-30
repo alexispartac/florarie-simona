@@ -5,6 +5,7 @@ import { Footer } from '../components/Footer';
 import { useForm } from '@mantine/form';
 import * as React from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 export default function Contact() {
     const [agreed, setAgreed] = React.useState<boolean>(false);
@@ -69,7 +70,7 @@ export default function Contact() {
                 <div className="isolate h-screen bg-white px-6 py-24 sm:py-32 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
                         <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Contacteaza-mă</h2>
-                        <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repde posibil la mesajul tău.</p>
+                        <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repede posibil la mesajul tău.</p>
                     </div>
                     <form 
                         onSubmit={formContact.onSubmit((value) => sendEmail(value))}
@@ -151,11 +152,11 @@ export default function Contact() {
                                 </div>
                             </div>
                             <div className="flex gap-x-4 sm:col-span-2">
-                                <Checkbox 
+                                <Checkbox
                                     className="text-sm/6 text-gray-600"
                                     onChange={() => setAgreed(!agreed)}
                                     required
-                                    label="Selecteaza asta, esti de acord cu Termenii si conditiile"
+                                    label="Sunt de acord cu Termenii si conditiile."
                                 />
                             </div>
                         </div>

@@ -38,8 +38,8 @@ if (typeof window !== 'undefined') {
     });
 }
 
-const uploadImageToFirebase = async (file: File): Promise<string> => {
-    const storageRef = ref(storage, `images/compose-products/${uuidv4()}`); // Creează un path unic pentru imagine
+const uploadImageToFirebase = async (file: File, id: string): Promise<string> => {
+    const storageRef = ref(storage, `images/compose-products/${id}`); // Creează un path unic pentru imagine
     await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
     const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
     return downloadURL;
@@ -61,6 +61,7 @@ const CategoryFormSection = ({
     categoryData,
     onChange,
     simpleProducts,
+    idProduct,
 }: {
     categoryName: string;
     categoryData: {
@@ -70,6 +71,7 @@ const CategoryFormSection = ({
     };
     onChange: (updatedCategory: typeof categoryData) => void;
     simpleProducts: ProductProps[];
+    idProduct: string;
 }) => {
     const [addImage, setAddImage] = React.useState<boolean>(false);
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +79,7 @@ const CategoryFormSection = ({
         setAddImage(true);
         if (file) {
             try {
-                const imageUrl = await uploadImageToFirebase(file); 
+                const imageUrl = await uploadImageToFirebase(file, idProduct); 
                 setAddImage(false);
                 onChange({
                     ...categoryData,
@@ -388,6 +390,7 @@ const EditComposedProductModal = ({
                             })
                         }
                         simpleProducts={simpleProducts}
+                        idProduct={product ? product.id : uuidv4()}
                     />
                     <CategoryFormSection
                         categoryName="Premium"
@@ -399,6 +402,7 @@ const EditComposedProductModal = ({
                             })
                         }
                         simpleProducts={simpleProducts}
+                        idProduct={product ? product.id : uuidv4()}
                     />
                     <CategoryFormSection
                         categoryName="Basic"
@@ -410,6 +414,7 @@ const EditComposedProductModal = ({
                             })
                         }
                         simpleProducts={simpleProducts}
+                        idProduct={product ? product.id : uuidv4()}
                     />
                 </div>
                 <Group justify="flex-end">
@@ -637,6 +642,7 @@ const ListOfProducts = ({
                                     })
                                 }
                                 simpleProducts={simpleProducts}
+                                idProduct={editProduct ? editProduct.id : uuidv4()}
                             />
                             <CategoryFormSection
                                 categoryName="Premium"
@@ -648,6 +654,7 @@ const ListOfProducts = ({
                                     })
                                 }
                                 simpleProducts={simpleProducts}
+                                idProduct={editProduct ? editProduct.id : uuidv4()}
                             />
                             <CategoryFormSection
                                 categoryName="Basic"
@@ -659,6 +666,7 @@ const ListOfProducts = ({
                                     })
                                 }
                                 simpleProducts={simpleProducts}
+                                idProduct={editProduct ? editProduct.id : uuidv4()}
                             />
                         </div>
                         <Group justify="flex-end">

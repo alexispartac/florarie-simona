@@ -178,9 +178,9 @@ export const AuthModal = React.memo(() => {
                             <h3>{user.userInfo.name} {user.userInfo.surname}</h3>
                         </div>
                     </Group>
-                    <Anchor component={Link} onClick={() => close()} href='/user'> Actualizeaza Profilul</Anchor>
+                    <Anchor component={Link} onClick={() => close()} href='/user' c={"#b756a6"} > Actualizeaza Profilul</Anchor>
                     <Group justify="space-between">
-                        <Button onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
+                        <Button color='#b756a6' onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
                     </Group>
                 </div>
             );

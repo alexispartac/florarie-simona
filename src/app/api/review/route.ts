@@ -5,10 +5,10 @@ import clientPromise from '@/app/components/lib/mongodb';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, message } = await req.json();
-
+    const { name, email, message, avatar } = await req.json();
+    console.log('Received data:', { name, email, message, avatar });
     // Validare simplă a datelor
-    if (!name || !email || !message) {
+    if (!name || !email || !message || !avatar) {
       return NextResponse.json(
         { error: 'Toate câmpurile sunt obligatorii.' },
         { status: 400 }
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       message,
+      avatar,
       createdAt: new Date(),
     });
 
