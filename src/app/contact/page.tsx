@@ -5,7 +5,6 @@ import { Footer } from '../components/Footer';
 import { useForm } from '@mantine/form';
 import * as React from 'react';
 import axios from 'axios';
-import Link from 'next/link';
 
 export default function Contact() {
     const [agreed, setAgreed] = React.useState<boolean>(false);
@@ -72,7 +71,7 @@ export default function Contact() {
                         <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Contacteaza-mă</h2>
                         <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repede posibil la mesajul tău.</p>
                     </div>
-                    <form 
+                    <form
                         onSubmit={formContact.onSubmit((value) => sendEmail(value))}
                         className="mx-auto mt-16 max-w-xl sm:mt-20"
                     >
@@ -82,8 +81,8 @@ export default function Contact() {
                                     label="Nume"
                                     id="first-name"
                                     name="first_name"
-                                    type="text"     
-                                    required 
+                                    type="text"
+                                    required
                                     autoFocus={false}
                                     key={formContact.key('first_name')}
                                     {...formContact.getInputProps('first_name')}
@@ -112,7 +111,7 @@ export default function Contact() {
                                         id="email"
                                         name="email"
                                         type="email"
-                                        required 
+                                        required
                                         autoFocus={false}
                                         key={formContact.key('email')}
                                         {...formContact.getInputProps('email')}
@@ -121,20 +120,20 @@ export default function Contact() {
                                     />
                                 </div>
                             </div>
-                            <div className="sm:col-span-2">   
+                            <div className="sm:col-span-2">
                                 <div className="mt-2.5">
-                                <TextInput
-                                    label="Numar de telefon"
-                                    id="phone-number"
-                                    name="phone_number"
-                                    required
-                                    autoFocus={false}
-                                    key={formContact.key('phone_number')}
-                                    {...formContact.getInputProps('phone_number')}
-                                    type="text"
-                                    placeholder="+40"
-                                    className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                />
+                                    <TextInput
+                                        label="Numar de telefon"
+                                        id="phone-number"
+                                        name="phone_number"
+                                        required
+                                        autoFocus={false}
+                                        key={formContact.key('phone_number')}
+                                        {...formContact.getInputProps('phone_number')}
+                                        type="text"
+                                        placeholder="+40"
+                                        className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                                    />
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
