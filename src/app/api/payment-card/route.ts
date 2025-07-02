@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
-            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/cancel`,
+            success_url: `${process.env.BASE_URL}/checkout/success`,
+            cancel_url: `${process.env.BASE_URL}/checkout/cancel`,
         });
 
         return NextResponse.json({ sessionId: session.id }, { status: 200 });

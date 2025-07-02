@@ -6,6 +6,7 @@ import { SimpleProductProps } from '../types';
 
 // POST /api/check-composition - verifică cantitatea produselor componente
 export async function POST(req: NextRequest) {
+    console.log(process.env.STRIPE_PUBLISHABLE_KEY);
     const client = await clientPromise;
     const db = client.db('florarie');
     const items: CartItem[] = await req.json();
