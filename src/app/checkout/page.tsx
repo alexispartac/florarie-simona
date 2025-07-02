@@ -2,21 +2,23 @@
 import React, { useState } from 'react';
 import { OrderProps } from "../api/types";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, Textarea, Loader, Modal } from '@mantine/core';
+import { TextInput, Button, Textarea, Loader, Modal, Select } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { useUser } from '../components/ContextUser';
+import { loadStripe } from '@stripe/stripe-js';
 
-const URL_ORDERS = '/api/orders';
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const [loading, setLoading] = useState(false);
     const [modalOpened, setModalOpened] = useState(false); // Controlează afișarea modalului
     const [modalMessage, setModalMessage] = useState(''); // Mesajul afișat în modal
+    const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs'); // Metoda de plată
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
@@ -51,58 +53,60 @@ const CheckoutPage = () => {
         },
     });
 
-    const handleSubmit = async (values: OrderProps) => {
-        setLoading(true);
+    const handleStripePayment = async () => {
+        const stripe = await stripePromise;
+        if (!stripe) {
+            console.error('Stripe nu a fost inițializat.');
+            return;
+        }
+
         try {
-            // Actualizează stocurile produselor
-            const modifyStockResponse = await axios.put('/api/modify-stock', {
-                items: values.products.map((product) => ({
-                    id: product.id,
-                    category: product.category,
+            const response = await axios.post('/api/payment-card', {
+                items: checkoutForm.values.products.map((product) => ({
+                    title: product.title,
+                    price: product.price,
                     quantity: product.quantity,
                 })),
+                totalPrice: checkoutForm.values.totalPrice,
             });
 
-            if (modifyStockResponse.data.success === false) {
-                console.log('Error modifying stock:', modifyStockResponse.data.message);
-                setModalMessage('Ne pare rau stocurile nu sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
-                setModalOpened(true);
-                setLoading(false);
-                router.push('/cart'); 
-                return;
-            }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        }catch(error: any) {
-            if (error?.response?.data?.message) {
-                setModalMessage(
-                    error.response.data.message || 'A apărut o eroare la plasarea comenzii.'
-                );
-                setModalOpened(true);
-            } else {
-                setModalMessage('A apărut o eroare la plasarea comenzii.');
+            const { sessionId } = response.data;
+            const result = await stripe.redirectToCheckout({ sessionId });
+
+            if (result.error) {
+                console.error(result.error.message);
+                setModalMessage('A apărut o eroare la procesarea plății.');
                 setModalOpened(true);
             }
-            return;
-        }finally {
+        } catch (error) {
+            console.error('Eroare la crearea sesiunii Stripe:', error);
+            setModalMessage('A apărut o eroare la procesarea plății.');
+            setModalOpened(true);
+        }
+    };
+
+    const handleSubmit = async (values: OrderProps) => {
+        setLoading(true);
+
+        if (paymentMethod === 'card') {
+            await handleStripePayment();
             setLoading(false);
-            setTimeout(() => (setModalOpened(false), router.push('/')), 5000);
+            return;
         }
 
         try {
             // Trimite comanda către backend
-            await axios.post(URL_ORDERS, values);
+            await axios.post('/api/orders', values);
             setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
             setModalOpened(true);
 
             // Resetează formularul
             checkoutForm.reset();
         } catch (error) {
-            console.log('Error placing order:', error);
+            console.error('Error placing order:', error);
             setModalMessage('A apărut o eroare necunoscută. Te rugăm să încerci din nou.');
             setModalOpened(true);
-            return;
         } finally {
-            console.log("aici")
             dispatch(clearCart());
             setLoading(false);
             setTimeout(() => (setModalOpened(false), router.push('/')), 5000);
@@ -115,6 +119,11 @@ const CheckoutPage = () => {
                 <Loader color="blue" size="lg" />
             </div>
         );
+    }
+
+    if (cartItems.length === 0) {
+        router.back(); // Redirecționează către pagina coșului dacă nu există produse
+        return null; // Nu afișa nimic în acest caz
     }
 
     return (
@@ -161,6 +170,17 @@ const CheckoutPage = () => {
                     placeholder="Adaugă note suplimentare pentru livrare (opțional)"
                     {...checkoutForm.getInputProps('info')}
                 />
+                <Select
+                    label="Metoda de plată"
+                    placeholder="Alege metoda de plată"
+                    data={[
+                        { value: 'ramburs', label: 'Ramburs' },
+                        { value: 'card', label: 'Card' },
+                    ]}
+                    value={paymentMethod}
+                    onChange={(value) => setPaymentMethod(value as 'ramburs' | 'card')}
+                    required
+                />
                 <div className="mt-6">
                     <h2 className="text-xl font-semibold mb-2">Produse Comandate</h2>
                     <ul className="border rounded p-4">
@@ -193,12 +213,12 @@ const CheckoutPage = () => {
                 <p>{modalMessage}</p>
                 <Button
                     color={'#b756a64f'}
-                    onClick={() =>  (router.push('/'), setModalOpened(false))}
+                    onClick={() => (router.push('/'), setModalOpened(false))}
                     className="mt-4"
                 >
                     Închide
                 </Button>
-            </Modal>    
+            </Modal>
         </div>
     );
 };

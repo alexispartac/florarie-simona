@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import clientPromise from '@/app/components/lib/mongodb';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secretul_tau_super_secret';
+const NEXT_PUBLIC_JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET || 'secretul_tau_super_secret';
 
 // POST /api/users/login - interogheaza userul dupa email si parola
 export async function POST(req: NextRequest) {
     const client = await clientPromise;
-    const db = client.db('florarie'); 
+    const db = client.db('florarie');
     const data = await req.json();
     const { email, password } = data;
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
             email: email,
             password: password
         },
-        JWT_SECRET,
+        NEXT_PUBLIC_JWT_SECRET,
         { expiresIn: '7d' }
     );
 

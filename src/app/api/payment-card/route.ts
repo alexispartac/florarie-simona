@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY || '', {
     apiVersion: '2025-05-28.basil',
 });
 
@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
+            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,  //?session_id={CHECKOUT_SESSION_ID}
+            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/cancel`,
         });
 
         return NextResponse.json({ sessionId: session.id }, { status: 200 });
