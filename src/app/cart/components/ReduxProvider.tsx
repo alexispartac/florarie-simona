@@ -4,8 +4,12 @@ import { store } from './CartRedux';
 import { useRef } from "react";
 
 export default function ReduxProvider({ children }: { children: React.ReactNode }) {
-  
     const storeRef = useRef(store);
-    return <Provider store={storeRef.current}>{children}</Provider>;
+
+    return(
+        <Provider store={storeRef.current}>
+            {children}
+        </Provider>
+    );
 }
 

@@ -9,16 +9,13 @@ import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { useUser } from '../components/ContextUser';
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const [loading, setLoading] = useState(false);
-    const [modalOpened, setModalOpened] = useState(false); // Controlează afișarea modalului
-    const [modalMessage, setModalMessage] = useState(''); // Mesajul afișat în modal
-    const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs'); // Metoda de plată
+    const [modalOpened, setModalOpened] = useState(false); 
+    const [modalMessage, setModalMessage] = useState(''); 
+    const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs'); 
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
@@ -53,13 +50,7 @@ const CheckoutPage = () => {
         },
     });
 
-    const handleStripePayment = async () => {
-        const stripe = await stripePromise;
-        if (!stripe) {
-            console.error('Stripe nu a fost inițializat.');
-            return;
-        }
-
+    const handleEuPlatescPayment = async () => {
         try {
             const response = await axios.post('/api/payment-card', {
                 items: checkoutForm.values.products.map((product) => ({
@@ -69,17 +60,16 @@ const CheckoutPage = () => {
                 })),
                 totalPrice: checkoutForm.values.totalPrice,
             });
+            
+            const formHtml = response.data;
 
-            const { sessionId } = response.data;
-            const result = await stripe.redirectToCheckout({ sessionId });
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = formHtml;
 
-            if (result.error) {
-                console.error(result.error.message);
-                setModalMessage('A apărut o eroare la procesarea plății.');
-                setModalOpened(true);
-            }
+            document.body.appendChild(tempDiv);
+            tempDiv.querySelector('form')?.submit();
         } catch (error) {
-            console.error('Eroare la crearea sesiunii Stripe:', error);
+            console.error('Eroare la inițializarea plății EuPlătesc:', error);
             setModalMessage('A apărut o eroare la procesarea plății.');
             setModalOpened(true);
         }
@@ -89,18 +79,15 @@ const CheckoutPage = () => {
         setLoading(true);
 
         if (paymentMethod === 'card') {
-            await handleStripePayment();
+            await handleEuPlatescPayment();
             setLoading(false);
             return;
         }
 
         try {
-            // Trimite comanda către backend
             await axios.post('/api/orders', values);
             setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
             setModalOpened(true);
-
-            // Resetează formularul
             checkoutForm.reset();
         } catch (error) {
             console.error('Error placing order:', error);
@@ -122,8 +109,8 @@ const CheckoutPage = () => {
     }
 
     if (cartItems.length === 0) {
-        router.back(); // Redirecționează către pagina coșului dacă nu există produse
-        return null; // Nu afișa nimic în acest caz
+        router.back(); 
+        return null; 
     }
 
     return (
@@ -131,7 +118,7 @@ const CheckoutPage = () => {
             <Button
                 variant="outline"
                 color={'#b756a64f'}
-                onClick={() => router.back()} // Navighează la pagina anterioară
+                onClick={() => router.back()} 
             >
                 Înapoi
             </Button>
@@ -202,7 +189,6 @@ const CheckoutPage = () => {
                 </div>
             </form>
 
-            {/* Modal pentru afișarea mesajelor */}
             <Modal
                 opened={modalOpened}
                 onClose={() => setModalOpened(false)}

@@ -45,7 +45,7 @@ const Cart = () => {
   };
 
   const handleFinalizeOrder = async () => {
-    setIsChecking(true); // Activează loader-ul
+    setIsChecking(true); 
     try {
         const response = await axios.post(URL_CHECK_COMPOSITION, cartItems, {
             validateStatus: (status) => status >= 200 && status < 500, 

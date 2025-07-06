@@ -1,5 +1,5 @@
 'use client';
-import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar } from '@mantine/core';
+import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar, Badge } from '@mantine/core';
 import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-react";
 import React, { useCallback, useState, useMemo } from "react";
 import { ForgotPasswordModal } from "./ForgotPassword";
@@ -49,9 +49,10 @@ export const AuthModal = React.memo(() => {
     const [typeAuth, setTypeAuth] = useState<'login' | 'signin'>('login');
     const [loginError, setLoginError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [successModalOpened, setSuccessModalOpened] = useState(false); // Modal pentru mesajul de succes
-    const [successMessage, setSuccessMessage] = useState<string>(''); // Mesajul de succes
+    const [successModalOpened, setSuccessModalOpened] = useState(false); 
+    const [successMessage, setSuccessMessage] = useState<string>('');
     const logout = useHandleLogout();
+    const cartItemCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems') || '[]').length : 0;
 
     const formSignUp = useForm({
         initialValues: {
@@ -87,7 +88,7 @@ export const AuthModal = React.memo(() => {
                 });
                 setCookie('login', response.data.token, { path: '/' });
                 setSuccessMessage('Autentificare reușită! Bine ai venit!');
-                setSuccessModalOpened(true); // Deschide modalul de succes
+                setSuccessModalOpened(true); 
                 close();
             }
         } catch (error) {
@@ -106,7 +107,7 @@ export const AuthModal = React.memo(() => {
                 login({ email: data.email, password: data.password });
                 formSignUp.reset();
                 setSuccessMessage('Înregistrare reușită! Bine ai venit!');
-                setSuccessModalOpened(true); // Deschide modalul de succes
+                setSuccessModalOpened(true);                                    
                 close();
             }
         } catch (error) {
@@ -201,26 +202,39 @@ export const AuthModal = React.memo(() => {
             >
                 <p className='flex justify-center'>{successMessage}</p>
                 <Group justify="center" mt="md">
-                    <Button onClick={() => setSuccessModalOpened(false)}>OK</Button>
+                    <Button color='#b756a6' onClick={() => setSuccessModalOpened(false)}>OK</Button>
                 </Group>
             </Modal>
-            {user.isAuthenticated && user.userInfo.email === "matei.partac45@gmail.com" && (
-                <Button variant="transparent" p={0} color="red">
-                    <Link href="/admin"><IconFlower size={18} /></Link>
-                </Button>
-            )}
-            {user.userInfo.email !== "matei.partac45@gmail.com" && (
-                <Button variant="transparent" p={0} color="red">
-                    <Link href="/cart"><IconShoppingCart size={18} /></Link>
-                </Button>
-            )}
-            <NavbarButton variant="secondary" onClick={open}>
-                {
-                    user.isAuthenticated ?
-                        <IconUser color='blue' size={18} /> :
-                        <IconUser size={18} />
-                }
-            </NavbarButton>
+            <div className='grid grid-cols-2'>
+                <NavbarButton as={"div"} variant="secondary" className='flex h-[34px] items-center justify-center'>
+                    {user.isAuthenticated && user.userInfo.email === "matei.partac45@gmail.com"
+                        ? (
+                            <Button variant="transparent" p={0} color="red">
+                                <Link href="/admin"><IconFlower size={18} /></Link>
+                            </Button>
+                        ) : (
+                            <div className="relative flex flex-col">
+                                {cartItemCount > 0 && (
+                                    <Badge
+                                        color="red"
+                                        size="xs"
+                                        className="absolute top-1 -right-3"
+                                    >
+                                        {cartItemCount}
+                                    </Badge>
+                                )}
+                                <Button variant="transparent" p={0} color="red">
+                                    <Link href="/cart" className="relative inline-block"><IconShoppingCart size={18} /></Link>
+                                </Button>
+                            </div>
+                        )
+                    }
+                </NavbarButton>
+                <NavbarButton variant="secondary" onClick={open} className='flex items-center justify-center h-[34px]'>
+                    {user.isAuthenticated ? <IconUser color='blue' size={18} /> : <IconUser size={18} />}
+                </NavbarButton>
+
+            </div>
         </>
     );
 });

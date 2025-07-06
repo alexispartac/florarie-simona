@@ -1,5 +1,4 @@
 
-// type pentru un produs simplu cum ar fi o planta, ghiveci etc
 export interface ProductProps {
     id: string,
     title: string,
@@ -10,7 +9,6 @@ export interface ProductProps {
     price: number,
 }
 
-// type pentru un produs compus cum ar fi un aranjament floral
 export interface ComposedProductProps {
     id: string,
     title: string,
@@ -49,7 +47,6 @@ export interface OrderProductProps {
     quantity: number,
 }
 
-// type pentru o comanda
 export interface OrderProps {
     id: string,
     orderNumber: string,
@@ -64,7 +61,6 @@ export interface OrderProps {
     products: OrderProductProps[],
 }
 
-// type pentru un client
 export interface ClientProps {
     id: string,
     name: string,

@@ -1,8 +1,6 @@
 'use server';
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
-
 
 export async function POST(req: NextRequest) {
     try {
@@ -13,30 +11,43 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Datele trimise sunt invalide.' }, { status: 400 });
         }
 
-        // Creează liniile de produse pentru sesiunea Stripe
-        const lineItems = body.items.map((item: { title: string; price: number; quantity: number }) => ({
-            price_data: {
-                currency: 'ron',
-                product_data: {
-                    name: item.title,
-                },
-                unit_amount: Math.round(item.price * 100), // Stripe folosește valoarea în bani mici (ex. 100 = 1 RON)
-            },
-            quantity: item.quantity,
-        }));
+        // Calculează totalul comenzii
+        const totalAmount = body.items.reduce((total: number, item: { price: number; quantity: number }) => {
+            return total + item.price * item.quantity;
+        }, 0);
 
-        // Creează sesiunea de checkout Stripe
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: lineItems,
-            mode: 'payment',
-            success_url: `${process.env.BASE_URL}/checkout/success`,
-            cancel_url: `${process.env.BASE_URL}/checkout/cancel`,
+        // Detalii pentru integrarea EuPlătesc
+        const merchantId = process.env.EUPLATESC_MERCHANT_ID || ''; // ID-ul comerciantului
+        const secretKey = process.env.EUPLATESC_SECRET_KEY || ''; // Cheia secretă
+        const orderId = `order_${Date.now()}`; // ID unic pentru comandă
+        const currency = 'RON'; // Moneda
+        const returnUrl = `${process.env.BASE_URL}/checkout/success`; // URL-ul de succes
+        const cancelUrl = `${process.env.BASE_URL}/checkout/cancel`; // URL-ul de anulare
+
+        // Creează semnătura (hash-ul) pentru securitate
+        const hashString = `${merchantId}${orderId}${totalAmount}${currency}${returnUrl}${cancelUrl}`;
+        const hash = crypto.createHmac('md5', secretKey).update(hashString).digest('hex');
+
+        // Creează formularul pentru redirecționare către EuPlătesc
+        const formHtml = `
+            <form id="euplatesc-form" action="https://secure.euplatesc.ro/tdsprocess/tranzactd.php" method="POST">
+                <input type="hidden" name="MERCHANT" value="${merchantId}" />
+                <input type="hidden" name="ORDER_REF" value="${orderId}" />
+                <input type="hidden" name="ORDER_AMOUNT" value="${totalAmount.toFixed(2)}" />
+                <input type="hidden" name="CURRENCY" value="${currency}" />
+                <input type="hidden" name="RETURN_URL" value="${returnUrl}" />
+                <input type="hidden" name="CANCEL_URL" value="${cancelUrl}" />
+                <input type="hidden" name="ORDER_HASH" value="${hash}" />
+                <button type="submit">Redirect către EuPlătesc</button>
+            </form>
+            <script>document.getElementById('euplatesc-form').submit();</script>
+        `;
+
+        return new NextResponse(formHtml, {
+            headers: { 'Content-Type': 'text/html' },
         });
-
-        return NextResponse.json({ sessionId: session.id }, { status: 200 });
     } catch (error) {
-        console.error('Eroare la crearea sesiunii Stripe:', error);
+        console.error('Eroare la inițializarea plății EuPlătesc:', error);
         return NextResponse.json({ error: 'A apărut o eroare la procesarea plății.' }, { status: 500 });
     }
 }

@@ -251,7 +251,6 @@ const ListOfProducts = (
       });
   };
 
-  // Adaugă această funcție pentru update local
   const handleUpdateProduct = (updatedProduct: ProductProps) => {
     setAllProducts(prev =>
       prev.map(p => p.id === updatedProduct.id ? updatedProduct : p)

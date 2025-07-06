@@ -1,6 +1,5 @@
 import { ProductProps } from "./admin/types";
 
-// props pentru un produs compus cum ar fi buchete, aranjamente florale etc
 export interface ItemProps {
     id: string,
     title: string,

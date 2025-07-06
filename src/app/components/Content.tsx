@@ -1,6 +1,7 @@
 'use client'
 import { useProductsGroupedByCategory } from './hooks/fetchProductsGroupedByCategory';
 import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
+import ColourfulText from "./ui/colourful-text";
 import { AuroraBackground } from "./ui/aurora-background";
 import { Loader } from '@mantine/core';
 import { motion } from "motion/react";
@@ -76,15 +77,6 @@ export const Delivery = () => {
         <div className="bg-white py-10 px-6 mt-10 rounded-lg shadow-lg md:px-40">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-30 text-gray-800">
 
-                {/* Livrare Same Day */}
-                <div className="flex items-center space-x-4">
-                    <div className="text-3xl">🚚</div>
-                    <div>
-                        <h3 className="font-bold text-lg">Livrare same day</h3>
-                        <p className="text-sm">Livrare flori cadou, buchete de flori, aranjamente florale cu livrare în aceeași zi prin curieri proprii.</p>
-                    </div>
-                </div>
-
                 {/* Livrare Gratuită */}
                 <div className="flex items-center space-x-4">
                     <div className="text-3xl">🚛</div>
@@ -113,7 +105,7 @@ export const Delivery = () => {
                 </div>
 
             </div>
-            <div className="mt-10 text-center">
+            <div className="mt-20 text-center">
                 <button className="bg-[#b756a64f] text-2xl text-shadow-xl rounded-md w-fit text-white px-4 py-3">
                     Flori deosebite pentru momente de neuitat! Livrare rapida in Romania si garantie 100% la orice comanda
                 </button>
@@ -124,33 +116,35 @@ export const Delivery = () => {
 
 const NewOfers = () => {
     return (
-        <div className='grid md:grid-cols-2 grid-cols-1 pb-5 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40'>
-            <div style={{ backgroundImage: "url('/dashbordflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
-                <h3 className="text-lg important font-semibold mt-2 w-[100%] shadow-2xl m-auto bg-amber-100">Ofertă!</h3>
-                <p className="text-white shadow-5xl text-shadow-xl font-semibold">
-                    Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru
-                    cei dragi!
+        <div className="grid md:grid-cols-2 grid-cols-1 pb-5 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40">
+            {/* Card 1 */}
+            <div className="bg-white rounded-lg shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
+                <h3 className="text-lg font-semibold mt-2 text-gray-800">Ofertă Specială!</h3>
+                <p className="text-gray-600 mt-4">
+                    Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru cei dragi!
                 </p>
                 <Link
                     href="/features/Promotii"
-                    className="inline-block mt-3 px-4 py-2 bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
+                    className="inline-block mt-6 px-6 py-3 bg-[#b756a64f] text-white rounded-md text-sm font-medium transition duration-300 hover:bg-[#a0458e]"
                 >
                     Comandă acum
                 </Link>
             </div>
-            <div style={{ backgroundImage: "url('/promoflower.jpg')" }} className="md:pt-60 md:max-w-xl bg-cover bg-center max-w-xs mx-auto p-4 shadow-xl shadow-[#b756a64f] text-center transition-transform duration-300 ease-in-out hover:scale-110 md:h-[400px]">
-                <h3 className="text-lg important font-semibold mt-2 shadow-2xl m-auto bg-amber-100">Descoperă ofertele saptamanii!</h3>
-                <p className="text-white shadow-5xl text-shadow-xl font-semibold">
+
+            {/* Card 2 */}
+            <div className="bg-white rounded-lg shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
+                <h3 className="text-lg font-semibold mt-2 text-gray-800">Descoperă ofertele săptămânii!</h3>
+                <p className="text-gray-600 mt-4">
                     Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
                 </p>
                 <Link
                     href="/features/Promotii%20saptamanale"
-                    className="inline-block mt-3 px-4 py-2  bg-white content opacity-80 dark:bg-white w-fit text-white dark:text-black transition duration-300"
+                    className="inline-block mt-6 px-6 py-3 bg-[#b756a64f] text-white rounded-md text-sm font-medium transition duration-300 hover:bg-[#a0458e]"
                 >
                     Comandă acum
                 </Link>
             </div>
-        </div >
+        </div>
     );
 };
 
@@ -168,8 +162,8 @@ const Content = () => {
                     ease: "easeInOut",
                 }}
             >
-                <h1 className="mb-4 mt-22 text-center text-6xl font-bold">
-                    Poezia florilor by Simona
+                <h1 className="mb-4 mt-18 text-5xl font-bold mx-5 md:text-center">
+                    Buchetul Simonei, <br /> poezia <ColourfulText text="florilor" />
                 </h1>
                 <p className="mb-20 text-center text-md text-zinc-500">
                     „În fiecare petală se ascunde o poveste, iar în fiecare floare, un vis.🌸✨ Împreună, scriem povești parfumate.”

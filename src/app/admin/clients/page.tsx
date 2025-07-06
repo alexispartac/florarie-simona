@@ -74,8 +74,7 @@ const Page = () => {
         );
     }
 
-    // Filtrare clienți după termenul de căutare
-    const filteredClients = clients.filter(( client : User )=>
+const filteredClients = clients.filter(( client : User )=>
         `${client.name} ${client.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 

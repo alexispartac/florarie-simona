@@ -85,7 +85,6 @@ const Page = () => {
     const unfinalizedOrders = orders.filter(order => order.status !== 'Delivered');
 
     const handleFinalizeOrder = async (id: string) => {
-        // Actualizează comanda în baza de date
         await axios.put(URL_ORDERS, { id: id, status: 'Delivered' }).then(() => {
             setOrders(prev =>
                 prev.map(order =>
