@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "Buchetul Simonei",
     images: [
       {
-        url: "https://buchetul-simonei.com/og-image.jpg", // adaugare imagine cu logo
+        url: "https://firebasestorage.googleapis.com/v0/b/poezia-florilor-9bb89.firebasestorage.app/o/images%2Flogo.jpg?alt=media&token=b3d4ad6e-2f73-48c6-b7aa-515d43e37c5f", // adaugare imagine cu logo
         width: 1200,
         height: 630,
         alt: "Buchetul Simonei",
@@ -57,17 +57,17 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MantineProvider>
-            <UserProvider>
-              <QueryProvider>
-                <ReduxProvider>
-                  <AutoConnectWithToken />
-                  <AnimateForBegin />
-                  <RestrictedComponents>
-                    {children}
-                  </RestrictedComponents>
-                </ReduxProvider>
-              </QueryProvider>
-            </UserProvider>
+          <UserProvider>
+            <QueryProvider>
+              <ReduxProvider>
+                <AutoConnectWithToken />
+                <AnimateForBegin />
+                <RestrictedComponents>
+                  {children}
+                </RestrictedComponents>
+              </ReduxProvider>
+            </QueryProvider>
+          </UserProvider>
         </MantineProvider>
       </body>
     </html>
