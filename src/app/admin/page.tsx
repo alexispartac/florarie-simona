@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { SidebarDemo } from './components/SideBar';
 import Link from 'next/link';
@@ -32,12 +33,13 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 gap-4 mt-4">
           <div className="h-full w-full rounded-lg bg-gray-100 dark:bg-neutral-800">
             <div className="h-full w-full text-center py-7">
-              <Link href="/admin/statistics" className="flex items-center justify-center gap-2">
-                STATISTICI
+              <Link href="/admin/close-period" className="flex items-center justify-center gap-2">
+                Setare perioada de inchidere 
               </Link>
-              {/* Add your statistics content here */}
             </div>
           </div>
+        </div>
+        <div>
         </div>
       </div>
     </div>

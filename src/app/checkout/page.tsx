@@ -8,14 +8,14 @@ import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import { useUser } from '../components/ContextUser';
+import { useUser } from '../components/context/ContextUser';
 
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const [loading, setLoading] = useState(false);
-    const [modalOpened, setModalOpened] = useState(false); 
-    const [modalMessage, setModalMessage] = useState(''); 
-    const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs'); 
+    const [modalOpened, setModalOpened] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs');
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
@@ -60,7 +60,7 @@ const CheckoutPage = () => {
                 })),
                 totalPrice: checkoutForm.values.totalPrice,
             });
-            
+
             const formHtml = response.data;
 
             const tempDiv = document.createElement('div');
@@ -109,8 +109,8 @@ const CheckoutPage = () => {
     }
 
     if (cartItems.length === 0) {
-        router.back(); 
-        return null; 
+        router.back();
+        return null;
     }
 
     return (
@@ -118,7 +118,7 @@ const CheckoutPage = () => {
             <Button
                 variant="outline"
                 color={'#b756a64f'}
-                onClick={() => router.back()} 
+                onClick={() => router.back()}
             >
                 Înapoi
             </Button>

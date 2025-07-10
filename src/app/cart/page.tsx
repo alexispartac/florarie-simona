@@ -5,7 +5,7 @@ import { Button, Group, Text, Divider, Loader, Modal, Stack } from '@mantine/cor
 import { RootState, removeItem, setCart, updateQuantity } from './components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { useUser } from '../components/ContextUser';
+import { useUser } from '../components/context/ContextUser';
 import axios from 'axios';
 
 const URL_CHECK_COMPOSITION = '/api/check-composition';
@@ -19,7 +19,7 @@ const Cart = () => {
   const [isChecking, setIsChecking] = useState(false); // Loader pentru verificarea stocului
   const [modalOpened, setModalOpened] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedCart = localStorage.getItem('cartItems');
@@ -45,27 +45,27 @@ const Cart = () => {
   };
 
   const handleFinalizeOrder = async () => {
-    setIsChecking(true); 
+    setIsChecking(true);
     try {
-        const response = await axios.post(URL_CHECK_COMPOSITION, cartItems, {
-            validateStatus: (status) => status >= 200 && status < 500, 
-        });
+      const response = await axios.post(URL_CHECK_COMPOSITION, cartItems, {
+        validateStatus: (status) => status >= 200 && status < 500,
+      });
 
-        if (response.status === 200) {
-            router.push('/checkout');
-            setModalOpened(false);
-        } else if (response.status === 403) {
-            setModalMessage('Ne pare rău, stocurile nu mai sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
-            setModalOpened(true);
-        }
-        setIsChecking(false);
-    } catch (error) {
-        console.log('Eroare la verificarea stocului:', error);
-        setModalMessage('A apărut o eroare la verificarea stocului. Te rugăm să încerci din nou.');
-        setIsChecking(false);
+      if (response.status === 200) {
+        router.push('/checkout');
+        setModalOpened(false);
+      } else if (response.status === 403) {
+        setModalMessage('Ne pare rău, stocurile nu mai sunt suficiente pentru unele produse. Te rugăm să verifici coșul tău.');
         setModalOpened(true);
+      }
+      setIsChecking(false);
+    } catch (error) {
+      console.log('Eroare la verificarea stocului:', error);
+      setModalMessage('A apărut o eroare la verificarea stocului. Te rugăm să încerci din nou.');
+      setIsChecking(false);
+      setModalOpened(true);
     }
-};
+  };
 
   if (loading) {
     return (
@@ -95,8 +95,8 @@ const Cart = () => {
               <div
                 key={item.id}
                 className="flex flex-col md:flex-row items-center justify-between border-b pb-4"
-                >
-                <Group 
+              >
+                <Group
                   className="flex items-center mb-2 md:px-10"
                   onClick={() => router.push(`/product/${item.id}`)}
                   style={{ cursor: 'pointer' }}
@@ -156,7 +156,7 @@ const Cart = () => {
         <div className="flex flex-col md:flex-row justify-center items-center mt-6">
           {cartItems.length > 0 ? (
             <Stack align='center' m={'auto'} >
-              <Text className="text-lg md:text-xl font-bold mb-4 md:mb-0">  
+              <Text className="text-lg md:text-xl font-bold mb-4 md:mb-0">
                 Total: {totalPrice} RON
               </Text>
               {!user.isAuthenticated && (

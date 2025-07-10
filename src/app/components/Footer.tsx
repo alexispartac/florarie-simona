@@ -46,23 +46,23 @@ export const Footer = () => {
 
     return (
         <footer className="bg-[#b756a64f] text-white py-10 mt-20">
-            <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-8 md:px-20">
+            <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-8 md:px-5">
 
                 {/* Newsletter */}
-                <div className="my-10 bg-white/20 backdrop-blur-md rounded-lg py-6 px-6 text-center">
+                <div className="bg-white/20 backdrop-blur-md rounded-lg py-6 px-6 text-center w-full md:w-1/3 md:mx-4 mb-6 md:mb-0">
                     <h2 className="text-xl font-bold">Înscrie-te la Newsletter!</h2>
                     <p className="text-sm mt-2">Devino membru și primește cele mai bune oferte săptămânale.</p>
-                    <div className="mt-4 flex justify-center">
+                    <div className="mt-4 justify-center">
                         <input
                             type="email"
                             placeholder="Adresa ta de email"
-                            className="px-4 py-2 rounded-l-lg border-none"
+                            className="flex w-full px-4 py-2 rounded-l-lg border-none"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <button
                             onClick={handleSubscribe}
-                            className="bg-[#b756a64f] cursor-pointer text-white px-4 py-2 rounded-r-lg hover:text-pink-200 hover:bg-white"
+                            className="bg-[#b756a64f] cursor-pointer text-white px-4 py-2 my-2 rounded-lg hover:text-pink-200 hover:bg-white"
                             disabled={loading || !email}
                         >
                             {loading ? 'Se încarcă...' : 'Înscrie'}
@@ -85,7 +85,7 @@ export const Footer = () => {
 
                 {/* Linkuri principale */}
                 <motion.div
-                    className="flex space-x-6 mt-6 md:mt-0"
+                    className="flex px-2 space-x-6 mt-6 md:mt-0"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}

@@ -18,10 +18,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
+  <!-- <url>
     <loc>https://buchetul-simonei.com/produse</loc>
     <lastmod>2025-07-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-  </url>
+  </url> -->
 </urlset>

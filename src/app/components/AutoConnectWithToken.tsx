@@ -1,6 +1,6 @@
 'use client';
 import { useCookies } from "react-cookie";
-import { useUser } from "./ContextUser";
+import { useUser } from "./context/ContextUser";
 import { jwtDecode } from "jwt-decode";
 import { useHandleLogout } from "./Auth";
 import { useEffect } from "react";

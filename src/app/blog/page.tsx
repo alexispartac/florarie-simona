@@ -5,7 +5,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { useBlogPosts } from '../components/hooks/fetchBlogPosts';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { storage } from '../components/lib/firebase';
-import { useUser } from '../components/ContextUser';
+import { useUser } from '../components/context/ContextUser';
 import React, { useState, useEffect } from 'react';
 import { Menu, ActionIcon } from '@mantine/core';
 import { Loader, Tooltip } from '@mantine/core';

@@ -75,7 +75,7 @@ export function AuroraBackgroundDemo() {
 export const Delivery = () => {
     return (
         <div className="bg-white py-10 px-6 mt-10 rounded-lg shadow-lg md:px-40">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-30 text-gray-800">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 gap-x-30 text-gray-800">
 
                 {/* Livrare Gratuită */}
                 <div className="flex items-center space-x-4">
@@ -118,28 +118,28 @@ const NewOfers = () => {
     return (
         <div className="grid md:grid-cols-2 grid-cols-1 pb-5 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40">
             {/* Card 1 */}
-            <div className="bg-white rounded-lg shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
+            <div className="bg-white rounded-lg border-[#b756a64f] border-2 shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
                 <h3 className="text-lg font-semibold mt-2 text-gray-800">Ofertă Specială!</h3>
                 <p className="text-gray-600 mt-4">
                     Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru cei dragi!
                 </p>
                 <Link
                     href="/features/Promotii"
-                    className="inline-block mt-6 px-6 py-3 bg-[#b756a64f] text-white rounded-md text-sm font-medium transition duration-300 hover:bg-[#a0458e]"
+                    className="inline-block mt-6 px-6 py-3 bg-[#b756a64f] font-bold text-white rounded-md text-sm transition duration-300 hover:bg-[#a0458e]"
                 >
                     Comandă acum
                 </Link>
             </div>
 
             {/* Card 2 */}
-            <div className="bg-white rounded-lg shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
+            <div className="bg-white rounded-lg border-[#b756a64f] border-2 shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
                 <h3 className="text-lg font-semibold mt-2 text-gray-800">Descoperă ofertele săptămânii!</h3>
                 <p className="text-gray-600 mt-4">
                     Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
                 </p>
                 <Link
                     href="/features/Promotii%20saptamanale"
-                    className="inline-block mt-6 px-6 py-3 bg-[#b756a64f] text-white rounded-md text-sm font-medium transition duration-300 hover:bg-[#a0458e]"
+                    className="inline-block mt-6 px-6 py-3 bg-[#b756a64f] font-bold text-white rounded-md text-sm transition duration-300 hover:bg-[#a0458e]"
                 >
                     Comandă acum
                 </Link>
@@ -149,11 +149,10 @@ const NewOfers = () => {
 };
 
 const Content = () => {
-
     return (
         <div className="relative container mx-auto pt-24">
             <motion.div
-                className='h-120 px-4 '
+                className="h-120 px-4"
                 initial={{ opacity: 0.0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
@@ -162,10 +161,13 @@ const Content = () => {
                     ease: "easeInOut",
                 }}
             >
-                <h1 className="mb-4 mt-18 text-5xl font-bold mx-5 md:text-center">
+                {/* Titlu responsive */}
+                <h1 className="mb-4 mt-18 text-3xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mx-5 md:text-center ms:m-0">
                     Buchetul Simonei, <br /> poezia <ColourfulText text="florilor" />
                 </h1>
-                <p className="mb-20 text-center text-md text-zinc-500">
+
+                {/* Paragraf responsive */}
+                <p className="mb-20 text-center text-sm sm:text-base md:text-lg lg:text-xl text-zinc-500">
                     „În fiecare petală se ascunde o poveste, iar în fiecare floare, un vis.🌸✨ Împreună, scriem povești parfumate.”
                 </p>
             </motion.div>

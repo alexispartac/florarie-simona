@@ -1,17 +1,23 @@
 'use client';
 
 import React from "react";
+import { useStore } from "../context/StoreContext";
 
 export default function AnimateForBegin() {
     const [show, setShow] = React.useState(true);
+    const { isClosed } = useStore();
 
     React.useEffect(() => {
-        const timer = setTimeout(() => {
+        if (isClosed) {
             setShow(false);
-        }, 2000); 
+        } else {
+            const timer = setTimeout(() => {
+                setShow(false);
+            }, 3000); 
 
-        return () => clearTimeout(timer); // Cleanup the timer on unmount
-    }, []);
+            return () => clearTimeout(timer);
+        }
+    }, [isClosed]);
 
 
     return (

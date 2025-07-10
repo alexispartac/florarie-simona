@@ -4,10 +4,10 @@ import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-re
 import React, { useCallback, useState, useMemo } from "react";
 import { ForgotPasswordModal } from "./ForgotPassword";
 import { NavbarButton } from "./ui/resizable-navbar";
+import { useUser } from './context/ContextUser';
 import { useDisclosure } from '@mantine/hooks';
-import { useForm } from '@mantine/form';
 import { useCookies } from "react-cookie";
-import { useUser } from "./ContextUser";
+import { useForm } from '@mantine/form';
 import { v4 as uuidv4 } from 'uuid';
 import Link from "next/link";
 import axios from "axios";

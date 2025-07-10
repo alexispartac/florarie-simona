@@ -3,7 +3,7 @@
 import { TextInput, Button, Group, Notification, Avatar, Loader, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import axios from "axios";
-import { useUser } from "../components/ContextUser";
+import { useUser } from "../components/context/ContextUser";
 import React, { useState, useCallback } from "react";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { storage } from "../components/lib/firebase"; // Importă configurația Firebase

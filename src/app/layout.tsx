@@ -1,9 +1,8 @@
-import { RestrictedComponents } from "./components/RestrictedComponents";
-import { AutoConnectWithToken } from "./components/AutoConnectWithToken";
-import AnimateForBegin from "./components/ui/animate-for-begin";
+import { StoreProvider } from "./components/context/StoreContext";
+import { UserProvider } from "./components/context/ContextUser";
+import QueryProvider from "./components/context/QueryProvider";
 import ReduxProvider from "./cart/components/ReduxProvider";
-import { UserProvider } from "./components/ContextUser";
-import QueryProvider from "./components/QueryProvider";
+import ClientWrapper from './components/ClientWrapper';
 import { Geist, Geist_Mono } from "next/font/google";
 import { MantineProvider } from '@mantine/core';
 import type { Metadata } from "next";
@@ -52,7 +51,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en">
+   <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -60,11 +59,9 @@ export default function RootLayout({
           <UserProvider>
             <QueryProvider>
               <ReduxProvider>
-                <AutoConnectWithToken />
-                <AnimateForBegin />
-                <RestrictedComponents>
-                  {children}
-                </RestrictedComponents>
+                <StoreProvider>
+                  <ClientWrapper>{children}</ClientWrapper>
+                </StoreProvider>
               </ReduxProvider>
             </QueryProvider>
           </UserProvider>
