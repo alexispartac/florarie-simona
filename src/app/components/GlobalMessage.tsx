@@ -4,10 +4,11 @@ import { useStore } from './../components/context/StoreContext';
 import { Button, Group, Modal, TextInput } from '@mantine/core';
 import { useUser } from './context/ContextUser';
 import { useDisclosure } from '@mantine/hooks';
-import { IconAt } from '@tabler/icons-react';
+import { IconAt, IconBrandFacebook, IconBrandInstagram } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const URL_LOGIN = "/api/users/login";
 
@@ -91,7 +92,7 @@ const GlobalMessage = () => {
 
       {/* Mesaj global */}
       <div className="fixed top-0 left-0 w-full bg-[#b756a5] text-white text-center py-2 z-50">
-        Magazinul este închis până la data de { closePeriod }.
+        Magazinul este închis până la data de <br /> { closePeriod }.
       </div>
 
       {/* Mesaj de închidere */}
@@ -101,7 +102,11 @@ const GlobalMessage = () => {
           <button onClick={open}> 🥲 </button>
         </h1>
         <p className="text-lg">Vă mulțumim pentru înțelegere!</p>
-        <p>Dacă aveți întrebări, vă rugăm să contactați: 07720558889</p>
+        <p>Dacă aveți întrebări contactați: 0772055889</p>
+        <Group className="mt-4">
+          <Link href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" className="hover:text-gray-300"><IconBrandFacebook /></Link>
+          <Link href="https://www.instagram.com/poeziaflorilor/" className="hover:text-gray-300"><IconBrandInstagram /></Link>
+        </Group> 
       </div>
 
       {/* Modal de autentificare */}
@@ -141,11 +146,11 @@ const GlobalMessage = () => {
               </div>
             )}
             <Group justify="space-between">
+              <Button onClick={close} color='red' className="mt-4 text-white px-4 py-2 rounded">
+                Închide
+              </Button>
               <Button type="submit" variant="filled" color="#b756a6" disabled={loading}>
                 Login
-              </Button>
-              <Button onClick={close} color='#b756a6' className="mt-4 text-white px-4 py-2 rounded">
-                Închide
               </Button>
             </Group>
           </form>
