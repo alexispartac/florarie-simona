@@ -86,6 +86,15 @@ const CheckoutPage = () => {
 
         try {
             await axios.post('/api/orders', values);
+
+            // Trimite email-ul cu detaliile comenzii
+            await axios.post('/api/send-email', {
+                clientEmail: values.clientEmail,
+                clientName: values.clientName,
+                orderDetails: values.products,
+                totalPrice: values.totalPrice,
+            });
+
             setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
             setModalOpened(true);
             checkoutForm.reset();
@@ -96,7 +105,6 @@ const CheckoutPage = () => {
         } finally {
             dispatch(clearCart());
             setLoading(false);
-            setTimeout(() => (setModalOpened(false), router.push('/')), 5000);
         }
     };
 
@@ -106,11 +114,6 @@ const CheckoutPage = () => {
                 <Loader color="blue" size="lg" />
             </div>
         );
-    }
-
-    if (cartItems.length === 0) {
-        router.back();
-        return null;
     }
 
     return (

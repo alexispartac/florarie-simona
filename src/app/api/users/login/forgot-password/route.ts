@@ -4,8 +4,8 @@ import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import clientPromise from '@/app/components/lib/mongodb';
 
-const EMAIL_USER = process.env.EMAIL_USER || 'simonabuzau2@gmail.com';
-const EMAIL_PASS = process.env.EMAIL_PASS || 'qpqz bneu qlfi ehvc';
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
 // Configurare nodemailer pentru trimiterea email-urilor
 const transporter = nodemailer.createTransport({

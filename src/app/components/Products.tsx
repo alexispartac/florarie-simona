@@ -6,6 +6,7 @@ import { Button } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../cart/components/CartRedux';
 import { RootState } from '../cart/components/CartRedux';
+import { useRouter } from 'next/navigation';
 
 export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
   return (
@@ -26,6 +27,7 @@ export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
 export const Item = ({ item }: { item: ItemProps }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const router = useRouter();
 
   const itemForCart: CartItem = {
     id: item.id,
@@ -44,6 +46,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
 
   const handleAddToCart = () => {
     dispatch(addItem(itemForCart)); 
+    return router.push('/cart');
   };
 
   const isInCart = cartItems.some((cartItem) => cartItem.id === item.id);

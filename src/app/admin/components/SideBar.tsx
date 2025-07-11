@@ -45,8 +45,8 @@ export function SidebarDemo({ children }: { children: React.ReactNode }) {
       ),
     },
     {
-      label: "Statistici",
-      href: "/admin/statistics",
+      label: "Inchidere perioada",
+      href: "/admin/close-period",
       icon: (
         <IconListDetails className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),

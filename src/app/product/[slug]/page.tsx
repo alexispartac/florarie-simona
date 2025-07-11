@@ -118,7 +118,6 @@ const Product = () => {
                 dispatch(addItem(itemForCart));
                 setModalMessage('Produsul a fost adăugat în coș!');
             } else if (response.status === 201) {
-                ;
                 setModalMessage(`Cantitatea necesară nu este disponibilă`);
             }
         } catch (error) {

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { SidebarDemo } from '../components/SideBar';
 import { OrderProps } from '../../api/types';
+import React from 'react';
 import axios from 'axios';
 
 const URL_ORDERS = '/api/orders';
@@ -53,9 +54,35 @@ const ListOfOrders = ({
     orders: OrderProps[];
     onFinalize: (id: string) => void;
 }) => {
+    const [numberTodayOrders, setNumberTodayOrders] = useState(0);
+
+    React.useEffect(() => {
+        const today = new Date().toISOString().split('T')[0];
+        const todayOrders = orders.filter(order => order.orderDate.startsWith(today));
+        setNumberTodayOrders(todayOrders.length);
+    }, [orders]);
+    
+    if (orders.length === 0) {
+        return <div className="text-center text-gray-500">Nu există comenzi.</div>;
+    }
+
+    if (orders.length > 100) {
+        return <div className="text-center text-red-500">Prea multe comenzi pentru a fi afișate.</div>;
+    }
+
+    const reverseOrders = [...orders].reverse();
+
+
     return (
         <div className="flex flex-col gap-2 overflow-y-auto">
-            {orders.map(order => (
+            <div className="text-center text-gray-500 mb-4">
+                {numberTodayOrders > 0 ? (
+                    <span>Comenzi de astăzi: {numberTodayOrders}</span>
+                ) : (
+                    <span>Nu există comenzi de astăzi.</span>
+                )}
+            </div>
+            {reverseOrders.map(order => (
                 <OrderRow key={order.id} order={order} onFinalize={onFinalize} />
             ))}
         </div>
@@ -66,13 +93,17 @@ const ListOfOrders = ({
 const Page = () => {
     const [orders, setOrders] = useState<OrderProps[]>([]);
     const [showFinalized, setShowFinalized] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     function fetchOrders() {
+        setLoading(true);
         try {
             axios.get(URL_ORDERS).then((response) => {
                 setOrders(response.data);
             });
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             console.log('Error fetching orders:', error);
         }
     }
@@ -107,6 +138,11 @@ const Page = () => {
             <div className="flex flex-1 h-full">
                 <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
                     <div className="flex gap-2">
+                        {loading && (
+                            <div className="flex items-center justify-center w-full h-20 bg-gray-100 dark:bg-neutral-800 rounded-lg">
+                                <span className="text-gray-500">Încărcare comenzi...</span>
+                            </div>
+                        )}
                         <div
                             className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${!showFinalized
                                 ? 'bg-blue-200 dark:bg-blue-900'
