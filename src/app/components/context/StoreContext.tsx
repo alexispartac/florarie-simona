@@ -5,11 +5,13 @@ import axios from 'axios';
 
 interface StoreContextProps {
   isClosed: boolean;
+  setIsClosed: React.Dispatch<React.SetStateAction<boolean>>;
   closePeriod: string | null;
 }
 
 const StoreContext = createContext<StoreContextProps>({
   isClosed: false,
+  setIsClosed: () => {},
   closePeriod: null,
 });
 
@@ -37,7 +39,7 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <StoreContext.Provider value={{ isClosed, closePeriod }}>
+    <StoreContext.Provider value={{ isClosed, setIsClosed, closePeriod }}>
       {children}
     </StoreContext.Provider>
   );
