@@ -35,10 +35,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { clientEmail, clientName, orderDetails, totalPrice } = await req.json();
+    const { clientEmail, clientName} = await req.json();
 
     // Verifică dacă toate câmpurile necesare sunt prezente
-    if (!clientEmail || !clientName || !orderDetails || !totalPrice) {
+    if (!clientEmail || !clientName ) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields.' },
         { status: 400 }
@@ -50,21 +50,6 @@ export async function POST(req: NextRequest) {
     if (!emailRegex.test(clientEmail)) {
       return NextResponse.json(
         { success: false, message: 'Email invalid.' },
-        { status: 400 }
-      );
-    }
-    // Verifică dacă detaliile comenzii sunt valide
-    if (!Array.isArray(orderDetails) || orderDetails.length === 0) {
-      return NextResponse.json(
-        { success: false, message: 'Detaliile comenzii sunt invalide.' },
-        { status: 400 }
-      );
-    }
-
-    // Verifică dacă prețul total este un număr valid
-    if (typeof totalPrice !== 'number' || totalPrice <= 0) {
-      return NextResponse.json(
-        { success: false, message: 'Prețul total este invalid.' },
         { status: 400 }
       );
     }
@@ -82,24 +67,18 @@ export async function POST(req: NextRequest) {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: clientEmail,
-      subject: 'Confirmare Comandă - Buchetul Simonei',
+      subject: 'Confirmare Creare const pe site-ul - Buchetul Simonei',
       html: `
-        <h1>Mulțumim pentru comandă, ${clientName}!</h1>
-        <p>Detalii comandă:</p>
-        <ul>
-          ${orderDetails
-            .map(
-              (item: { title: string; quantity: number; price: number }) =>
-                `<li>${item.title} - Cantitate: ${item.quantity} - Preț: ${item.price} RON</li>`
-            )
-            .join('')}
-        </ul>
-        <p><strong>Total: ${totalPrice} RON</strong></p>
-        <p>Comanda dumneavoastră va fi procesată în cel mai scurt timp posibil.</p>
-        <p>Vă rugăm să verificați detaliile comenzii și să ne contactați dacă aveți întrebări.</p>
-        <p>Pentru orice întrebări sau nelămuriri, nu ezitați să ne contactați la <a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a>.</p>
-
-        <p>Vă mulțumim că ați ales Buchetul Simonei!</p>
+        <h1>Salut ${clientName},</h1>
+        <p>Mulțumim că te-ai înregistrat pe site-ul nostru!</p>
+        <p>Poti incepe cuparaturile accesând următorul link:</p>
+        <p><a href="https://buchetul-simonei.com">Buchetul Simonei</a></p>
+        <p>Te rugăm să reții că acest email este doar o confirmare a înregistrării tale</p>
+        <p>Dacă ai întrebări sau ai nevoie de ajutor, nu ezita să ne contactezi.</p>
+        <p>De asemenea, dacă nu ai solicitat această înregistrare, te rug să ignori acest email.</p>
+        <br />
+        <p>Cu drag,</p>
+        <p>Echipa Buchetul Simonei</p>
       `,
     };
 

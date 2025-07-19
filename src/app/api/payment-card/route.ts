@@ -1,14 +1,37 @@
 'use server';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
 
+const JWT_SECRET = process.env.JWT_SECRET;
+
 export async function POST(req: NextRequest) {
+    if (req.method !== 'POST') {
+        return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+    }
+
+    if (!JWT_SECRET) {
+        return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
+    }
+
+    const cookie = req.cookies.get('login');
+    const token = cookie ? cookie.value : null;
+
+    if (!token) {
+        return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
+    }
+
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (!payload) {
+        return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
+    }
+
     try {
         const body = await req.json();
 
         // Verifică dacă datele sunt valide
         if (!body.items || !Array.isArray(body.items)) {
-            return NextResponse.json({ error: 'Datele trimise sunt invalide.' }, { status: 400 });
+            return NextResponse.json({ success: false, message: 'Datele trimise sunt invalide.' }, { status: 400 });
         }
 
         // Calculează totalul comenzii
@@ -48,6 +71,6 @@ export async function POST(req: NextRequest) {
         });
     } catch (error) {
         console.error('Eroare la inițializarea plății EuPlătesc:', error);
-        return NextResponse.json({ error: 'A apărut o eroare la procesarea plății.' }, { status: 500 });
+        return NextResponse.json({ success: false, message: 'A apărut o eroare la procesarea plății.' }, { status: 500 });
     }
 }

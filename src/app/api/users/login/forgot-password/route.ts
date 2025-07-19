@@ -18,11 +18,15 @@ const transporter = nodemailer.createTransport({
 
 // POST /api/users/login/forgot-password
 export async function POST(req: NextRequest) {
+    if (req.method !== 'POST') {
+        return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+    }
+
     try {
         const { email } = await req.json();
 
         if (!email) {
-            return NextResponse.json({ error: 'Email-ul este obligatoriu' }, { status: 400 });
+            return NextResponse.json({ success: false, message: 'Email-ul este obligatoriu' }, { status: 400 });
         }
 
         const client = await clientPromise;
@@ -32,7 +36,7 @@ export async function POST(req: NextRequest) {
         // Verificăm dacă utilizatorul există în baza de date
         const user = await usersCollection.findOne({ email });
         if (!user) {
-            return NextResponse.json({ error: 'Utilizatorul nu există' }, { status: 404 });
+            return NextResponse.json({ success: false, message: 'Utilizatorul nu există' }, { status: 404 });
         }
 
         // Generăm un cod de verificare unic
@@ -52,9 +56,9 @@ export async function POST(req: NextRequest) {
             text: `Codul tău de resetare a parolei este: ${verificationCode}`,
         });
 
-        return NextResponse.json({ message: 'Codul de verificare a fost trimis pe email' });
+        return NextResponse.json({ success: true, message: 'Codul de verificare a fost trimis pe email' });
     } catch (error) {
         console.log('Eroare la trimiterea codului de verificare:', error);
-        return NextResponse.json({ error: 'Eroare internă a serverului' }, { status: 500 });
+        return NextResponse.json({ success: false, message: 'Eroare internă a serverului' }, { status: 500 });
     }
 }

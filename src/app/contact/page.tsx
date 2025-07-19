@@ -42,7 +42,7 @@ export default function Contact() {
     }) => {
         setLoading(true); // Activăm indicatorul de încărcare
         try {
-            const response = await axios.post('/api/contact', value);
+            const response = await axios.post('/api/contact', value, { withCredentials: true });
             if (response.status === 200) {
                 setNotification({
                     visible: true,

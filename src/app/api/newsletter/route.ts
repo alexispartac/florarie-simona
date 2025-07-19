@@ -1,9 +1,32 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/app/components/lib/mongodb';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // POST /api/newsletter
 export async function POST(req: NextRequest) {
+  if (req.method !== 'POST') {
+    return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+  }
+
+  if (!JWT_SECRET) {
+    return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
+  }
+
+  const cookie = req.cookies.get('login');
+  const token = cookie ? cookie.value : null;
+
+  if (!token) {
+    return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
+  }
+  const payload = jwt.verify(token, JWT_SECRET);
+
+  if (!payload) {
+    return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
+  }
+
   try {
     const { email } = await req.json();
 
@@ -13,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     const client = await clientPromise;
     const db = client.db('florarie');
-    const newsletterCollection = db.collection('newsletter');
+    const newsletterCollection = db.collection('newsletter'); 
 
     // Verificăm dacă email-ul există deja
     const existingEmail = await newsletterCollection.findOne({ email });
@@ -33,6 +56,33 @@ export async function POST(req: NextRequest) {
 
 // DELETE /api/newsletter
 export async function DELETE(req: NextRequest) {
+  if (req.method !== 'DELETE') {
+    return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+  }
+
+  if (!JWT_SECRET) {
+    return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
+  }
+
+  const cookie = req.cookies.get('login');
+  const token = cookie ? cookie.value : null;
+
+  if (!token) {
+    return NextResponse.json
+    
+    
+    ({ success: false, message: 'Token lipsă' }, { status: 400 });
+  }
+
+  if (!token) {
+    return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
+  }
+  const payload = jwt.verify(token, JWT_SECRET);
+
+  if (!payload) {
+    return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
+  }
+
   try {
     const { email } = await req.json();
 

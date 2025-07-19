@@ -6,10 +6,18 @@ import { SimpleProductProps } from '../types';
 
 // POST /api/check-composition - verifică cantitatea produselor componente
 export async function POST(req: NextRequest) {
+    if ( req.method !== 'POST' ) {
+        return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+    }
+
     const client = await clientPromise;
     const db = client.db('florarie');
     const items: CartItem[] = await req.json();
     const totalQuantitiesForEveryProductsOfComposition: { id: string; quantity: number }[] = [];
+
+    if (!Array.isArray(items) || items.length === 0) {
+        return NextResponse.json({ success: false, message: 'Nu au fost trimise produse pentru verificare.' }, { status: 400 });
+    }
 
     for (const item of items) {
         const productQuantity = item.quantity;

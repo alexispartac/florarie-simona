@@ -14,6 +14,7 @@ import axios from "axios";
 
 const URL_LOGIN = "/api/users/login";
 const URL_SIGN = "/api/users";
+const URL_SEND_CONFIRM_EMAIL = "/api/users/send-confirm-email";
 
 export const useHandleLogout = () => {
     const [, setCookie] = useCookies(['login']);
@@ -80,7 +81,7 @@ export const AuthModal = React.memo(() => {
         setLoginError(null);
         setLoading(true);
         try {
-            const response = await axios.post(URL_LOGIN, data);
+            const response = await axios.post(URL_LOGIN, data, { withCredentials: true });
             if (response.status === 200) {
                 setUser({
                     userInfo: response.data.user,
@@ -108,11 +109,16 @@ export const AuthModal = React.memo(() => {
                 formSignUp.reset();
                 setSuccessMessage('Înregistrare reușită! Bine ai venit!');
                 setSuccessModalOpened(true);                                    
-                close();
+                close(); 
+                axios.post(URL_SEND_CONFIRM_EMAIL, {
+                    clientEmail: data.email,
+                    clientName: `${data.name} ${data.surname}`,
+                });
             }
+
         } catch (error) {
             console.log('Error signing up', error);
-            setLoginError("Eroare la înregistrare.");
+            setLoginError("Eroare la înregistrare. Verifică datele introduse.");
         } finally {
             setLoading(false);
         }

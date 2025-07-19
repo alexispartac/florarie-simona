@@ -16,14 +16,43 @@ const CheckoutPage = () => {
     const [modalOpened, setModalOpened] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs');
+    const [orderNumber, setOrderNumber] = useState<number | null>(null);
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
 
+    React.useEffect(() => {
+        if (!user.userInfo) {
+            router.push('/cart');
+            return;
+        }
+
+        if (cartItems.length === 0) {
+            setModalMessage('Coșul tău este gol. Te rugăm să adaugi produse înainte de a finaliza comanda.');
+            console.log(cartItems.length)
+            setModalOpened(true);
+            return;
+        }
+
+        async function fetchOrderNumber() {
+            try {
+
+                const response = await axios.get('/api/orders/number', { withCredentials: true });
+                const orders: OrderProps[] = response.data;
+                setOrderNumber(orders.length);
+            } catch (error) {
+                console.log('Error fetching order number:', error);
+            }
+        }
+        fetchOrderNumber();
+    }, []);
+
+
     const checkoutForm = useForm<OrderProps>({
         initialValues: {
             id: uuidv4(),
-            orderNumber: 'neimplementat',
+            userId: user.userInfo.id || '',
+            orderNumber: orderNumber || 0,
             clientName: user.userInfo.name + ' ' + user.userInfo.surname || '',
             clientEmail: user.userInfo.email || '',
             clientPhone: user.userInfo.phone || '',
@@ -33,6 +62,7 @@ const CheckoutPage = () => {
             info: '',
             status: 'Pending',
             totalPrice: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+            paymentMethod: paymentMethod,
             products: cartItems.map((item) => ({
                 id: item.id,
                 title: item.title,
@@ -44,9 +74,9 @@ const CheckoutPage = () => {
         },
         validate: {
             clientName: (value) => (value.length < 2 ? 'Numele trebuie să conțină cel puțin 2 caractere' : null),
-            clientEmail: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email invalid'),
             clientPhone: (value) => (value.length < 10 ? 'Numărul de telefon trebuie să fie valid' : null),
             clientAddress: (value) => (value.length < 5 ? 'Adresa trebuie să conțină cel puțin 5 caractere' : null),
+            paymentMethod: (value) => (value ? null : 'Selectează o metodă de plată'),
         },
     });
 
@@ -59,7 +89,9 @@ const CheckoutPage = () => {
                     quantity: product.quantity,
                 })),
                 totalPrice: checkoutForm.values.totalPrice,
-            });
+            }, 
+            { withCredentials: true }
+            );
 
             const formHtml = response.data;
 
@@ -69,7 +101,7 @@ const CheckoutPage = () => {
             document.body.appendChild(tempDiv);
             tempDiv.querySelector('form')?.submit();
         } catch (error) {
-            console.error('Eroare la inițializarea plății EuPlătesc:', error);
+            console.log('Eroare la inițializarea plății EuPlătesc:', error);
             setModalMessage('A apărut o eroare la procesarea plății.');
             setModalOpened(true);
         }
@@ -78,33 +110,60 @@ const CheckoutPage = () => {
     const handleSubmit = async (values: OrderProps) => {
         setLoading(true);
 
-        if (paymentMethod === 'card') {
-            await handleEuPlatescPayment();
+        // verifica numarul de telefon
+        const phoneRegex = /^\+?[0-9]{10,15}$/;
+        if (!phoneRegex.test(values.clientPhone)) {
+            setModalMessage('Numărul de telefon este invalid. Te rugăm să introduci un număr valid.');
+            setModalOpened(true);
+            setLoading(false);
+            return;
+        }
+
+        // verifica adresa
+        if (values.clientAddress.length < 8) {
+            setModalMessage('Adresa trebuie să conțină cel puțin 8 caractere.');
+            setModalOpened(true);
             setLoading(false);
             return;
         }
 
         try {
             await axios.post('/api/orders', values);
+            
+        } catch (error) {
+            console.log('Eroare la plasarea comenzii:', error);
+            setModalMessage('A apărut o eroare la plasarea comenzii. Te rugăm să încerci din nou.');
+            setModalOpened(true);
+        }
+        
+        if (paymentMethod === 'card') {
+            await handleEuPlatescPayment();
+        }
 
-            // Trimite email-ul cu detaliile comenzii
-            await axios.post('/api/send-email', {
+        try {
+
+            const statusEmail = await axios.post('/api/send-email', {
                 clientEmail: values.clientEmail,
                 clientName: values.clientName,
                 orderDetails: values.products,
                 totalPrice: values.totalPrice,
             });
+            
+            if (statusEmail.status !== 200) {
+                throw new Error('Failed to send email');
+            }else{
+                setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
+                setModalOpened(true);
+                checkoutForm.reset();
+            }
 
-            setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
-            setModalOpened(true);
-            checkoutForm.reset();
         } catch (error) {
-            console.error('Error placing order:', error);
-            setModalMessage('A apărut o eroare necunoscută. Te rugăm să încerci din nou.');
+            console.log('Eroare la trimiterea email-ului:', error);
+            setModalMessage('Comanda a fost plasata. A apărut o eroare la trimiterea email-ului de confirmare. Te rugăm să verifici adresa de email introdusă apoi contacteaza-ne printr-un mesaj pe adresa oficiala de email pentru a primi confirmarea comenzii.');
             setModalOpened(true);
         } finally {
-            dispatch(clearCart());
             setLoading(false);
+            dispatch(clearCart());
         }
     };
 
@@ -138,6 +197,7 @@ const CheckoutPage = () => {
                     label="Email"
                     placeholder="Introdu email-ul tău"
                     required
+                    disabled
                     {...checkoutForm.getInputProps('clientEmail')}
                     autoFocus={false}
                 />
@@ -168,6 +228,8 @@ const CheckoutPage = () => {
                         { value: 'card', label: 'Card' },
                     ]}
                     value={paymentMethod}
+                    {...checkoutForm.getInputProps('paymentMethod')}
+                    autoFocus={false}
                     onChange={(value) => setPaymentMethod(value as 'ramburs' | 'card')}
                     required
                 />

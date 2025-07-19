@@ -13,6 +13,7 @@ import Reviews from '@/app/components/Reviews';
 import { usePathname } from "next/navigation";
 import PopUp from '@/app/components/PopUp';
 import { useForm } from '@mantine/form';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import React from 'react';
 
@@ -35,6 +36,8 @@ const Product = () => {
     const [modalMessage, setModalMessage] = React.useState('');
     const [isAdding, setIsAdding] = React.useState(false);
     const { data: categoryproducts, isLoading, isError } = useProductsGroupedByCategory();
+    const [inStock, setInStock] = React.useState(true);
+    const router = useRouter();
 
     const addForm = useForm({
         mode: 'uncontrolled',
@@ -71,6 +74,33 @@ const Product = () => {
                         quantity: 0,
                         image: data.info_category.basic.imageSrc,
                     });
+                    setActiveButton({
+                        button1: true,
+                        button2: false,
+                        button3: false,
+                    });
+                    setInStock(product?.inStock ?? true);
+                    axios.post(URL_CHECK_COMPOSITION, [{
+                        id: data.id,
+                        title: data.title,
+                        price: data.info_category.basic.price,
+                        category: data.category,
+                        composition: data.info_category.basic.composition,
+                        quantity: 1,
+                        imageSrc: data.info_category.basic.imageSrc
+                    }]).then(response => {
+                        if (response.status !== 200) {
+                            setModalMessage('Produsul nu mai este disponibil sau nu are suficiente cantități în stoc.');
+                            setModalOpened(true);
+                        } else {
+                            console.log('response:', response);
+                        }
+                    }).catch(error => {
+                        console.log('Eroare la verificarea stocului:', error);
+                        setModalMessage('Produsul nu mai este disponibil, te rugăm să încerci altul pana la următoarea reaprovizionare.');
+                        setInStock(false);
+                        setModalOpened(true);
+                    });
                 })
                 .catch(error => {
                     console.log("Error fetching product:", error);
@@ -99,7 +129,7 @@ const Product = () => {
         try {
             setIsAdding(true);
             if (!product) {
-                setModalMessage('Produsul nu a fost găsit.');
+                setModalMessage('Produsul nu mai este in stoc!');
                 setModalOpened(true);
                 return;
             }
@@ -116,13 +146,14 @@ const Product = () => {
             const response = await axios.post(URL_CHECK_COMPOSITION, [itemForCart]);
             if (response.status === 200) {
                 dispatch(addItem(itemForCart));
-                setModalMessage('Produsul a fost adăugat în coș!');
+                router.push('/cart');
+                
             } else if (response.status === 201) {
-                setModalMessage(`Cantitatea necesară nu este disponibilă`);
+                setModalMessage(`Cantitatea necesară nu este disponibilă va rugam să reveniti urmatoarele zile.`);
             }
         } catch (error) {
             console.log('Eroare la verificarea cantității:', error);
-            setModalMessage('A apărut o eroare. Te rugăm să încerci din nou.');
+            setModalMessage('Cantitatea necesară nu este disponibilă, va rugam să reveniti urmatoarele zile.');
         } finally {
             setIsAdding(false);
             setModalOpened(true);
@@ -180,6 +211,28 @@ const Product = () => {
             button2: button2,
             button3: button3,
         });
+        setInStock(true); 
+        axios.post(URL_CHECK_COMPOSITION, [{
+            id: product.id,
+            title: product.title,
+            price: product.info_category[button1 ? 'basic' : button2 ? 'standard' : 'premium'].price,
+            category: button1 ? 'basic' : button2 ? 'standard' : 'premium',
+            composition: product.info_category[button1 ? 'basic' : button2 ? 'standard' : 'premium'].composition,
+            quantity: 1,
+            imageSrc: product.info_category[button1 ? 'basic' : button2 ? 'standard' : 'premium'].imageSrc
+        }]).then(response => {
+            if (response.status !== 200) {
+                setModalMessage('Produsul nu mai este disponibil sau nu are suficiente cantități în stoc.');
+                setModalOpened(true);
+                setInStock(false);
+            }
+        }).catch(error => {
+            console.log('Eroare la verificarea stocului:', error);
+            setInStock(false);
+            setModalOpened(true);
+            setModalMessage('Produsul nu mai este disponibil, te rugăm să încerci altul pana la următoarea reaprovizionare.');
+            setModalOpened(true);
+        });
     };
 
     const itemsBread = [
@@ -232,15 +285,14 @@ const Product = () => {
                     onSubmit={addForm.onSubmit(() => handleAddToCart())}
                 >
                     {product.isPopular && <span className="text-red-600 font-serif py-4">Popular</span>}
+                    <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                     <div className='grid grid-cols-3'>
                         {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.basic.price} RON</p> : null}
                         {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.standard.price} RON</p> : null}
                         {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.premium.price} RON</p> : null}
-                        {product.inStock && <span className="flex font-serif justify-end align-bottom">In stoc ~|</span>}
-                        {!product.inStock && <span className="flex font-serif justify-end align-bottom">Stoc epuizat ~|</span>}
-                        <span className="flex font-serif align-bottom">~ COD-{product.id.substring(0, 8)}</span>
+                        {inStock ? <p className="font-semibold">In stoc</p> : <p className="text-red-600 font-semibold">Nu este in stoc</p>}
+                        <span className="flex font-serif align-bottom"> -COD-{product.id.substring(2, 8)}</span>
                     </div>
-                    <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                     <div className='grid grid-cols-3 gap-1.5 my-5'>
                         <Button
                             bg={activeButton.button1 ? '#b756a6' : 'white'}
@@ -316,7 +368,7 @@ const Product = () => {
                             w={300}
                             bg={'#b756a6'}
                             type='submit'
-                            disabled={!product.inStock || isInCart || addForm.getValues().quantity < 1}
+                            disabled={!product.inStock || !inStock || isInCart || addForm.getValues().quantity < 1}
                             onClick={() => {
                                 const category = addForm.getValues().category as 'basic' | 'standard' | 'premium';
                                 addForm.setValues({ image: product.info_category[category].imageSrc });
@@ -398,8 +450,8 @@ const Product = () => {
             <Modal
                 opened={modalOpened}
                 onClose={() => setModalOpened(false)}
-                title="Notificare"
                 centered
+                title="Informație"
             >
                 <p>{modalMessage}</p>
             </Modal>

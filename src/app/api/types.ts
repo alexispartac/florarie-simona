@@ -62,7 +62,8 @@ export interface OrderProductProps {
 
 export interface OrderProps {
     id: string,
-    orderNumber: string,
+    userId: string,
+    orderNumber: number,
     clientName: string,
     clientEmail: string,
     clientPhone: string,
@@ -70,8 +71,9 @@ export interface OrderProps {
     orderDate: string,
     deliveryDate?: string,
     info?: string,
-    status: string,
+    status: 'Pending' | 'Processing' | 'Delivered' | 'Cancelled',
     totalPrice: number,
+    paymentMethod: 'ramburs' | 'card',
     products: OrderProductProps[],
 }
 

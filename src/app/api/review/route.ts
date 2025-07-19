@@ -4,13 +4,16 @@ import { v4 as uuidv4 } from 'uuid';
 import clientPromise from '@/app/components/lib/mongodb';
 
 export async function POST(req: NextRequest) {
+  if (req.method !== 'POST') {
+    return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+  }
+
   try {
     const { name, email, message, avatar } = await req.json();
-    console.log('Received data:', { name, email, message, avatar });
     // Validare simplă a datelor
     if (!name || !email || !message || !avatar) {
       return NextResponse.json(
-        { error: 'Toate câmpurile sunt obligatorii.' },
+        { success: false, message: 'Toate câmpurile sunt obligatorii.' },
         { status: 400 }
       );
     }
@@ -32,19 +35,23 @@ export async function POST(req: NextRequest) {
 
     // Răspuns de succes
     return NextResponse.json(
-      { message: 'Recenzia a fost salvată cu succes.', id: result.insertedId },
+      { success: true, message: 'Recenzia a fost salvată cu succes.', id: result.insertedId },
       { status: 200 }
     );
   } catch (error) {
     console.log('Eroare la salvarea recenziei:', error);
     return NextResponse.json(
-      { error: 'A apărut o eroare la salvarea recenziei.' },
+      { success: false, message: 'A apărut o eroare la salvarea recenziei.' },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (req.method !== 'GET') {
+    return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
+  }
+
   try {
 
     const client = await clientPromise;
@@ -58,7 +65,7 @@ export async function GET() {
   } catch (error) {
     console.log('Eroare la obținerea recenziilor:', error);
     return NextResponse.json(
-      { error: 'A apărut o eroare la obținerea recenziilor.' },
+      { success: false, message: 'A apărut o eroare la obținerea recenziilor.' },
       { status: 500 }
     );
   }
