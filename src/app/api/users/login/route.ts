@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
         }
 
-        // Generează JWT cu id, email și nume
+        // Generează JWT cu email și nume
         const token = jwt.sign(
             {
                 email: email,

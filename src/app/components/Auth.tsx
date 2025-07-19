@@ -81,7 +81,7 @@ export const AuthModal = React.memo(() => {
         setLoginError(null);
         setLoading(true);
         try {
-            const response = await axios.post(URL_LOGIN, data, { withCredentials: true });
+            const response = await axios.post(URL_LOGIN, data);
             if (response.status === 200) {
                 setUser({
                     userInfo: response.data.user,
