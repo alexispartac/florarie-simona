@@ -1,11 +1,9 @@
 'use server';
 import nodemailer from 'nodemailer';
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {
@@ -14,26 +12,6 @@ export async function POST(req: NextRequest) {
 
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     return NextResponse.json({ success: false, message: 'Email configuration is not set.' }, { status: 500 });
-  }
-
-  if (!JWT_SECRET) {
-    return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
-  }
-
-  const cookie = req.cookies.get('login');
-  const token = cookie ? cookie.value : null;
-
-  if (!token) {
-    return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
-  }
-
-  const decoded = jwt.verify(token, JWT_SECRET);
-  if (!decoded || typeof decoded === 'string') {
-    return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
-  }
-  const payload = decoded as jwt.JwtPayload;
-  if (!payload.email || !payload.password) {
-    return NextResponse.json({ success: false, message: 'Token invalid' }, { status: 401 });
   }
 
   try {
