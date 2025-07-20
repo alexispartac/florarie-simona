@@ -1,11 +1,11 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config(); 
 
-const EMAIL_USER = process.env.EMAIL_USER || 'simonabuzau2@gmail.com';
-const EMAIL_PASS = process.env.EMAIL_PASS || 'qpqz bneu qlfi ehvc';
-const JWT_SECRET = process.env.JWT_SECRET;
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -22,23 +22,6 @@ export async function POST(req: NextRequest) {
 
     if (!EMAIL_USER || !EMAIL_PASS) {
         return NextResponse.json({ success: false, message: 'Credențialele email-ului nu sunt definite.' }, { status: 500 });
-    }
-
-    if (!JWT_SECRET) {
-        return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
-    }
-    
-    const cookie = req.cookies.get('login');
-    const token = cookie ? cookie.value : null;
-
-    if (!token) {
-        return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
-    }
-    
-    const payload = jwt.verify(token, JWT_SECRET);
-    
-    if (!payload) {
-        return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
     }
     
     try {

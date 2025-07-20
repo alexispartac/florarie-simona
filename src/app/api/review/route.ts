@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import clientPromise from '@/app/components/lib/mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {

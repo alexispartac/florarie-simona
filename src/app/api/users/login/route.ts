@@ -2,8 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import clientPromise from '@/app/components/lib/mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
 
 // POST /api/users/login - interogheaza userul dupa email si parola
 export async function POST(req: NextRequest) {
@@ -14,6 +17,7 @@ export async function POST(req: NextRequest) {
     if (!JWT_SECRET) {
         return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
     }
+    console.log(JWT_SECRET)
 
     try {
         const client = await clientPromise;

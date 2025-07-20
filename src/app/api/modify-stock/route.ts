@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { CartItem } from '@/app/types';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config(); 
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
