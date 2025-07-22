@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
     if (!JWT_SECRET) {
         return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
     }
-    console.log(JWT_SECRET)
 
     try {
         const client = await clientPromise;

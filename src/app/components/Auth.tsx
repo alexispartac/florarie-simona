@@ -143,6 +143,27 @@ export const AuthModal = React.memo(() => {
         formLogIn.reset();
     }, [login, formLogIn]);
 
+    // Dezabonare de la newsletter
+    const unsubscribeFromNewsletter = useCallback(async (email: string) => {
+        try {
+            const response = await axios.delete('/api/newsletter', { data: { email } });
+            const data = response.data;
+            if (response.status !== 200) {
+                throw new Error(data.message || 'Eroare la dezabonare.');
+            }
+            if (response.status === 200) {
+                setSuccessMessage('Email-ul a fost dezabonat cu succes de la newsletter.');
+                setSuccessModalOpened(true);
+            } else {
+                setLoginError(data.message || 'Eroare la dezabonare.');
+                setLoginError('');
+            }
+        } catch (error) {
+            console.error('Error unsubscribing from newsletter:', error);
+            setLoginError('Eroare la dezabonare. Încearcă din nou mai târziu.');
+        }
+    }, []);
+
     const renderForm = useMemo(() => {
         if (!user.isAuthenticated && typeAuth === 'signin') {
             return (
@@ -186,9 +207,11 @@ export const AuthModal = React.memo(() => {
                         </div>
                     </Group>
                     <Anchor component={Link} onClick={() => close()} href='/user' c={"#b756a6"} > Actualizeaza Profilul</Anchor>
-                    <Group justify="space-between">
-                        <Button color='#b756a6' onClick={() => { logout(); close(); setLoginError(null); setTypeAuth('login'); }}>Deconectare</Button>
-                    </Group>
+                    <Anchor component={Link} onClick={() => close()} href='/your-orders' c={"#b756a6"} > Vezi Comenzile</Anchor>
+                    <Button variant="subtle" color="#b756a6" onClick={() => unsubscribeFromNewsletter(user.userInfo.email)}>
+                        Dezabonare de la newsletter
+                    </Button>
+                    <Button variant="filled" color="#b756a6" onClick={() => { logout(); close(); }}>Deconectare</Button>
                 </div>
             );
         }

@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: clientEmail,
-      subject: 'Confirmare Creare const pe site-ul - Buchetul Simonei',
+      subject: 'Confirmare creare cont pe site-ul - Buchetul Simonei',
       html: `
         <h1>Salut ${clientName},</h1>
         <p>Mulțumim că te-ai înregistrat pe site-ul nostru!</p>

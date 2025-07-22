@@ -18,7 +18,7 @@ function CalendarForClose() {
       return;
     } else {
       console.log(date);
-      await axios.patch(URL_CLOSE_PERIOD, { date })
+      await axios.patch(URL_CLOSE_PERIOD, { date }, { withCredentials: true })
         .then((response) => {
           console.log('Response:', response.data);
           setLoading(false);
