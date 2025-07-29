@@ -1,5 +1,5 @@
 'use client';
-import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar, Badge } from '@mantine/core';
+import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar, Badge, PasswordInput } from '@mantine/core';
 import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-react";
 import React, { useCallback, useState, useMemo } from "react";
 import { ForgotPasswordModal } from "./ForgotPassword";
@@ -15,6 +15,14 @@ import axios from "axios";
 const URL_LOGIN = "/api/users/login";
 const URL_SIGN = "/api/users";
 const URL_SEND_CONFIRM_EMAIL = "/api/users/send-confirm-email";
+
+export interface FormValues {
+    surname: string;
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
 
 export const useHandleLogout = () => {
     const [, setCookie] = useCookies(['login']);
@@ -55,7 +63,9 @@ export const AuthModal = React.memo(() => {
     const logout = useHandleLogout();
     const cartItemCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems') || '[]').length : 0;
 
-    const formSignUp = useForm({
+    const formSignUp = useForm<FormValues>({
+        mode: 'uncontrolled',
+        validateInputOnBlur: true,
         initialValues: {
             name: '',
             surname: '',
@@ -63,12 +73,82 @@ export const AuthModal = React.memo(() => {
             password: '',
             confirmPassword: '',
         },
+        initialErrors: {
+            name: '',
+            surname: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        },
+        validate: {
+            name: (value) => {
+                if (!value || value.trim() === '') {
+                    return 'Numele este obligatoriu!';
+                }
+                if (value.length < 4) {
+                    return 'Numele trebuie să aibă cel puțin 4 caractere!';
+                }
+                return null;
+            },
+
+            surname: (value) => {
+                if (!value || value.trim() === '') {
+                    return 'Prenumele este obligatoriu!';
+                }
+                if (value.length < 4) {
+                    return 'Prenumele trebuie să aibă cel puțin 4 caractere!';
+                }
+                return null;
+            },
+
+            password: (value) => {
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+                if (!passwordRegex.test(value)) {
+                    return 'Password must be at least 12 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
+                }
+                return null;
+            },
+            confirmPassword: (value, values) => {
+                if (value !== values.password) {
+                    return 'Parolele nu coincid!';
+                }
+                return null;
+            },
+            email: (value) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    return 'Email invalid!';
+                }
+                return null;
+            },
+        },
     });
 
     const formLogIn = useForm({
+        mode: 'uncontrolled',
+        validateInputOnBlur: true,
         initialValues: {
             email: '',
             password: '',
+        },
+        initialErrors: {
+            email: '',
+            password: '',
+        },
+        validate: {
+            email: (value) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    return 'Email invalid!';
+                }
+                return null;
+            },
+            password: (value) => {
+                if (!value || value.trim() === '') {
+                    return 'Parola este obligatorie!';
+                }
+                return null;
+            },
         },
     });
 
@@ -169,13 +249,16 @@ export const AuthModal = React.memo(() => {
             return (
                 <form className="flex flex-col gap-4 my-5" onSubmit={handleSignUp}>
                     <Group>
-                        <TextInput autoFocus={false} w={'47%'} label='Nume' required placeholder="Ex: Partac" {...formSignUp.getInputProps('name')} />
-                        <TextInput autoFocus={false} w={'47%'} label='Prenume' required placeholder="Ex: Alexis" {...formSignUp.getInputProps('surname')} />
+                        <TextInput w={'47%'} label='Nume' required placeholder="Ex: your-name" {...formSignUp.getInputProps('name')} />
+                        <TextInput w={'47%'} label='Prenume' required placeholder="Ex: your-firstname" {...formSignUp.getInputProps('surname')} />
                     </Group>
-                    <TextInput autoFocus={false} w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: matei.partac45@gmail.com" {...formSignUp.getInputProps('email')} />
-                    <TextInput autoFocus={false} w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
-                    <TextInput autoFocus={false} w={'99%'} label='Confirmare parola' required placeholder="Parola" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
-                    <Checkbox c={"#b756a6"} color={"#b756a6"} label="Sunt de-acord cu termenii si conditiile" checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
+                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} type="email" label='email' required placeholder="Ex: your-email@example.com" {...formSignUp.getInputProps('email')} />
+                    <PasswordInput w={'99%'} label='Parola' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
+                    <TextInput w={'99%'} label='Confirmare parola' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
+                    <Group>
+                        <Checkbox c={"#b756a6"} color={"#b756a6"} checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
+                        <span className='text-sm'>Sunt de acord cu <Anchor href="/terms&conditions" target="_blank" c={"#b756a6"}>Termenii și condițiile</Anchor> </span>
+                    </Group>
                     {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
                     <Group justify="space-between">
                         <Anchor c={"#b756a6"} onClick={() => setTypeAuth('login')} size="xs">Ai deja un cont? Login</Anchor>
@@ -186,8 +269,8 @@ export const AuthModal = React.memo(() => {
         } else if (!user.isAuthenticated && typeAuth === 'login') {
             return (
                 <form className="flex flex-col gap-4 my-5" onSubmit={handleLogin}>
-                    <TextInput autoFocus={false} w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="Ex: matei.partac45@gmail.com" {...formLogIn.getInputProps('email')} />
-                    <TextInput autoFocus={false} w={'99%'} label='Parola' required placeholder="Parola" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
+                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="your-email@example.com" {...formLogIn.getInputProps('email')} />
+                    <PasswordInput w={'99%'} label='Parola' required placeholder="password" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
                     {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
                     <Group justify="space-between">
                         <Anchor c={"#b756a6"} onClick={() => setTypeAuth('signin')} size="xs">Nu ai cont? SignUp</Anchor>
