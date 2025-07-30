@@ -4,7 +4,8 @@ import { useStore } from './context/StoreContext';
 import GlobalMessage from './GlobalMessage';
 import { AutoConnectWithToken } from './AutoConnectWithToken';
 import { RestrictedComponents } from './RestrictedComponents';
-import AnimateForBegin from "./ui/animate-for-begin";
+import CookieConsentBanner from './CookieConsent';
+// import AnimateForBegin from "./ui/animate-for-begin";
 
 const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isClosed } = useStore();
@@ -15,9 +16,10 @@ const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
         <GlobalMessage />
       ) : (
         <>
-          <AnimateForBegin />
+          {/* <AnimateForBegin /> */}
           <AutoConnectWithToken />
           <RestrictedComponents>{children}</RestrictedComponents>
+          <CookieConsentBanner />
         </>
       )}
     </>

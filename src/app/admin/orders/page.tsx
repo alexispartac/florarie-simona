@@ -95,10 +95,10 @@ const Page = () => {
     const [showFinalized, setShowFinalized] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    function fetchOrders() {
+    async function fetchOrders() {
         setLoading(true);
         try {
-            axios.get(URL_ORDERS).then((response) => {
+            await axios.get(URL_ORDERS).then((response) => {
                 setOrders(response.data);
             });
             setLoading(false);

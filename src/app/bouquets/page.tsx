@@ -9,9 +9,9 @@ import React from "react";
 
 const itemsBread = [
     { title: 'Buchetul Simonei', href: '/' },
-    { title: 'Buchete', href: 'bouquets' },
+    { title: 'Buchete', href: '/bouquets' },
 ].map((item, index) => (
-    <Anchor c={"#b756a6"} href={item.href} key={index}>
+    <Anchor href={item.href} c={"#b756a6"} key={index}>
         {item.title}
     </Anchor>
 ));

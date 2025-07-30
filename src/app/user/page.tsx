@@ -1,6 +1,6 @@
 'use client';
 
-import { TextInput, Button, Group, Notification, Avatar, Loader, Modal } from "@mantine/core";
+import { TextInput, Button, Group, Notification, Avatar, Loader, Modal, PasswordInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import axios from "axios";
 import { useUser } from "../components/context/ContextUser";
@@ -14,12 +14,12 @@ type UserFormValues = {
     name: string;
     surname: string;
     email: string;
-    phone?: string;
-    address?: string;
+    phone: string;
+    address: string;
     password: string;
     avatar?: string;
     id: string;
-    createdAt?: string;
+    createdAt: string;
     order: number;
 };
 
@@ -48,18 +48,19 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
     const [loading, setLoading] = useState(false); // Starea pentru loader
     const [modalOpened, setModalOpened] = useState(false); // Starea pentru modal
     const { user, setUser } = useUser();
+    const [formValues, setFormValues] = useState<{ name: string; surname: string; email: string; phone: string; address: string; password: string;}>();
 
-    const handleUpdateUser = useCallback(async () => {
+    const handleUpdateUser = useCallback(async (formValues: { name: string; surname: string; email: string; phone: string; address: string; password: string; }) => {
         setLoading(true);
         try {
-            const response = await axios.put(URL_UPDATE_USER, form.values);
+            const response = await axios.put(URL_UPDATE_USER, { id: user.userInfo.id, ...formValues });
             if (response.status === 200) {
                 setNotification("Datele au fost actualizate cu succes!");
                 setUser((prev) => ({
                     ...prev,
                     userInfo: {
                         ...prev.userInfo,
-                        ...form.values,
+                        ...formValues,
                     },
                 }));
             } else {
@@ -106,7 +107,6 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
         }
     }, [form]);
 
-    console.log("Form values:", form.values);
     return (
         <>
             {notification && (
@@ -120,10 +120,10 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                 </Notification>
             )}
             <form
-                onSubmit={(e) => {
-                    e.preventDefault();
+                onSubmit={form.onSubmit(({ name, surname, email, phone, address, password }) => {
+                    setFormValues({ name, surname, email, phone, address, password });
                     setModalOpened(true); // Deschide modalul la apăsarea butonului
-                }}
+                })}
             >
                 <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
                     {!form.values.avatar ? (
@@ -162,15 +162,15 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                         <Loader size="xs" mx={5} color="blue" className="mt-2" />
                     )
                 }
-                <TextInput w={'99%'} label="Nume" {...form.getInputProps("name")} />
-                <TextInput w={'99%'} label="Prenume" {...form.getInputProps("surname")} />
+                <TextInput w={'99%'} label="Last Name" {...form.getInputProps("name")} />
+                <TextInput w={'99%'} label="First Name" {...form.getInputProps("surname")} />
                 <TextInput w={'99%'} label="Email" type="email" {...form.getInputProps("email")} disabled />
-                <TextInput w={'99%'} label="Telefon" placeholder="Ex: 0799999999" type="tel" {...form.getInputProps("phone")} />
-                <TextInput w={'99%'} label="Adresa" placeholder="Ex: jud. loc. str. nr." {...form.getInputProps("address")} />
-                <TextInput w={'99%'} label="Parolă" type="password" placeholder="*********" {...form.getInputProps("password")} />
-                <TextInput w={'99%'} label="ID Utilizator" value={form.values.id} disabled />
-                <TextInput w={'99%'} label="Data creării contului" value={form.values.createdAt} disabled />
-                <TextInput w={'99%'} label="Număr de comenzi" value={form.values.order?.toString() || "0"} disabled />
+                <TextInput w={'99%'} label="Phone" placeholder="Ex: 0799999999" type="tel" {...form.getInputProps("phone")} />
+                <TextInput w={'99%'} label="Address" placeholder="Ex: jud. loc. str. nr." {...form.getInputProps("address")} />
+                <PasswordInput w={'99%'} label="Password" type="password" placeholder="password" {...form.getInputProps("password")} />
+                <TextInput w={'99%'} label="User ID" value={form.values.id} disabled />
+                <TextInput w={'99%'} label="Account Creation Date" value={form.values.createdAt} disabled />
+                <TextInput w={'99%'} label="Number of Orders" value={form.values.order?.toString() || "0"} disabled />
                 <Group mt="md">
                     <Button type="submit" color='#b756a6' disabled={loading}>
                         {loading ? <Loader size="xs" color="white" /> : "Actualizează datele"}
@@ -190,7 +190,11 @@ const UserForm = React.memo(({ form }: { form: ReturnType<typeof useForm<UserFor
                     <Button variant="default" color='#b756a6' onClick={() => setModalOpened(false)}>
                         Anulează
                     </Button>
-                    <Button color="blue" onClick={handleUpdateUser} disabled={loading}>
+                    <Button
+                        color="#b756a6"
+                        onClick={() => formValues && handleUpdateUser(formValues)}
+                        disabled={loading || !formValues}
+                    >
                         {loading ? <Loader size="xs" color="white" /> : "Confirmă"}
                     </Button>
                 </Group>
@@ -203,22 +207,59 @@ UserForm.displayName = "UserForm";
 
 const UserPage = () => {
     const { user } = useUser();
+
     const form = useForm<UserFormValues>({
+        mode: 'uncontrolled',
+        validateInputOnBlur: true,
         initialValues: {
             name: user.userInfo.name,
             surname: user.userInfo.surname,
             email: user.userInfo.email,
-            phone: user.userInfo.phone,
-            address: user.userInfo.address,
+            phone: user.userInfo.phone || "",
+            address: user.userInfo.address || "",
             password: user.userInfo.password,
             avatar: user.userInfo.avatar,
             id: user.userInfo.id,
-            createdAt: user.userInfo.createdAt,
+            createdAt: user.userInfo.createdAt || new Date().toISOString(),
             order: user.userInfo.order || 0,
         },
+        initialErrors: {
+            name: '',
+            surname: '',
+            phone: '',
+            address: '',
+            password: '',
+        },
         validate: {
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email invalid"),
+            name: (value) => {
+                if (!value || value.trim() === '') {
+                    return 'Numele este obligatoriu!';
+                }
+                if (value.length < 4) {
+                    return 'Numele trebuie să aibă cel puțin 4 caractere!';
+                }
+                return null;
+            },
+
+            surname: (value) => {
+                if (!value || value.trim() === '') {
+                    return 'Prenumele este obligatoriu!';
+                }
+                if (value.length < 4) {
+                    return 'Prenumele trebuie să aibă cel puțin 4 caractere!';
+                }
+                return null;
+            },
+
+            password: (value) => {
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+                if (!passwordRegex.test(value)) {
+                    return 'Password must be at least 12 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
+                }
+                return null;
+            },
             phone: (value) => (/^\d+$/.test(value ?? "") ? null : "Număr de telefon invalid"),
+            address: (value) => (value && value.trim() !== '' ? null : "Adresa este obligatorie"),
         },
     });
 

@@ -54,7 +54,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
   const isOutOfStock = !item.inStock;
 
   return (
-    <div className="relative flex flex-col shadow-md p-4">
+    <div className="relative flex flex-col shadow-md p-0 ">
       <Link href={`/product/${item.id}`}>
         {item.info_category.standard.imageSrc && (
           <img
@@ -70,10 +70,10 @@ export const Item = ({ item }: { item: ItemProps }) => {
       <div className="absolute top-0 left-0 bg-[#b756a6] text-white text-xs px-2 py-1 rounded-br-md">
         {item.promotion && 'Promoție'}
       </div>
-      <p className="flex text-start h-[50px] text-xs py-[5px] text-[14px] md:text-[16px]">
+      <p className="flex text-start h-[50px] text-xs py-[5px] text-[14px] md:text-[16px] font-bold px-2">
         {item.title}
       </p>
-      <p className="flex text-center text-xs pb-[10px] text-[12px] font-bold md:text-[18px]">
+      <p className="flex text-center text-xs pb-[10px] text-[12px] font-bold md:text-[18px] px-2">
         {item.info_category.standard.price} RON
       </p>
       <Button

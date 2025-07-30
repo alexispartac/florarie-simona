@@ -117,7 +117,7 @@ export async function PUT(req: NextRequest) {
         const db = client.db('florarie');
         const data: User = await req.json();
         const { id, ...updateData } = data;
-
+        
         if (!id) {
             return NextResponse.json({ success: false, message: 'ID-ul userului este necesar pentru actualizare.' }, { status: 400 });
         }

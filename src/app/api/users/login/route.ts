@@ -43,15 +43,8 @@ export async function POST(req: NextRequest) {
             { expiresIn: '7d' }
         );
 
-        const response = NextResponse.json({ success: true, message: 'Login successful', user }, { status: 200 });
-        response.cookies.set('login', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/',
-            maxAge: 60 * 60 * 24 * 7 // 7 zile
-        });
-
+        const response = NextResponse.json({ success: true, message: 'Login successful', user, token }, { status: 200 });
+        
         return response;
     } catch (error) {
         console.error('Eroare la autentificare:', error);

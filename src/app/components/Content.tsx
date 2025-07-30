@@ -150,7 +150,7 @@ const NewOfers = () => {
 
 const Content = () => {
     return (
-        <div className="relative container mx-auto pt-24">
+        <div className="relative w-full pt-24">
             <motion.div
                 className="h-120 px-4"
                 initial={{ opacity: 0.0, y: 40 }}
