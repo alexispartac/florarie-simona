@@ -16,13 +16,19 @@ const URL_LOGIN = "/api/users/login";
 const URL_SIGN = "/api/users";
 const URL_SEND_CONFIRM_EMAIL = "/api/users/send-confirm-email";
 
-export interface FormValues {
+export interface FormSignUpValues {
     surname: string;
     name: string;
     email: string;
     password: string;
     confirmPassword: string;
 }
+
+export interface FormLogInValues {
+    email: string;
+    password: string;
+}
+
 
 export const useHandleLogout = () => {
     const [, setCookie] = useCookies(['login']);
@@ -56,14 +62,14 @@ export const AuthModal = React.memo(() => {
     const [, setCookie] = useCookies(['login']);
     const { user, setUser } = useUser();
     const [typeAuth, setTypeAuth] = useState<'login' | 'signin'>('login');
-    const [loginError, setLoginError] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [successModalOpened, setSuccessModalOpened] = useState(false); 
     const [successMessage, setSuccessMessage] = useState<string>('');
     const logout = useHandleLogout();
     const cartItemCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems') || '[]').length : 0;
 
-    const formSignUp = useForm<FormValues>({
+    const formSignUp = useForm<FormSignUpValues>({
         mode: 'uncontrolled',
         validateInputOnBlur: true,
         initialValues: {
@@ -124,7 +130,7 @@ export const AuthModal = React.memo(() => {
         },
     });
 
-    const formLogIn = useForm({
+    const formLogIn = useForm<FormLogInValues>({
         mode: 'uncontrolled',
         validateInputOnBlur: true,
         initialValues: {
@@ -144,8 +150,9 @@ export const AuthModal = React.memo(() => {
                 return null;
             },
             password: (value) => {
-                if (!value || value.trim() === '') {
-                    return 'Parola este obligatorie!';
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+                if (!passwordRegex.test(value)) {
+                    return 'Password must be at least 12 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
                 }
                 return null;
             },
@@ -155,10 +162,10 @@ export const AuthModal = React.memo(() => {
     const login = useCallback(async (data: { email: string; password: string }) => {
         if (user.isAuthenticated) return;
         if (!data.email || !data.password) {
-            setLoginError("Email și parola sunt obligatorii.");
+            setErrorMessage("Email și parola sunt obligatorii.");
             return;
         }
-        setLoginError(null);
+        setErrorMessage(null);
         setLoading(true);
         try {
             const response = await axios.post(URL_LOGIN, data);
@@ -174,7 +181,7 @@ export const AuthModal = React.memo(() => {
             }
         } catch (error) {
             console.log('Error logging in', error);
-            setLoginError("Eroare la autentificare.");
+            setErrorMessage("Eroare la autentificare.");
         } finally {
             setLoading(false);
         }
@@ -189,36 +196,37 @@ export const AuthModal = React.memo(() => {
                 formSignUp.reset();
                 setSuccessMessage('Înregistrare reușită! Bine ai venit!');
                 setSuccessModalOpened(true);                                    
-                close(); 
-                axios.post(URL_SEND_CONFIRM_EMAIL, {
-                    clientEmail: data.email,
-                    clientName: `${data.name} ${data.surname}`,
-                });
+                close();
             }
 
         } catch (error) {
             console.log('Error signing up', error);
-            setLoginError("Eroare la înregistrare. Verifică datele introduse.");
+            setErrorMessage("Eroare la înregistrare. Verifică datele introduse.");
         } finally {
             setLoading(false);
         }
     }, [login, close, formSignUp]);
 
-    const handleSignUp = useCallback((event: React.FormEvent) => {
-        event.preventDefault();
-        setLoginError(null);
-        const { name, surname, email, password, confirmPassword } = formSignUp.values;
-        if (password !== confirmPassword) {
-            setLoginError("Parolele nu coincid!");
+    const handleSignUp = useCallback(async ({ name, surname, email, password }: { name: string; surname: string; email: string; password: string; }) => {
+        setErrorMessage(null);
+        setLoading(true);
+        try {
+            await axios.post(URL_SEND_CONFIRM_EMAIL, {
+                clientEmail: email,
+                clientName: `${name} ${surname}`,
+            });
+            signup({ id: uuidv4(), name, surname, email, password });
+        } catch (error) {
+            console.log('Error sending confirmation email:', error);
+            setLoading(false);
+            setErrorMessage('Acest email este deja înregistrat. Încearcă din nou cu o altă adresă de email!');
             return;
         }
-        signup({ id: uuidv4(), name, surname, email, password });
+        formSignUp.reset();
     }, [signup, formSignUp]);
 
-    const handleLogin = useCallback((event: React.FormEvent) => {
-        event.preventDefault();
-        setLoginError(null);
-        const { email, password } = formLogIn.values;
+    const handleLogin = useCallback(({ email, password }: { email: string; password: string }) => {
+        setErrorMessage(null);
         login({ email, password });
         formLogIn.reset();
     }, [login, formLogIn]);
@@ -233,47 +241,49 @@ export const AuthModal = React.memo(() => {
             }
             if (response.status === 200) {
                 setSuccessMessage('Email-ul a fost dezabonat cu succes de la newsletter.');
+                setErrorMessage(null);
                 setSuccessModalOpened(true);
             } else {
-                setLoginError(data.message || 'Eroare la dezabonare.');
-                setLoginError('');
+                setErrorMessage(data.message || 'Eroare la dezabonare.');
+                
+                setErrorMessage('');
             }
         } catch (error) {
             console.error('Error unsubscribing from newsletter:', error);
-            setLoginError('Eroare la dezabonare. Încearcă din nou mai târziu.');
+            setErrorMessage('Eroare la dezabonare. Încearcă din nou mai târziu.');
         }
     }, []);
 
     const renderForm = useMemo(() => {
         if (!user.isAuthenticated && typeAuth === 'signin') {
             return (
-                <form className="flex flex-col gap-4 my-5" onSubmit={handleSignUp}>
+                <form className="flex flex-col gap-4 my-5" onSubmit={formSignUp.onSubmit(handleSignUp)}>
                     <Group>
-                        <TextInput w={'47%'} label='Nume' required placeholder="Ex: your-name" {...formSignUp.getInputProps('name')} />
-                        <TextInput w={'47%'} label='Prenume' required placeholder="Ex: your-firstname" {...formSignUp.getInputProps('surname')} />
+                        <TextInput w={'47%'} label='Last Name' required placeholder="Ex: your-name" {...formSignUp.getInputProps('name')} />
+                        <TextInput w={'47%'} label='First Name' required placeholder="Ex: your-firstname" {...formSignUp.getInputProps('surname')} />
                     </Group>
-                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} type="email" label='email' required placeholder="Ex: your-email@example.com" {...formSignUp.getInputProps('email')} />
-                    <PasswordInput w={'99%'} label='Parola' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
-                    <TextInput w={'99%'} label='Confirmare parola' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
+                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: your-email@example.com" {...formSignUp.getInputProps('email')} />
+                    <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
+                    <PasswordInput w={'99%'} label='Confirm Password' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
                     <Group>
                         <Checkbox c={"#b756a6"} color={"#b756a6"} checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
                         <span className='text-sm'>Sunt de acord cu <Anchor href="/terms&conditions" target="_blank" c={"#b756a6"}>Termenii și condițiile</Anchor> </span>
                     </Group>
-                    {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
+                    {errorMessage && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{errorMessage}</div>}
                     <Group justify="space-between">
-                        <Anchor c={"#b756a6"} onClick={() => setTypeAuth('login')} size="xs">Ai deja un cont? Login</Anchor>
+                        <Anchor c={"#b756a6"} onClick={() => { setTypeAuth('login'); setErrorMessage(''); }} size="xs">Ai deja un cont? Login</Anchor>
                         <Button type="submit" variant='filled' color='#b756a6' disabled={loading || !check}>Sign in</Button>
                     </Group>
                 </form>
             );
         } else if (!user.isAuthenticated && typeAuth === 'login') {
             return (
-                <form className="flex flex-col gap-4 my-5" onSubmit={handleLogin}>
+                <form className="flex flex-col gap-4 my-5" onSubmit={formLogIn.onSubmit(handleLogin)}>
                     <TextInput w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="your-email@example.com" {...formLogIn.getInputProps('email')} />
-                    <PasswordInput w={'99%'} label='Parola' required placeholder="password" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
-                    {loginError && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{loginError}</div>}
+                    <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
+                    {errorMessage && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{errorMessage}</div>}
                     <Group justify="space-between">
-                        <Anchor c={"#b756a6"} onClick={() => setTypeAuth('signin')} size="xs">Nu ai cont? SignUp</Anchor>
+                        <Anchor c={"#b756a6"} onClick={() => { setTypeAuth('signin'); setErrorMessage(''); }} size="xs">Nu ai cont? SignUp</Anchor>
                         <ForgotPasswordModal />
                         <Button type="submit" variant='filled' color='#b756a6' disabled={loading}>Login</Button>
                     </Group>
@@ -298,11 +308,11 @@ export const AuthModal = React.memo(() => {
                 </div>
             );
         }
-    }, [user.isAuthenticated, user.userInfo.avatar, user.userInfo.name, user.userInfo.surname, typeAuth, handleSignUp, formSignUp, check, loginError, loading, handleLogin, formLogIn, logout, close]);
+    }, [user.isAuthenticated, user.userInfo.avatar, user.userInfo.name, user.userInfo.surname, typeAuth, handleSignUp, formSignUp, check, errorMessage, loading, handleLogin, formLogIn, logout, close]);
 
     return (
         <>
-            <Modal opened={opened} onClose={close} title="Cont de utilizator" withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
+            <Modal opened={opened} onClose={close} title={`${typeAuth === 'login' ? 'Login' : 'Sign Up'}`} withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
                 {loading && <Group justify="center" my="md"><Loader color="blue" /></Group>}
                 {renderForm}
             </Modal>
@@ -314,7 +324,7 @@ export const AuthModal = React.memo(() => {
             >
                 <p className='flex justify-center'>{successMessage}</p>
                 <Group justify="center" mt="md">
-                    <Button color='#b756a6' onClick={() => setSuccessModalOpened(false)}>OK</Button>
+                    <Button color='#b756a6' onClick={() => setSuccessModalOpened(false)}>Continua cumparaturile</Button>
                 </Group>
             </Modal>
             <div className='grid grid-cols-2'>

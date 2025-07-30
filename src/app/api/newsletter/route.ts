@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: 'Confirmare Creare const pe site-ul - Buchetul Simonei',
+        subject: 'Multumim ca te-ai abonat la newsletter-ul - Buchetul Simonei',
         html: `
             <h1>Salut </h1>
             <p>Mulțumim că te-ai abonat la newsletter-ul nostru!</p>
@@ -126,7 +126,6 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const { email } = await req.json();
-    console.log(email);
     if (!email) {
       return NextResponse.json({ error: 'Email-ul este obligatoriu' }, { status: 400 });
     }

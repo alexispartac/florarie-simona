@@ -22,6 +22,12 @@ export const ForgotPasswordModal = () => {
     setMessage('');
     setError('');
 
+    if (!email) {
+      setError('Te rugăm să introduci adresa de email.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post(URL_FORGOT_PASSWORD, { email });
       if (response.status === 200) {
@@ -30,7 +36,7 @@ export const ForgotPasswordModal = () => {
       }
     } catch (err) {
       console.log(err);
-      setError('A apărut o eroare.');
+      setError('A apărut o eroare. Te rugăm să introduci o adresă de email validă.');
     } finally {
       setLoading(false);
     }

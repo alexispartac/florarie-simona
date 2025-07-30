@@ -1,6 +1,7 @@
 'use server';
 import nodemailer from 'nodemailer';
 import { NextRequest, NextResponse } from 'next/server';
+import clientPromise from '@/app/components/lib/mongodb'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,7 +17,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const { clientEmail, clientName} = await req.json();
-
+    const client = await clientPromise;
+    const db = client.db('florarie'); 
+        
     // Verifică dacă toate câmpurile necesare sunt prezente
     if (!clientEmail || !clientName ) {
       return NextResponse.json(
@@ -32,6 +35,12 @@ export async function POST(req: NextRequest) {
         { success: false, message: 'Email invalid.' },
         { status: 400 }
       );
+    }
+
+    // Verifică dacă există deja un user cu același email
+    const existingUser = await db.collection('users').findOne({ email: clientEmail });
+    if (existingUser) {
+      return NextResponse.json({ success: false, message: 'Există deja un cont cu acest email.' }, { status: 409 });
     }
 
     // Configurare Nodemailer
