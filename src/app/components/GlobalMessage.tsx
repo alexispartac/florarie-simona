@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useStore } from './../components/context/StoreContext';
-import { Button, Group, Modal, TextInput } from '@mantine/core';
+import { Button, Group, Modal, TextInput, PasswordInput } from '@mantine/core';
 import { useUser } from './context/ContextUser';
 import { useDisclosure } from '@mantine/hooks';
 import { IconAt, IconBrandFacebook, IconBrandInstagram } from '@tabler/icons-react';
@@ -9,6 +9,7 @@ import { useForm } from '@mantine/form';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useCookies } from 'react-cookie';
 
 const URL_LOGIN = "/api/users/login";
 
@@ -19,34 +20,43 @@ const GlobalMessage = () => {
   const [loading, setLoading] = React.useState(false);
   const [successModalOpened, setSuccessModalOpened] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState<string>('');
+  const [, setCookie] = useCookies(['login']);
   const { setUser } = useUser();
   const router = useRouter();
 
   const formLogIn = useForm({
+    mode: 'uncontrolled',
+    validateInputOnBlur: true,
     initialValues: {
       email: '',
       password: '',
     },
+    initialErrors: {
+      email: '',
+      password: '',
+    },
+    validate: {
+      email: (value) => {
+        if (!value) return 'Email este obligatoriu';
+        if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(value)) {
+          return 'Email invalid';
+        }
+        if (value !== "matei.partac45@gmail.com") return 'Nu aveți permisiunea de a accesa această pagină.';
+      },
+      password: (value) => (value ? null : 'Parola este obligatorie'),
+    },
+
   });
 
   if (!isClosed || !closePeriod) return null;
 
   const handleLogin = async (data: { email: string; password: string }) => {
-    if (!data.email || !data.password) {
-      setLoginError("Email și parola sunt obligatorii.");
-      return;
-    }
-
-    if (data.email !== "matei.partac45@gmail.com") {
-      setLoginError("Nu aveți permisiunea de a accesa această pagină.");
-      return;
-    }
-
     setLoginError(null);
     setLoading(true);
     try {
       const response = await axios.post(URL_LOGIN, data);
       if (response.status === 200) {
+        setCookie('login', response.data.token, { path: '/' });
         setUser({
           userInfo: response.data.user,
           isAuthenticated: true,
@@ -58,24 +68,21 @@ const GlobalMessage = () => {
         return router.push('/'); 
       }
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.log('Error logging in:', error);
       setLoginError("Eroare la autentificare.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = ({ email, password }: { email: string; password: string }) => {
     setLoginError(null);
-    const { email, password } = formLogIn.values;
     handleLogin({ email, password });
     formLogIn.reset();
   };
 
   return (
     <div className="flex flex-col items-center justify-center bg-white text-white fixed top-0 left-0 w-full h-full z-50">
-      {/* Mesaj de succes */}
       <Modal
         opened={successModalOpened}
         onClose={() => setSuccessModalOpened(false)}
@@ -90,12 +97,10 @@ const GlobalMessage = () => {
         </Group>
       </Modal>
 
-      {/* Mesaj global */}
       <div className="fixed top-0 left-0 w-full bg-[#b756a5] text-white text-center py-2 z-50">
         Magazinul este închis până la data de <br /> { closePeriod }.
       </div>
 
-      {/* Mesaj de închidere */}
       <div className="flex flex-col items-center justify-center mt-10 text-[#b756a5]">
         <h1 className="text-2xl font-bold mb-4">
           Magazinul este închis!
@@ -109,7 +114,6 @@ const GlobalMessage = () => {
         </Group> 
       </div>
 
-      {/* Modal de autentificare */}
       <Modal
         opened={opened}
         onClose={close}
@@ -119,7 +123,7 @@ const GlobalMessage = () => {
       >
         <div className="text-center">
           <p>Perioada de închidere este până la data de {closePeriod}.</p>
-          <form className="flex flex-col gap-4 my-5" onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-4 my-5" onSubmit={formLogIn.onSubmit(handleSubmit)}>
             <TextInput
               autoFocus={false}
               w="99%"
@@ -130,7 +134,7 @@ const GlobalMessage = () => {
               placeholder="Ex: matei.partac45@gmail.com"
               {...formLogIn.getInputProps('email')}
             />
-            <TextInput
+            <PasswordInput
               autoFocus={false}
               w="99%"
               label="Parola"
@@ -146,10 +150,10 @@ const GlobalMessage = () => {
               </div>
             )}
             <Group justify="space-between">
-              <Button onClick={close} color='red' className="mt-4 text-white px-4 py-2 rounded">
+              <Button onClick={close} color='red' className="text-white px-4 rounded">
                 Închide
               </Button>
-              <Button type="submit" variant="filled" color="#b756a6" disabled={loading}>
+              <Button type="submit" variant="filled" color="#b756a6" disabled={loading} loading={loading} className="text-white px-4 rounded">
                 Login
               </Button>
             </Group>
@@ -161,3 +165,4 @@ const GlobalMessage = () => {
 };
 
 export default GlobalMessage;
+

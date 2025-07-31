@@ -72,7 +72,6 @@ const ListOfOrders = ({
 
     const reverseOrders = [...orders].reverse();
 
-
     return (
         <div className="flex flex-col gap-2 overflow-y-auto">
             <div className="text-center text-gray-500 mb-4">

@@ -89,7 +89,7 @@ export default function CookiePolicy() {
                   <br />
                   <strong>Email:</strong> simonabuzau2@gmail.com
                   <br />
-                  <strong>Telefon:</strong> [Numărul de telefon]
+                  <strong>Telefon:</strong> Numărul de telefon : 0772055889
               </Text>
           </Container>
           <Footer />

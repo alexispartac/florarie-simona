@@ -17,12 +17,27 @@ export default function Contact() {
 
     const formContact = useForm({
         mode: 'uncontrolled',
+        validateInputOnBlur: true,
         initialValues: {
             first_name: "",
             last_name: "",
             email: "",
             phone_number: "",
             message: ""
+        },
+        initialErrors: {
+            first_name: "",
+            last_name: "",
+            email: "",
+            phone_number: "",
+            message: ""
+        },
+        validate: {
+            first_name: (value) => (value.length < 2 ? 'Numele trebuie să aibă cel puțin 2 caractere' : null),
+            last_name: (value) => (value.length < 2 ? 'Prenumele trebuie să aibă cel puțin 2 caractere' : null),
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Emailul nu este valid'),
+            phone_number: (value) => (/^\+\d{10,15}$/.test(value) ? null : 'Numărul de telefon nu este valid'),
+            message: (value) => (value.length < 10 ? 'Mesajul trebuie să aibă cel puțin 10 caractere' : null),
         },
         transformValues: (values) => ({
             first_name: `${values.first_name}`,
@@ -68,7 +83,7 @@ export default function Contact() {
             <div className="h-screen flex items-center justify-center mb-80 md:mb-120">
                 <div className="isolate h-screen bg-white px-6 py-24 sm:py-32 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
-                        <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Contacteaza-mă</h2>
+                        <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Contacteaza-ne</h2>
                         <p className="mt-2 text-lg/8 text-gray-600">Voi raspunde cat de repede posibil la mesajul tău.</p>
                     </div>
                     <form
@@ -86,7 +101,7 @@ export default function Contact() {
                                     autoFocus={false}
                                     key={formContact.key('first_name')}
                                     {...formContact.getInputProps('first_name')}
-                                    placeholder={"Ex: Partac"}
+                                    placeholder={"Ex: First Name"}
                                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 invalid:border-pink-500 invalid:text-pink-600 focus:border-sky-500"
                                 />
                             </div>
@@ -100,7 +115,7 @@ export default function Contact() {
                                     autoFocus={false}
                                     key={formContact.key('last_name')}
                                     {...formContact.getInputProps('last_name')}
-                                    placeholder={"Ex: Alexis-Matei"}
+                                    placeholder={"Ex: Last Name"}
                                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                                 />
                             </div>
@@ -115,7 +130,7 @@ export default function Contact() {
                                         autoFocus={false}
                                         key={formContact.key('email')}
                                         {...formContact.getInputProps('email')}
-                                        placeholder={"Ex: exemplu@gmail.com"}
+                                        placeholder={"Ex: your@example.com"}
                                         className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                                     />
                                 </div>
@@ -139,6 +154,7 @@ export default function Contact() {
                             <div className="sm:col-span-2">
                                 <div className="mt-2.5">
                                     <Textarea
+                                        label="Mesaj"
                                         id="message"
                                         name="message"
                                         required
@@ -152,12 +168,12 @@ export default function Contact() {
                             </div>
                             <div className="flex gap-x-4 sm:col-span-2">
                                 <Checkbox
+                                    label="Sunt de-acord cu termenii si conditiile."
                                     className="text-sm/6 text-gray-600"
                                     onChange={() => setAgreed(!agreed)}
                                     c={"#b756a6"} 
                                     color={"#b756a6"} 
                                     required
-                                    label="Sunt de-acord cu termenii si conditiile."
                                 />
                             </div>
                         </div>

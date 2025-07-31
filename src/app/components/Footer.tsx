@@ -127,7 +127,7 @@ export const Footer = () => {
             {/* Linkuri suplimentare */}
             <div className="mt-8 text-center text-sm">
                 <Link href="/terms&conditions" className="hover:text-gray-300 mx-2">Termeni&Condiții</Link>
-                <Link href="https://www.cookiebot.com/" className="hover:text-gray-300 mx-2">Politica de cookies</Link>
+                <Link href="/cookie-policy" className="hover:text-gray-300 mx-2">Politica de cookies</Link>
                 <Link href="https://gdpr.eu/" className="hover:text-gray-300 mx-2">GDPR</Link>
             </div>
 
