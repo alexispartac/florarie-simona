@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
         try {
             jwt.verify(token, JWT_SECRET);
         } catch (error) {
+            console.log('Token invalid sau expirat:', error);
             return NextResponse.json({ 
                 success: false, 
                 message: 'Sesiunea a expirat. Te rugăm să te autentifici din nou.' 
