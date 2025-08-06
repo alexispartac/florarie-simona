@@ -63,6 +63,8 @@ const UserOrders = () => {
                                 <p>Client: {order.clientName}</p>
                                 <p>Email: {order.clientEmail}</p>
                                 <p>Telefon: {order.clientPhone}</p>
+                                <p>Adresă: {order.clientAddress}</p>
+                                <p>Metodă de plată: {order.paymentMethod}</p>
                                 <p>Produse:</p>
                                 <ul className="list-disc pl-5">
                                     {order.products.map((product, index) => (

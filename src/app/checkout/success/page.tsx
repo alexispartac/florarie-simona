@@ -1,10 +1,17 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@mantine/core';
+import { useDispatch } from 'react-redux';
+import { clearCart } from '../../cart/components/CartRedux';
 
 const SuccessPage = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(clearCart());
+    }, [dispatch]);
 
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-white text-white px-4">

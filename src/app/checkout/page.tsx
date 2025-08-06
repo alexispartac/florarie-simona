@@ -2,34 +2,60 @@
 import React, { useState } from 'react';
 import { OrderProps } from "../api/types";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, Textarea, Loader, Modal, Select } from '@mantine/core';
+import { TextInput, Button, Textarea, Modal, Select } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { useUser } from '../components/context/ContextUser';
+import { CartItem } from '../types';
+// import { useCookies } from 'react-cookie';
 
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
-    const [loading, setLoading] = useState(false);
     const [modalOpened, setModalOpened] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs');
     const [orderNumber, setOrderNumber] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
+    // const [cookies,] = useCookies(['login']);
 
     React.useEffect(() => {
-        if (!user.userInfo) {
-            router.push('/cart');
+        // if (cookies.login) {
+        //     console.log('Token found in cookies, user is authenticated');
+        // } else {
+        //     console.log('No token found in cookies, user is not authenticated');
+        // }
+
+        // if (cookies.login && !user.isAuthenticated) {
+        //     console.log('User is not authenticated, setting user as authenticated');
+        //     setUser({ isAuthenticated: true, userInfo: { ...user.userInfo } });
+        // }
+
+        // if (!user.isAuthenticated) {
+        //     router.push('/cart');
+        //     return;
+        // }
+
+        const localCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]') as CartItem[];
+        if (localCartItems.length === 0) {
+            setModalMessage('Coșul tău este gol. Te rugăm să adaugi produse înainte de a finaliza comanda.');
+            setModalOpened(true);
+            return;
+        }
+
+        if (!Array.isArray(localCartItems) || localCartItems.some((item : CartItem) => !item.id || !item.title || !item.price || !item.quantity)) {
+            setModalMessage('Coșul tău conține produse invalide. Te rugăm să reîncarci pagina.');
+            setModalOpened(true);
             return;
         }
 
         if (cartItems.length === 0) {
             setModalMessage('Coșul tău este gol. Te rugăm să adaugi produse înainte de a finaliza comanda.');
-            console.log(cartItems.length)
             setModalOpened(true);
             return;
         }
@@ -45,7 +71,7 @@ const CheckoutPage = () => {
             }
         }
         fetchOrderNumber();
-    }, []);
+    }, [cartItems.length, router, setModalMessage, setModalOpened]);
 
 
     const checkoutForm = useForm<OrderProps>({
@@ -77,29 +103,108 @@ const CheckoutPage = () => {
             clientPhone: (value) => (value.length < 10 ? 'Numărul de telefon trebuie să fie valid' : null),
             clientAddress: (value) => (value.length < 5 ? 'Adresa trebuie să conțină cel puțin 5 caractere' : null),
             paymentMethod: (value) => (value ? null : 'Selectează o metodă de plată'),
+            info: (value) => ((value ?? '').length > 150 ? 'Notițele nu pot depăși 150 de caractere' : null),
         },
     });
 
     const handleEuPlatescPayment = async () => {
         try {
-            const response = await axios.post('/api/payment-card', {
+            await axios.post('/api/payment-card', {
                 items: checkoutForm.values.products.map((product) => ({
+                    id: product.id,
                     title: product.title,
                     price: product.price,
                     quantity: product.quantity,
+                    category: product.category,
                 })),
-                totalPrice: checkoutForm.values.totalPrice,
+                customerInfo: {
+                    name: checkoutForm.values.clientName,
+                    email: checkoutForm.values.clientEmail,
+                    phone: checkoutForm.values.clientPhone,
+                    address: checkoutForm.values.clientAddress,
+                },
+                orderDetails: {
+                    orderId: checkoutForm.values.id,
+                    orderNumber: checkoutForm.values.orderNumber,
+                    totalPrice: checkoutForm.values.totalPrice,
+                    currency: 'RON',
+                    paymentMethod: checkoutForm.values.paymentMethod,
+                    deliveryDate: checkoutForm.values.deliveryDate,
+                    info: checkoutForm.values.info,
+                    orderDate: checkoutForm.values.orderDate,
+                },
+                urls: {
+                    returnUrl: `${window.location.origin}/checkout/success`,
+                    cancelUrl: `${window.location.origin}/checkout/cancel`,
+                }
             }, 
             { withCredentials: true }
-            );
-
-            const formHtml = response.data;
-
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = formHtml;
-
-            document.body.appendChild(tempDiv);
-            tempDiv.querySelector('form')?.submit();
+            ).then((response) => {
+                // Obține URL-ul de la server
+                const redirectUrl = response.data;
+                // Afișează pagina de redirecționare simplă
+                document.body.innerHTML = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Redirecționare către EuPlătesc</title>
+                        <style>
+                            body { 
+                                font-family: Arial, sans-serif; 
+                                text-align: center; 
+                                padding: 50px;
+                                background-color: #f5f5f5;
+                            }
+                            .container {
+                                max-width: 500px;
+                                margin: 0 auto;
+                                background: white;
+                                padding: 40px;
+                                border-radius: 10px;
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                            }
+                            .message {
+                                color: #333;
+                                font-size: 18px;
+                                margin-bottom: 20px;
+                            }
+                            .sub-message {
+                                color: #666;
+                                font-size: 16px;
+                                margin-bottom: 30px;
+                            }
+                            .continue-btn {
+                                background-color: #b756a6;
+                                color: white;
+                                padding: 15px 30px;
+                                border: none;
+                                border-radius: 5px;
+                                font-size: 16px;
+                                cursor: pointer;
+                                text-decoration: none;
+                                display: inline-block;
+                            }
+                            .continue-btn:hover {
+                                background-color: #a044a0;
+                            }
+                        </style>
+                        <script>
+                            setTimeout(function() {
+                                window.location.href = "${redirectUrl}";
+                            }, 2000);
+                        </script>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="message">Te redirecționăm către EuPlătesc...</div>
+                            <div class="sub-message">Dacă nu ești redirecționat automat, apasă butonul de mai jos:</div>
+                            <a href="${redirectUrl}" class="continue-btn">Continuă către EuPlătesc</a>
+                        </div>
+                    </body>
+                    </html>
+                `;
+            });
         } catch (error) {
             console.log('Eroare la inițializarea plății EuPlătesc:', error);
             setModalMessage('A apărut o eroare la procesarea plății.');
@@ -108,14 +213,12 @@ const CheckoutPage = () => {
     };
 
     const handleSubmit = async (values: OrderProps) => {
-        setLoading(true);
-
         // verifica numarul de telefon
+        setIsLoading(true);
         const phoneRegex = /^\+?[0-9]{10,15}$/;
         if (!phoneRegex.test(values.clientPhone)) {
             setModalMessage('Numărul de telefon este invalid. Te rugăm să introduci un număr valid.');
             setModalOpened(true);
-            setLoading(false);
             return;
         }
 
@@ -123,8 +226,14 @@ const CheckoutPage = () => {
         if (values.clientAddress.length < 8) {
             setModalMessage('Adresa trebuie să conțină cel puțin 8 caractere.');
             setModalOpened(true);
-            setLoading(false);
             return;
+        }
+
+        // if it's a card payment, add the payment method to the values
+        if (paymentMethod === 'card') {
+            values.paymentMethod = paymentMethod;
+        } else {
+            values.paymentMethod = 'ramburs';
         }
 
         try {
@@ -134,14 +243,32 @@ const CheckoutPage = () => {
             console.log('Eroare la plasarea comenzii:', error);
             setModalMessage('A apărut o eroare la plasarea comenzii. Te rugăm să încerci din nou.');
             setModalOpened(true);
+            return;
         }
         
+        // Pentru plata cu cardul, trimite email-ul ÎNAINTE de redirecționare
         if (paymentMethod === 'card') {
+            try {
+                const statusEmail = await axios.post('/api/send-email', {
+                    clientEmail: values.clientEmail,
+                    clientName: values.clientName,
+                    orderDetails: values.products,
+                    totalPrice: values.totalPrice,
+                });
+                
+                if (statusEmail.status !== 200) {
+                    console.log('Eroare la trimiterea email-ului pentru plata cu cardul');
+                }
+            } catch (error) {
+                console.log('Eroare la trimiterea email-ului înainte de plata cu cardul:', error);
+            }
+            
             await handleEuPlatescPayment();
+            return; 
         }
 
+        // Pentru ramburs, trimite email-ul normal
         try {
-
             const statusEmail = await axios.post('/api/send-email', {
                 clientEmail: values.clientEmail,
                 clientName: values.clientName,
@@ -151,29 +278,22 @@ const CheckoutPage = () => {
             
             if (statusEmail.status !== 200) {
                 throw new Error('Failed to send email');
-            }else{
+            } else {
                 setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
                 setModalOpened(true);
                 checkoutForm.reset();
             }
-
+            setIsLoading(false);
+            router.push('/checkout/success');
         } catch (error) {
             console.log('Eroare la trimiterea email-ului:', error);
             setModalMessage('Comanda a fost plasata. A apărut o eroare la trimiterea email-ului de confirmare. Te rugăm să verifici adresa de email introdusă apoi contacteaza-ne printr-un mesaj pe adresa oficiala de email pentru a primi confirmarea comenzii.');
             setModalOpened(true);
         } finally {
-            setLoading(false);
+            // Pentru ramburs - curăță cart-ul și oprește loading-ul
             dispatch(clearCart());
         }
     };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <Loader color="blue" size="lg" />
-            </div>
-        );
-    }
 
     return (
         <div className="max-w-4xl mx-auto p-6">
@@ -227,10 +347,14 @@ const CheckoutPage = () => {
                         { value: 'ramburs', label: 'Ramburs' },
                         { value: 'card', label: 'Card' },
                     ]}
-                    value={paymentMethod}
                     {...checkoutForm.getInputProps('paymentMethod')}
                     autoFocus={false}
-                    onChange={(value) => setPaymentMethod(value as 'ramburs' | 'card')}
+                    onChange={(value) => {
+                        if (value) {
+                            checkoutForm.setFieldValue('paymentMethod', value as 'ramburs' | 'card');
+                            setPaymentMethod(value as 'ramburs' | 'card');
+                        }
+                    }}
                     required
                 />
                 <div className="mt-6">
@@ -248,7 +372,7 @@ const CheckoutPage = () => {
                     </p>
                 </div>
                 <div className="flex justify-between mt-6">
-                    <Button type="submit" color={'#b756a64f'} fullWidth>
+                    <Button type="submit" color={'#b756a64f'} loading={isLoading} fullWidth>
                         Trimite Comanda
                     </Button>
                 </div>

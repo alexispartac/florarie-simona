@@ -52,6 +52,7 @@ export interface Order {
     status: string,
     totalPrice: number,
     products: CartItem[]
+    paymentMethod: string,
 }
 
 export interface User {
