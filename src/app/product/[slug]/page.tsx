@@ -236,7 +236,7 @@ const Product = () => {
     };
 
     const itemsBread = [
-        { title: 'Buchetul Simonei', href: '/' },
+        { title: 'Buchetul Simonei', href: '/homepage' },
         { title: `${product.title}`, href: `/product/${product.id}` },
     ].map((item, index) => (
         <Anchor c={"#b756a6"} href={item.href} key={index}>

@@ -16,7 +16,7 @@ const Content = () => {
     const lastSegment = pathname.split("/").pop();
     const cleanedText = lastSegment?.replace(/[\d%]+/g, " ");
     const itemsBread = [
-        { title: 'Buchetul Simonei', href: '/' },
+        { title: 'Buchetul Simonei', href: '/homepage' },
         { title: 'Noutati', href: '/features' },
         { title: `${cleanedText}`, href: `${cleanedText}` },
     ].map((item, index) => (

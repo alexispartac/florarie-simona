@@ -15,7 +15,7 @@ const Content = () => {
     const cleanedText = lastSegment?.replace(/[\d%]+/g, " ");
 
     const itemsBread = [
-        { title: 'Buchetul Simonei', href: '/' },
+        { title: 'Buchetul Simonei', href: '/homepage' },
         { title: 'Cadouri', href: '/gifts' },
         { title: `${cleanedText}`, href: `${cleanedText}` },
     ].map((item, index) => (

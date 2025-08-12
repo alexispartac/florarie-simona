@@ -8,7 +8,7 @@ import { ItemProps } from "../types";
 import React from "react";
 
 const itemsBread = [
-    { title: 'Buchetul Simonei', href: '/' },
+    { title: 'Buchetul Simonei', href: '/homepage' },
     { title: 'Buchete', href: '/bouquets' },
 ].map((item, index) => (
     <Anchor href={item.href} c={"#b756a6"} key={index}>

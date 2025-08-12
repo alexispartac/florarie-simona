@@ -295,7 +295,7 @@ export const NavbarLogo = () => {
     return (
         <Link
             
-            className="relative z-20 mr-4 flex items-center space-x-2 px-2 text-sm font-normal text-black" href={"/"} >
+            className="relative z-20 mr-4 flex items-center space-x-2 px-2 text-sm font-normal text-black" href={"/homepage"} >
             <img src="/logo.jpg" className="w-20 h-12" alt="logo" />
         </Link>
     );

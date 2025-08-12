@@ -29,7 +29,7 @@ const Content = () => {
     const items: ItemProps[] = promotionProducts;
 
     const itemsBread = [
-        { title: 'Buchetul Simonei', href: '/' },
+        { title: 'Buchetul Simonei', href: '/homepage' },
         { title: 'Noutati', href: '/features' },
     ].map((item, index) => (
         <Anchor c={"#b756a6"} href={item.href} key={index}>

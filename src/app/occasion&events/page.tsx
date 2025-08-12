@@ -8,7 +8,7 @@ import { ContinerItems } from "../components/Products";
 import { useProductsGroupedByCategory } from "../components/hooks/fetchProductsGroupedByCategory";
 
 const itemsBread = [
-    { title: 'Buchetul Simonei', href: '/' },
+    { title: 'Buchetul Simonei', href: '/homepage' },
     { title: 'Ocazii si evenimente', href: 'occasion&events' },
 ].map((item, index) => (
     <Anchor c={"#b756a6"} href={item.href} key={index}>
