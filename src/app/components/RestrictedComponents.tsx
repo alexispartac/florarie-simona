@@ -11,6 +11,7 @@ export const RestrictedComponents = ({ children }: { children: React.ReactNode }
         "/cart",
         "/checkout",
         "/admin",
+        "/homepage",
         "/admin/products",
         "/admin/products-composed",
         "/admin/orders",
