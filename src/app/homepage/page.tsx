@@ -12,7 +12,6 @@ const IntroScreen: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const flowersContainerRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!textRef.current || !flowersContainerRef.current) return;
