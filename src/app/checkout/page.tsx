@@ -10,37 +10,33 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { useUser } from '../components/context/ContextUser';
 import { CartItem } from '../types';
-// import { useCookies } from 'react-cookie';
 
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const [modalOpened, setModalOpened] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs');
+    const [currency, setCurrency] = useState<'RON' | 'EUR'>('RON');
     const [orderNumber, setOrderNumber] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
-    // const [cookies,] = useCookies(['login']);
+
+    // Funcție pentru calculul prețului în funcție de monedă
+    const getConvertedPrice = (priceInRON: number) => {
+        if (currency === 'EUR') {
+            return Number((priceInRON / 5).toFixed(2)); // 1 EUR = 5 RON aproximativ
+        }
+        return priceInRON;
+    };
+
+    const getTotalPrice = () => {
+        const totalRON = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        return getConvertedPrice(totalRON);
+    };
 
     React.useEffect(() => {
-        // if (cookies.login) {
-        //     console.log('Token found in cookies, user is authenticated');
-        // } else {
-        //     console.log('No token found in cookies, user is not authenticated');
-        // }
-
-        // if (cookies.login && !user.isAuthenticated) {
-        //     console.log('User is not authenticated, setting user as authenticated');
-        //     setUser({ isAuthenticated: true, userInfo: { ...user.userInfo } });
-        // }
-
-        // if (!user.isAuthenticated) {
-        //     router.push('/cart');
-        //     return;
-        // }
-
         const localCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]') as CartItem[];
         if (localCartItems.length === 0) {
             setModalMessage('Coșul tău este gol. Te rugăm să adaugi produse înainte de a finaliza comanda.');
@@ -87,7 +83,7 @@ const CheckoutPage = () => {
             deliveryDate: '',
             info: '',
             status: 'Pending',
-            totalPrice: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+            totalPrice: getTotalPrice(),
             paymentMethod: paymentMethod,
             products: cartItems.map((item) => ({
                 id: item.id,
@@ -126,8 +122,8 @@ const CheckoutPage = () => {
                 orderDetails: {
                     orderId: checkoutForm.values.id,
                     orderNumber: checkoutForm.values.orderNumber,
-                    totalPrice: checkoutForm.values.totalPrice,
-                    currency: 'RON',
+                    totalPrice: getTotalPrice(),
+                    currency: currency,
                     paymentMethod: checkoutForm.values.paymentMethod,
                     deliveryDate: checkoutForm.values.deliveryDate,
                     info: checkoutForm.values.info,
@@ -140,9 +136,7 @@ const CheckoutPage = () => {
             }, 
             { withCredentials: true }
             ).then((response) => {
-                // Obține URL-ul de la server
                 const redirectUrl = response.data;
-                // Afișează pagina de redirecționare simplă
                 document.body.innerHTML = `
                     <!DOCTYPE html>
                     <html>
@@ -253,7 +247,8 @@ const CheckoutPage = () => {
                     clientEmail: values.clientEmail,
                     clientName: values.clientName,
                     orderDetails: values.products,
-                    totalPrice: values.totalPrice,
+                    totalPrice: getTotalPrice(),
+                    currency: currency,
                 });
                 
                 if (statusEmail.status !== 200) {
@@ -357,18 +352,38 @@ const CheckoutPage = () => {
                     }}
                     required
                 />
+                
+                {paymentMethod === 'card' && (
+                    <Select
+                        label="Moneda"
+                        placeholder="Alege moneda"
+                        data={[
+                            { value: 'RON', label: 'RON (Lei români)' },
+                            { value: 'EUR', label: 'EUR (Euro)' },
+                        ]}
+                        value={currency}
+                        onChange={(value) => {
+                            if (value) {
+                                setCurrency(value as 'RON' | 'EUR');
+                                // Actualizează totalul în form
+                                checkoutForm.setFieldValue('totalPrice', getTotalPrice());
+                            }
+                        }}
+                        required
+                    />
+                )}
                 <div className="mt-6">
                     <h2 className="text-xl font-semibold mb-2">Produse Comandate</h2>
                     <ul className="border rounded p-4">
                         {checkoutForm.values.products.map((product, idx) => (
                             <li key={idx} className="flex justify-between mb-2">
                                 <span>{product.title} - {product.category}  (x{product.quantity})</span>
-                                <span>{product.price * product.quantity} RON</span>
+                                <span>{getConvertedPrice(product.price * product.quantity)} {currency}</span>
                             </li>
                         ))}
                     </ul>
                     <p className="text-right font-bold mt-4">
-                        Total: {checkoutForm.values.totalPrice} RON
+                        Total: {getTotalPrice()} {currency}
                     </p>
                 </div>
                 <div className="flex justify-between mt-6">

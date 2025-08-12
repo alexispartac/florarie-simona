@@ -130,14 +130,28 @@ export async function POST(req: NextRequest) {
             return total + (item.price * item.quantity);
         }, 0);
 
-        // Folosește totalul din orderDetails, dar validează că se potrivește
+        // Folosește totalul din orderDetails
         const totalAmount = body.orderDetails.totalPrice;
+        const currency = body.orderDetails.currency || 'RON';
         
-        // Verifică că totalul calculat se potrivește cu cel din request (cu toleranță de 0.01 RON)
-        if (Math.abs(calculatedTotal - totalAmount) > 0.01) {
+        // Pentru EUR, convertește totalul calculat din RON în EUR pentru comparație
+        let expectedTotal = calculatedTotal;
+        if (currency === 'EUR') {
+            expectedTotal = Number((calculatedTotal / 5).toFixed(2)); // 1 EUR = 5 RON
+        }
+        
+        // Verifică că totalul calculat se potrivește cu cel din request (cu toleranță de 0.01)
+        if (Math.abs(expectedTotal - totalAmount) > 0.01) {
+            console.log('Total mismatch:', {
+                calculatedTotal,
+                expectedTotal,
+                receivedTotal: totalAmount,
+                currency,
+                difference: Math.abs(expectedTotal - totalAmount)
+            });
             return NextResponse.json({ 
                 success: false, 
-                message: 'Totalul comenzii nu se potrivește cu produsele selectate.' 
+                message: `Totalul comenzii nu se potrivește cu produsele selectate. Calculat: ${expectedTotal} ${currency}, Primit: ${totalAmount} ${currency}` 
             }, { status: 400 });
         }
 
@@ -174,17 +188,20 @@ export async function POST(req: NextRequest) {
             console.log('Warning: Merchant ID might need to be numeric only:', merchantId);
         }
         
-        if (totalAmount < 0.01 || totalAmount > 999999.99) {
+        // Validează limitele pentru ambele monede
+        const minAmount = currency === 'EUR' ? 0.01 : 0.01;
+        const maxAmount = currency === 'EUR' ? 199999.99 : 999999.99;
+        
+        if (totalAmount < minAmount || totalAmount > maxAmount) {
             return NextResponse.json({ 
                 success: false, 
-                message: 'Suma comenzii este în afara limitelor permise.' 
+                message: `Suma comenzii este în afara limitelor permise pentru ${currency}. Min: ${minAmount}, Max: ${maxAmount}` 
             }, { status: 400 });
         }
         
         // Parametrii pentru EuPlătesc conform implementării oficiale
         const orderNumber = body.orderDetails.orderNumber ?? Math.floor(Date.now() / 1000);
         const orderId = `FL_${orderNumber}_${body.orderDetails.orderId.substring(0, 8)}`;
-        const currency = body.orderDetails.currency || 'RON';
         const returnUrl = body.urls.returnUrl;
         const cancelUrl = body.urls.cancelUrl;
         
@@ -200,6 +217,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ 
                 success: false, 
                 message: 'ID-ul comenzii este prea lung.' 
+            }, { status: 400 });
+        }
+
+        // Validează că EuPlătesc suportă moneda
+        if (!['RON', 'EUR', 'USD'].includes(currency)) {
+            return NextResponse.json({ 
+                success: false, 
+                message: `Moneda ${currency} nu este suportată de EuPlătesc.` 
             }, { status: 400 });
         }
 
@@ -240,6 +265,9 @@ export async function POST(req: NextRequest) {
             originalOrderNumber: body.orderDetails.orderNumber,
             totalAmount: formattedAmount,
             currency,
+            calculatedTotal,
+            expectedTotal,
+            conversionApplied: currency === 'EUR',
             timestamp,
             nonce,
             customerName: body.customerInfo.name,
