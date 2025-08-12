@@ -9,7 +9,7 @@ const NotFound = () => {
                 Ne pare rău, dar pagina pe care o cauți nu există.
             </p>
             <button className="mt-6 px-6 py-3 bg-[#b756a64f] text-white rounded-md">
-                <Link href="/">
+                <Link href="/homepage">
                     Înapoi la pagina principală
                 </Link>
             </button>
