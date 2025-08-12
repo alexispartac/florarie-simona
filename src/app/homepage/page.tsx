@@ -63,7 +63,7 @@ const IntroScreen: React.FC = () => {
     const splitElement = document.querySelector(".split");
     if (!splitElement) return;
 
-    let split = SplitText.create(".split", { type: "words,chars" });
+    const split = SplitText.create(".split", { type: "words,chars" });
 
     // Animația principală accelerată
     tl
