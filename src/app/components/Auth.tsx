@@ -1,7 +1,7 @@
 'use client';
 import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar, Badge, PasswordInput } from '@mantine/core';
 import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-react";
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { ForgotPasswordModal } from "./ForgotPassword";
 import { NavbarButton } from "./ui/resizable-navbar";
 import { useUser } from './context/ContextUser';
@@ -28,7 +28,6 @@ export interface FormLogInValues {
     email: string;
     password: string;
 }
-
 
 export const useHandleLogout = () => {
     const [, setCookie] = useCookies(['login']);
@@ -66,8 +65,59 @@ export const AuthModal = React.memo(() => {
     const [loading, setLoading] = useState(false);
     const [successModalOpened, setSuccessModalOpened] = useState(false); 
     const [successMessage, setSuccessMessage] = useState<string>('');
+    const [cartItemCount, setCartItemCount] = useState(0);
+    const [isMounted, setIsMounted] = useState(false);
     const logout = useHandleLogout();
-    const cartItemCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems') || '[]').length : 0;
+
+    // Client-side only localStorage access
+    useEffect(() => {
+        setIsMounted(true);
+        if (typeof window !== 'undefined') {
+            const cartItems = localStorage.getItem('cartItems');
+            if (cartItems) {
+                try {
+                    const items = JSON.parse(cartItems);
+                    setCartItemCount(Array.isArray(items) ? items.length : 0);
+                } catch (error) {
+                    console.error('Error parsing cart items:', error);
+                    setCartItemCount(0);
+                }
+            }
+        }
+    }, []);
+
+    // Listen for cart changes
+    useEffect(() => {
+        if (!isMounted) return;
+
+        const handleStorageChange = () => {
+            if (typeof window !== 'undefined') {
+                const cartItems = localStorage.getItem('cartItems');
+                if (cartItems) {
+                    try {
+                        const items = JSON.parse(cartItems);
+                        setCartItemCount(Array.isArray(items) ? items.length : 0);
+                    } catch (error) {
+                        console.error('Error parsing cart items:', error);
+                        setCartItemCount(0);
+                    }
+                } else {
+                    setCartItemCount(0);
+                }
+            }
+        };
+
+        // Listen for localStorage changes
+        window.addEventListener('storage', handleStorageChange);
+        
+        // Custom event for cart updates from same window
+        window.addEventListener('cartUpdate', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('cartUpdate', handleStorageChange);
+        };
+    }, [isMounted]);
 
     const formSignUp = useForm<FormSignUpValues>({
         mode: 'uncontrolled',
@@ -231,7 +281,6 @@ export const AuthModal = React.memo(() => {
         formLogIn.reset();
     }, [login, formLogIn]);
 
-    // Dezabonare de la newsletter
     const unsubscribeFromNewsletter = useCallback(async (email: string) => {
         try {
             const response = await axios.delete('/api/newsletter', { data: { email } });
@@ -245,7 +294,6 @@ export const AuthModal = React.memo(() => {
                 setSuccessModalOpened(true);
             } else {
                 setErrorMessage(data.message || 'Eroare la dezabonare.');
-                
                 setErrorMessage('');
             }
         } catch (error) {
@@ -308,7 +356,25 @@ export const AuthModal = React.memo(() => {
                 </div>
             );
         }
-    }, [user.isAuthenticated, user.userInfo.avatar, user.userInfo.name, user.userInfo.surname, typeAuth, handleSignUp, formSignUp, check, errorMessage, loading, handleLogin, formLogIn, logout, close]);
+    }, [user.isAuthenticated, user.userInfo.avatar, user.userInfo.name, user.userInfo.surname, typeAuth, handleSignUp, formSignUp, check, errorMessage, loading, handleLogin, formLogIn, logout, close, unsubscribeFromNewsletter]);
+
+    // Don't render until mounted to avoid hydration issues
+    if (!isMounted) {
+        return (
+            <div className='grid grid-cols-2'>
+                <NavbarButton as={"div"} variant="secondary" className='flex h-[34px] items-center justify-center'>
+                    <Button variant="transparent" p={0} color="red">
+                        <Link href="/cart" className="relative inline-block">
+                            <IconShoppingCart size={18} />
+                        </Link>
+                    </Button>
+                </NavbarButton>
+                <NavbarButton variant="secondary" onClick={open} className='flex items-center justify-center h-[34px]'>
+                    <IconUser size={18} />
+                </NavbarButton>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -340,13 +406,15 @@ export const AuthModal = React.memo(() => {
                                     <Badge
                                         color="red"
                                         size="xs"
-                                        className="absolute top-1 -right-3"
+                                        className="absolute top-1 -right-3 z-10"
                                     >
                                         {cartItemCount}
                                     </Badge>
                                 )}
                                 <Button variant="transparent" p={0} color="red">
-                                    <Link href="/cart" className="relative inline-block"><IconShoppingCart size={18} /></Link>
+                                    <Link href="/cart" className="relative inline-block">
+                                        <IconShoppingCart size={18} />
+                                    </Link>
                                 </Button>
                             </div>
                         )
@@ -355,7 +423,6 @@ export const AuthModal = React.memo(() => {
                 <NavbarButton variant="secondary" onClick={open} className='flex items-center justify-center h-[34px]'>
                     {user.isAuthenticated ? <IconUser color='blue' size={18} /> : <IconUser size={18} />}
                 </NavbarButton>
-
             </div>
         </>
     );
