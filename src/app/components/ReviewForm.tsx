@@ -10,7 +10,7 @@ interface ReviewFormProps {
     onSubmit: (values: { name: string; email: string; message: string; avatar: string }) => Promise<void>;
 }
 
-const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
+const ReviewForm: React.FC<ReviewFormProps> = ({ onSubmit }) => {
     const { user } = useUser();
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle'); // Stare pentru succes sau eroare

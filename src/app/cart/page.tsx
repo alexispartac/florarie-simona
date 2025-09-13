@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Group, Text, Divider, Loader, Modal, Stack } from '@mantine/core';
+import { Button, Text, Divider, Loader, Modal, Stack } from '@mantine/core';
 import { RootState, removeItem, setCart, updateQuantity } from './components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { IconArrowLeft } from '@tabler/icons-react';

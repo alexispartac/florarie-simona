@@ -1,6 +1,6 @@
 'use client';
 import { Breadcrumbs } from '@mantine/core';
-import { ItemProps, CartItem } from './../types';
+import { ItemProps } from './../types';
 import Link from 'next/link';
 import { Button } from '@mantine/core';
 
