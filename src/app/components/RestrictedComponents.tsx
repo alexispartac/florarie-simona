@@ -8,7 +8,6 @@ export const RestrictedComponents = ({ children }: { children: React.ReactNode }
 
     const restrictedPaths = [
         "/",
-        "/cart",
         "/checkout",
         "/admin",
         "/admin/products",

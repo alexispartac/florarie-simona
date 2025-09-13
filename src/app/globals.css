@@ -21,6 +21,7 @@
     --animate-aurora: aurora 60s linear infinite;
     --text-basic: rgb(130, 128, 128);
     --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+    --font-product: 'Tenor Sans', 'Geist', sans-serif;
   }
 }
 

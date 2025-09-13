@@ -119,7 +119,7 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
         <img
           src={post.image}
           alt={post.title}
-          className="w-full rounded-xl h-50dvh object-cover pb-5"
+          className="w-full h-50dvh object-cover pb-5"
         />
       )}
       <div className="flex items-center justify-between">

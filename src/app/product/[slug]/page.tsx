@@ -3,13 +3,11 @@ import { useProductsGroupedByCategory } from '@/app/components/hooks/fetchProduc
 import { addItem, RootState, setCart } from '@/app/cart/components/CartRedux';
 import { Anchor, Button, NumberInput, Loader, Modal } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
-import ReviewForm from '../../components/ReviewForm';
 import { Delivery } from '@/app/components/Content';
 import { ItemProps, CartItem } from './../../types';
 import { Bread } from '@/app/components/Products';
 import { Footer } from '../../components/Footer';
 import { Item } from '@/app/components/Products';
-import Reviews from '@/app/components/Reviews';
 import { usePathname } from "next/navigation";
 import PopUp from '@/app/components/PopUp';
 import { useForm } from '@mantine/form';
@@ -18,7 +16,6 @@ import axios from 'axios';
 import React from 'react';
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
-const URL_REVIEW = '/api/review';
 const URL_CHECK_COMPOSITION = '/api/check-composition';
 
 const Product = () => {
@@ -157,19 +154,6 @@ const Product = () => {
         } finally {
             setIsAdding(false);
             setModalOpened(true);
-        }
-    };
-
-    const handleSubmitedReview = async (values: { name: string; email: string; message: string }) => {
-        try {
-            const response = await axios.post(URL_REVIEW, values);
-            if (response.status === 200) {
-                console.log('Review submitted successfully:', response.data);
-            } else {
-                console.log('Unexpected response:', response);
-            }
-        } catch (error) {
-            console.log('Error submitting review:', error);
         }
     };
 
@@ -428,12 +412,6 @@ const Product = () => {
                     </div>
                 </div>
             </div>
-            {/* recenzie */}
-            <ReviewForm
-                productTitle={product.title}
-                onSubmit={handleSubmitedReview}
-            />
-            <Reviews product={`${lastSegment}`} />
             {/* recomandari */}
             <div className="relative mx-8 md:mx-40 my-20">
                 <p className='text-center'>PRODUSE RECOMANDATE</p>

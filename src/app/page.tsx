@@ -37,7 +37,7 @@ const IntroScreen: React.FC = () => {
       opacity: 0.3 + (i % 3) * 0.1,
       color: i % 3 === 0 ? '#ff6b9d' : i % 3 === 1 ? '#c4456b' : '#fdcb6e',
       delay: i * 0.2,
-      duration: 3 + (i % 2),
+      duration: 2 + (i % 2),
     })), []
   );
 
@@ -97,7 +97,7 @@ const IntroScreen: React.FC = () => {
       });
     } catch (error) {
       console.error("SplitText error:", error);
-      setTimeout(() => router.push("/homepage"), 2000);
+      setTimeout(() => router.push("/not-found"), 2000);
       return;
     }
 

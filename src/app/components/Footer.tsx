@@ -65,7 +65,7 @@ export const Footer = () => {
                             className="bg-[#b756a64f] cursor-pointer text-white px-4 py-2 my-2 rounded-lg hover:text-pink-200 hover:bg-white"
                             disabled={loading || !email}
                         >
-                            {loading ? 'Se încarcă...' : 'Înscrie'}
+                            {loading ? 'Se încarcă...' : 'Înscrie-te'}
                         </button>
                     </div>
                 </div>
@@ -129,6 +129,42 @@ export const Footer = () => {
                 <Link href="/terms&conditions" className="hover:text-gray-300 mx-2">Termeni&Condiții</Link>
                 <Link href="/cookie-policy" className="hover:text-gray-300 mx-2">Politica de cookies</Link>
                 <Link href="https://gdpr.eu/" className="hover:text-gray-300 mx-2">GDPR</Link>
+            </div>
+
+            {/* Payment Methods Section */}
+            <div className="mt-8 mb-6">
+                <div className="text-center mb-6">
+                    <h3 className="text-lg font-semibold mb-2">Metode de plată acceptate</h3>
+                    <p className="text-sm opacity-90">Plătești în siguranță cu metodele preferate</p>
+                </div>
+                
+                <div className="flex flex-col items-center gap-4 max-w-5xl mx-auto">
+                    {/* First Row - Payment Methods */}
+                    <div className="flex flex-wrap justify-center items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        {/* <div className="w-14 h-9 bg-white rounded flex items-center justify-center shadow-md border">
+                            <span className="text-gray-800 text-xs font-bold">G Pay</span>
+                        </div>
+                         */}
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="w-16 h-10 object-contain" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" className="w-16 h-10 object-contain" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" className="w-10 h-10 object-contain" />
+                    </div>
+
+                </div>
+
+                <div className="text-center mt-6">
+                    <p className="text-xs opacity-75">🔒 Toate tranzacțiile sunt securizate și criptate SSL</p>
+                    <p className="text-xs opacity-75 mt-1">Procesare securizată prin partenerii noștri de încredere</p>
+                    <div className="flex justify-center items-center space-x-4 mt-2">
+                        <a href="https://anpc.ro/ce-este-sal/" target="_blank">
+                            <img src="https://cdn.shopify.com/s/files/1/0553/9925/2156/t/7/assets/anpc-sal.webp?v=1661023053" className="w-[165px] h-[45px]" />
+                        </a>
+                        <a href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&amp;lng=RO" target="_blank">
+                            <img src="https://cdn.shopify.com/s/files/1/0553/9925/2156/t/7/assets/anpc-sol.png?v=1661023076" className="w-[165px] h-[45px]" />
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
             {/* Copyright */}

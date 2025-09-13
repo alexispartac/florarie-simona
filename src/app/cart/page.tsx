@@ -7,10 +7,12 @@ import { useRouter } from 'next/navigation';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useUser } from '../components/context/ContextUser';
 import axios from 'axios';
+import PopUp from '../components/PopUp';
+import { Footer } from '../components/Footer';
 
 const URL_CHECK_COMPOSITION = '/api/check-composition';
 
-const Cart = () => {
+const Content = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const router = useRouter();
@@ -77,7 +79,7 @@ const Cart = () => {
 
   return (
     <div className="px-4 md:px-8">
-      <div className="mx-auto max-w-7xl my-10">
+      <div className="mx-auto max-w-7xl my-18">
         <div className="flex items-center mb-6">
           <IconArrowLeft
             className="cursor-pointer text-gray-600 hover:text-gray-800"
@@ -85,7 +87,7 @@ const Cart = () => {
             onClick={() => router.back()}
           />
           <h1 className="text-2xl md:text-3xl font-bold text-center flex-grow pr-[2rem]">
-            Coșul tău
+            Coșul de cumpărături
           </h1>
         </div>
         <Divider my="sm" />
@@ -94,56 +96,81 @@ const Cart = () => {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col md:flex-row items-center justify-between border-b pb-4"
+                className="bg-white rounded-md border border-gray-200 p-4"
               >
-                <Group
-                  className="flex items-center mb-2 md:px-10"
-                  onClick={() => router.push(`/product/${item.id}`)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-16 h-16 object-cover rounded-md"
-                  />
-                  <Text className="text-sm md:text-base">{item.title}</Text>
-                  <Text className="text-sm md:text-base">{item.category}</Text>
-                  <Text className="text-sm md:text-base">{item.price} RON</Text>
-                </Group>
-                <Group className="flex items-center my-2">
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    color='#b756a6'
-                    onClick={() =>
-                      handleUpdateQuantity(item.id, item.quantity - 1)
-                    }
+                <div className="flex gap-4">
+                  {/* Product Image */}
+                  <div 
+                    className="flex-shrink-0 cursor-pointer"
+                    onClick={() => router.push(`/product/${item.id}`)}
                   >
-                    -
-                  </Button>
-                  <Text className="text-sm md:text-base">{item.quantity}</Text>
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    color='#b756a6'
-                    onClick={() =>
-                      handleUpdateQuantity(item.id, item.quantity + 1)
-                    }
-                  >
-                    +
-                  </Button>
-                </Group>
-                <Text className="text-sm md:text-base">
-                  {item.price * item.quantity} RON
-                </Text>
-                <Button
-                  color="red"
-                  variant="outline"
-                  size="xs"
-                  onClick={() => handleRemoveItem(item.id)}
-                >
-                  Șterge
-                </Button>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
+                    />
+                  </div>
+
+                  {/* Product Details */}
+                  <div className="flex-grow">
+                    <div 
+                      className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
+                      onClick={() => router.push(`/product/${item.id}`)}
+                    >
+                      <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+                        {item.title}
+                      </h3>
+                      <p>
+                        <span className="font-medium">Categorie:</span> {item.category}
+                      </p>
+                    </div>
+
+                    {/* Controls Row */}
+                    <div className="flex items-center justify-between">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center border border-gray-300 rounded">
+                        <button
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-50 border-r"
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1}
+                        >
+                          −
+                        </button>
+                        <span className="px-4 py-1 bg-gray-50 text-center min-w-[3rem]">
+                          {item.quantity}
+                        </span>
+                        <button
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-50 border-l"
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Price */}
+                      <div className="text-right">
+                        <div className="text-lg md:text-xl font-semibold text-gray-900">
+                          {(item.price * item.quantity).toFixed(2)} RON
+                        </div>
+                        {item.quantity > 1 && (
+                          <div className="text-sm text-gray-500">
+                            {item.price} RON × {item.quantity}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Remove Button */}
+                    <div className="flex justify-end mt-3">
+                      <button
+                        className="text-red-600 text-sm hover:text-red-700 underline"
+                        onClick={() => handleRemoveItem(item.id)}
+                      >
+                        Șterge
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -153,27 +180,56 @@ const Cart = () => {
           </Text>
         )}
         <Divider my="sm" />
-        <div className="flex flex-col md:flex-row justify-center items-center mt-6">
+        <div className="flex flex-col md:flex-row justify-center mt-6">
           {cartItems.length > 0 ? (
-            <Stack align='center' m={'auto'} >
-              <Text className="text-lg md:text-xl font-bold mb-4 md:mb-0">
-                Total: {totalPrice} RON
-              </Text>
-              {!user.isAuthenticated && (
-                <Text c="red" className="mb-4 md:mb-0 md:ml-4 text-center">
-                  Pentru a finaliza comanda, te rugăm să te autentifici.
+            <div>
+              <div className='w-full'>
+                <Text className="text-lg md:text-xl grid grid-cols-2 mb-4 md:mb-0">
+                  <span>
+                    Subtotal
+                  </span>
+                  <span className="text-right">
+                    {totalPrice.toFixed(2)} RON
+                  </span>
                 </Text>
-              )}
-              <Button
-                color={'#b756a64f'}
-                size="lg"
-                className="w-full md:w-auto"
-                onClick={handleFinalizeOrder}
-                disabled={!user.isAuthenticated || isChecking}
-              >
-                {isChecking ? <Loader color="white" size="sm" /> : 'Finalizează comanda'}
-              </Button>
-            </Stack>
+                <Text className="text-lg md:text-xl grid grid-cols-2 mb-4 md:mb-0">
+                  <span>
+                    Transport 
+                  </span>
+                  <span className="text-right text-gray-700">
+                    Gratuit
+                  </span>
+                </Text>
+                <Text className="text-xl md:text-2xl grid grid-cols-2 md:mb-0">
+                  <span className='font-bold pt-4'>
+                    Total comanda
+                  </span>
+                  <span className="text-right font-bold pt-4">
+                    {totalPrice.toFixed(2)} RON
+                  </span>
+                </Text>
+                <Text className="text-md md:text-lg text-gray-700  mb-4 md:mb-0">
+                  {(Number((totalPrice * 0.19).toFixed(2))).toFixed(2)} RON TVA inclus
+                </Text>
+                {!user.isAuthenticated && (
+                  <Text c="red" className="mb-4 md:mb-0 md:ml-4 text-center">
+                    Pentru a finaliza comanda, te rugăm să te autentifici.
+                  </Text>
+                )}
+              </div>
+              <Stack w={'full'} m={'auto'} >
+                <Button
+                  color={'#b756a64f'}
+                  size="lg"
+                  mt={'20px'}
+                  className="w-full md:w-auto"
+                  onClick={handleFinalizeOrder}
+                  disabled={!user.isAuthenticated || isChecking}
+                >
+                  {isChecking ? <Loader color="white" size="sm" /> : 'Finalizează comanda'}
+                </Button>
+              </Stack>
+            </div>
           ) : (
             <Button
               color="blue"
@@ -198,5 +254,16 @@ const Cart = () => {
     </div>
   );
 };
+
+const Cart = () => {
+  return (
+        <div>
+            <PopUp />
+            <Content />
+            <Footer />
+        </div>
+    )
+}
+
 
 export default Cart;

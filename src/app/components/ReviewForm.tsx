@@ -77,12 +77,12 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productTitle, onSubmit }) => {
     return (
         <div
             ref={reviewRef}
-            className={`relative color-theme md:px-10 py-10 mx-8 md:mx-16 rounded-2xl shadow-sm my-10 transition-transform duration-300 ease-in-out ${isVisible ? 'scale-105' : 'scale-100'
+            className={`relative color-theme md:px-10 py-10 mx-6 md:mx-16 rounded-md my-10 transition-transform duration-300 ease-in-out ${isVisible ? 'scale-105' : 'scale-100'
                 }`}
         >
             <div className="my-5">
-                <p className="text-xl text-center my-3">RECENZIE</p>
-                <p className="text-center">Scrie recenzia ta pentru ”{productTitle}”</p>
+                <p className="text-xl text-center my-3">Lasă o recenzie</p>
+                {/* <p className="text-center">Scrie recenzia ta pentru ”{productTitle}”</p> */}
             </div>
             <form
                 className="grid md:grid-cols-2 grid-cols-1 px-6 md:px-0"

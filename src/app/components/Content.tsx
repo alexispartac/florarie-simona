@@ -7,6 +7,9 @@ import { Loader } from '@mantine/core';
 import { motion } from "motion/react";
 import Link from 'next/link';
 import React from 'react'
+import ReviewForm from './ReviewForm';
+import Reviews from './Reviews';
+import axios from 'axios';
 
 export function InfiniteMovingCardsDemo() {
     const { data: groupedProducts, isLoading, isError } = useProductsGroupedByCategory();
@@ -41,6 +44,65 @@ export function InfiniteMovingCardsDemo() {
     );
 }
 
+const Story = () => {
+
+    return (
+        <div className="bg-white dark:bg-white dark:bg-grid-white/[0.05] rounded-lg  p-6 md:p-10 lg:p-12 text-center max-w-4xl mx-auto my-20">
+            <motion.div
+                initial={{ opacity: 0.0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                    delay: 0.3,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                }}
+            >
+                <h2 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">Povestea Noastră</h2>
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0.0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                    delay: 0.5,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                }}
+            >
+                <p className="text-gray-600 mb-6">
+                    La Buchetul Simonei, credem că fiecare floare spune o poveste. Fondată din pasiunea pentru frumusețea naturii și dorința de a aduce bucurie în viețile oamenilor, florăria noastră a crescut de la o mică afacere locală la un nume de încredere în livrarea de flori proaspete și aranjamente florale spectaculoase.
+                </p>
+
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0.0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                    delay: 0.7,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                }}
+            >
+                <p className="text-gray-600 mb-6">
+                    Echipa noastră dedicată de florari talentați lucrează cu atenție pentru a crea buchete care să reflecte emoțiile și ocaziile speciale ale clienților noștri. Fiecare aranjament este realizat cu grijă, folosind doar cele mai proaspete flori, pentru a asigura calitatea și satisfacția deplină.
+                </p>
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0.0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                    delay: 0.9,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                }}
+            >
+                <p className="text-gray-600">
+                    Ne mândrim cu serviciul nostru de livrare rapidă și fiabilă, asigurându-ne că fiecare comandă ajunge la destinație în condiții perfecte. Indiferent dacă este vorba de o aniversare, o zi de naștere sau pur și simplu dorința de a aduce un zâmbet pe fața cuiva drag, suntem aici pentru a transforma momentele speciale în amintiri de neuitat.
+                </p>
+            </motion.div>
+        </div>
+    );
+};
+
 export function AuroraBackgroundDemo() {
     return (
         <AuroraBackground>
@@ -60,7 +122,7 @@ export function AuroraBackgroundDemo() {
                 <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
                     Flori care vorbesc sufletului.
                 </div>
-                <button className="bg-white content dark:bg-white rounded-full h-[70px] w-[200px] text-white dark:text-black px-4 py-2">
+                <button className="bg-white content dark:bg-white rounded-sm h-[70px] w-[200px] text-white dark:text-black px-4 py-2">
                     <Link href="/features">
                         <p className="text-2xl font-bold">
                             Descoperă
@@ -118,7 +180,7 @@ const NewOfers = () => {
     return (
         <div className="grid md:grid-cols-2 grid-cols-1 pb-5 gap-y-20 gap-6 mt-20 mx-5 md:px-20 md:my-40">
             {/* Card 1 */}
-            <div className="bg-white rounded-lg border-[#b756a64f] border-2 shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
+            <div className="bg-white rounded-md border-[#b756a64f] border-2 p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
                 <h3 className="text-lg font-semibold mt-2 text-gray-800">Ofertă Specială!</h3>
                 <p className="text-gray-600 mt-4">
                     Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru cei dragi!
@@ -132,7 +194,7 @@ const NewOfers = () => {
             </div>
 
             {/* Card 2 */}
-            <div className="bg-white rounded-lg border-[#b756a64f] border-2 shadow-lg p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
+            <div className="bg-white rounded-md border-[#b756a64f] border-2 p-6 px-10 text-center transition-transform duration-300 ease-in-out hover:scale-105">
                 <h3 className="text-lg font-semibold mt-2 text-gray-800">Descoperă ofertele săptămânii!</h3>
                 <p className="text-gray-600 mt-4">
                     Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat.
@@ -148,11 +210,26 @@ const NewOfers = () => {
     );
 };
 
+const URL_REVIEW = '/api/review';
 const Content = () => {
+
+    const handleSubmitedReview = async (values: { name: string; email: string; message: string }) => {
+        try {
+            const response = await axios.post(URL_REVIEW, values);
+            if (response.status === 200) {
+                console.log('Review submitted successfully:', response.data);
+            } else {
+                console.log('Unexpected response:', response);
+            }
+        } catch (error) {
+            console.log('Error submitting review:', error);
+        }
+    };
+    
     return (
         <div className="relative w-full pt-24">
             <motion.div
-                className="h-120 px-4"
+                className="h-80 px-4"
                 initial={{ opacity: 0.0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
@@ -171,9 +248,15 @@ const Content = () => {
                     „În fiecare petală se ascunde o poveste, iar în fiecare floare, un vis.🌸✨ Împreună, scriem povești parfumate.”
                 </p>
             </motion.div>
+            <Story />
             <AuroraBackgroundDemo />
             <NewOfers />
             <InfiniteMovingCardsDemo />
+            <ReviewForm
+                productTitle="Buchetul Simonei"
+                onSubmit={handleSubmitedReview}
+            />
+            <Reviews product={`Buchetul Simonei`} />
             <Delivery />
         </div>
     );

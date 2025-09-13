@@ -57,11 +57,11 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
     };
 
     return (
-        <div className="reviews bg-gray-25 p-8 md:p-15 rounded-lg shadow-md">
+        <div className="reviews bg-gray-25 p-6 md:p-15 rounded-md">
             <h2 className="text-2xl font-sans text-gray-800 mb-6">Recenzii</h2>
             <ul className="space-y-6">
                 {reviews.slice(0, visibleReviews).map((review) => (
-                    <li key={review.id} className="p-6 bg-[#b756a64f] shadow-md rounded-lg">
+                    <li key={review.id} className="p-6 bg-[#b756a64f] rounded-md">
                         <Group dir='row' w={"100%"}>
                             <Avatar w={"3%"} src={review.avatar} />
                             <Stack w={"80%"} gap={0}>
