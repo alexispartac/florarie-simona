@@ -706,7 +706,7 @@ const CheckoutPage = () => {
                     <p>{modalMessage}</p>
                     <Button
                         color={'#b756a64f'}
-                        onClick={() => (router.push('/'), setModalOpened(false))}
+                        onClick={() => (router.push('/homepage'), setModalOpened(false))}
                         className="mt-4"
                     >
                         Închide
