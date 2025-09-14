@@ -487,7 +487,7 @@ const Content = () => {
                     }}
                 >
                     <h1 className="mb-4 mt-18 md:mt-34 text-3xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center">
-                        Buchetul Simonei, <br /> poezia <ColourfulText text="florilor" />
+                        Buchetul Simonei <br /> ~poezia <ColourfulText text="florilor" />~
                     </h1>
 
                     <p className="mb-20 text-center text-sm sm:text-base md:text-lg lg:text-xl text-zinc-500">
