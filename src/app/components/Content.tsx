@@ -10,6 +10,7 @@ import React from 'react'
 import ReviewForm from './ReviewForm';
 import Reviews from './Reviews';
 import axios from 'axios';
+import { IconBrandFacebook, IconBrandInstagram, IconBrandWhatsapp } from '@tabler/icons-react';
 
 export function InfiniteMovingCardsDemo() {
     const { data: groupedProducts, isLoading, isError } = useProductsGroupedByCategory();
@@ -490,9 +491,85 @@ const Content = () => {
                         Buchetul Simonei <br /> ~poezia <ColourfulText text="florilor" />~
                     </h1>
 
-                    <p className="mb-20 text-center text-sm sm:text-base md:text-lg lg:text-xl text-zinc-500">
+                    <p className="text-center text-sm sm:text-base md:text-lg lg:text-xl text-zinc-500">
                         În fiecare petală se ascunde o poveste, iar în fiecare floare, un vis.🌸✨ Împreună, scriem povești parfumate.
                     </p>
+
+                    {/* Social Media Section - Aranjat frumos */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.8, ease: "easeInOut" }}
+                        className="flex flex-col items-center justify-center space-y-4 mt-8 mb-16"
+                    >
+                        <p className="text-gray-600 text-lg font-medium">Ne găsiți și pe:</p>
+                        
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            {/* Instagram */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.7, duration: 0.5 }}
+                                whileHover={{ scale: 1.05 }}
+                                className="group"
+                            >
+                                <Link 
+                                    href="https://www.instagram.com/poeziaflorilor/" 
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1"
+                                >
+                                    <IconBrandInstagram size={24} />
+                                    <span className="font-semibold">Instagram</span>
+                                </Link>
+                            </motion.div>
+
+                            {/* Facebook */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.8, duration: 0.5 }}
+                                whileHover={{ scale: 1.05 }}
+                                className="group"
+                            >
+                                <Link 
+                                    href="https://www.facebook.com/buchetulsimonei" 
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1"
+                                >
+                                    <IconBrandFacebook size={24} />
+                                    <span className="font-semibold">Facebook</span>
+                                </Link>
+                            </motion.div>
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.8, duration: 0.5 }}
+                                whileHover={{ scale: 1.05 }}
+                                className="group"
+                            >
+                                <p 
+                                    className="flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1"
+                                >
+                                    <IconBrandWhatsapp size={24} />
+                                    <span className="font-semibold">Whatsapp</span>
+                                </p>
+                            </motion.div>
+                        </div>
+
+                        {/* Decorative elements */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 1, duration: 0.8 }}
+                            className="flex items-center gap-3 mt-4"
+                        >
+                            <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-pink-300"></div>
+                            <span className="text-2xl">🌸</span>
+                            <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-pink-300"></div>
+                        </motion.div>
+                    </motion.div>
                 </motion.div>
             </div>
 
