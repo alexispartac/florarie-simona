@@ -17,8 +17,8 @@ export const CallModal = () => {
           blur: 3,
         }}>
         <Group px={4}>
-          <p className="w-[80%]"> 0772055889 </p>
-          <CopyButton value="0772055889" timeout={2000}>
+          <p className="w-[80%]"> 0769141250 </p>
+          <CopyButton value="0769141250" timeout={2000}>
             {({ copied, copy }) => (
               <Tooltip label={copied ? 'Copied' : 'Copy'} withArrow position="right">
                 <ActionIcon color={copied ? 'teal' : 'gray'} variant="subtle" onClick={copy}>
