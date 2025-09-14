@@ -533,7 +533,7 @@ const Content = () => {
                                 className="group"
                             >
                                 <Link 
-                                    href="https://www.facebook.com/buchetulsimonei" 
+                                    href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" 
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1"
