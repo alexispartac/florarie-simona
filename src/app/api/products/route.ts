@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, message: 'Token invalid' }, { status: 401 });
     }
 
-    if (payload.email !== 'matei.partac45@gmail.com' && payload.email !== 'emailsimona') {
+    if (payload.email !== 'laurasimona97@yahoo.com' && payload.email !== 'emailsimona') {
         return NextResponse.json({ success: false, message: 'Nu aveți permisiunea de a accesa această resursă.' }, { status: 403 });
     }
 
@@ -103,7 +103,7 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ success: false, message: 'Token invalid' }, { status: 401 });
     }
 
-    if (payload.email !== 'matei.partac45@gmail.com' && payload.email !== 'emailsimona') {
+    if (payload.email !== 'laurasimona97@yahoo.com' && payload.email !== 'emailsimona') {
         return NextResponse.json({ success: false, message: 'Nu aveți permisiunea de a accesa această resursă.' }, { status: 403 });
     }    
 
@@ -167,7 +167,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ success: false, message: 'Token invalid' }, { status: 401 });
     }
 
-    if (payload.email !== 'matei.partac45@gmail.com' && payload.email !== 'emailsimona') {
+    if (payload.email !== 'laurasimona97@yahoo.com' && payload.email !== 'emailsimona') {
         return NextResponse.json({ success: false, message: 'Nu aveți permisiunea de a accesa această resursă.' }, { status: 403 });
     }
 

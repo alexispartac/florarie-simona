@@ -100,7 +100,7 @@ const Post = ({ blogPost, onDelete }: { blogPost: BlogPostProps; onDelete: (id: 
           <p className="text-gray-500 text-sm mb-2">{post.date}</p>
           <p className="text-gray-700 pb-5">{post.description}</p>
         </div>
-        {user.isAuthenticated && user.userInfo.email === 'matei.partac45@gmail.com' && (
+        {user.isAuthenticated && user.userInfo.email === 'laurasimona97@yahoo.com' && (
           <Menu>
             <Menu.Target>
               <ActionIcon>
@@ -360,7 +360,7 @@ const Blog = () => {
 
   return (
     <div>
-      {user.isAuthenticated && user.userInfo.email === 'matei.partac45@gmail.com' && (
+      {user.isAuthenticated && user.userInfo.email === 'laurasimona97@yahoo.com' && (
         <div className="flex pl-5 justify-center mt-28">
           <Button color="pink" onClick={() => setModalOpened(true)}>
             Creează o postare

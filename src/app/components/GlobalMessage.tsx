@@ -41,7 +41,7 @@ const GlobalMessage = () => {
         if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(value)) {
           return 'Email invalid';
         }
-        if (value !== "matei.partac45@gmail.com") return 'Nu aveți permisiunea de a accesa această pagină.';
+        if (value !== "laurasimona97@yahoo.com") return 'Nu aveți permisiunea de a accesa această pagină.';
       },
       password: (value) => (value ? null : 'Parola este obligatorie'),
     },
@@ -131,7 +131,7 @@ const GlobalMessage = () => {
               label="Email"
               type="email"
               required
-              placeholder="Ex: matei.partac45@gmail.com"
+              placeholder="Ex: laurasimona97@yahoo.com"
               {...formLogIn.getInputProps('email')}
             />
             <PasswordInput
