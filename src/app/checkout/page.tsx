@@ -7,13 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
 import { useUser } from '../components/context/ContextUser';
 import { CartItem } from '../types';
 import { Footer } from '../components/Footer';
 import { IconShoppingCart } from '@tabler/icons-react';
 import { motion } from 'motion/react';
-
+import { CheckoutService } from './services/CheckoutService';
 
 function SimpleMap() {
     return (
@@ -81,38 +80,37 @@ const CheckoutPage = () => {
     };
 
     React.useEffect(() => {
+        // Verifică coșul din Redux și localStorage
         const localCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]') as CartItem[];
-        if (localCartItems.length === 0) {
-            setModalMessage('Coșul tău este gol. Te rugăm să adaugi produse înainte de a finaliza comanda.');
-            setModalOpened(true);
+        
+        // Dacă ambele surse sunt goale, redirecționează către cart
+        if (cartItems.length === 0 && localCartItems.length === 0) {
+            router.push('/cart');
             return;
         }
 
+        // Dacă localStorage are produse dar Redux nu, poate fi o problemă de sincronizare
+        if (cartItems.length === 0 && localCartItems.length > 0) {
+            router.push('/cart');
+            return;
+        }
+
+        // Verifică dacă produsele sunt valide
         if (!Array.isArray(localCartItems) || localCartItems.some((product: CartItem) => !product.id || !product.title || !product.price || !product.quantity)) {
             setModalMessage('Coșul tău conține produse invalide. Te rugăm să reîncarci pagina.');
             setModalOpened(true);
             return;
         }
 
+        // Verifică din nou coșul Redux după validări
         if (cartItems.length === 0) {
-            setModalMessage('Coșul tău este gol. Te rugăm să adaugi produse înainte de a finaliza comanda.');
-            setModalOpened(true);
+            router.push('/cart');
             return;
         }
 
-        async function fetchOrderNumber() {
-            try {
-
-                const response = await axios.get('/api/orders/number', { withCredentials: true });
-                const orders: OrderProps[] = response.data;
-                setOrderNumber(orders.length);
-            } catch (error) {
-                console.log('Error fetching order number:', error);
-            }
-        }
-        fetchOrderNumber();
-    }, [cartItems.length, router, setModalMessage, setModalOpened]);
-
+        // Dacă totul e în regulă, încarcă numărul comenzii
+        CheckoutService.fetchOrderNumber().then(setOrderNumber);
+    }, [cartItems.length, router]);
 
     const checkoutForm = useForm<OrderProps>({
         initialValues: {
@@ -147,198 +145,84 @@ const CheckoutPage = () => {
         },
     });
 
-    const handleEuPlatescPayment = async () => {
-        try {
-            await axios.post('/api/payment-card', {
-                items: checkoutForm.values.products.map((product) => ({
-                    id: product.id,
-                    title: product.title,
-                    price: product.price,
-                    quantity: product.quantity,
-                    category: product.category,
-                })),
-                customerInfo: {
-                    name: checkoutForm.values.clientName,
-                    email: checkoutForm.values.clientEmail,
-                    phone: checkoutForm.values.clientPhone,
-                    address: checkoutForm.values.clientAddress,
-                },
-                orderDetails: {
-                    orderId: checkoutForm.values.id,
-                    orderNumber: checkoutForm.values.orderNumber,
-                    totalPrice: getTotalPrice(),
-                    currency: currency,
-                    paymentMethod: checkoutForm.values.paymentMethod,
-                    deliveryDate: checkoutForm.values.deliveryDate,
-                    info: checkoutForm.values.info,
-                    orderDate: checkoutForm.values.orderDate,
-                },
-                urls: {
-                    returnUrl: `${window.location.origin}/checkout/success`,
-                    cancelUrl: `${window.location.origin}/checkout/cancel`,
-                }
-            },
-                { withCredentials: true }
-            ).then((response) => {
-                const redirectUrl = response.data;
-                document.body.innerHTML = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Redirecționare către EuPlătesc</title>
-                        <style>
-                            body { 
-                                font-family: Arial, sans-serif; 
-                                text-align: center; 
-                                padding: 50px;
-                                background-color: #f5f5f5;
-                            }
-                            .container {
-                                max-width: 500px;
-                                margin: 0 auto;
-                                background: white;
-                                padding: 40px;
-                                border-radius: 10px;
-                                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                            }
-                            .message {
-                                color: #333;
-                                font-size: 18px;
-                                margin-bottom: 20px;
-                            }
-                            .sub-message {
-                                color: #666;
-                                font-size: 16px;
-                                margin-bottom: 30px;
-                            }
-                            .continue-btn {
-                                background-color: #b756a6;
-                                color: white;
-                                padding: 15px 30px;
-                                border: none;
-                                border-radius: 5px;
-                                font-size: 16px;
-                                cursor: pointer;
-                                text-decoration: none;
-                                display: inline-block;
-                            }
-                            .continue-btn:hover {
-                                background-color: #a044a0;
-                            }
-                        </style>
-                        <script>
-                            setTimeout(function() {
-                                window.location.href = "${redirectUrl}";
-                            }, 2000);
-                        </script>
-                    </head>
-                    <body>
-                        <div class="container">
-                            <div class="message">Te redirecționăm către EuPlătesc...</div>
-                            <div class="sub-message">Dacă nu ești redirecționat automat, apasă butonul de mai jos:</div>
-                            <a href="${redirectUrl}" class="continue-btn">Continuă către EuPlătesc</a>
-                        </div>
-                    </body>
-                    </html>
-                `;
-            });
-        } catch (error) {
-            console.log('Eroare la inițializarea plății EuPlătesc:', error);
-            setModalMessage('A apărut o eroare la procesarea plății.');
-            setModalOpened(true);
-        }
-    };
-
     const handleSubmit = async (values: OrderProps) => {
-        // verifica numarul de telefon
         setIsLoading(true);
-        const phoneRegex = /^\+?[0-9]{10,15}$/;
-        if (!phoneRegex.test(values.clientPhone)) {
-            setModalMessage('Numărul de telefon este invalid. Te rugăm să introduci un număr valid.');
-            setModalOpened(true);
-            return;
-        }
-
-        // verifica adresa
-        if (values.clientAddress.length < 8) {
-            setModalMessage('Adresa trebuie să conțină cel puțin 8 caractere.');
-            setModalOpened(true);
-            return;
-        }
-
-        // if it's a card payment, add the payment method to the values
-        if (paymentMethod === 'card') {
-            values.paymentMethod = paymentMethod;
-        } else {
-            values.paymentMethod = 'ramburs';
-        }
-
+        
         try {
-            await axios.post('/api/orders', values);
-
-        } catch (error) {
-            console.log('Eroare la plasarea comenzii:', error);
-            setModalMessage('A apărut o eroare la plasarea comenzii. Te rugăm să încerci din nou.');
-            setModalOpened(true);
-            return;
-        }
-
-        // Pentru plata cu cardul, trimite email-ul ÎNAINTE de redirecționare
-        if (paymentMethod === 'card') {
-            try {
-                const statusEmail = await axios.post('/api/send-email', {
-                    clientEmail: values.clientEmail,
-                    clientName: values.clientName,
-                    orderDetails: values.products,
-                    totalPrice: getTotalPrice(),
-                    currency: currency,
-                });
-
-                if (statusEmail.status !== 200) {
-                    console.log('Eroare la trimiterea email-ului pentru plata cu cardul');
-                }
-            } catch (error) {
-                console.log('Eroare la trimiterea email-ului înainte de plata cu cardul:', error);
+            // Verifică din nou coșul înainte de procesare
+            if (cartItems.length === 0) {
+                router.push('/cart');
+                return;
             }
 
-            await handleEuPlatescPayment();
-            return;
-        }
+            // Validare folosind CheckoutService
+            const validation = CheckoutService.validateOrder(values);
+            if (!validation.isValid) {
+                setModalMessage(validation.message);
+                setModalOpened(true);
+                setIsLoading(false);
+                return;
+            }
 
-        // Pentru ramburs, trimite email-ul normal
-        try {
-            const statusEmail = await axios.post('/api/send-email', {
-                clientEmail: values.clientEmail,
-                clientName: values.clientName,
-                orderDetails: values.products,
-                totalPrice: values.totalPrice,
+            // Setare metodă de plată
+            values.paymentMethod = paymentMethod;
+
+            // Procesare comanda prin CheckoutService
+            const result = await CheckoutService.processOrder({
+                orderData: values,
+                paymentMethod,
+                currency,
+                totalPrice: getTotalPrice(),
+                onSuccess: (message: string) => {
+                    setModalMessage(message);
+                    setModalOpened(true);
+                    checkoutForm.reset();
+                    dispatch(clearCart());
+                    setTimeout(() => {
+                        router.push('/checkout/success');
+                    }, 2000);
+                },
+                onError: (error: string) => {
+                    setModalMessage(error);
+                    setModalOpened(true);
+                },
+                onCardPaymentRedirect: (redirectUrl: string) => {
+                    // Pentru plata cu cardul - redirect automat
+                    CheckoutService.redirectToPayment(redirectUrl);
+                }
             });
 
-            if (statusEmail.status !== 200) {
-                throw new Error('Failed to send email');
-            } else {
-                setModalMessage('Comanda ta a fost plasată cu succes! Mulțumim pentru achiziție.');
+            if (!result.success) {
+                setModalMessage(result.message);
                 setModalOpened(true);
-                checkoutForm.reset();
             }
-            setIsLoading(false);
-            router.push('/checkout/success');
+
         } catch (error) {
-            console.log('Eroare la trimiterea email-ului:', error);
-            setModalMessage('Comanda a fost plasata. A apărut o eroare la trimiterea email-ului de confirmare. Te rugăm să verifici adresa de email introdusă apoi contacteaza-ne printr-un mesaj pe adresa oficiala de email pentru a primi confirmarea comenzii.');
+            console.error('Eroare în procesarea comenzii:', error);
+            setModalMessage('A apărut o eroare neașteptată. Te rugăm să încerci din nou.');
             setModalOpened(true);
         } finally {
-            // Pentru ramburs - curăță cart-ul și oprește loading-ul
-            dispatch(clearCart());
+            setIsLoading(false);
         }
     };
+
+    // Dacă coșul este gol, nu renderiza nimic (useEffect va face redirect)
+    if (cartItems.length === 0) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="text-4xl mb-4">🛒</div>
+                    <p className="text-gray-600">Se verifică coșul de cumpărături...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
             <div className="max-w-4xl mx-auto">
                 <div className='grid px-4 grid-cols-2'>
-                    <img src='logo.jpg' alt='Florarie Simona' className='w-24 mb-2' onClick={() => router.push('/homepage')} />
+                    <img src='logo.jpg' alt='Florarie Simona' className='w-24 mb-2 cursor-pointer' onClick={() => router.push('/homepage')} />
                     <Button
                         variant="outline"
                         color={'gray-950'}
@@ -351,139 +235,125 @@ const CheckoutPage = () => {
 
                 <div className='border-y-1 border-gray-200 bg-gray-50 my-4'>
                     <div className='grid grid-cols-2 flex justify-between p-4 cursor-pointer' onClick={() => setExpanded(!expanded)}>
-                        <p>Rezumat comanda {expanded ? '-down' : '-up'}</p>
-                        <p className='justify-self-end'>{getTotalPrice()} { currency === 'EUR' ? 'EURO' : 'RON' }</p>
+                        <p>Rezumat comanda {expanded ? '▼' : '▲'}</p>
+                        <p className='justify-self-end'>{getTotalPrice()} {currency === 'EUR' ? 'EURO' : 'RON'}</p>
                     </div>
                 </div>
 
-                <div>
-                    {expanded && (
-                        <motion.div
-                            className='border-y border-gray-200'
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <div className='p-4'>
-                                <h1 className='font-bold py-2'>Detalii comanda:</h1>
-                                <ul>
-                                    {checkoutForm.values.products.map((product) => (
-                                        <div
-                                            key={product.id}
-                                            className="bg-white rounded-md border border-gray-200 p-4"
-                                        >
-                                            <div className="flex gap-4">
-                                                {/* Product Image */}
+                {expanded && (
+                    <motion.div
+                        className='border-y border-gray-200'
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <div className='p-4'>
+                            <h1 className='font-bold py-2'>Detalii comanda:</h1>
+                            <ul className="space-y-4">
+                                {checkoutForm.values.products.map((product) => (
+                                    <div
+                                        key={product.id}
+                                        className="bg-white rounded-md border border-gray-200 p-4"
+                                    >
+                                        <div className="flex gap-4">
+                                            <div
+                                                className="flex-shrink-0 cursor-pointer"
+                                                onClick={() => router.push(`/product/${product.id}`)}
+                                            >
+                                                <img
+                                                    src={product.image}
+                                                    alt={product.title}
+                                                    className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
+                                                />
+                                            </div>
+                                            <div className="flex-grow">
                                                 <div
-                                                    className="flex-shrink-0 cursor-pointer"
+                                                    className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
                                                     onClick={() => router.push(`/product/${product.id}`)}
                                                 >
-                                                    <img
-                                                        src={product.image}
-                                                        alt={product.title}
-                                                        className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
-                                                    />
-                                                </div>
-
-                                                {/* Product Details */}
-                                                <div className="flex-grow">
-                                                    <div
-                                                        className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
-                                                        onClick={() => router.push(`/product/${product.id}`)}
-                                                    >
-                                                        <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
-                                                            {product.title}
-                                                        </h3>
-                                                        <p>
-                                                            <span className="font-medium">Categorie:</span> {product.category}
-                                                        </p>
-                                                    </div>
+                                                    <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+                                                        {product.title}
+                                                    </h3>
+                                                    <p>
+                                                        <span className="font-medium">Categorie:</span> {product.category}
+                                                    </p>
+                                                    <p>
+                                                        <span className="font-medium">Cantitate:</span> {product.quantity}
+                                                    </p>
+                                                    <p>
+                                                        <span className="font-medium">Preț:</span> {getConvertedPrice(product.price * product.quantity)} {currency}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </ul>
-                                <Divider my="sm" />
-                                <div className="flex flex-col md:flex-row justify-center mt-6">
-                                    <div>
-                                        <div className='w-full'>
-                                            <Text className="text-lg md:text-xl grid grid-cols-2 mb-4 md:mb-0">
-                                                <span>
-                                                    Subtotal
-                                                </span>
-                                                <span className="text-right">
-                                                    {getTotalPrice().toFixed(2)} { currency === 'EUR' ? 'EURO' : 'RON' }
-                                                </span>
-                                            </Text>
-                                            <Text className="text-lg md:text-xl grid grid-cols-2 mb-4 md:mb-0">
-                                                <span>
-                                                    Transport
-                                                </span>
-                                                <span className="text-right text-gray-700">
-                                                    Gratuit
-                                                </span>
-                                            </Text>
-                                            <Text className="text-xl md:text-2xl grid grid-cols-2 md:mb-0">
-                                                <span className='font-bold pt-4'>
-                                                    Total comanda
-                                                </span>
-                                                <span className="text-right font-bold pt-4">
-                                                    {getTotalPrice().toFixed(2)} { currency === 'EUR' ? 'EURO' : 'RON' }
-                                                </span>
-                                            </Text>
-                                            <Text className="text-md md:text-lg text-gray-700  mb-4 md:mb-0">
-                                                {(Number((getTotalPrice() * 0.19).toFixed(2))).toFixed(2)} { currency === 'EUR' ? 'EURO' : 'RON' } TVA inclus
-                                            </Text>
-                                        </div>
                                     </div>
-                                </div>
+                                ))}
+                            </ul>
+                            <Divider my="sm" />
+                            <div className="mt-6">
+                                <Text className="text-lg md:text-xl grid grid-cols-2 mb-2">
+                                    <span>Subtotal</span>
+                                    <span className="text-right">{getTotalPrice().toFixed(2)} {currency === 'EUR' ? 'EURO' : 'RON'}</span>
+                                </Text>
+                                <Text className="text-lg md:text-xl grid grid-cols-2 mb-2">
+                                    <span>Transport</span>
+                                    <span className="text-right text-gray-700">Gratuit</span>
+                                </Text>
+                                <Text className="text-xl md:text-2xl grid grid-cols-2 font-bold border-t pt-2">
+                                    <span>Total comanda</span>
+                                    <span className="text-right">{getTotalPrice().toFixed(2)} {currency === 'EUR' ? 'EURO' : 'RON'}</span>
+                                </Text>
+                                <Text className="text-md text-gray-700 text-right mt-1">
+                                    {(getTotalPrice() * 0.19).toFixed(2)} {currency === 'EUR' ? 'EURO' : 'RON'} TVA inclus
+                                </Text>
                             </div>
-                        </motion.div>
-                    )}
-                </div>
+                        </div>
+                    </motion.div>
+                )}
 
                 <div className='my-4 px-4'>
                     <h1 className='text-lg font-bold pb-2'>Contact</h1>
-                    <form className='flex flex-col' action="">
-                        <input placeholder='E-mail' type='email' className='border border-gray-300 p-2 rounded-md' />
-                        <span>
-                            <input type='checkbox' className='mt-4 w-4 h-4' id='newsletter' color='black' />
-                            <label htmlFor='newsletter' className='ml-2 text-[16px]'>Doresc sa primesc e-mailuri cu noutati si oferte</label>
-                        </span>
-                    </form>
+                    <div className='flex flex-col space-y-3'>
+                        <input 
+                            placeholder='E-mail' 
+                            type='email' 
+                            className='border border-gray-300 p-2 rounded-md focus:border-pink-500 focus:outline-none' 
+                            defaultValue={user.userInfo.email}
+                        />
+                        <label className='flex items-center gap-2'>
+                            <input type='checkbox' className='w-4 h-4 text-pink-500' />
+                            <span className='text-sm'>Doresc să primesc e-mailuri cu noutăți și oferte</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div className='my-4 px-4'>
                     <h1 className='text-lg font-bold pb-2'>Livrare</h1>
                     <div className="space-y-3">
-                        <div onClick={() => setDelivery(false)} className={`${!delivery ? 'bg-gray-100' : ''} border border-gray-300 rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors duration-200`}>
+                        <div 
+                            onClick={() => setDelivery(false)} 
+                            className={`${!delivery ? 'bg-pink-50 border-pink-300' : 'bg-white border-gray-300'} border rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors duration-200`}
+                        >
                             <div className="flex items-center gap-3">
-                                {delivery ?
-                                    <div className="w-5 h-5 border-2 border-gray-400 rounded-full"></div>
-                                    : <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center">
-                                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                                    </div>
-                                }
+                                <div className={`w-5 h-5 ${!delivery ? 'bg-pink-500' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
+                                    {!delivery && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                </div>
                                 <span className="text-gray-700">Ridicare de la atelier</span>
                             </div>
-                            <div className="text-gray-600">
-                                🏠
-                            </div>
+                            <div className="text-gray-600">🏠</div>
                         </div>
 
-                        <div onClick={() => setDelivery(true)} className={`${delivery && 'bg-gray-100'} border border-gray-300 rounded-lg p-4 flex items-center justify-between`}>
+                        <div 
+                            onClick={() => setDelivery(true)} 
+                            className={`${delivery ? 'bg-pink-50 border-pink-300' : 'bg-white border-gray-300'} border rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors duration-200`}
+                        >
                             <div className="flex items-center gap-3">
-                                {!delivery ?
-                                    <div className="w-5 h-5 border-2 border-gray-400 rounded-full"></div>
-                                    : <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center">
-                                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                                    </div>
-                                }
+                                <div className={`w-5 h-5 ${delivery ? 'bg-pink-500' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
+                                    {delivery && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                </div>
                                 <span className="font-medium text-gray-800">Expediere prin curier</span>
                             </div>
-                            <div className="text-gray-600">
-                                🚚
-                            </div>
+                            <div className="text-gray-600">🚚</div>
                         </div>
                     </div>
                 </div>
@@ -491,12 +361,11 @@ const CheckoutPage = () => {
                 <div className='p-4'>
                     <form onSubmit={checkoutForm.onSubmit(handleSubmit)}>
                         {delivery && (
-                            <>
+                            <div className="space-y-4">
                                 <TextInput
-                                    label="Nume"
-                                    placeholder="Introdu numele tău"
+                                    label="Nume complet"
+                                    placeholder="Introdu numele tău complet"
                                     {...checkoutForm.getInputProps('clientName')}
-                                    autoFocus={false}
                                     required
                                 />
                                 <TextInput
@@ -505,70 +374,68 @@ const CheckoutPage = () => {
                                     required
                                     disabled
                                     {...checkoutForm.getInputProps('clientEmail')}
-                                    autoFocus={false}
                                 />
                                 <TextInput
                                     label="Telefon"
                                     placeholder="Introdu numărul de telefon"
                                     required
                                     {...checkoutForm.getInputProps('clientPhone')}
-                                    autoFocus={false}
                                 />
                                 <TextInput
-                                    label="Adresă"
-                                    placeholder="Introdu adresa de livrare"
+                                    label="Adresă completă"
+                                    placeholder="Introdu adresa de livrare completă (strada, numărul, orașul, codul poștal)"
                                     required
                                     {...checkoutForm.getInputProps('clientAddress')}
-                                    autoFocus={false}
                                 />
                                 <Textarea
-                                    label="Note"
-                                    placeholder="Adaugă note suplimentare pentru livrare (opțional)"
+                                    label="Note pentru livrare"
+                                    placeholder="Adaugă note suplimentare pentru livrare (ex: etaj, interfon, instrucțiuni speciale)"
                                     {...checkoutForm.getInputProps('info')}
+                                    maxLength={150}
                                 />
-                            </>
+                            </div>
                         )}
 
                         {!delivery && (
-                            <div className='p-4'>
+                            <div className='p-4 bg-gray-50 rounded-lg'>
                                 <SimpleMap />
                             </div>
                         )}
 
                         {/* Payment Methods Section */}
-                        <div className='my-4'>
-                            <h1 className='text-lg font-bold pb-2'>Plată</h1>
+                        <div className='my-6'>
+                            <h1 className='text-lg font-bold pb-2'>Metodă de plată</h1>
                             <p className='text-sm text-gray-600 mb-4'>Toate tranzacțiile sunt securizate și criptate.</p>
 
                             <div className="space-y-3">
                                 {/* Card Payment */}
                                 <div
                                     onClick={() => {
-                                        setPaymentMethod('card')
+                                        setPaymentMethod('card');
                                         checkoutForm.setFieldValue('paymentMethod', 'card');
-                                    }
-                                    }
-                                    className={`${paymentMethod === 'card' ? 'bg-gray-100 border-black' : 'border-gray-300'} border rounded-lg p-4 `}
+                                    }}
+                                    className={`${paymentMethod === 'card' ? 'bg-pink-50 border-pink-300' : 'bg-white border-gray-300'} border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200`}
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-5 h-5 ${paymentMethod === 'card' ? 'bg-black' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className={`w-5 h-5 ${paymentMethod === 'card' ? 'bg-pink-500' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
                                             {paymentMethod === 'card' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                                         </div>
                                         <div>
-                                            <span className="text-gray-800">Selectează pentru PLATA CU CARDUL</span>
+                                            <span className="font-medium text-gray-800">Plată cu cardul online</span>
+                                            <p className="text-sm text-gray-600">Securizat prin EuPlătesc</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 ml-8">
                                         <img src="/visa-logo.png" alt="VISA" className="h-6" />
                                         <img src="/mastercard-logo.png" alt="Mastercard" className="h-6" />
-                                        <span className="text-sm text-gray-600">+2</span>
+                                        <span className="text-sm text-gray-600">și alte carduri</span>
                                     </div>
 
                                     {paymentMethod === 'card' && (
-                                        <div className="mt-4">
+                                        <div className="mt-4 ml-8">
                                             <Select
-                                                label="Moneda"
-                                                placeholder="Alege moneda"
+                                                label="Alege moneda"
+                                                placeholder="Selectează moneda pentru plată"
                                                 data={[
                                                     { value: 'RON', label: 'RON (Lei români)' },
                                                     { value: 'EUR', label: 'EUR (Euro)' },
@@ -586,111 +453,59 @@ const CheckoutPage = () => {
                                     )}
                                 </div>
 
-
-                                {/* Cash on Delivery - Selected */}
+                                {/* Cash on Delivery */}
                                 <div
-                                    onClick={() => setPaymentMethod('ramburs')}
-                                    className={`${paymentMethod === 'ramburs' ? 'bg-gray-100 border-black' : 'border-gray-300'} border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200`}
+                                    onClick={() => {
+                                        setPaymentMethod('ramburs');
+                                        checkoutForm.setFieldValue('paymentMethod', 'ramburs');
+                                    }}
+                                    className={`${paymentMethod === 'ramburs' ? 'bg-pink-50 border-pink-300' : 'bg-white border-gray-300'} border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-5 h-5 ${paymentMethod === 'ramburs' ? 'bg-black' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
+                                        <div className={`w-5 h-5 ${paymentMethod === 'ramburs' ? 'bg-pink-500' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
                                             {paymentMethod === 'ramburs' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                                         </div>
                                         <div>
                                             <span className="font-medium text-gray-800">Numerar la livrare</span>
-                                        </div>
-                                    </div>
-                                    {paymentMethod === 'ramburs' && (
-                                        <div className="ml-8">
-                                            <p className="text-sm text-gray-600">
-                                                Selectează această metodă pentru a plăti cash la livrare.
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='border-y border-gray-200' >
-                            <div>
-                                <h1 className='font-bold py-2 '>Rezumat comandă:</h1>
-                                <ul>
-                                    {checkoutForm.values.products.map((product) => (
-                                        <div
-                                            key={product.id}
-                                            className="bg-white rounded-md border border-gray-200 p-4"
-                                        >
-                                            <div className="flex gap-4">
-                                                {/* Product Image */}
-                                                <div
-                                                    className="flex-shrink-0 cursor-pointer"
-                                                    onClick={() => router.push(`/product/${product.id}`)}
-                                                >
-                                                    <img
-                                                        src={product.image}
-                                                        alt={product.title}
-                                                        className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
-                                                    />
-                                                </div>
-
-                                                {/* Product Details */}
-                                                <div className="flex-grow">
-                                                    <div
-                                                        className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
-                                                        onClick={() => router.push(`/product/${product.id}`)}
-                                                    >
-                                                        <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
-                                                            {product.title}
-                                                        </h3>
-                                                        <p>
-                                                            <span className="font-medium">Categorie:</span> {product.category}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </ul>
-                                <Divider my="sm" />
-                                <div className="flex flex-col md:flex-row justify-center mt-6">
-                                    <div>
-                                        <div className='w-full'>
-                                            <Text className="text-lg md:text-xl grid grid-cols-2 mb-4 md:mb-0">
-                                                <span>
-                                                    Subtotal
-                                                </span>
-                                                <span className="text-right">
-                                                    {getTotalPrice().toFixed(2)} { currency === 'EUR' ? 'EURO' : 'RON' }
-                                                </span>
-                                            </Text>
-                                            <Text className="text-lg md:text-xl grid grid-cols-2 mb-4 md:mb-0">
-                                                <span>
-                                                    Transport
-                                                </span>
-                                                <span className="text-right text-gray-700">
-                                                    Gratuit
-                                                </span>
-                                            </Text>
-                                            <Text className="text-xl md:text-2xl grid grid-cols-2 md:mb-0">
-                                                <span className='font-bold pt-4'>
-                                                    Total comanda
-                                                </span>
-                                                <span className="text-right font-bold pt-4">
-                                                    {getTotalPrice().toFixed(2)} { currency === 'EUR' ? 'EURO' : 'RON' }
-                                                </span>
-                                            </Text>
-                                            <Text className="text-md md:text-lg text-gray-700  mb-4 md:mb-0">
-                                                {(Number((getTotalPrice() * 0.19).toFixed(2))).toFixed(2)} { currency === 'EUR' ? 'EURO' : 'RON' } TVA inclus
-                                            </Text>
+                                            <p className="text-sm text-gray-600">Plătești cash când primești comanda</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-between mt-6">
-                            <Button type="submit" color={'#b756a64f'} loading={isLoading} fullWidth>
-                                Trimite Comanda
+                        {/* Final Order Summary */}
+                        <div className='border border-gray-200 rounded-lg p-4 bg-gray-50 my-6'>
+                            <h2 className='font-bold text-lg mb-4'>Rezumatul final al comenzii</h2>
+                            <div className="space-y-2">
+                                <div className="flex justify-between">
+                                    <span>Subtotal produse:</span>
+                                    <span>{getTotalPrice().toFixed(2)} {currency === 'EUR' ? 'EUR' : 'RON'}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Transport:</span>
+                                    <span className="text-green-600">Gratuit</span>
+                                </div>
+                                <div className="flex justify-between text-lg font-bold border-t pt-2">
+                                    <span>Total de plată:</span>
+                                    <span>{getTotalPrice().toFixed(2)} {currency === 'EUR' ? 'EUR' : 'RON'}</span>
+                                </div>
+                                <div className="text-sm text-gray-600 text-right">
+                                    (din care TVA: {(getTotalPrice() * 0.19).toFixed(2)} {currency === 'EUR' ? 'EUR' : 'RON'})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6">
+                            <Button 
+                                type="submit" 
+                                size="lg"
+                                style={{ backgroundColor: '#b756a6' }}
+                                loading={isLoading} 
+                                fullWidth
+                                className="text-white font-semibold py-3"
+                            >
+                                {isLoading ? 'Se procesează...' : `Finalizează comanda (${getTotalPrice().toFixed(2)} ${currency === 'EUR' ? 'EUR' : 'RON'})`}
                             </Button>
                         </div>
                     </form>
@@ -703,11 +518,16 @@ const CheckoutPage = () => {
                     withCloseButton={false}
                     title="Notificare"
                 >
-                    <p>{modalMessage}</p>
+                    <p className="mb-4">{modalMessage}</p>
                     <Button
-                        color={'#b756a64f'}
-                        onClick={() => (router.push('/homepage'), setModalOpened(false))}
-                        className="mt-4"
+                        style={{ backgroundColor: '#b756a6' }}
+                        onClick={() => {
+                            setModalOpened(false);
+                            if (modalMessage.includes('succes')) {
+                                router.push('/homepage');
+                            }
+                        }}
+                        fullWidth
                     >
                         Închide
                     </Button>

@@ -199,13 +199,6 @@ export const AuthModal = React.memo(() => {
                 }
                 return null;
             },
-            password: (value) => {
-                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
-                if (!passwordRegex.test(value)) {
-                    return 'Password must be at least 12 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
-                }
-                return null;
-            },
         },
     });
 
