@@ -414,7 +414,7 @@ const NewOfers = () => {
                             </div>
                             <h3 className="text-2xl font-bold text-gray-800 mb-4">Ofertă Specială!</h3>
                             <p className="text-gray-600 leading-relaxed mb-8">
-                                Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru cei dragi și bucură-te de reduceri de până la <span className="font-bold" style={{ color: '#b756a6' }}>30%</span>!
+                                Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru cei dragi și bucură-te de reduceri!
                             </p>
                             <Link
                                 href="/features/Promotii"
