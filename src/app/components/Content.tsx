@@ -314,7 +314,7 @@ export const Delivery = () => {
                             </div>
                             <h3 className="text-xl font-bold text-gray-800 mb-4">Livrare gratuită</h3>
                             <p className="text-gray-600 leading-relaxed">
-                                Livrare gratuită de flori în orice localitate din Județul Neamț, pentru comenzi de peste 100 RON.
+                                Livrare gratuită de flori în comuna Tămășeni.
                             </p>
                         </motion.div>
 
@@ -328,9 +328,10 @@ export const Delivery = () => {
                             <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: '#fecaca' }}>
                                 <span className="text-3xl">❤️</span>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-800 mb-4">Garanție 100% Mulțumit</h3>
+                            <h3 className="text-xl font-bold text-gray-800 mb-4">Garantam Prospetimea</h3>
                             <p className="text-gray-600 leading-relaxed">
-                                Ești mulțumit 100% de comanda ta de flori sau primești integral banii înapoi. Satisfacția ta este prioritatea noastră.
+                                Produsele noastre sunt proaspete și de calitate superioară, garantând satisfacția clienților.
+                                {/* Ești mulțumit 100% de comanda ta de flori sau primești integral banii înapoi. Satisfacția ta este prioritatea noastră. */}
                             </p>
                         </motion.div>
 
