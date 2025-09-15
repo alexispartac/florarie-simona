@@ -65,6 +65,7 @@ const CheckoutPage = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     // Funcție pentru calculul prețului în funcție de monedă
     const getConvertedPrice = (priceInRON: number) => {
@@ -495,7 +496,16 @@ const CheckoutPage = () => {
                                 </div>
                             </div>
                         </div>
-
+                        <label className='flex items-center gap-2 mb-4'>
+                            <input 
+                                required
+                                type='checkbox' 
+                                className='w-4 h-4 text-pink-500' 
+                                checked={agreedToTerms}
+                                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            />
+                            <span className='text-sm'>Am citit și sunt de acord cu <a href="/terms&conditions" target="_blank" className="text-pink-600 underline">Termenii și condițiile</a></span>
+                        </label>
                         <div className="mt-6">
                             <Button 
                                 type="submit" 

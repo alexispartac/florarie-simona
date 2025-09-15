@@ -21,18 +21,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Buchetul Simonei - Florărie online",
-  description: "Buchetul Simonei - Florărie online cu buchete personalizate.",
+  title: "Buchetul Simonei Poezia Florilor",
+  description: "Buchetul Simonei Poezia Florilor - Florărie online cu buchete personalizate.",
   metadataBase: new URL("https://buchetul-simonei.com"),
+  icons: {
+    icon: "/Logo-Principal.jpg",
+    shortcut: "/Logo-Principal.jpg",
+    apple: "/Logo-Principal.jpg",
+  },
   robots: "index, follow",
   openGraph: {
     title: "Buchetul Simonei",
-    description: "Florărie online cu buchete personalizate.",
+    description: "Florărie online cu buchete personalizate. Comandă acum buchetul perfect pentru orice ocazie!",
     url: "https://buchetul-simonei.com",
-    siteName: "Buchetul Simonei",
+    siteName: "Buchetul Simonei Poezia Florilor",
     images: [
       {
-        url: "https://firebasestorage.googleapis.com/v0/b/poezia-florilor-9bb89.firebasestorage.app/o/images%2Flogo.jpg?alt=media&token=b3d4ad6e-2f73-48c6-b7aa-515d43e37c5f", // adaugare imagine cu logo
+        url: "https://firebasestorage.googleapis.com/v0/b/poezia-florilor-9bb89.firebasestorage.app/o/images%2FLogo-Principal.jpg?alt=media&token=b3d4ad6e-2f73-48c6-b7aa-515d43e37c5f", // adaugare imagine cu logo
         width: 1200,
         height: 630,
         alt: "Buchetul Simonei",
