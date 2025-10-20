@@ -12,6 +12,15 @@ export interface User {
     avatar?: string,
 }
 
+export interface ProductImageProps {
+    url: string,
+    public_id: string,
+    width: number,
+    height: number,
+    format: string,
+    created_at: string,
+} 
+
 export interface SimpleProductProps {
     id: string,
     title: string,
@@ -29,15 +38,12 @@ export interface ComposedProductProps {
     info_category: {
         standard: {
             price: number;
-            imageSrc: string,
         },
         premium: {
             price: number;
-            imageSrc: string,
         },
         basic: {
             price: number;
-            imageSrc: string,
         }
     }
     isPopular: boolean,
@@ -57,7 +63,6 @@ export interface OrderProductProps {
     price: number;
     category: string;
     quantity: number;
-    image?: string;
 }
 
 export interface OrderProps {
@@ -82,7 +87,6 @@ export interface BlogPostProps {
     title: string;
     date: string;
     description: string;
-    image: string | null;
     likes: number;
     dislikes: number;
     likedBy: string[];

@@ -3,6 +3,9 @@ import { Breadcrumbs } from '@mantine/core';
 import { ItemProps } from './../types';
 import Link from 'next/link';
 import { Button } from '@mantine/core';
+import { ProductImageProps } from '../api/types';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
   return (
@@ -21,68 +24,93 @@ export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
 };
 
 export const Item = ({ item }: { item: ItemProps }) => {
+  const [imageSrc, setImageSrc] = useState<ProductImageProps>();
+  const [loading, setLoading] = useState<boolean>(true);
   const isOutOfStock = !item.inStock;
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get(`/api/images/list?folder=${item.id}&limit=1`);
+        if (response.data && response.data.images && response.data.images.length > 0) {
+          setImageSrc(response.data.images[0]);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching product image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [item.id]);
+
 
   return (
     <div className="relative flex flex-col bg-white rounded-sm transition-all duration-300 overflow-hidden group">
-      {/* Image Container */}
-      <Link href={`/product/${item.id}`} className="relative overflow-hidden">
-        {item.info_category.standard.imageSrc && (
-          <img
-            src={item.info_category.standard.imageSrc}
-            alt={item.title}
-            className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        )}
-      </Link>
+      {loading ? (
+        <div className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 bg-gray-200 animate-pulse" />
+      ) : (
+        <div>
+          {/* Image Container */}
+          <Link href={`/product/${item.id}`} className="relative overflow-hidden">
+            {item.info_category.standard.imageSrc && (
+              <img
+                src={imageSrc?.url}
+                alt={item.title}
+                className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            )}
+          </Link>
 
-      {/* Badges */}
-      <div className="absolute top-2 right-2 flex flex-col gap-1">
-        {item.isPopular && (
-          <span className="bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
-            Popular
-          </span>
-        )}
-        {item.promotion && (
-          <span className="bg-gradient-to-r from-red-700 to-red-800 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
-            Promoție
-          </span>
-        )}
-        {isOutOfStock && (
-          <span className="bg-gray-500 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
-            Stoc epuizat
-          </span>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-col flex-grow py-2">
-        {/* Title */}
-        <h3 className="text-sm sm:text-base lg:text-lg font-var(--font-product) text-gray-800 line-clamp-2 min-h-[2rem] sm:min-h-[3rem] transition-colors duration-200">
-          {item.title}
-        </h3>
-
-        {/* Price */}
-        <div className="flex items-center justify-between mb-3 mt-auto">
-          <span className="text-[0.875rem] flex m-auto justify-center font-var(--font-product) transition-colors duration-200">
-            {item.promotion ? (
-              <span className="flex items-center gap-2">
-                <span className="line-through text-gray-500 text-sm">
-                  {(item.info_category.standard.price + 30).toFixed(0)} RON
-                </span>
-                  {item.info_category.standard.price} RON
-              </span>
-            ) : (
-              <span>
-                {item.info_category.standard.price} RON
+          {/* Badges */}
+          <div className="absolute top-2 right-2 flex flex-col gap-1">
+            {item.isPopular && (
+              <span className="bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+                Popular
               </span>
             )}
-          </span>
-        </div>
+            {item.promotion && (
+              <span className="bg-gradient-to-r from-red-700 to-red-800 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+                Promoție
+              </span>
+            )}
+            {isOutOfStock && (
+              <span className="bg-gray-500 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+                Stoc epuizat
+              </span>
+            )}
+          </div>
 
-        
-      </div>
+          {/* Content */}
+          <div className="flex flex-col flex-grow py-2">
+            {/* Title */}
+            <h3 className="text-sm sm:text-base lg:text-lg font-var(--font-product) text-gray-800 line-clamp-2 min-h-[2rem] sm:min-h-[3rem] transition-colors duration-200">
+              {item.title}
+            </h3>
+
+            {/* Price */}
+            <div className="flex items-center justify-between mb-3 mt-auto">
+              <span className="text-[0.875rem] flex m-auto justify-center font-var(--font-product) transition-colors duration-200">
+                {item.promotion ? (
+                  <span className="flex items-center gap-2">
+                    <span className="line-through text-gray-500 text-sm">
+                      {(item.info_category.standard.price + 30).toFixed(0)} RON
+                    </span>
+                    {item.info_category.standard.price} RON
+                  </span>
+                ) : (
+                  <span>
+                    {item.info_category.standard.price} RON
+                  </span>
+                )}
+              </span>
+            </div>
+
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -388,7 +388,7 @@ export const AuthModal = React.memo(() => {
             </Modal>
             <div className='grid grid-cols-2'>
                 <NavbarButton as={"div"} variant="secondary" className='flex h-[34px] items-center justify-center'>
-                    {user.isAuthenticated && user.userInfo.email === "laurasimona97@yahoo.com" || user.userInfo.email === "laurasimona97@yahoo.com"
+                    {user.isAuthenticated && user.userInfo.email === "laurasimona97@yahoo.com"
                         ? (
                             <Button variant="transparent" p={0} color="red">
                                 <Link href="/admin"><IconFlower size={18} /></Link>

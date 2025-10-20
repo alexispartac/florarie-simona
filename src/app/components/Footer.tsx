@@ -91,7 +91,7 @@ export const Footer = () => {
                     transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
                 >
                     <Link href="/" className="hover:text-gray-300">Acasă</Link>
-                    <Link href="/blog" className="hover:text-gray-300">Blog</Link>
+                    <Link href="/galerie" className="hover:text-gray-300">Galerie foto</Link>
                     <Link href="/contact" className="hover:text-gray-300">Contact</Link>
                 </motion.div>
 

@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { OrderProps } from "../api/types";
+import React, { useState, useEffect } from 'react';
+import { OrderProductProps, OrderProps, ProductImageProps } from "../api/types";
 import { useForm } from '@mantine/form';
 import { TextInput, Button, Textarea, Modal, Select, Divider, Text } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ import { Footer } from '../components/Footer';
 import { IconShoppingCart } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import { CheckoutService } from './services/CheckoutService';
+import axios from 'axios';
 
 function SimpleMap() {
     return (
@@ -50,6 +51,74 @@ function SimpleMap() {
             </div>
         </div>
     );
+}
+
+const ItemCartCheckout = ({ product, currency, getConvertedPrice }: { product: OrderProductProps, currency: 'RON' | 'EUR', getConvertedPrice: (priceInRON: number) => number }) => {
+    const [imageSrc, setImageSrc] = useState<ProductImageProps>();
+    const [loading, setLoading] = useState<boolean>(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchImage = async () => {
+            try {
+                const response = await axios.get(`/api/images/list?folder=${product.id}&limit=1`);
+                if (response.data && response.data.images && response.data.images.length > 0) {
+                    setImageSrc(response.data.images[0]);
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Error fetching product image:', error);
+            }
+        };
+
+        fetchImage();
+    }, [product.id]);
+   
+    return (
+        <div>
+            {loading ? (
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-200 animate-pulse rounded-lg" />
+            ) : (
+                <div
+                    key={product.id}
+                    className="bg-white rounded-md border border-gray-200 p-4"
+                >
+                    <div className="flex gap-4">
+                        <div
+                            className="flex-shrink-0 cursor-pointer"
+                            onClick={() => router.push(`/product/${product.id}`)}
+                        >
+                            <img
+                                src={imageSrc?.url}
+                                alt={product.title}
+                                className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
+                            />
+                        </div>
+                        <div className="flex-grow">
+                            <div
+                                className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
+                                onClick={() => router.push(`/product/${product.id}`)}
+                            >
+                                <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+                                    {product.title}
+                                </h3>
+                                <p>
+                                    <span className="font-medium">Categorie:</span> {product.category}
+                                </p>
+                                <p>
+                                    <span className="font-medium">Cantitate:</span> {product.quantity}
+                                </p>
+                                <p>
+                                    <span className="font-medium">Preț:</span> {getConvertedPrice(product.price * product.quantity)} {currency}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
 }
 
 const CheckoutPage = () => {
@@ -252,42 +321,7 @@ const CheckoutPage = () => {
                             <h1 className='font-bold py-2'>Detalii comanda:</h1>
                             <ul className="space-y-4">
                                 {checkoutForm.values.products.map((product) => (
-                                    <div
-                                        key={product.id}
-                                        className="bg-white rounded-md border border-gray-200 p-4"
-                                    >
-                                        <div className="flex gap-4">
-                                            <div
-                                                className="flex-shrink-0 cursor-pointer"
-                                                onClick={() => router.push(`/product/${product.id}`)}
-                                            >
-                                                <img
-                                                    src={product.image}
-                                                    alt={product.title}
-                                                    className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
-                                                />
-                                            </div>
-                                            <div className="flex-grow">
-                                                <div
-                                                    className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
-                                                    onClick={() => router.push(`/product/${product.id}`)}
-                                                >
-                                                    <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
-                                                        {product.title}
-                                                    </h3>
-                                                    <p>
-                                                        <span className="font-medium">Categorie:</span> {product.category}
-                                                    </p>
-                                                    <p>
-                                                        <span className="font-medium">Cantitate:</span> {product.quantity}
-                                                    </p>
-                                                    <p>
-                                                        <span className="font-medium">Preț:</span> {getConvertedPrice(product.price * product.quantity)} {currency}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <ItemCartCheckout key={product.id} product={product} getConvertedPrice={getConvertedPrice} currency={currency} />
                                 ))}
                             </ul>
                             <Divider my="sm" />

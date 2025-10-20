@@ -18,10 +18,9 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ComposedProductProps, ProductProps } from '../types';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
-import { storage } from '../../components/lib/firebase';
 import { useAllProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory';
 import { useSimpleProducts } from '@/app/components/hooks/fetchSimpleProducts';
+import ProductImages from '@/app/components/GalleryForAddingImages';
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
@@ -37,31 +36,12 @@ if (typeof window !== 'undefined') {
         }
     });
 }
-
-const uploadImageToFirebase = async (file: File, id: string): Promise<string> => {
-    const storageRef = ref(storage, `images/compose-products/${id}`); // Creează un path unic pentru imagine
-    await uploadBytes(storageRef, file); // Încarcă imaginea în Firebase Storage
-    const downloadURL = await getDownloadURL(storageRef); // Obține URL-ul imaginii
-    return downloadURL;
-};
-
-const deleteImageFromFirebase = async (imagePath: string): Promise<void> => {
-    try {
-        const imageRef = ref(storage, imagePath); // Creează referința către imaginea din Firebase Storage
-        await deleteObject(imageRef); // Șterge imaginea
-        console.log(`Imaginea ${imagePath} a fost ștearsă cu succes din Firebase Storage.`);
-    } catch (error) {
-        console.log(`Eroare la ștergerea imaginii ${imagePath}:`, error);
-    }
-};
-
 // Componentă reutilizabilă pentru gestionarea unei categorii
 const CategoryFormSection = ({
     categoryName,
     categoryData,
     onChange,
     simpleProducts,
-    idProduct,
 }: {
     categoryName: string;
     categoryData: {
@@ -73,67 +53,10 @@ const CategoryFormSection = ({
     simpleProducts: ProductProps[];
     idProduct: string;
 }) => {
-    const [addImage, setAddImage] = React.useState<boolean>(false);
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        setAddImage(true);
-        if (file) {
-            try {
-                const imageUrl = await uploadImageToFirebase(file, idProduct);
-                setAddImage(false);
-                onChange({
-                    ...categoryData,
-                    imageSrc: imageUrl,
-                });
-            } catch (error) {
-                console.log('Eroare la încărcarea imaginii:', error);
-            }
-        }
-    };
 
     return (
         <fieldset className="border border-gray-300 rounded-md p-4 mb-4">
             <legend className="text-lg font-medium px-2">Categorie {categoryName}</legend>
-            {/* Imagine */}
-            <div className="mb-4">
-                <label className="block mb-1 font-medium">Imagine</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="block cursor-pointer w-full text-sm text-gray-500 border border-gray-300 rounded focus:outline-none focus:ring ring-blue-500"
-                />
-                {
-                    !categoryData.imageSrc && addImage && (
-                        <Loader type='dots' />
-                    )
-                }
-                {
-                    categoryData.imageSrc && (
-                        <div className="mt-2">
-                            <img
-                                src={categoryData.imageSrc}
-                                alt={`Preview ${categoryName}`}
-                                className="w-32 h-32 object-cover rounded border"
-                            />
-                            <Button
-                                variant="outline"
-                                color="red"
-                                onClick={async () => {
-                                    await deleteImageFromFirebase(categoryData.imageSrc);
-                                    onChange({
-                                        ...categoryData,
-                                        imageSrc: '',
-                                    });
-                                }}
-                                className="mt-2"
-                            >
-                                Șterge imaginea
-                            </Button>
-                        </div>
-                    )
-                }
-            </div>
 
             {/* Compoziție */}
             <div className="mb-4">
@@ -239,19 +162,6 @@ const ComposedProductRow = ({
                 </div>
             </Modal>
             <div className="flex flex-col sm:flex-row justify-between gap-2 items-center text-center border-b py-2">
-                <div className="w-full sm:w-1/10">
-                    {product.info_category.standard.imageSrc ? (
-                        <img
-                            src={product.info_category.standard.imageSrc}
-                            alt={product.title}
-                            className="w-full h-30 md:h-16 object-cover rounded"
-                        />
-                    ) : (
-                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
-                            Fără imagine
-                        </div>
-                    )}
-                </div>
                 <h2 className="w-full sm:w-1/10 text-sm sm:text-base">{product.title}</h2>
                 <p className="w-full sm:w-1/10 text-sm">{product.stockCode}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.inStock ? 'Da' : 'Nu'}</p>
@@ -379,6 +289,7 @@ const EditComposedProductModal = ({
                     checked={editProduct.newest}
                     onChange={(e) => handleChange('newest', e.currentTarget.checked)}
                 />
+                <ProductImages folderName={editProduct.id} />
                 <div>
                     <CategoryFormSection
                         categoryName="Standard"
@@ -697,7 +608,6 @@ const ListOfProducts = ({
             />
             <div className="flex flex-col gap-2 my-2">
                 <div className="flex flex-row justify-between gap-2 md:visible invisible">
-                    <span className="w-1/10">IMAGINE</span>
                     <span className="w-1/10">DENUMIRE</span>
                     <span className="w-1/10">COD STOC</span>
                     <span className="w-1/10">IN STOC</span>

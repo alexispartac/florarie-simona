@@ -68,8 +68,13 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
       category: groupedCategories["features"] || [],
     },
     {
-      name: "Blog",
-      link: "blog",
+      name: "Organizari evenimente",
+      link: "event-planning",
+      category: [],
+    },
+    {
+      name: "Galerie foto",
+      link: "galerie",
       category: [],
     },
     {

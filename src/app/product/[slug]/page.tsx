@@ -14,6 +14,7 @@ import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import React from 'react';
+import ProductImages from '@/app/components/GalleryForShowImages';
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const URL_CHECK_COMPOSITION = '/api/check-composition';
@@ -242,28 +243,8 @@ const Product = () => {
                 <Bread itemsBread={itemsBread} />
             </div>
             <div className="relative mx-8 md:mx-40 grid md:grid-cols-2 grid-cols-1 my-10">
-                {/* Afișarea imaginii în funcție de categoria selectată */}
-                {activeButton.button1 && product.info_category.basic.imageSrc && (
-                    <img
-                        src={product.info_category.basic.imageSrc}
-                        alt={`${product.title} - Basic`}
-                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
-                    />
-                )}
-                {activeButton.button2 && product.info_category.standard.imageSrc && (
-                    <img
-                        src={product.info_category.standard.imageSrc}
-                        alt={`${product.title} - Standard`}
-                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
-                    />
-                )}
-                {activeButton.button3 && product.info_category.premium.imageSrc && (
-                    <img
-                        src={product.info_category.premium.imageSrc}
-                        alt={`${product.title} - Premium`}
-                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg shadow-md"
-                    />
-                )}
+                {/* galerie imagini */}
+                <ProductImages folderName={product.id} />
                 <form
                     className='flex flex-col md:px-8 py-8'
                     onSubmit={addForm.onSubmit(() => handleAddToCart())}
@@ -418,7 +399,9 @@ const Product = () => {
                 <div className='grid xl:grid-cols-4 grid-cols-2 gap-4 xl:mx-22 xl:gap-8 my-6'>
                     {itemsRe.map(
                         (item: ItemProps, idx: number) => (
-                            <Item item={item} key={idx} />
+                            item.id !== product.id && (
+                                <Item item={item} key={idx} />
+                            )
                         )
                     )}
                 </div>

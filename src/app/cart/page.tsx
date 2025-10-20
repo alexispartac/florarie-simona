@@ -9,8 +9,119 @@ import { useUser } from '../components/context/ContextUser';
 import axios from 'axios';
 import PopUp from '../components/PopUp';
 import { Footer } from '../components/Footer';
+import { CartItem } from './types';
+import { ProductImageProps } from '../api/types';
 
 const URL_CHECK_COMPOSITION = '/api/check-composition';
+
+
+const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: CartItem, handleUpdateQuantity: (id: string, quantity: number) => void, handleRemoveItem: (id: string) => void }) => {
+  const [imageSrc, setImageSrc] = useState<ProductImageProps>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get(`/api/images/list?folder=${item.id}&limit=1`);
+        if (response.data && response.data.images && response.data.images.length > 0) {
+          setImageSrc(response.data.images[0]);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching product image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [item.id]);
+
+  return (
+    <div>
+      {loading ? (
+        <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-200 animate-pulse rounded-lg" />
+      ) : (
+        <div
+          key={item.id}
+          className="bg-white rounded-md border border-gray-200 p-4"
+        >
+          <div className="flex gap-4">
+            {/* Product Image */}
+            <div
+              className="flex-shrink-0 cursor-pointer"
+              onClick={() => router.push(`/product/${item.id}`)}
+            >
+              <img
+                src={imageSrc?.url}
+                alt={item.title}
+                className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
+              />
+            </div>
+
+            {/* Product Details */}
+            <div className="flex-grow">
+              <div
+                className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
+                onClick={() => router.push(`/product/${item.id}`)}
+              >
+                <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+                  {item.title}
+                </h3>
+                <p>
+                  <span className="font-medium">Categorie:</span> {item.category}
+                </p>
+              </div>
+
+              {/* Controls Row */}
+              <div className="flex items-center justify-between">
+                {/* Quantity Controls */}
+                <div className="flex items-center border border-gray-300 rounded">
+                  <button
+                    className="px-3 py-1 text-gray-600 hover:bg-gray-50 border-r"
+                    onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                    disabled={item.quantity <= 1}
+                  >
+                    −
+                  </button>
+                  <span className="px-4 py-1 bg-gray-50 text-center min-w-[3rem]">
+                    {item.quantity}
+                  </span>
+                  <button
+                    className="px-3 py-1 text-gray-600 hover:bg-gray-50 border-l"
+                    onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Price */}
+                <div className="text-right">
+                  <div className="text-lg md:text-xl font-semibold text-gray-900">
+                    {(item.price * item.quantity).toFixed(2)} RON
+                  </div>
+                  {item.quantity > 1 && (
+                    <div className="text-sm text-gray-500">
+                      {item.price} RON × {item.quantity}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Remove Button */}
+              <div className="flex justify-end mt-3">
+                <button
+                  className="text-red-600 text-sm hover:text-red-700 underline"
+                  onClick={() => handleRemoveItem(item.id)}
+                >
+                  Șterge
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>)}
+    </div>
+  );
+}
 
 const Content = () => {
   const dispatch = useDispatch();
@@ -94,84 +205,12 @@ const Content = () => {
         {cartItems.length > 0 ? (
           <div className="space-y-6">
             {cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-md border border-gray-200 p-4"
-              >
-                <div className="flex gap-4">
-                  {/* Product Image */}
-                  <div 
-                    className="flex-shrink-0 cursor-pointer"
-                    onClick={() => router.push(`/product/${item.id}`)}
-                  >
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
-                    />
-                  </div>
-
-                  {/* Product Details */}
-                  <div className="flex-grow">
-                    <div 
-                      className="cursor-pointer hover:text-pink-600 transition-colors duration-200"
-                      onClick={() => router.push(`/product/${item.id}`)}
-                    >
-                      <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
-                        {item.title}
-                      </h3>
-                      <p>
-                        <span className="font-medium">Categorie:</span> {item.category}
-                      </p>
-                    </div>
-
-                    {/* Controls Row */}
-                    <div className="flex items-center justify-between">
-                      {/* Quantity Controls */}
-                      <div className="flex items-center border border-gray-300 rounded">
-                        <button
-                          className="px-3 py-1 text-gray-600 hover:bg-gray-50 border-r"
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
-                        >
-                          −
-                        </button>
-                        <span className="px-4 py-1 bg-gray-50 text-center min-w-[3rem]">
-                          {item.quantity}
-                        </span>
-                        <button
-                          className="px-3 py-1 text-gray-600 hover:bg-gray-50 border-l"
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      {/* Price */}
-                      <div className="text-right">
-                        <div className="text-lg md:text-xl font-semibold text-gray-900">
-                          {(item.price * item.quantity).toFixed(2)} RON
-                        </div>
-                        {item.quantity > 1 && (
-                          <div className="text-sm text-gray-500">
-                            {item.price} RON × {item.quantity}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Remove Button */}
-                    <div className="flex justify-end mt-3">
-                      <button
-                        className="text-red-600 text-sm hover:text-red-700 underline"
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        Șterge
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ItemCart 
+                item={item} 
+                key={item.id} 
+                handleUpdateQuantity={handleUpdateQuantity} 
+                handleRemoveItem={handleRemoveItem} 
+              />
             ))}
           </div>
         ) : (
