@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react';
 import { ProductImageProps } from "../api/types";
@@ -11,6 +11,7 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const thumbnailContainer = useRef<HTMLDivElement | null>(null);
 
   const fetchImages = async () => {
     try {
@@ -50,71 +51,25 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (!showModal) return;
-      
-      if (e.key === 'ArrowRight') nextImage();
-      if (e.key === 'ArrowLeft') prevImage();
-      if (e.key === 'Escape') closeModal();
+      if (showModal) {
+        // Modal navigation
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'Escape') closeModal();
+      } else {
+        // Gallery navigation when not in modal
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(currentImageIndex);
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [showModal, images.length]);
-
-  // Unified brick pattern logic - same variety across all devices
-  const getBrickPattern = (totalImages: number, screenType: 'mobile' | 'tablet' | 'desktop') => {
-    const patterns = [];
-    
-    // Universal brick types - same for all devices, only grid size changes
-    const universalBricks = [
-      { width: 1, height: 1 }, // small square
-      { width: 2, height: 1 }, // horizontal rectangle
-      { width: 2, height: 1 }, // long horizontal rectangle
-      { width: 1, height: 1 }, // small square
-      { width: 1, height: 1 }, // small square
-      { width: 2, height: 1 }, // horizontal rectangle
-    ];
-    
-    for (let i = 0; i < totalImages; i++) {
-      const brick = universalBricks[i % universalBricks.length];
-      
-      // Adapt brick sizes based on screen type
-      if (screenType === 'mobile') {
-        // Limit max spans for mobile (3 columns max)
-        const adaptedBrick = {
-          width: Math.min(brick.width, 3),
-          height: Math.min(brick.height, 3)
-        };
-        patterns.push({
-          width: `col-span-${adaptedBrick.width}`,
-          height: `row-span-${adaptedBrick.height}`
-        });
-      } else if (screenType === 'tablet') {
-        // Limit max spans for tablet (4 columns max)
-        const adaptedBrick = {
-          width: Math.min(brick.width, 4),
-          height: Math.min(brick.height, 3)
-        };
-        patterns.push({
-          width: `col-span-${adaptedBrick.width}`,
-          height: `row-span-${adaptedBrick.height}`
-        });
-      } else {
-        // Desktop - full variety
-        patterns.push({
-          width: `col-span-${brick.width}`,
-          height: `row-span-${brick.height}`
-        });
-      }
-    }
-    
-    return patterns;
-  };
-
-  // Get patterns for current images
-  const mobilePatterns = getBrickPattern(images.length, 'mobile');
-  const tabletPatterns = getBrickPattern(images.length, 'tablet');
-  const desktopPatterns = getBrickPattern(images.length, 'desktop');
+  }, [showModal, images.length, currentImageIndex]);
 
   return (
     <div className="py-4">
@@ -135,114 +90,88 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
         </div>
       )}
       
-      {/* Gallery Brick Grid - Unified Design Across All Devices */}
+      {/* Single Image Display with Navigation */}
       {images.length > 0 && (
         <div className="w-full">
-          {/* Mobile: 3 columns - Desktop-like variety but optimized for mobile */}
-          <div className="grid grid-cols-3 auto-rows-[100px] gap-1 sm:hidden">
-            {images.map((image, index) => {
-              const pattern = mobilePatterns[index];
-              return (
-                <div
-                  key={image.public_id || index}
-                  className={`group relative cursor-pointer ${pattern.width} ${pattern.height}`}
-                  onClick={() => openModal(index)}
-                >
-                  <img
-                    src={image.url}
-                    alt={`Image ${index + 1}`}
-                    className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-90 rounded-sm"
-                    loading="lazy"
-                  />
-                  
-                  {/* Mobile Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center rounded-sm">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white bg-opacity-90 rounded-full p-1">
-                        <svg className="w-2.5 h-2.5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mobile Image counter - very small */}
-                  <div className="absolute bottom-0.5 right-0.5 bg-black bg-opacity-80 text-white text-xs px-0.5 py-0.5 rounded text-[8px]">
-                    {index + 1}
+          {/* Main Image Container */}
+          <div className="relative w-full">
+            {/* Current Image */}
+            <div className="w-full h-[300px] md:h-[400px] lg:h-[500px] relative bg-gray-100 rounded-lg overflow-hidden">
+              <img
+                src={images[currentImageIndex]?.url}
+                alt={`Image ${currentImageIndex + 1}`}
+                className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105"
+                onClick={() => openModal(currentImageIndex)}
+                loading="lazy"
+              />
+              
+              {/* Overlay on hover */}
+              <div 
+                className="absolute inset-0 bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center cursor-pointer"
+                onClick={() => openModal(currentImageIndex)}
+              >
+                <div className="opacity-0 hover:opacity-100 transition-opacity duration-300">
+                  <div className="bg-white bg-opacity-90 rounded-full p-3">
+                    <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            </div>
 
-          {/* Tablet: 4 columns - Enhanced brick variety */}
-          <div className="hidden sm:grid md:hidden grid-cols-4 auto-rows-[140px] gap-2">
-            {images.map((image, index) => {
-              const pattern = tabletPatterns[index];
-              return (
-                <div
-                  key={image.public_id || index}
-                  className={`group relative cursor-pointer ${pattern.width} ${pattern.height}`}
-                  onClick={() => openModal(index)}
+            {/* Navigation Arrows - Only show if more than 1 image */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 rounded-full p-2 md:p-3 transition-all duration-200 shadow-lg"
                 >
-                  <img
-                    src={image.url}
-                    alt={`Image ${index + 1}`}
-                    className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-90 rounded-md"
-                    loading="lazy"
-                  />
-                  
-                  {/* Tablet Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center rounded-md">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white bg-opacity-90 rounded-full p-1.5">
-                        <svg className="w-3 h-3 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Tablet Image counter */}
-                  <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 py-0.5 rounded text-[9px]">
-                    {index + 1}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Desktop: Multi-column grid - Full variety brick coverage */}
-          <div className="hidden md:grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 auto-rows-[180px] gap-3">
-            {images.map((image, index) => {
-              const pattern = desktopPatterns[index];
-              return (
-                <div
-                  key={image.public_id || index}
-                  className={`group relative cursor-pointer ${pattern.width} ${pattern.height}`}
-                  onClick={() => openModal(index)}
+                  <IconChevronLeft size={20} className="md:w-6 md:h-6" />
+                </button>
+                
+                <button
+                  onClick={nextImage}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 rounded-full p-2 md:p-3 transition-all duration-200 shadow-lg"
                 >
-                  <img
-                    src={image.url}
-                    alt={`Image ${index + 1}`}
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:opacity-90 rounded-lg"
-                    loading="lazy"
-                  />
-                  
-                  {/* Desktop Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center rounded-lg">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white bg-opacity-90 rounded-full p-3">
-                        <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                  <IconChevronRight size={20} className="md:w-6 md:h-6" />
+                </button>
+              </>
+            )}
+
+            {/* Image Counter */}
+            <div className="absolute bottom-3 right-3 bg-opacity-70 text-white px-3 py-1 rounded-lg">
+              <p className="text-sm font-light">
+                {currentImageIndex + 1} / {images.length}
+              </p>
+            </div>
           </div>
+
+          {/* Thumbnail Strip - Only show if more than 1 image */}
+          {images.length > 1 && (
+            <div className="mt-4">
+              <div className="flex gap-2 overflow-x-auto pb-2" ref={thumbnailContainer}>
+                {images.map((image, index) => (
+                  <div
+                    key={image.public_id || index}
+                    className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                      index === currentImageIndex 
+                        ? 'ring-2 ring-white scale-105' 
+                        : 'opacity-70 hover:opacity-100'
+                    }`}
+                    onClick={() => setCurrentImageIndex(index)}
+                  >
+                    <img
+                      src={image.url}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -252,7 +181,7 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
           {/* Close Button */}
           <button
             onClick={closeModal}
-            className="absolute top-2 right-2 lg:top-6 lg:right-6 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1.5 lg:p-3 transition-all duration-200"
+            className="absolute top-2 right-2 lg:top-6 lg:right-6 z-100 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1.5 lg:p-3 transition-all duration-200"
           >
             <IconX size={18} className="lg:w-7 lg:h-7" />
           </button>
@@ -273,19 +202,19 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
             </div>
           </div>
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows in Modal */}
           {images.length > 1 && (
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-1 lg:left-6 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
+                className="absolute left-1 lg:left-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
               >
                 <IconChevronLeft size={14} className="lg:w-8 lg:h-8" />
               </button>
               
               <button
                 onClick={nextImage}
-                className="absolute right-1 lg:right-6 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
+                className="absolute right-1 lg:right-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
               >
                 <IconChevronRight size={14} className="lg:w-8 lg:h-8" />
               </button>

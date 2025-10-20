@@ -1,9 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Avatar, Loader } from '@mantine/core';
+import { Avatar, Loader, Tooltip, Modal, Button, Group } from '@mantine/core';
 import { motion } from 'framer-motion';
-import { IconUser } from '@tabler/icons-react';
+import { IconUser, IconX, IconTrash } from '@tabler/icons-react';
+import { useUser } from './context/ContextUser';
 
 interface Review {
     id: string;
@@ -21,6 +22,12 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [visibleReviews, setVisibleReviews] = useState(3);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null);
+    const [deleting, setDeleting] = useState(false);
+    
+    const { user } = useUser();
+    const isAdmin = user.userInfo.email === 'laurasimona97@yahoo.com';
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -39,6 +46,38 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
 
         fetchReviews();
     }, [product]);
+    // Handle delete review
+    const handleDeleteReview = async () => {
+        if (!reviewToDelete || !isAdmin) return;
+
+        try {
+            setDeleting(true);
+            await axios.delete(URL_REVIEW, { data: { reviewId: reviewToDelete.id } });
+            // Remove from local state
+            setReviews(prev => prev.filter(review => review.id !== reviewToDelete.id));
+            
+            // Adjust visible reviews if needed
+            setVisibleReviews(prev => Math.min(prev, reviews.length - 1));
+            
+            setDeleteModalOpen(false);
+            setReviewToDelete(null);
+        } catch (error) {
+            console.error('Error deleting review:', error);
+            setError('A apărut o eroare la ștergerea recenziei.');
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    const openDeleteModal = (review: Review) => {
+        setReviewToDelete(review);
+        setDeleteModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        setDeleteModalOpen(false);
+        setReviewToDelete(null);
+    };
 
     if (loading) {
         return (
@@ -106,8 +145,24 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1, duration: 0.5 }}
-                        className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow duration-300"
+                        className="relative border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow duration-300 group"
                     >
+                        {/* Admin Delete Button */}
+                        {isAdmin && (
+                            <Tooltip
+                                label="Șterge recenzia"
+                                position="left"
+                                withArrow
+                            >
+                                <button
+                                    onClick={() => openDeleteModal(review)}
+                                    className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
+                                >
+                                    <IconX size={16} />
+                                </button>
+                            </Tooltip>
+                        )}
+
                         {/* Review Header */}
                         <div className="flex items-center gap-4 mb-4">
                             {/* Avatar */}
@@ -194,6 +249,59 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            <Modal
+                opened={deleteModalOpen}
+                onClose={closeDeleteModal}
+                title="Confirmă ștergerea"
+                centered
+                size="sm"
+            >
+                <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                            <IconTrash size={16} className="text-red-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-medium text-gray-900 mb-2">
+                                Ștergi această recenzie?
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Această acțiune nu poate fi anulată. Recenzia va fi ștearsă definitiv.
+                            </p>
+                            {reviewToDelete && (
+                                <div className="bg-gray-50 p-3 rounded-lg">
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {reviewToDelete.name}
+                                    </p>
+                                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                                        {reviewToDelete.message}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <Group justify="flex-end" className="pt-4">
+                        <Button
+                            variant="subtle"
+                            onClick={closeDeleteModal}
+                            disabled={deleting}
+                        >
+                            Anulează
+                        </Button>
+                        <Button
+                            color="red"
+                            onClick={handleDeleteReview}
+                            loading={deleting}
+                            leftSection={!deleting ? <IconTrash size={16} /> : undefined}
+                        >
+                            {deleting ? 'Se șterge...' : 'Șterge recenzia'}
+                        </Button>
+                    </Group>
+                </div>
+            </Modal>
         </motion.div>
     );
 };

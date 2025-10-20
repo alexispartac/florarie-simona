@@ -462,10 +462,11 @@ const ListOfProducts = ({
         }
     };
 
-    const handleDeleteProduct = (id: string) => {
-        axios
+    const handleDeleteProduct = async(id: string) => {
+        await axios
             .delete(URL_COMPOSED_PRODUCTS, { data: { id } })
-            .then(() => {
+            .then(async () => {
+                await axios.delete('/api/images/delete-all-images', { data: { id: id } });
                 setAllProducts((prev) => prev.filter((p) => p.id !== id));
                 alert('Produs șters cu succes!');
             })
