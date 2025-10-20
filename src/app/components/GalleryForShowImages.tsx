@@ -139,7 +139,7 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
               </>
             )}
 
-            {/* Image Counter */}
+            {/* Image Counter  */}
             <div className="absolute bottom-3 right-3 bg-opacity-70 text-white px-3 py-1 rounded-lg">
               <p className="text-sm font-light">
                 {currentImageIndex + 1} / {images.length}
