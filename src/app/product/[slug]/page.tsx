@@ -249,14 +249,66 @@ const Product = () => {
                     className='flex flex-col md:px-8 py-8'
                     onSubmit={addForm.onSubmit(() => handleAddToCart())}
                 >
-                    {product.isPopular && <span className="text-red-600 font-serif py-4">Popular</span>}
+                    {product.isPopular && <span className="text-red-600 font-serif font-bold py-2">Popular</span>}
+                    {inStock ? <p className="font-semibold">In stoc</p> : <p className="text-red-600 font-semibold">Nu este in stoc</p>}
                     <h2 className="text-3xl font-thin my-2">{product.title}</h2>
-                    <div className='grid grid-cols-3'>
-                        {activeButton.button1 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.basic.price} RON</p> : null}
-                        {activeButton.button2 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.standard.price} RON</p> : null}
-                        {activeButton.button3 ? <p className="text-2xl font-semibold text-shadow-black">{product.info_category.premium.price} RON</p> : null}
-                        {inStock ? <p className="font-semibold">In stoc</p> : <p className="text-red-600 font-semibold">Nu este in stoc</p>}
-                        <span className="flex font-serif align-bottom"> -COD-{product.id.substring(2, 8)}</span>
+                    <div className='flex'>
+                        {activeButton.button1 ? (
+                            <div>
+                                {product.promotion && product.discountPercentage ? (
+                                    <>
+                                        <span className="text-gray-400 line-through mr-2 text-lg">
+                                            {(product.info_category.basic.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
+                                        </span>
+                                        <span className="text-red-600 font-semibold text-2xl">
+                                            {product.info_category.basic.price.toFixed(2)} RON
+                                        </span>
+                                    </>
+                                ) : (
+                                    <p className="text-2xl font-semibold text-shadow-black">
+                                        {product.info_category.basic.price.toFixed(2)} RON
+                                    </p>
+                                )}
+                            </div>
+                        ) : null}
+
+                        {activeButton.button2 ? (
+                            <div>
+                                {product.promotion && product.discountPercentage ? (
+                                    <>
+                                        <span className="text-gray-400 line-through mr-2 text-lg">
+                                            {(product.info_category.standard.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
+                                        </span>
+                                        <span className="text-red-600 font-semibold text-2xl">
+                                            {product.info_category.standard.price.toFixed(2)} RON
+                                        </span>
+                                    </>
+                                ) : (
+                                    <p className="text-2xl font-semibold text-shadow-black">
+                                        {product.info_category.standard.price.toFixed(2)} RON
+                                    </p>
+                                )}
+                            </div>
+                        ) : null}
+
+                        {activeButton.button3 ? (
+                            <div>
+                                {product.promotion && product.discountPercentage ? (
+                                    <>
+                                        <span className="text-gray-400 line-through mr-2 text-lg">
+                                            {(product.info_category.premium.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
+                                        </span>
+                                        <span className="text-red-600 font-semibold text-2xl">
+                                            {product.info_category.premium.price.toFixed(2)} RON
+                                        </span>
+                                    </>
+                                ) : (
+                                    <p className="text-2xl font-semibold text-shadow-black">
+                                        {product.info_category.premium.price.toFixed(2)} RON
+                                    </p>
+                                )}
+                            </div>
+                        ) : null}
                     </div>
                     <div className='grid grid-cols-3 gap-1.5 my-5'>
                         <Button
@@ -360,19 +412,19 @@ const Product = () => {
                         <p> COMPOZIȚIE </p>
                         <div className='px-5'>
                             {activeButton.button1 &&
-                                product.info_category.basic.composition.map((item, idx) => (
+                                product.info_category.basic.composition.map((_, idx) => (
                                     <p key={idx}>
                                         {product.info_category.basic.composition[idx].title} - Cantitate: {product.info_category.basic.composition[idx].quantity}
                                     </p>
                                 ))}
                             {activeButton.button2 &&
-                                product.info_category.standard.composition.map((item, idx) => (
+                                product.info_category.standard.composition.map((_, idx) => (
                                     <p key={idx}>
                                         {product.info_category.standard.composition[idx].title} - Cantitate: {product.info_category.standard.composition[idx].quantity}
                                     </p>
                                 ))}
                             {activeButton.button3 &&
-                                product.info_category.premium.composition.map((item, idx) => (
+                                product.info_category.premium.composition.map((_, idx) => (
                                     <p key={idx}>
                                         {product.info_category.premium.composition[idx].title} - Cantitate: {product.info_category.premium.composition[idx].quantity}
                                     </p>

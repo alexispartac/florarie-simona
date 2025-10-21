@@ -2,7 +2,6 @@
 import { Breadcrumbs } from '@mantine/core';
 import { ItemProps } from './../types';
 import Link from 'next/link';
-import { Button } from '@mantine/core';
 import { ProductImageProps } from '../api/types';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -27,6 +26,10 @@ export const Item = ({ item }: { item: ItemProps }) => {
   const [imageSrc, setImageSrc] = useState<ProductImageProps>();
   const [loading, setLoading] = useState<boolean>(true);
   const isOutOfStock = !item.inStock;
+
+  const priceAfterDiscount = item.promotion && item.discountPercentage
+    ? item.info_category.basic.price - (item.info_category.basic.price * item.discountPercentage / 100)
+    : item.info_category.basic.price;
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -66,13 +69,13 @@ export const Item = ({ item }: { item: ItemProps }) => {
           {/* Badges */}
           <div className="absolute top-2 right-2 flex flex-col gap-1">
             {item.isPopular && (
-              <span className="bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+              <span className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
                 Popular
               </span>
             )}
-            {item.promotion && (
-              <span className="bg-gradient-to-r from-red-700 to-red-800 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
-                Promoție
+            {item.discountPercentage && (
+              <span className="bg-gradient-to-r text-center from-red-700 to-red-800 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+                -{item.discountPercentage}%
               </span>
             )}
             {isOutOfStock && (
@@ -92,16 +95,18 @@ export const Item = ({ item }: { item: ItemProps }) => {
             {/* Price */}
             <div className="flex items-center justify-between mb-3 mt-auto">
               <span className="text-[0.875rem] flex m-auto justify-center font-var(--font-product) transition-colors duration-200">
-                {item.promotion ? (
-                  <span className="flex items-center gap-2">
-                    <span className="line-through text-gray-500 text-sm">
-                      {(item.info_category.standard.price + 30).toFixed(0)} RON
+                { item.promotion && item.discountPercentage ? (
+                  <>
+                    <span className="text-gray-400 line-through mr-2">
+                      {priceAfterDiscount.toFixed(2)} RON
                     </span>
-                    {item.info_category.standard.price} RON
-                  </span>
+                    <span className="text-red-600 font-semibold">
+                      {item.info_category.basic.price.toFixed(2)} RON
+                    </span>
+                  </>
                 ) : (
-                  <span>
-                    {item.info_category.standard.price} RON
+                  <span className="font-semibold">
+                    {item.info_category.basic.price.toFixed(2)} RON
                   </span>
                 )}
               </span>
@@ -139,19 +144,19 @@ export const ContinerItems = ({
         {(!items || items.length === 0) && (
           <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-2xl shadow-lg border border-pink-100">
             <div className="text-6xl mb-4">🌸</div>
-            <h3 className="text-xl font-semibold text-pink-600 mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>
               Nu sunt produse disponibile
             </h3>
-            <p className="text-pink-400 max-w-md">
+            <p className="text-gray-500 max-w-md">
               Ne pare rău, momentan nu avem produse în această categorie. 
               Vă rugăm să verificați din nou mai târziu.
             </p>
-            <Button
-              className="mt-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white hover:from-pink-600 hover:to-pink-700"
+            <button
+              className="mt-4 bg-gradient-to-r from-pink-400 to-pink-500 text-white p-2 rounded hover:from-pink-600 hover:to-pink-700"
               onClick={() => window.location.href = '/homepage'}
             >
               Înapoi la pagina principală
-            </Button>
+            </button>
           </div>
         )}
       </div>

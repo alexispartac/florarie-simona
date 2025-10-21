@@ -55,6 +55,7 @@ export interface ComposedProductProps {
     category: string,
     promotion: boolean,
     newest: boolean,
+    discountPercentage?: number,
 }
 
 export interface OrderProductProps {
@@ -80,15 +81,4 @@ export interface OrderProps {
     totalPrice: number,
     paymentMethod: 'ramburs' | 'card',
     products: OrderProductProps[],
-}
-
-export interface BlogPostProps {
-    id: string;
-    title: string;
-    date: string;
-    description: string;
-    likes: number;
-    dislikes: number;
-    likedBy: string[];
-    dislikedBy: string[];
 }

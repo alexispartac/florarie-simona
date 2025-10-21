@@ -172,6 +172,7 @@ const ComposedProductRow = ({
                 <p className="w-full sm:w-1/10 text-sm">{product.isPopular ? '⭐' : ''}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.promotion ? '⭐' : ''}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.newest ? '⭐' : ''}</p>
+                <p className="w-full sm:w-1/10 text-sm">{product.discountPercentage ? `${product.discountPercentage}%` : ''}</p>
                 <div className="w-full sm:w-1/10 flex gap-2 justify-center">
                     <Button color="blue" variant="outline" onClick={() => onEdit(product)}>
                         <IconEdit size={16} />
@@ -289,6 +290,12 @@ const EditComposedProductModal = ({
                     checked={editProduct.newest}
                     onChange={(e) => handleChange('newest', e.currentTarget.checked)}
                 />
+                <p><strong>Atentie!!!</strong> Acest DISCOUNT nu se aplica pretului, este doar o eticheta. Modificati pretul daca doriti un discount sau daca doriti sa reveniti la pretul initial.</p>
+                <NumberInput
+                    label="Discount (%)"
+                    value={editProduct.discountPercentage}
+                    onChange={(value) => handleChange('discountPercentage', value)}
+                />
                 <ProductImages folderName={editProduct.id} />
                 <div>
                     <CategoryFormSection
@@ -369,6 +376,7 @@ const ListOfProducts = ({
         category: composedCategories[0],
         promotion: false,
         newest: false,
+        discountPercentage: 0,
     });
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editProduct, setEditProduct] = useState<ComposedProductProps | null>(null);
@@ -438,6 +446,7 @@ const ListOfProducts = ({
                 category: composedCategories[0],
                 promotion: false,
                 newest: false,
+                discountPercentage: 0,
             });
             close();
         } catch (error) {
@@ -543,6 +552,12 @@ const ListOfProducts = ({
                             checked={newProduct.newest}
                             onChange={e => handleNewProductChange('newest', e.currentTarget.checked)}
                         />
+                        <NumberInput
+                            label="Discount (%)"
+                            value={newProduct.discountPercentage}
+                            onChange={(value) => handleNewProductChange('discountPercentage', value)}
+                        />
+                        <ProductImages folderName={newProduct.id} />
                         <div>
                             <CategoryFormSection
                                 categoryName="Standard"
@@ -619,6 +634,7 @@ const ListOfProducts = ({
                     <span className="w-1/10">POPULAR</span>
                     <span className="w-1/10">PROMO</span>
                     <span className="w-1/10">NOU</span>
+                    <span className="w-1/10">DISCOUNT</span>
                     <span className="w-1/10">ACTUALIZARE</span>
                 </div>
                 <div className="h-1 border-b border-neutral-200 dark:border-neutral-700" />
