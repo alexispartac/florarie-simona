@@ -27,10 +27,6 @@ export const Item = ({ item }: { item: ItemProps }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const isOutOfStock = !item.inStock;
 
-  const priceAfterDiscount = item.promotion && item.discountPercentage
-    ? item.info_category.basic.price - (item.info_category.basic.price * item.discountPercentage / 100)
-    : item.info_category.basic.price;
-
   useEffect(() => {
     const fetchImage = async () => {
       try {
@@ -95,11 +91,8 @@ export const Item = ({ item }: { item: ItemProps }) => {
             {/* Price */}
             <div className="flex items-center justify-between mb-3 mt-auto">
               <span className="text-[0.875rem] flex m-auto justify-center font-var(--font-product) transition-colors duration-200">
-                { item.promotion && item.discountPercentage ? (
+                { item.discountPercentage ? (
                   <>
-                    <span className="text-gray-400 line-through mr-2">
-                      {priceAfterDiscount.toFixed(2)} RON
-                    </span>
                     <span className="text-red-600 font-semibold">
                       {item.info_category.basic.price.toFixed(2)} RON
                     </span>
