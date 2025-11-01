@@ -179,7 +179,7 @@ const CheckoutPage = () => {
         }
 
         // Dacă totul e în regulă, încarcă numărul comenzii
-        CheckoutService.fetchOrderNumber().then(setOrderNumber);
+        CheckoutService.fetchOrderNumber().then((number) => setOrderNumber(number + 1));
     }, [cartItems.length, router]);
 
     const checkoutForm = useForm<OrderProps>({
@@ -250,7 +250,7 @@ const CheckoutPage = () => {
                     dispatch(clearCart());
                     setTimeout(() => {
                         router.push('/checkout/success');
-                    }, 2000);
+                    }, 50);
                 },
                 onError: (error: string) => {
                     setModalMessage(error);

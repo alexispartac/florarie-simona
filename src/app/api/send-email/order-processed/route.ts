@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const { order } : { order: OrderProps } = await req.json();
-    
+
     // Verifică dacă toate câmpurile necesare pentru comandă sunt prezente
     if(order.orderNumber === undefined || !order.orderDate || !order.status || !order.paymentMethod || order.totalPrice === undefined || !order.products) {
         return NextResponse.json(
@@ -44,18 +44,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Conținutul email-ului cu comanda efectuată si finalizata
+    // Conținutul email-ului cu comanda procesata
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: order.clientEmail,
-      subject: 'Multumim ca ne-ai ales! Aceasta este comanda ta! Multumim pentru incredere!',
+      subject: 'Comanda ta a fost procesata!',
       html: `
         <h2>Salut ${order.clientName},</h2>
-        <p>Comanda ta cu numarul <strong>#${order.orderNumber}</strong> a fost finalizata cu succes!</p>
-        <p>Aceasta va fi livrata in curand la adresa specificata.</p>
-        <p>Daca s-a produs vreo schimbare in comanda ta, te rugam sa ne contactezi cat mai curand posibil.</p>
-        <p>Gasiti la finalul acestui email datele de contact</p>
-        <h3>Detalii Comanda:</h3>
+        <p>Comanda ta cu numarul <strong>#${order.orderNumber}</strong> a fost procesata cu succes!</p>
+       <h3>Detalii Comanda:</h3>
         <ul>
           <li><strong>Data Comenzii:</strong> ${new Date(order.orderDate).toLocaleDateString()}</li>
           <li><strong>Status:</strong> ${order.status}</li>
@@ -75,7 +72,7 @@ export async function POST(req: NextRequest) {
         <p>Telefon: 0769 141 250</p>
         <p>Multumim pentru increderea acordata!</p>
         <p>Cu stima,<br/>Echipa Florarie Simona</p>
-      `,
+      `,    
     };
 
     await transporter.sendMail(mailOptions);

@@ -33,7 +33,6 @@ const ClientRow = ({ client }: { client: ClientProps }) => {
                     <div><b>Email:</b> {client.email}</div>
                     <div><b>Telefon:</b> {client.phone}</div>
                     <div><b>Adresă:</b> {client.address}</div>
-                    <div><b>Număr comenzi:</b> {client.orders}</div>
                 </div>
                 <Group justify="flex-end" mt="md">
                     <Button onClick={() => setOpened(false)}>Închide</Button>

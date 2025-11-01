@@ -2,14 +2,15 @@
 import { useState, useEffect } from 'react'
 import { SidebarDemo } from '../components/SideBar';
 import { OrderProps } from '../../api/types';
-import { useUser } from '../../components/context/ContextUser';
 import React from 'react';
 import axios from 'axios';
 
 const URL_ORDERS = '/api/orders';
 const URL_SEND_EMAIL_ORDER_DONE = '/api/send-email/order-done';
+const URL_SEND_EMAIL_ORDER_PROCESSED = '/api/send-email/order-processed';
+const URL_SEND_EMAIL_ORDER_CANCELLED = '/api/send-email/order-cancelled';
 
-const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: string) => void }) => {
+const OrderRow = ({ order, onChangeStatus }: { order: OrderProps, onChangeStatus: (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => void }) => {
     return (
         <div key={order.id} className="border rounded p-4 bg-gray-50 dark:bg-neutral-800">
             <div className="flex flex-row justify-between">
@@ -25,10 +26,28 @@ const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: s
                     {order.status === 'Delivered' && (
                         <div className="text-xs">Livrata: {order.deliveryDate}</div>
                     )}
-                    {order.status !== 'Delivered' && (
+
+                    {order.status === 'Pending' && (
+                        <div className="flex gap-2 mt-2">
+                            <button
+                                className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                                onClick={() => onChangeStatus(order.id, 'Processing')}
+                            >
+                                Processing
+                            </button>
+                            <button
+                                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                                onClick={() => onChangeStatus(order.id, 'Cancelled')}
+                            >
+                                Canceled
+                            </button>
+                        </div>
+                    )}
+
+                    {order.status !== 'Delivered' && order.status !== 'Pending' && (
                         <button
                             className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                            onClick={() => onFinalize(order.id)}
+                            onClick={() => onChangeStatus(order.id, 'Delivered')}
                         >
                             Marchează ca livrată
                         </button>
@@ -51,10 +70,10 @@ const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: s
 
 const ListOfOrders = ({
     orders,
-    onFinalize,
+    onChangeStatus,
 }: {
     orders: OrderProps[];
-    onFinalize: (id: string) => void;
+    onChangeStatus: (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => void;
 }) => {
     const [numberTodayOrders, setNumberTodayOrders] = useState(0);
 
@@ -84,7 +103,7 @@ const ListOfOrders = ({
                 )}
             </div>
             {reverseOrders.map(order => (
-                <OrderRow key={order.id} order={order} onFinalize={onFinalize} />
+                <OrderRow key={order.id} order={order} onChangeStatus={onChangeStatus} />
             ))}
         </div>
     );
@@ -93,16 +112,15 @@ const ListOfOrders = ({
 
 const Page = () => {
     const [orders, setOrders] = useState<OrderProps[]>([]);
-    const [showFinalized, setShowFinalized] = useState(false);
+    // activeCategory: 'Pending' | 'Processing' | 'Delivered' | 'Cancelled'
+    const [activeCategory, setActiveCategory] = useState<'Pending' | 'Processing' | 'Delivered' | 'Cancelled'>('Pending');
     const [loading, setLoading] = useState(true);
-    const { user } = useUser();
 
     async function fetchOrders() {
         setLoading(true);
         try {
-            await axios.get(URL_ORDERS).then((response) => {
-                setOrders(response.data);
-            });
+            const response = await axios.get(URL_ORDERS);
+            setOrders(response.data);
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -114,37 +132,98 @@ const Page = () => {
         fetchOrders();
     }, []);
 
-    const finalizedOrders = orders.filter(order => order.status === 'Delivered');
-    const unfinalizedOrders = orders.filter(order => order.status !== 'Delivered');
+    // Alocări pe categorii (păstrează statusurile exacte folosite în backend)
+    const pendingOrders = orders.filter(order => order.status === 'Pending');
+    const processingOrders = orders.filter(order => order.status === 'Processing');
+    const deliveredOrders = orders.filter(order => order.status === 'Delivered');
+    const cancelledOrders = orders.filter(order => order.status === 'Cancelled');
 
-    const handleFinalizeOrder = async (id: string) => {
-        await axios.put(URL_ORDERS, { id: id, status: 'Delivered' }).then(() => {
+    const handleChangeStatus = async (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => {
+        try {
+            await axios.put(URL_ORDERS, { id, status });
             setOrders(prev =>
                 prev.map(order =>
                     order.id === id
                         ? {
                             ...order,
-                            status: 'Delivered',
-                            deliveryDate: new Date().toISOString(),
+                            status,
+                            ...(status === 'Delivered' ? { deliveryDate: new Date().toISOString() } : {})
                         }
                         : order
                 )
             );
-            const finalizedOrder = orders.find(order => order.id === id);
-            if (finalizedOrder) {
-                axios.post(URL_SEND_EMAIL_ORDER_DONE, {
-                    clientEmail: user.userInfo.email,
-                    clientName: user.userInfo.name,
-                    order: finalizedOrder,
-                }).then(() => {
-                    console.log('Order completion email sent successfully.');
-                }).catch(error => {
-                    console.log('Error sending order completion email:', error);
-                });
+
+            if (status === 'Delivered') {
+                const finalizedOrder = orders.find(order => order.id === id);
+                if (finalizedOrder) {
+                    const updatedOrder = {
+                        ...finalizedOrder,
+                        status: 'Delivered',
+                        deliveryDate: new Date().toISOString(),
+                    };
+                    axios.post(URL_SEND_EMAIL_ORDER_DONE, {
+                        order: updatedOrder,
+                    }).then(() => {
+                        console.log('Order completion email sent successfully.');
+                    }).catch(error => {
+                        console.log('Error sending order completion email:', error);
+                    });
+                }
             }
-        }).catch(error => {
-            console.log('Error finalizing order:', error);
-        });
+
+            if (status === 'Processing') {
+                const finalizedOrder = orders.find(order => order.id === id);
+                if (finalizedOrder) {
+                    const updatedOrder = {
+                        ...finalizedOrder,
+                        status: 'Processing',
+                        deliveryDate: new Date().toISOString(),
+                    };
+                    axios.post(URL_SEND_EMAIL_ORDER_PROCESSED, {
+                        order: updatedOrder,
+                    }).then(() => {
+                        console.log('Order processed email sent successfully.');
+                    }).catch(error => {
+                        console.log('Error sending order processed email:', error);
+                    });
+                }
+            }
+
+            if (status === 'Cancelled') {
+                const finalizedOrder = orders.find(order => order.id === id);
+                if (finalizedOrder) {
+                    const updatedOrder = {
+                        ...finalizedOrder,
+                        status: 'Cancelled',
+                        deliveryDate: new Date().toISOString(),
+                    };
+                    axios.post(URL_SEND_EMAIL_ORDER_CANCELLED, {
+                        order: updatedOrder,
+                    }).then(() => {
+                        console.log('Order cancelled email sent successfully.');
+                    }).catch(error => {
+                        console.log('Error sending order cancelled email:', error);
+                    });
+                }
+            }
+        } catch (error) {
+            console.log('Error changing order status:', error);
+        }
+    };
+
+    const getDisplayedOrders = () => {
+        switch (activeCategory) {
+            case 'Pending':
+                return pendingOrders;
+            case 'Processing':
+                return processingOrders;
+            case 'Delivered':
+                return deliveredOrders;
+            case 'Cancelled':
+                return cancelledOrders;
+            default:
+                return [];
+        }
     };
 
     return (
@@ -157,29 +236,53 @@ const Page = () => {
                                 <span className="text-gray-500">Încărcare comenzi...</span>
                             </div>
                         )}
+
+                        {/* Category buttons */}
                         <div
-                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${!showFinalized
+                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${activeCategory === 'Pending'
                                 ? 'bg-blue-200 dark:bg-blue-900'
                                 : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
                                 }`}
-                            onClick={() => setShowFinalized(false)}
+                            onClick={() => setActiveCategory('Pending')}
                         >
-                            <h1>COMENZI NEFINALIZATE</h1>
+                            <h1>PENDING</h1>
                         </div>
+
                         <div
-                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${showFinalized
+                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${activeCategory === 'Processing'
                                 ? 'bg-blue-200 dark:bg-blue-900'
                                 : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
                                 }`}
-                            onClick={() => setShowFinalized(true)}
+                            onClick={() => setActiveCategory('Processing')}
                         >
-                            <h1>COMENZI FINALIZATE</h1>
+                            <h1>PROCESSING</h1>
+                        </div>
+
+                        <div
+                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${activeCategory === 'Delivered'
+                                ? 'bg-blue-200 dark:bg-blue-900'
+                                : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
+                                }`}
+                            onClick={() => setActiveCategory('Delivered')}
+                        >
+                            <h1>DELIVERED</h1>
+                        </div>
+
+                        <div
+                            className={`h-20 w-full text-center py-7 rounded-lg cursor-pointer ${activeCategory === 'Cancelled'
+                                ? 'bg-blue-200 dark:bg-blue-900'
+                                : 'bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700'
+                                }`}
+                            onClick={() => setActiveCategory('Cancelled')}
+                        >
+                            <h1>CANCELLED</h1>
                         </div>
                     </div>
+
                     <div className="flex-1 overflow-y-auto">
                         <ListOfOrders
-                            orders={showFinalized ? finalizedOrders : unfinalizedOrders}
-                            onFinalize={handleFinalizeOrder}
+                            orders={getDisplayedOrders()}
+                            onChangeStatus={handleChangeStatus}
                         />
                     </div>
                 </div>

@@ -102,6 +102,11 @@ export async function POST(req: NextRequest) {
         <p>Pentru orice întrebări sau nelămuriri, nu ezitați să ne contactați la <a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a>.</p>
 
         <p>Vă mulțumim că ați ales Buchetul Simonei!</p>
+        <p>Daca ai intrebari sau nelamuriri, nu ezita sa ne contactezi!</p>
+        <p>Email: ${process.env.EMAIL_USER}</p>
+        <p>Telefon: 0769 141 250</p>
+        <p>Multumim pentru increderea acordata!</p>
+        <p>Cu stima,<br/>Echipa Florarie Simona</p>
       `,
     };
 
