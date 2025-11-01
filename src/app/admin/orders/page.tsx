@@ -44,7 +44,7 @@ const OrderRow = ({ order, onChangeStatus }: { order: OrderProps, onChangeStatus
                         </div>
                     )}
 
-                    {order.status !== 'Delivered' && order.status !== 'Pending' && (
+                    {order.status !== 'Delivered' && order.status !== 'Pending' && order.status !== 'Cancelled' && (
                         <button
                             className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
                             onClick={() => onChangeStatus(order.id, 'Delivered')}
