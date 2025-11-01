@@ -8,13 +8,15 @@ import { useUser } from './context/ContextUser';
 import { useDisclosure } from '@mantine/hooks';
 import { useCookies } from "react-cookie";
 import { useForm } from '@mantine/form';
+import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import Link from "next/link";
 import axios from "axios";
 
 const URL_LOGIN = "/api/users/login";
 const URL_SIGN = "/api/users";
-const URL_SEND_CONFIRM_EMAIL = "/api/users/send-confirm-email";
+const URL_SEND_CONFIRM_EMAIL = "/api/send-email/welcome-user";
+const URL_NEWSLETTER = "/api/send-email/newsletter";
 
 export interface FormSignUpValues {
     surname: string;
@@ -68,6 +70,7 @@ export const AuthModal = React.memo(() => {
     const [cartItemCount, setCartItemCount] = useState(0);
     const [isMounted, setIsMounted] = useState(false);
     const logout = useHandleLogout();
+    const router = useRouter();
 
     // Client-side only localStorage access
     useEffect(() => {
@@ -276,7 +279,7 @@ export const AuthModal = React.memo(() => {
 
     const unsubscribeFromNewsletter = useCallback(async (email: string) => {
         try {
-            const response = await axios.delete('/api/newsletter', { data: { email } });
+            const response = await axios.delete(URL_NEWSLETTER, { data: { email } });
             const data = response.data;
             if (response.status !== 200) {
                 throw new Error(data.message || 'Eroare la dezabonare.');
@@ -345,7 +348,7 @@ export const AuthModal = React.memo(() => {
                     <Button variant="subtle" color="#b756a6" onClick={() => unsubscribeFromNewsletter(user.userInfo.email)}>
                         Dezabonare de la newsletter
                     </Button>
-                    <Button variant="filled" color="#b756a6" onClick={() => { logout(); close(); }}>Deconectare</Button>
+                    <Button variant="filled" color="#b756a6" onClick={() => { logout(); close(); router.push('/homepage'); }}>Deconectare</Button>
                 </div>
             );
         }

@@ -60,7 +60,7 @@ const SuccessPage = () => {
 
     if (isProcessing) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+            <div className="min-h-screen flex items-center justify-center">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -199,7 +199,7 @@ const SuccessPage = () => {
                         Înapoi la pagina principală
                     </Button>
                     <Button
-                        onClick={() => router.push('/features')}
+                        onClick={() => router.push('/homepage')}
                         variant="outline"
                         fullWidth
                         size="lg"

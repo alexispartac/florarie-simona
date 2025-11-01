@@ -22,11 +22,14 @@ interface ProcessResult {
     redirectUrl?: string;
 }
 
+const URL_ORDER_NUMBER_API = '/api/orders/number';
+const URL_PLACED_ORDER_EMAIL_API = '/api/send-email/placed-order';
+
 export class CheckoutService {
     
     static async fetchOrderNumber(): Promise<number> {
         try {
-            const response = await axios.get('/api/orders/number', { withCredentials: true });
+            const response = await axios.get(URL_ORDER_NUMBER_API, { withCredentials: true });
             const orders: OrderProps[] = response.data;
             return orders.length;
         } catch (error) {
@@ -96,7 +99,7 @@ export class CheckoutService {
 
     static async sendConfirmationEmail(orderData: OrderProps, totalPrice: number, currency: string = 'RON'): Promise<boolean> {
         try {
-            const response = await axios.post('/api/send-email', {
+            const response = await axios.post(URL_PLACED_ORDER_EMAIL_API, {
                 clientEmail: orderData.clientEmail,
                 clientName: orderData.clientName,
                 orderDetails: orderData.products,

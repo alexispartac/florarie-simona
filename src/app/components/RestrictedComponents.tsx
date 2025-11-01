@@ -9,6 +9,7 @@ export const RestrictedComponents = ({ children }: { children: React.ReactNode }
     const restrictedPaths = [
         "/",
         "/checkout",
+        "/checkout/success",
         "/admin",
         "/admin/products",
         "/admin/products-composed",

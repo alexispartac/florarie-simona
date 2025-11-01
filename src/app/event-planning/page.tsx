@@ -78,7 +78,7 @@ const EventPlanning = () => {
       {/* Hero Section */}
       <div className="relative h-screen flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center blur-xs bg-no-repeat"
+          className="absolute mt-35 inset-0 bg-cover bg-center blur-xs bg-no-repeat"
           style={{
             backgroundImage: `url('https://res.cloudinary.com/dm7ttgpta/image/upload/v1760899394/afcde8a2295b5cbb1ab8b781c1be831f_jfu4nb.jpg')`,
           }}
@@ -243,7 +243,7 @@ const EventPlanning = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="py-24 bg-rose-50">
+      <div className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center px-6">
           <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-6">
             Gata să Începem?
@@ -256,7 +256,7 @@ const EventPlanning = () => {
             <div className="flex flex-col items-center">
               <IconPhone size={32} className="text-rose-500 mb-3" />
               <p className="text-gray-900 font-medium">Telefon</p>
-              <p className="text-gray-600">+40 769 141 250</p>
+              <p className="text-gray-600">0769 141 250</p>
             </div>
             <div className="flex flex-col items-center">
               <IconMail size={32} className="text-rose-500 mb-3" />

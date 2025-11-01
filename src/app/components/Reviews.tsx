@@ -197,15 +197,6 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                                 {review.message}
                             </p>
                         </div>
-
-                        {/* Rating */}
-                        <div className="pl-14 mt-3">
-                            <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                    <span key={i} className="text-yellow-400">⭐</span>
-                                ))}
-                            </div>
-                        </div>
                     </motion.div>
                 ))}
             </div>
@@ -227,28 +218,6 @@ const Reviews: React.FC<{ product: string }> = ({ product }) => {
                     </button>
                 </motion.div>
             )}
-
-            {/* Simple Stats */}
-            <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-                <div className="flex justify-center items-center gap-8">
-                    <div>
-                        <div className="text-xl font-bold" style={{ color: '#b756a6' }}>
-                            {reviews.length}
-                        </div>
-                        <div className="text-gray-600 text-sm">
-                            Recenzii
-                        </div>
-                    </div>
-                    <div>
-                        <div className="text-xl font-bold" style={{ color: '#b756a6' }}>
-                            5.0 ⭐
-                        </div>
-                        <div className="text-gray-600 text-sm">
-                            Rating
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {/* Delete Confirmation Modal */}
             <Modal

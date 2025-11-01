@@ -339,7 +339,7 @@ const CheckoutPage = () => {
                                     <span className="text-right">{getTotalPrice().toFixed(2)} {currency === 'EUR' ? 'EURO' : 'RON'}</span>
                                 </Text>
                                 <Text className="text-md text-gray-700 text-right mt-1">
-                                    {(getTotalPrice() * 0.19).toFixed(2)} {currency === 'EUR' ? 'EURO' : 'RON'} TVA inclus
+                                    {(getTotalPrice() * 0.21).toFixed(2)} {currency === 'EUR' ? 'EURO' : 'RON'} TVA inclus
                                 </Text>
                             </div>
                         </div>

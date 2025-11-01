@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "../lib/utils";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { IconChevronDown, IconMenu2, IconX } from "@tabler/icons-react";
 import {
     motion,
     AnimatePresence,
@@ -157,6 +157,7 @@ export const NavItems = ({ items, className, onItemClick, visible }: NavItemsPro
                                 )}
                                 <span className="relative z-20">{item.name}</span>
                             </Link>
+
                             {hovered === idx && idx < 5 && (
                                 <motion.div
                                     layoutId="hovered"
@@ -247,16 +248,26 @@ export const MobileNavMenu = ({
                     {
                         items.map((item, idx) => (
                             <div
-                                onMouseLeave={() => setHovered(null)}
                                 key={`mobile-link-${idx}`}
+                                className="w-full"
                             >
-                                <Link
-                                    onMouseEnter={() => setHovered(idx)}
-                                    href={`/${item.link}`}
-                                    className="relative text-neutral-800 dark:text-neutral-600"
-                                >
-                                    <span className="block">{item.name}</span>
-                                </Link>
+                                <span className="relative flex justify-between w-full">
+                                    <Link
+                                        href={`/${item.link}`}
+                                        className="text-neutral-800 dark:text-neutral-600 w-full"
+                                        onClick={() => onClose()}
+                                    >
+                                        <span className="block w-full">{item.name}</span>
+                                    </Link>
+                                    {
+                                        idx < 5 &&
+                                        <span
+                                            onClick={() => setHovered(idx)}
+                                            className="absolute right-0 top-0 flex h-full items-center justify-center">
+                                            <IconChevronDown className={`h-4 w-4 transition-transform duration-200 ${hovered === idx ? "rotate-180" : ""}`} />
+                                        </span>
+                                    }
+                                </span>
                                 {hovered === idx && idx < 5 && (
                                     <motion.div
                                         layoutId="hovered"

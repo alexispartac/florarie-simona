@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react'
 import { SidebarDemo } from '../components/SideBar';
 import { OrderProps } from '../../api/types';
+import { useUser } from '../../components/context/ContextUser';
 import React from 'react';
 import axios from 'axios';
 
 const URL_ORDERS = '/api/orders';
+const URL_SEND_EMAIL_ORDER_DONE = '/api/send-email/order-done';
 
 const OrderRow = ({ order, onFinalize }: { order: OrderProps, onFinalize: (id: string) => void }) => {
     return (
@@ -93,6 +95,7 @@ const Page = () => {
     const [orders, setOrders] = useState<OrderProps[]>([]);
     const [showFinalized, setShowFinalized] = useState(false);
     const [loading, setLoading] = useState(true);
+    const { user } = useUser();
 
     async function fetchOrders() {
         setLoading(true);
@@ -127,6 +130,18 @@ const Page = () => {
                         : order
                 )
             );
+            const finalizedOrder = orders.find(order => order.id === id);
+            if (finalizedOrder) {
+                axios.post(URL_SEND_EMAIL_ORDER_DONE, {
+                    clientEmail: user.userInfo.email,
+                    clientName: user.userInfo.name,
+                    order: finalizedOrder,
+                }).then(() => {
+                    console.log('Order completion email sent successfully.');
+                }).catch(error => {
+                    console.log('Error sending order completion email:', error);
+                });
+            }
         }).catch(error => {
             console.log('Error finalizing order:', error);
         });

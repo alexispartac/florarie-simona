@@ -256,9 +256,14 @@ const Product = () => {
                         {activeButton.button1 ? (
                             <div>
                                 {product.promotion && product.discountPercentage ? (
-                                    <span className="text-red-600 font-semibold text-2xl">
-                                        {product.info_category.basic.price.toFixed(2)} RON
-                                    </span>
+                                     <>
+                                        <span className="text-gray-400 line-through mr-2 text-lg">
+                                            {(product.info_category.basic.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
+                                        </span>
+                                        <span className="text-red-600 font-semibold text-2xl">
+                                            {product.info_category.basic.price.toFixed(2)} RON
+                                        </span>
+                                    </>
                                 ) : (
                                     <p className="text-2xl font-semibold text-shadow-black">
                                         {product.info_category.basic.price.toFixed(2)} RON

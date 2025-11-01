@@ -7,7 +7,7 @@ import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 
-const URL_NEWSLETTER = '/api/newsletter';
+const URL_NEWSLETTER = '/api/send-email/newsletter';
 
 export const Footer = () => {
     const [email, setEmail] = useState('');
@@ -90,9 +90,9 @@ export const Footer = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
                 >
-                    <Link href="/" className="hover:text-gray-300">Acasă</Link>
-                    <Link href="/galerie" className="hover:text-gray-300">Galerie foto</Link>
-                    <Link href="/contact" className="hover:text-gray-300">Contact</Link>
+                    <Link href="/" className="hover:text-black ">Acasă</Link>
+                    <Link href="/galerie" className="hover:text-black ">Galerie foto</Link>
+                    <Link href="/contact" className="hover:text-black ">Contact</Link>
                 </motion.div>
 
                 {/* Social media */}
@@ -102,8 +102,8 @@ export const Footer = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.8, ease: "easeInOut" }}
                 >
-                    <Link href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" className="hover:text-gray-300"><IconBrandFacebook /></Link>
-                    <Link href="https://www.instagram.com/poeziaflorilor/" className="hover:text-gray-300"><IconBrandInstagram /></Link>
+                    <Link href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" className="hover:text-black "><IconBrandFacebook /></Link>
+                    <Link href="https://www.instagram.com/poeziaflorilor/" className="hover:text-black "><IconBrandInstagram /></Link>
                 </motion.div>
 
                 
@@ -126,9 +126,9 @@ export const Footer = () => {
 
             {/* Linkuri suplimentare */}
             <div className="mt-8 text-center text-sm">
-                <Link href="/terms&conditions" className="hover:text-gray-300 mx-2">Termeni&Condiții</Link>
-                <Link href="/cookie-policy" className="hover:text-gray-300 mx-2">Politica de cookies</Link>
-                <Link href="/gdpr" className="hover:text-gray-300 mx-2">GDPR</Link>
+                <Link href="/terms&conditions" className="hover:text-black mx-2">Termeni&Condiții</Link>
+                <Link href="/cookie-policy" className="hover:text-black mx-2">Politica de cookies</Link>
+                <Link href="/gdpr" className="hover:text-black mx-2">GDPR</Link>
             </div>
 
             {/* Payment Methods Section */}

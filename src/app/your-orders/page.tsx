@@ -21,7 +21,7 @@ const UserOrders = () => {
 
     useEffect(() => {
         if (cookies.login && user.isAuthenticated === false) {
-            router.push('/');
+            router.push('/homepage');
         }
 
         const fetchOrders = async () => {

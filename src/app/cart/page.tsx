@@ -275,7 +275,7 @@ const Content = () => {
               size="lg"
               className="w-full md:w-auto"
               bg={'#b756a64f'}
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/homepage')}
             >
               Înapoi la pagina principală
             </Button>

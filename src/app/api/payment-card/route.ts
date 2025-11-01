@@ -259,34 +259,10 @@ export async function POST(req: NextRequest) {
         const hash = crypto.createHmac("md5", binKey).update(hmac, 'utf8').digest('hex');
         data["fp_hash"] = hash;
 
-        console.log('EuPlătesc Payment Details:', {
-            orderId,
-            orderNumber: orderNumber,
-            originalOrderNumber: body.orderDetails.orderNumber,
-            totalAmount: formattedAmount,
-            currency,
-            calculatedTotal,
-            expectedTotal,
-            conversionApplied: currency === 'EUR',
-            timestamp,
-            nonce,
-            customerName: body.customerInfo.name,
-            customerEmail: body.customerInfo.email,
-            itemCount: body.items.length,
-            returnUrl,
-            cancelUrl,
-            merchantId,
-            hmacString: hmac,
-            hash,
-            data
-        });
-
         // Creează URL-ul pentru redirecționare conform implementării oficiale
         const esc = encodeURIComponent;
         const query = Object.keys(data).map(k => esc(k) + '=' + esc(data[k])).join('&');
         const redirectUrl = "https://secure.euplatesc.ro/tdsprocess/tranzactd.php?" + query;
-
-        console.log('Redirect URL:', redirectUrl);
 
         return NextResponse.json(redirectUrl, {
             headers: { 

@@ -550,7 +550,7 @@ const Content = () => {
                                 className="group"
                             >
                                 <p 
-                                    className="flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1"
+                                    className="flex items-center cursor-pointer gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1"
                                 >
                                     <IconBrandWhatsapp size={24} />
                                     <span className="font-semibold">0769141250</span>
