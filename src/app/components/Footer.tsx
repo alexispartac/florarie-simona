@@ -128,7 +128,7 @@ export const Footer = () => {
             <div className="mt-8 text-center text-sm">
                 <Link href="/terms&conditions" className="hover:text-gray-300 mx-2">Termeni&Condiții</Link>
                 <Link href="/cookie-policy" className="hover:text-gray-300 mx-2">Politica de cookies</Link>
-                <Link href="https://gdpr.eu/" className="hover:text-gray-300 mx-2">GDPR</Link>
+                <Link href="/gdpr" className="hover:text-gray-300 mx-2">GDPR</Link>
             </div>
 
             {/* Payment Methods Section */}

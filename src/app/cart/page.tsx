@@ -248,7 +248,7 @@ const Content = () => {
                   </span>
                 </Text>
                 <Text className="text-md md:text-lg text-gray-700  mb-4 md:mb-0">
-                  {(Number((totalPrice * 0.19).toFixed(2))).toFixed(2)} RON TVA inclus
+                  {(Number((totalPrice * 0.21).toFixed(2))).toFixed(2)} RON TVA inclus
                 </Text>
                 {!user.isAuthenticated && (
                   <Text c="red" className="mb-4 md:mb-0 md:ml-4 text-center">

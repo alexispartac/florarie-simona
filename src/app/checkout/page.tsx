@@ -395,7 +395,7 @@ const CheckoutPage = () => {
 
                 <div className='p-4'>
                     <form onSubmit={checkoutForm.onSubmit(handleSubmit)}>
-                        {delivery && (
+                        {(
                             <div className="space-y-4">
                                 <TextInput
                                     label="Nume complet"
