@@ -103,6 +103,9 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        const orderNumber = await db.collection('orders').countDocuments() + 1;
+        data.orderNumber = orderNumber;
+
         const result = await db.collection('orders').insertOne(data);
         if (!result.acknowledged) {
             return NextResponse.json({ success: false, message: 'Failed to insert order' }, { status: 500 });

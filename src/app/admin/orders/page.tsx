@@ -9,10 +9,35 @@ const URL_ORDERS = '/api/orders';
 const URL_SEND_EMAIL_ORDER_DONE = '/api/send-email/order-done';
 const URL_SEND_EMAIL_ORDER_PROCESSED = '/api/send-email/order-processed';
 const URL_SEND_EMAIL_ORDER_CANCELLED = '/api/send-email/order-cancelled';
+const URL_DOWNLOAD_INVOICE = 'https://florarie-simona-data-processing-demo.onrender.com';
 
 const OrderRow = ({ order, onChangeStatus }: { order: OrderProps, onChangeStatus: (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => void }) => {
+    
+    const handleDownloadInvoice = (orderId: string) => async () => {
+        console.log('Descarcare factura pentru comanda:', orderId);
+        try {
+            const res = await axios.get(`${URL_DOWNLOAD_INVOICE}/orders/${orderId}/invoice.pdf`, {
+                responseType: 'blob',
+            });
+            const blob = new Blob([res.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `invoice_${orderId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Eroare la descărcarea facturii:', error);
+        }
+    };
+    
     return (
         <div key={order.id} className="border rounded p-4 bg-gray-50 dark:bg-neutral-800">
+            { order.status !== 'Pending' && order.status !== 'Cancelled' && (
+            <button onClick={handleDownloadInvoice(order.id)} className="text-blue-500 underline text-sm mb-2">Descarcă factura</button>
+            )}
             <div className="flex flex-row justify-between">
                 <div>
                     <b> {order.clientName} </b>
