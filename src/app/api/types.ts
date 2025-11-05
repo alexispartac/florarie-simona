@@ -38,12 +38,6 @@ export interface ComposedProductProps {
     info_category: {
         standard: {
             price: number;
-        },
-        premium: {
-            price: number;
-        },
-        basic: {
-            price: number;
         }
     }
     isPopular: boolean,

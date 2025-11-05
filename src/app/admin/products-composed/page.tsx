@@ -166,9 +166,7 @@ const ComposedProductRow = ({
                 <p className="w-full sm:w-1/10 text-sm">{product.stockCode}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.inStock ? 'Da' : 'Nu'}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.category}</p>
-                <p className="w-full sm:w-1/10 text-sm">{product.info_category.premium.price} RON</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.info_category.standard.price} RON</p>
-                <p className="w-full sm:w-1/10 text-sm">{product.info_category.basic.price} RON</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.isPopular ? '⭐' : ''}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.promotion ? '⭐' : ''}</p>
                 <p className="w-full sm:w-1/10 text-sm">{product.newest ? '⭐' : ''}</p>
@@ -310,30 +308,6 @@ const EditComposedProductModal = ({
                         simpleProducts={simpleProducts}
                         idProduct={product ? product.id : uuidv4()}
                     />
-                    <CategoryFormSection
-                        categoryName="Premium"
-                        categoryData={editProduct.info_category.premium}
-                        onChange={(updatedCategory) =>
-                            handleChange('info_category', {
-                                ...editProduct.info_category,
-                                premium: updatedCategory,
-                            })
-                        }
-                        simpleProducts={simpleProducts}
-                        idProduct={product ? product.id : uuidv4()}
-                    />
-                    <CategoryFormSection
-                        categoryName="Basic"
-                        categoryData={editProduct.info_category.basic}
-                        onChange={(updatedCategory) =>
-                            handleChange('info_category', {
-                                ...editProduct.info_category,
-                                basic: updatedCategory,
-                            })
-                        }
-                        simpleProducts={simpleProducts}
-                        idProduct={product ? product.id : uuidv4()}
-                    />
                 </div>
                 <Group justify="flex-end">
                     <Button variant="default" onClick={onClose}>
@@ -364,9 +338,7 @@ const ListOfProducts = ({
         id: uuidv4(),
         title: '',
         info_category: {
-            standard: { price: 0, imageSrc: '', composition: [] },
-            premium: { price: 0, imageSrc: '', composition: [] },
-            basic: { price: 0, imageSrc: '', composition: [] },
+            standard: { price: 0, imageSrc: '', composition: [] }
         },
         isPopular: false,
         stockCode: '',
@@ -413,17 +385,7 @@ const ListOfProducts = ({
                     ...newProduct.info_category.standard,
                     imageSrc: newProduct.info_category.standard.imageSrc || '',
                     composition: newProduct.info_category.standard.composition || [],
-                },
-                premium: {
-                    ...newProduct.info_category.premium,
-                    imageSrc: newProduct.info_category.premium.imageSrc || '',
-                    composition: newProduct.info_category.premium.composition || [],
-                },
-                basic: {
-                    ...newProduct.info_category.basic,
-                    imageSrc: newProduct.info_category.basic.imageSrc || '',
-                    composition: newProduct.info_category.basic.composition || [],
-                },
+                }
             },
         };
 
@@ -435,8 +397,6 @@ const ListOfProducts = ({
                 title: '',
                 info_category: {
                     standard: { price: 0, imageSrc: '', composition: [] },
-                    premium: { price: 0, imageSrc: '', composition: [] },
-                    basic: { price: 0, imageSrc: '', composition: [] },
                 },
                 isPopular: false,
                 stockCode: '',
@@ -571,30 +531,6 @@ const ListOfProducts = ({
                                 simpleProducts={simpleProducts}
                                 idProduct={editProduct ? editProduct.id : uuidv4()}
                             />
-                            <CategoryFormSection
-                                categoryName="Premium"
-                                categoryData={newProduct.info_category.premium}
-                                onChange={(updatedCategory) =>
-                                    handleNewProductChange('info_category', {
-                                        ...newProduct.info_category,
-                                        premium: updatedCategory,
-                                    })
-                                }
-                                simpleProducts={simpleProducts}
-                                idProduct={editProduct ? editProduct.id : uuidv4()}
-                            />
-                            <CategoryFormSection
-                                categoryName="Basic"
-                                categoryData={newProduct.info_category.basic}
-                                onChange={(updatedCategory) =>
-                                    handleNewProductChange('info_category', {
-                                        ...newProduct.info_category,
-                                        basic: updatedCategory,
-                                    })
-                                }
-                                simpleProducts={simpleProducts}
-                                idProduct={editProduct ? editProduct.id : uuidv4()}
-                            />
                         </div>
                         <Group justify="flex-end">
                             <Button variant="default" onClick={close}>Anulează</Button>
@@ -628,9 +564,7 @@ const ListOfProducts = ({
                     <span className="w-1/10">COD STOC</span>
                     <span className="w-1/10">IN STOC</span>
                     <span className="w-1/10">CATEGORIE</span>
-                    <span className="w-1/10">PREMIUM</span>
                     <span className="w-1/10">STANDARD</span>
-                    <span className="w-1/10">BASIC</span>
                     <span className="w-1/10">POPULAR</span>
                     <span className="w-1/10">PROMO</span>
                     <span className="w-1/10">NOU</span>

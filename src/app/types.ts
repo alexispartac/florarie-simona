@@ -8,16 +8,6 @@ export interface ItemProps {
             price: number;
             imageSrc: string,
             composition: ProductProps[],
-        },
-        premium: {
-            price: number;
-            imageSrc: string,
-            composition: ProductProps[],
-        },
-        basic: {
-            price: number;
-            imageSrc: string,
-            composition: ProductProps[],
         }
     },
     isPopular?: boolean,

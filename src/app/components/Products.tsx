@@ -31,6 +31,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
     const fetchImage = async () => {
       try {
         const response = await axios.get(`/api/images/list?folder=${item.id}&limit=1`);
+        console.log("1111",response.data);
         if (response.data && response.data.images && response.data.images.length > 0) {
           setImageSrc(response.data.images[0]);
           setLoading(false);
@@ -49,23 +50,21 @@ export const Item = ({ item }: { item: ItemProps }) => {
       {loading ? (
         <div className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 bg-gray-200 animate-pulse" />
       ) : (
-        <div>
+        <Link href={`/product/${item.id}`}>
           {/* Image Container */}
-          <Link href={`/product/${item.id}`} className="relative overflow-hidden">
-            {item.info_category.standard.imageSrc && (
+          <div className="relative overflow-hidden">
               <img
                 src={imageSrc?.url}
                 alt={item.title}
                 className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
-            )}
-          </Link>
+          </div>
 
           {/* Badges */}
           <div className="absolute top-2 right-2 flex flex-col gap-1">
             {item.isPopular && (
-              <span className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
+              <span className="bg-gradient-to-r text-center from-yellow-500 to-yellow-600 text-white text-xs font-medium px-2 py-1 rounded-full shadow-md">
                 Popular
               </span>
             )}
@@ -94,12 +93,12 @@ export const Item = ({ item }: { item: ItemProps }) => {
                 { item.discountPercentage ? (
                   <>
                     <span className="text-red-600 font-semibold">
-                      {item.info_category.basic.price.toFixed(2)} RON
+                      {item.info_category.standard.price.toFixed(2)} RON
                     </span>
                   </>
                 ) : (
                   <span className="font-semibold">
-                    {item.info_category.basic.price.toFixed(2)} RON
+                    {item.info_category.standard.price.toFixed(2)} RON
                   </span>
                 )}
               </span>
@@ -107,7 +106,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
 
 
           </div>
-        </div>
+        </Link>
       )}
     </div>
   );

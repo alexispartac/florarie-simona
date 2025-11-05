@@ -25,11 +25,6 @@ const Product = () => {
     const lastSegment = pathname.split("/").pop();
     const [product, setProduct] = React.useState<ItemProps | null>(null);
     const [loading, setLoading] = React.useState(true);
-    const [activeButton, setActiveButton] = React.useState({
-        button1: true,
-        button2: false,
-        button3: false,
-    });
     const [modalOpened, setModalOpened] = React.useState(false);
     const [modalMessage, setModalMessage] = React.useState('');
     const [isAdding, setIsAdding] = React.useState(false);
@@ -42,10 +37,10 @@ const Product = () => {
         initialValues: {
             id: product?.id ?? '',
             title: product?.title ?? '',
-            category: 'basic',
-            price: product?.info_category.basic.price,
+            category: 'standard',
+            price: product?.info_category.standard.price,
             quantity: 0,
-            image: product?.info_category.basic.imageSrc ?? '',
+            image: product?.info_category.standard.imageSrc ?? '',
         },
         transformValues: (values) => ({
             id: `${values.id}`,
@@ -67,25 +62,20 @@ const Product = () => {
                     addForm.setValues({
                         id: data.id,
                         title: data.title,
-                        category: 'basic',
-                        price: data.info_category.basic.price,
+                        category: 'standard',
+                        price: data.info_category.standard.price,
                         quantity: 0,
-                        image: data.info_category.basic.imageSrc,
-                    });
-                    setActiveButton({
-                        button1: true,
-                        button2: false,
-                        button3: false,
+                        image: data.info_category.standard.imageSrc,
                     });
                     setInStock(product?.inStock ?? true);
                     axios.post(URL_CHECK_COMPOSITION, [{
                         id: data.id,
                         title: data.title,
-                        price: data.info_category.basic.price,
+                        price: data.info_category.standard.price,
                         category: data.category,
-                        composition: data.info_category.basic.composition,
+                        composition: data.info_category.standard.composition,
                         quantity: 1,
-                        imageSrc: data.info_category.basic.imageSrc
+                        imageSrc: data.info_category.standard.imageSrc
                     }]).then(response => {
                         if (response.status !== 200) {
                             setModalMessage('Produsul nu mai este disponibil sau nu are suficiente cantități în stoc.');
@@ -122,7 +112,7 @@ const Product = () => {
 
     const handleAddToCart = async () => {
         const values = addForm.getValues();
-        const category = values.category as 'basic' | 'standard' | 'premium';
+        const category = values.category as 'standard';
 
         try {
             setIsAdding(true);
@@ -190,36 +180,6 @@ const Product = () => {
         );
     }
 
-    const handleSetCategory = ({ button1, button2, button3 }: { button1: boolean, button2: boolean, button3: boolean }) => {
-        setActiveButton({
-            button1: button1,
-            button2: button2,
-            button3: button3,
-        });
-        setInStock(true); 
-        axios.post(URL_CHECK_COMPOSITION, [{
-            id: product.id,
-            title: product.title,
-            price: product.info_category[button1 ? 'basic' : button2 ? 'standard' : 'premium'].price,
-            category: button1 ? 'basic' : button2 ? 'standard' : 'premium',
-            composition: product.info_category[button1 ? 'basic' : button2 ? 'standard' : 'premium'].composition,
-            quantity: 1,
-            imageSrc: product.info_category[button1 ? 'basic' : button2 ? 'standard' : 'premium'].imageSrc
-        }]).then(response => {
-            if (response.status !== 200) {
-                setModalMessage('Produsul nu mai este disponibil sau nu are suficiente cantități în stoc.');
-                setModalOpened(true);
-                setInStock(false);
-            }
-        }).catch(error => {
-            console.log('Eroare la verificarea stocului:', error);
-            setInStock(false);
-            setModalOpened(true);
-            setModalMessage('Produsul nu mai este disponibil, te rugăm să încerci altul pana la următoarea reaprovizionare.');
-            setModalOpened(true);
-        });
-    };
-
     const itemsBread = [
         { title: 'Buchetul Simonei', href: '/homepage' },
         { title: `${product.title}`, href: `/product/${product.id}` },
@@ -253,122 +213,31 @@ const Product = () => {
                     {inStock ? <p className="font-semibold">In stoc</p> : <p className="text-red-600 font-semibold">Nu este in stoc</p>}
                     <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                     <div className='flex'>
-                        {activeButton.button1 ? (
-                            <div>
-                                {product.promotion && product.discountPercentage ? (
-                                     <>
-                                        <span className="text-gray-400 line-through mr-2 text-lg">
-                                            {(product.info_category.basic.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
-                                        </span>
-                                        <span className="text-red-600 font-semibold text-2xl">
-                                            {product.info_category.basic.price.toFixed(2)} RON
-                                        </span>
-                                    </>
-                                ) : (
-                                    <p className="text-2xl font-semibold text-shadow-black">
-                                        {product.info_category.basic.price.toFixed(2)} RON
-                                    </p>
-                                )}
-                            </div>
-                        ) : null}
-
-                        {activeButton.button2 ? (
-                            <div>
-                                {product.promotion && product.discountPercentage ? (
-                                    <>
-                                        <span className="text-gray-400 line-through mr-2 text-lg">
-                                            {(product.info_category.standard.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
-                                        </span>
-                                        <span className="text-red-600 font-semibold text-2xl">
-                                            {product.info_category.standard.price.toFixed(2)} RON
-                                        </span>
-                                    </>
-                                ) : (
-                                    <p className="text-2xl font-semibold text-shadow-black">
+                        <div>
+                            {product.promotion && product.discountPercentage ? (
+                                <>
+                                    <span className="text-gray-400 line-through mr-2 text-lg">
+                                        {(product.info_category.standard.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
+                                    </span>
+                                    <span className="text-red-600 font-semibold text-2xl">
                                         {product.info_category.standard.price.toFixed(2)} RON
-                                    </p>
-                                )}
-                            </div>
-                        ) : null}
-
-                        {activeButton.button3 ? (
-                            <div>
-                                {product.promotion && product.discountPercentage ? (
-                                    <>
-                                        <span className="text-gray-400 line-through mr-2 text-lg">
-                                            {(product.info_category.premium.price * (1 + product.discountPercentage / 100)).toFixed(2)} RON
-                                        </span>
-                                        <span className="text-red-600 font-semibold text-2xl">
-                                            {product.info_category.premium.price.toFixed(2)} RON
-                                        </span>
-                                    </>
-                                ) : (
-                                    <p className="text-2xl font-semibold text-shadow-black">
-                                        {product.info_category.premium.price.toFixed(2)} RON
-                                    </p>
-                                )}
-                            </div>
-                        ) : null}
-                    </div>
-                    <div className='grid grid-cols-3 gap-1.5 my-5'>
-                        <Button
-                            bg={activeButton.button1 ? '#b756a6' : 'white'}
-                            disabled={activeButton.button1}
-                            color={activeButton.button1 ? 'white' : '#b756a6'}
-                            variant='outline'
-                            key={addForm.key('category1')}
-                            size='compact-sm'
-                            onClick={() => (
-                                handleSetCategory({ button1: true, button2: false, button3: false }),
-                                addForm.setValues({ price: product.info_category.basic.price, category: 'basic' })
+                                    </span>
+                                </>
+                            ) : (
+                                <p className="text-2xl font-semibold text-shadow-black">
+                                    {product.info_category.standard.price.toFixed(2)} RON
+                                </p>
                             )}
-                        > BASIC </Button>
-                        <Button
-                            bg={activeButton.button2 ? '#b756a6' : 'white'}
-                            disabled={activeButton.button2}
-                            color={activeButton.button2 ? 'white' : '#b756a6'}
-                            variant='outline'
-                            size='compact-sm'
-                            key={addForm.key('category2')}
-                            onClick={() => (
-                                handleSetCategory({ button1: false, button2: true, button3: false }),
-                                addForm.setValues({ price: product.info_category.standard.price, category: 'standard' })
-                            )}
-                        > STANDARD </Button>
-                        <Button
-                            bg={activeButton.button3 ? '#b756a6' : 'white'}
-                            disabled={activeButton.button3}
-                            color={activeButton.button3 ? 'white' : '#b756a6'}
-                            variant='outline'
-                            size='compact-sm'
-                            key={addForm.key('category3')}
-                            onClick={() => (
-                                handleSetCategory({ button1: false, button2: false, button3: true }),
-                                addForm.setValues({ price: product.info_category.premium.price, category: 'premium' })
-                            )}
-                        > PREMIUM </Button>
+                        </div>
                     </div>
                     <div className='my-3'>
                         <p> COMPOZIȚIE </p>
                         <div className='px-5'>
-                            {activeButton.button1 &&
-                                product.info_category.basic.composition.map((item, idx) => (
-                                    <p key={idx}>
-                                        {item.title} - Cantitate: {item.quantity}
-                                    </p>
-                                ))}
-                            {activeButton.button2 &&
-                                product.info_category.standard.composition.map((item, idx) => (
-                                    <p key={idx}>
-                                        {item.title} - Cantitate: {item.quantity}
-                                    </p>
-                                ))}
-                            {activeButton.button3 &&
-                                product.info_category.premium.composition.map((item, idx) => (
-                                    <p key={idx}>
-                                        {item.title} - Cantitate: {item.quantity}
-                                    </p>
-                                ))}
+                            {product.info_category.standard.composition.map((item, idx) => (
+                                <p key={idx}>
+                                    {item.title} - Cantitate: {item.quantity}
+                                </p>
+                            ))}
                         </div>
                     </div>
                     <div className='flex flex-row gap-10'>
@@ -387,7 +256,7 @@ const Product = () => {
                             type='submit'
                             disabled={!product.inStock || !inStock || isInCart || addForm.getValues().quantity < 1}
                             onClick={() => {
-                                const category = addForm.getValues().category as 'basic' | 'standard' | 'premium';
+                                const category = addForm.getValues().category as 'standard';
                                 addForm.setValues({ image: product.info_category[category].imageSrc });
                             }}
                         >
@@ -411,22 +280,9 @@ const Product = () => {
                     <div className='my-3'>
                         <p> COMPOZIȚIE </p>
                         <div className='px-5'>
-                            {activeButton.button1 &&
-                                product.info_category.basic.composition.map((_, idx) => (
-                                    <p key={idx}>
-                                        {product.info_category.basic.composition[idx].title} - Cantitate: {product.info_category.basic.composition[idx].quantity}
-                                    </p>
-                                ))}
-                            {activeButton.button2 &&
-                                product.info_category.standard.composition.map((_, idx) => (
+                            {product.info_category.standard.composition.map((_, idx) => (
                                     <p key={idx}>
                                         {product.info_category.standard.composition[idx].title} - Cantitate: {product.info_category.standard.composition[idx].quantity}
-                                    </p>
-                                ))}
-                            {activeButton.button3 &&
-                                product.info_category.premium.composition.map((_, idx) => (
-                                    <p key={idx}>
-                                        {product.info_category.premium.composition[idx].title} - Cantitate: {product.info_category.premium.composition[idx].quantity}
                                     </p>
                                 ))}
                         </div>
