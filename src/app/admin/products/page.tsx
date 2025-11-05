@@ -470,7 +470,6 @@ const Page = () => {
       alert(`Categoria "${category}" există deja!`);
       return;
     }
-
     setCategories((prev) => [...prev, category]);
     axios.post(URL_SIMPLE_CATEGORIES, { name: category })
       .then(() => {
