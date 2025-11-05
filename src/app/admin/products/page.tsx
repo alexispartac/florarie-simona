@@ -221,6 +221,7 @@ const ListOfProducts = (
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     const productToAdd = { ...newProduct, id: uuidv4() };
+
     try {
       await axios.post(URL_SIMPLE_PRODUCTS, productToAdd);
       setAllProducts((prev) => [...prev, productToAdd]);
@@ -465,6 +466,11 @@ const Page = () => {
   const { data: products, isLoading, isError } = useSimpleProducts();
 
   const handleAddCategory = (category: string) => {
+    if (categories.includes(category)) {
+      alert(`Categoria "${category}" există deja!`);
+      return;
+    }
+
     setCategories((prev) => [...prev, category]);
     axios.post(URL_SIMPLE_CATEGORIES, { name: category })
       .then(() => {
