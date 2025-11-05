@@ -31,13 +31,13 @@ export const Item = ({ item }: { item: ItemProps }) => {
     const fetchImage = async () => {
       try {
         const response = await axios.get(`/api/images/list?folder=${item.id}&limit=1`);
-        console.log("1111",response.data);
         if (response.data && response.data.images && response.data.images.length > 0) {
           setImageSrc(response.data.images[0]);
           setLoading(false);
         }
       } catch (error) {
         console.error('Error fetching product image:', error);
+        setLoading(false);
       }
     };
 
@@ -53,12 +53,19 @@ export const Item = ({ item }: { item: ItemProps }) => {
         <Link href={`/product/${item.id}`}>
           {/* Image Container */}
           <div className="relative overflow-hidden">
+            {imageSrc && (
               <img
                 src={imageSrc?.url}
                 alt={item.title}
                 className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
+            )}
+            {!imageSrc && (
+              <div className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 bg-gray-200 animate-pulse">
+                <p>Image not found</p>
+              </div>
+            )}
           </div>
 
           {/* Badges */}
