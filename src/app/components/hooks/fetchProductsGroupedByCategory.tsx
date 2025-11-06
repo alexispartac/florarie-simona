@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { ItemProps } from '../../types'
+import { ComposedProductProps } from '@/app/types/products'
 
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
@@ -15,7 +15,7 @@ const fetchProductsGroupedByCategory = async () => {
     const response = await axios.get(URL_COMPOSED_PRODUCTS);
     const products = response.data;
 
-    const groupedProducts = products.reduce((acc: Record<string, unknown[]>, product: ItemProps) => {
+    const groupedProducts = products.reduce((acc: Record<string, unknown[]>, product: ComposedProductProps) => {
         const category = product.category || 'Fără categorie';
         if (!acc[category]) {
             acc[category] = [];
@@ -30,7 +30,7 @@ const fetchProductsGroupedByCategory = async () => {
 const fetchNewestProducts = async () => {
     const response = await axios.get(URL_COMPOSED_PRODUCTS);
     const products = response.data;
-    const newestProducts = products.filter((product: ItemProps) => product.newest === true);
+    const newestProducts = products.filter((product: ComposedProductProps) => product.newest === true);
 
     return newestProducts;
 }
@@ -38,7 +38,7 @@ const fetchNewestProducts = async () => {
 const fetchPromotionProducts = async () => {
     const response = await axios.get(URL_COMPOSED_PRODUCTS);
     const products = response.data;
-    const promotionProducts = products.filter((product: ItemProps) => product.promotion === true);
+    const promotionProducts = products.filter((product: ComposedProductProps) => product.promotion === true);
 
     return promotionProducts;
 }

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { OrderProps } from '../../api/types';
+import { OrderPropsAdmin } from '@/app/types/order';
 
 interface ProcessOrderParams {
-    orderData: OrderProps;
+    orderData: OrderPropsAdmin;
     paymentMethod: 'ramburs' | 'card';
     currency: 'RON' | 'EUR';
     totalPrice: number;
@@ -30,7 +30,7 @@ export class CheckoutService {
     static async fetchOrderNumber(): Promise<number> {
         try {
             const response = await axios.get(URL_ORDER_NUMBER_API, { withCredentials: true });
-            const orders: OrderProps[] = response.data;
+            const orders: OrderPropsAdmin[] = response.data;
             return orders.length;
         } catch (error) {
             console.error('Error fetching order number:', error);
@@ -38,7 +38,7 @@ export class CheckoutService {
         }
     }
 
-    static validateOrder(orderData: OrderProps): OrderValidation {
+    static validateOrder(orderData: OrderPropsAdmin): OrderValidation {
         // Validare număr de telefon
         const phoneRegex = /^\+?[0-9]{10,15}$/;
         if (!phoneRegex.test(orderData.clientPhone)) {
@@ -87,7 +87,7 @@ export class CheckoutService {
         };
     }
 
-    static async createOrder(orderData: OrderProps): Promise<boolean> {
+    static async createOrder(orderData: OrderPropsAdmin): Promise<boolean> {
         try {
             const response = await axios.post('/api/orders', orderData);
             return response.status === 200;
@@ -97,7 +97,7 @@ export class CheckoutService {
         }
     }
 
-    static async sendConfirmationEmail(orderData: OrderProps, totalPrice: number, currency: string = 'RON'): Promise<boolean> {
+    static async sendConfirmationEmail(orderData: OrderPropsAdmin, totalPrice: number, currency: string = 'RON'): Promise<boolean> {
         try {
             const response = await axios.post(URL_PLACED_ORDER_EMAIL_API, {
                 clientEmail: orderData.clientEmail,
@@ -121,7 +121,7 @@ export class CheckoutService {
     }
 
     // Salvează doar datele temporare pentru plata cu cardul
-    static async savePendingOrderData(orderData: OrderProps): Promise<boolean> {
+    static async savePendingOrderData(orderData: OrderPropsAdmin): Promise<boolean> {
         try {
             // Salvează datele comenzii în sessionStorage pentru a fi recuperate după plată
             sessionStorage.setItem('pendingOrderData', JSON.stringify({
@@ -136,7 +136,7 @@ export class CheckoutService {
     }
 
     // Recuperează datele comenzii după plată
-    static getPendingOrderData(): OrderProps | null {
+    static getPendingOrderData(): OrderPropsAdmin | null {
         try {
             const saved = sessionStorage.getItem('pendingOrderData');
             if (!saved) return null;
@@ -161,7 +161,7 @@ export class CheckoutService {
         sessionStorage.removeItem('pendingOrderData');
     }
 
-    static async initializeCardPayment(orderData: OrderProps, currency: string, totalPrice: number): Promise<string> {
+    static async initializeCardPayment(orderData: OrderPropsAdmin, currency: string, totalPrice: number): Promise<string> {
         try {
             const response = await axios.post('/api/payment-card', {
                 items: orderData.products.map((product) => ({
@@ -169,7 +169,7 @@ export class CheckoutService {
                     title: product.title,
                     price: product.price,
                     quantity: product.quantity,
-                    category: product.category,
+                    title_category: product.title_category,
                 })),
                 customerInfo: {
                     name: orderData.clientName,
@@ -201,7 +201,7 @@ export class CheckoutService {
     }
 
     // Procesează comanda după plata cu cardul reușită
-    static async processCardOrderAfterPayment(orderData: OrderProps, totalPrice: number, currency: string): Promise<boolean> {
+    static async processCardOrderAfterPayment(orderData: OrderPropsAdmin, totalPrice: number, currency: string): Promise<boolean> {
         try {
             // 1. Salvează comanda în baza de date
             const orderCreated = await this.createOrder(orderData);

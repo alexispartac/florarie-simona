@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { OrderProductProps, OrderProps, ProductImageProps } from "../api/types";
+import { OrderPropsAdmin, OrderProductProps } from '@/app/types/order';
+import { ProductImageProps } from "@/app/types/products";
 import { useForm } from '@mantine/form';
 import { TextInput, Button, Textarea, Modal, Select, Divider, Text } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +9,7 @@ import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '../components/context/ContextUser';
-import { CartItem } from '../types';
+import { CartItem } from '@/app/types/cart';
 import { Footer } from '../components/Footer';
 import { IconShoppingCart } from '@tabler/icons-react';
 import { motion } from 'motion/react';
@@ -103,7 +104,7 @@ const ItemCartCheckout = ({ product, currency, getConvertedPrice }: { product: O
                                     {product.title}
                                 </h3>
                                 <p>
-                                    <span className="font-medium">Categorie:</span> {product.category}
+                                    <span className="font-medium">Categorie:</span> {product.title_category}
                                 </p>
                                 <p>
                                     <span className="font-medium">Cantitate:</span> {product.quantity}
@@ -182,7 +183,7 @@ const CheckoutPage = () => {
         CheckoutService.fetchOrderNumber().then((number) => setOrderNumber(number + 1));
     }, [cartItems.length, router]);
 
-    const checkoutForm = useForm<OrderProps>({
+    const checkoutForm = useForm<OrderPropsAdmin>({
         initialValues: {
             id: uuidv4(),
             userId: user.userInfo.id || '',
@@ -197,13 +198,12 @@ const CheckoutPage = () => {
             status: 'Pending',
             totalPrice: getTotalPrice(),
             paymentMethod: paymentMethod,
-            products: cartItems.map((product) => ({
+            products: cartItems.map((product: CartItem) => ({
                 id: product.id,
                 title: product.title,
                 price: product.price,
-                category: product.category,
                 quantity: product.quantity,
-                image: product.image,
+                title_category: product.category,
             })),
         },
         validate: {
@@ -215,7 +215,7 @@ const CheckoutPage = () => {
         },
     });
 
-    const handleSubmit = async (values: OrderProps) => {
+    const handleSubmit = async (values: OrderPropsAdmin) => {
         setIsLoading(true);
         
         try {

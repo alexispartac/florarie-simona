@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SidebarDemo } from "../components/SideBar";
 import { Select, Button, Modal, TextInput, NumberInput, Checkbox, Group, Loader } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ProductProps } from '../types';
+import { ProductStockProps } from '@/app/types/stock-products';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { useSimpleProducts } from '@/app/components/hooks/fetchSimpleProducts';
@@ -18,16 +18,16 @@ const SimpleProductRow = ({
   onUpdate,
   categories,
 }: {
-  product: ProductProps;
+  product: ProductStockProps;
   onDelete: (id: string) => void;
-  onUpdate: (updatedProduct: ProductProps) => void;
+  onUpdate: (updatedProduct: ProductStockProps) => void;
   categories: string[];
 }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [editProduct, setEditProduct] = useState<ProductProps>({ ...product });
+  const [editProduct, setEditProduct] = useState<ProductStockProps>({ ...product });
 
-  const handleChange = (field: keyof ProductProps, value: unknown) => {
+  const handleChange = (field: keyof ProductStockProps, value: unknown) => {
     setEditProduct((prev) => ({
       ...prev,
       [field]: value,
@@ -192,12 +192,12 @@ const SimpleProductRow = ({
 
 const ListOfProducts = (
   { products, categories }:
-    { products: ProductProps[]; categories: string[] }
+    { products: ProductStockProps[]; categories: string[] }
 ) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [allProducts, setAllProducts] = useState<ProductProps[]>(products);
-  const [newProduct, setNewProduct] = useState<ProductProps>({
+  const [allProducts, setAllProducts] = useState<ProductStockProps[]>(products);
+  const [newProduct, setNewProduct] = useState<ProductStockProps>({
     id: "",
     title: "",
     stockCode: "",
@@ -211,8 +211,8 @@ const ListOfProducts = (
     setAllProducts(products);
   }, [products]);
 
-  const handleNewProductChange = (field: keyof ProductProps, value: unknown) => {
-    setNewProduct((prev) => ({
+  const handleNewProductChange = (field: keyof ProductStockProps, value: unknown) => {
+    setNewProduct((prev: ProductStockProps) => ({
       ...prev,
       [field]: value,
     }));
@@ -252,7 +252,7 @@ const ListOfProducts = (
       });
   };
 
-  const handleUpdateProduct = (updatedProduct: ProductProps) => {
+  const handleUpdateProduct = (updatedProduct: ProductStockProps) => {
     setAllProducts(prev =>
       prev.map(p => p.id === updatedProduct.id ? updatedProduct : p)
     );

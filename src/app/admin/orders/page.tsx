@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { SidebarDemo } from '../components/SideBar';
-import { OrderProps } from '../../api/types';
 import React from 'react';
 import axios from 'axios';
+import { OrderPropsAdmin } from '@/app/types/order';
+
 
 const URL_ORDERS = '/api/orders';
 const URL_SEND_EMAIL_ORDER_DONE = '/api/send-email/order-done';
@@ -11,7 +12,7 @@ const URL_SEND_EMAIL_ORDER_PROCESSED = '/api/send-email/order-processed';
 const URL_SEND_EMAIL_ORDER_CANCELLED = '/api/send-email/order-cancelled';
 const URL_DOWNLOAD_INVOICE = 'https://florarie-simona-data-processing-demo.onrender.com';
 
-const OrderRow = ({ order, onChangeStatus }: { order: OrderProps, onChangeStatus: (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => void }) => {
+const OrderRow = ({ order, onChangeStatus }: { order: OrderPropsAdmin, onChangeStatus: (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => void }) => {
     
     const handleDownloadInvoice = (orderId: string) => async () => {
         console.log('Descarcare factura pentru comanda:', orderId);
@@ -84,7 +85,7 @@ const OrderRow = ({ order, onChangeStatus }: { order: OrderProps, onChangeStatus
                 <ul className="list-disc ml-6">
                     {order.products.map(p => (
                         <li key={p.id}>
-                            {p.title} x {p.quantity} | {p.category} - {p.price} RON
+                            {p.title} x {p.quantity} | {p.title_category} - {p.price} RON
                         </li>
                     ))}
                 </ul>
@@ -97,7 +98,7 @@ const ListOfOrders = ({
     orders,
     onChangeStatus,
 }: {
-    orders: OrderProps[];
+    orders: OrderPropsAdmin[];
     onChangeStatus: (id: string, status: 'Processing' | 'Delivered' | 'Cancelled') => void;
 }) => {
     const [numberTodayOrders, setNumberTodayOrders] = useState(0);
@@ -136,7 +137,7 @@ const ListOfOrders = ({
 
 
 const Page = () => {
-    const [orders, setOrders] = useState<OrderProps[]>([]);
+    const [orders, setOrders] = useState<OrderPropsAdmin[]>([]);
     // activeCategory: 'Pending' | 'Processing' | 'Delivered' | 'Cancelled'
     const [activeCategory, setActiveCategory] = useState<'Pending' | 'Processing' | 'Delivered' | 'Cancelled'>('Pending');
     const [loading, setLoading] = useState(true);

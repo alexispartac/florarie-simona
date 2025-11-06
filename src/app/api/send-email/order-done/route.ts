@@ -1,7 +1,7 @@
 'use server';
 import nodemailer from 'nodemailer';
 import { NextRequest, NextResponse } from 'next/server';
-import type { OrderProps } from '../../types';
+import type { OrderPropsAdmin } from '@/app/types/order';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { order } : { order: OrderProps } = await req.json();
+    const { order } : { order: OrderPropsAdmin } = await req.json();
     
     // Verifică dacă toate câmpurile necesare pentru comandă sunt prezente
     if(order.orderNumber === undefined || !order.orderDate || !order.status || !order.paymentMethod || order.totalPrice === undefined || !order.products) {

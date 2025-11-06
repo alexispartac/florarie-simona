@@ -2,26 +2,16 @@
 import { createContext, useState, useContext } from 'react';
 import { ReactNode } from 'react';
 import { CookiesProvider } from 'react-cookie';
+import { User } from '@/app/types/user';
 
-export interface User {
-    userInfo : {
-        id: string;
-        name: string;
-        surname: string;
-        email: string;
-        password: string;
-        phone?: string;
-        address?: string;
-        order?: number;
-        createdAt?: string;
-        avatar?: string; 
-    }
+export interface UserContext {
+    userInfo : User,
     isAuthenticated: boolean;
 }
 
 export interface UserContextType {
-    user: User;
-    setUser: React.Dispatch<React.SetStateAction<User>>;
+    user: UserContext;
+    setUser: React.Dispatch<React.SetStateAction<UserContext>>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -34,7 +24,7 @@ const UserContext = createContext<UserContextType>({
             password: '',
             phone: '',
             address: '',
-            order: 0,
+            orders: 0,
             createdAt: '',
             avatar: '',
         },
@@ -44,7 +34,7 @@ const UserContext = createContext<UserContextType>({
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User>({
+    const [user, setUser] = useState<UserContext>({
         userInfo : {
             id: '',
             name: '',
@@ -53,7 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             email: '',
             phone: '',
             address: '',
-            order: 0,
+            orders: 0,
             createdAt: '',
             avatar: '',
         },

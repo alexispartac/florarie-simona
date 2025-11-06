@@ -15,7 +15,8 @@ import React, { useEffect, useState } from 'react';
 import { SidebarDemo } from '../components/SideBar';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { v4 as uuidv4 } from 'uuid';
-import type { ComposedProductProps, ProductProps } from '../types';
+import type { ComposedProductProps } from '@/app/types/products';
+import type { ProductStockProps } from '@/app/types/stock-products';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
 import { useAllProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory';
@@ -50,7 +51,7 @@ const CategoryFormSection = ({
         composition: { id: string; title: string; quantity: number }[];
     };
     onChange: (updatedCategory: typeof categoryData) => void;
-    simpleProducts: ProductProps[];
+    simpleProducts: ProductStockProps[];
     idProduct: string;
 }) => {
 
@@ -197,7 +198,7 @@ const EditComposedProductModal = ({
     product: ComposedProductProps | null;
     onSave: (updated: ComposedProductProps) => void;
     composedCategories: string[];
-    simpleProducts: ProductProps[];
+    simpleProducts: ProductStockProps[];
 }) => {
     const [editProduct, setEditProduct] = useState<ComposedProductProps | null>(product);
 
@@ -329,7 +330,7 @@ const ListOfProducts = ({
 }: {
     products: ComposedProductProps[];
     composedCategories: string[];
-    simpleProducts: ProductProps[];
+    simpleProducts: ProductStockProps[];
 }) => {
     const [opened, { open, close }] = useDisclosure(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(composedCategories[0]);

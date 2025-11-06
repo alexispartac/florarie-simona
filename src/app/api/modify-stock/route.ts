@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { CartItem } from '@/app/types';
+import { CartItem } from '@/app/types/cart';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';

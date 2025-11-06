@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
-import { ProductImageProps } from '../../types';
+import { ProductImageProps } from '@/app/types/products';
 
 // Configure Cloudinary
 cloudinary.config({

@@ -1,8 +1,7 @@
 'use client';
 import { Breadcrumbs } from '@mantine/core';
-import { ItemProps } from './../types';
 import Link from 'next/link';
-import { ProductImageProps } from '../api/types';
+import { ProductImageProps, ComposedProductProps } from '@/app/types/products';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -22,7 +21,7 @@ export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
   );
 };
 
-export const Item = ({ item }: { item: ItemProps }) => {
+export const Item = ({ item }: { item: ComposedProductProps }) => {
   const [imageSrc, setImageSrc] = useState<ProductImageProps>();
   const [loading, setLoading] = useState<boolean>(true);
   const isOutOfStock = !item.inStock;
@@ -62,7 +61,7 @@ export const Item = ({ item }: { item: ItemProps }) => {
               />
             )}
             {!imageSrc && (
-              <div className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 bg-gray-200 animate-pulse">
+              <div >
                 <p>Image not found</p>
               </div>
             )}
@@ -123,7 +122,7 @@ export const ContinerItems = ({
   items,
   itemsBread,
 }: {
-  items: ItemProps[];
+  items: ComposedProductProps[];
   itemsBread: React.JSX.Element[];
 }) => {
   return (
@@ -134,7 +133,7 @@ export const ContinerItems = ({
         
         {/* Products Grid */}
         <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-2 md:grid-cols-4">
-          {items && items.map((item: ItemProps, idx: number) => (
+          {items && items.map((item: ComposedProductProps, idx: number) => (
             <Item item={item} key={item.id || idx} />
           ))}
         </div>

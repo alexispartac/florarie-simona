@@ -5,7 +5,7 @@ import { Footer } from "@/app/components/Footer";
 import { Anchor, Loader } from '@mantine/core';
 import { usePathname } from "next/navigation";
 import PopUp from "../../components/PopUp";
-import { ItemProps } from "@/app/types";
+import { ComposedProductProps } from "@/app/types/products";
 import React from "react";
 
 const Content = () => {
@@ -41,7 +41,7 @@ const Content = () => {
         );
     }   
 
-    let items: ItemProps[] = [];
+    let items: ComposedProductProps[] = [];
     if (cleanedText === "Promotii")
         items = promotionProducts
     else

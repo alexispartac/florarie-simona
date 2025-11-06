@@ -4,7 +4,7 @@ import { ContinerItems } from '@/app/components/Products'
 import { Anchor, Loader } from '@mantine/core'
 import { Footer } from '../components/Footer'
 import PopUp from '../components/PopUp'
-import { ItemProps } from '@/app/types'
+import { ComposedProductProps } from "@/app/types/products";
 import React from 'react'
 
 const Content = () => {
@@ -26,7 +26,7 @@ const Content = () => {
         );
     }
 
-    const items: ItemProps[] = promotionProducts;
+    const items: ComposedProductProps[] = promotionProducts;
 
     const itemsBread = [
         { title: 'Buchetul Simonei', href: '/homepage' },

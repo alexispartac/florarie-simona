@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { useUser } from "../components/context/ContextUser";
-import { Order } from "../types";
+import { OrderPropsAdmin } from "@/app/types/order";
 import axios from "axios";
 import { Loader } from "@mantine/core";
 import { useCookies } from "react-cookie";
@@ -13,7 +13,7 @@ const URL_ORDERS = '/api/users/orders';
 
 
 const UserOrders = () => {
-    const [orders, setOrders] = useState<Order[]>([]);
+    const [orders, setOrders] = useState<OrderPropsAdmin[]>([]);
     const [loading, setLoading] = useState(true);
     const [ cookies, ] = useCookies(['login']);
     const { user } = useUser();

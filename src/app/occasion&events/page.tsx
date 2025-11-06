@@ -3,7 +3,7 @@ import React from "react";
 import PopUp from "../components/PopUp";
 import { Footer } from "../components/Footer";
 import { Anchor, Loader } from '@mantine/core';
-import { ItemProps } from "../types";
+import { ComposedProductProps } from "@/app/types/products";
 import { ContinerItems } from "../components/Products";
 import { useProductsGroupedByCategory } from "../components/hooks/fetchProductsGroupedByCategory";
 
@@ -35,12 +35,12 @@ const Content = () => {
         );
     }
 
-    const items = Object.entries(groupedProducts).reduce((acc: ItemProps[], [category, products]) => {
+    const items = Object.entries(groupedProducts).reduce((acc: ComposedProductProps[], [category, products]) => {
         if (category.includes('Eveniment')) {
-            acc.push(...(products as ItemProps[]));
+            acc.push(...(products as ComposedProductProps[]));
         }
         return acc;
-    }, [] as ItemProps[]);
+    }, [] as ComposedProductProps[]);
     
     return (
         <div className="relative container mx-auto pt-24">

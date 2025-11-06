@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { OrderProps } from '../../types';
+import { OrderProps } from '@/app/types/order';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';

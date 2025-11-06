@@ -4,7 +4,8 @@ import { addItem, RootState, setCart } from '@/app/cart/components/CartRedux';
 import { Anchor, Button, NumberInput, Loader, Modal } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Delivery } from '@/app/components/Content';
-import { ItemProps, CartItem } from './../../types';
+import { ComposedProductProps } from '@/app/types/products';
+import { CartItem } from '@/app/types/cart';
 import { Bread } from '@/app/components/Products';
 import { Footer } from '../../components/Footer';
 import { Item } from '@/app/components/Products';
@@ -23,7 +24,7 @@ const Product = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const pathname = usePathname();
     const lastSegment = pathname.split("/").pop();
-    const [product, setProduct] = React.useState<ItemProps | null>(null);
+    const [product, setProduct] = React.useState<ComposedProductProps | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [modalOpened, setModalOpened] = React.useState(false);
     const [modalMessage, setModalMessage] = React.useState('');
@@ -57,7 +58,7 @@ const Product = () => {
             setLoading(true);
             axios.get(`${URL_COMPOSED_PRODUCTS}/${lastSegment}`)
                 .then(response => {
-                    const data = response.data as ItemProps;
+                    const data = response.data as ComposedProductProps;
                     setProduct(data);
                     addForm.setValues({
                         id: data.id,
@@ -191,8 +192,8 @@ const Product = () => {
 
     const isInCart = cartItems.some((cartItem) => cartItem.id === product?.id);
 
-    const itemsRe: ItemProps[] = (Object.values(categoryproducts)
-        .flat() as ItemProps[])
+    const itemsRe: ComposedProductProps[] = (Object.values(categoryproducts)
+        .flat() as ComposedProductProps[])
         .sort(() => Math.random() - 0.5)
         .slice(0, 4);
 
@@ -306,7 +307,7 @@ const Product = () => {
                 <p className='text-center'>PRODUSE RECOMANDATE</p>
                 <div className='grid xl:grid-cols-4 grid-cols-2 gap-4 xl:mx-22 xl:gap-8 my-6'>
                     {itemsRe.map(
-                        (item: ItemProps, idx: number) => (
+                        (item: ComposedProductProps, idx: number) => (
                             item.id !== product.id && (
                                 <Item item={item} key={idx} />
                             )

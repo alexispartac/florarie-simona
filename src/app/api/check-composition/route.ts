@@ -1,8 +1,8 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/app/components/lib/mongodb';
-import { CartItem } from '@/app/cart/types';
-import { SimpleProductProps } from '../types';
+import { CartItem } from '@/app/types/cart';
+import { ProductStockProps } from '@/app/types/stock-products';
 
 // POST /api/check-composition - verifică cantitatea produselor componente
 export async function POST(req: NextRequest) {
@@ -31,11 +31,11 @@ export async function POST(req: NextRequest) {
             const componentQuantity = component.quantity;
             const componentId = component.id;
             const isInTotalQuantitiesForEveryProductsOfComposition = totalQuantitiesForEveryProductsOfComposition.find(p => p.id === componentId);
-            let product: SimpleProductProps;
+            let product: ProductStockProps;
 
             if (!isInTotalQuantitiesForEveryProductsOfComposition) {
                 // Caută produsul în baza de date
-                product = await db.collection('products').findOne({ id: componentId }) as unknown as SimpleProductProps;
+                product = await db.collection('products').findOne({ id: componentId }) as unknown as ProductStockProps;
 
                 if (!product) {
                     return NextResponse.json({ success: false, message: `Produsul nu mai este valabil pe site!` }, { status: 401 });
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     // Verifică dacă există suficiente produse în stoc pentru fiecare componentă
     try {
         for (const product of totalQuantitiesForEveryProductsOfComposition) {
-            const dbProduct = await db.collection('products').findOne({ id: product.id }) as unknown as SimpleProductProps;
+            const dbProduct = await db.collection('products').findOne({ id: product.id }) as unknown as ProductStockProps;
             if (!dbProduct || dbProduct.quantity < product.quantity) {
                 return NextResponse.json({ success: false, message: `Stoc insuficient pentru produsul ${dbProduct?.title || 'necunoscut'}.` }, { status: 403 });
             }

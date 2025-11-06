@@ -1,6 +1,10 @@
 'use client';
 import { createSlice, PayloadAction, configureStore } from '@reduxjs/toolkit';
-import { CartItem, CartState } from '../types';
+import { CartItem } from '@/app/types/cart';
+
+export interface CartState {
+  items: CartItem[];
+}
 
 const initialState: CartState = {
   items: [], 

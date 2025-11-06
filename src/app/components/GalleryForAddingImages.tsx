@@ -3,14 +3,14 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import axios from "axios";
 import { IconX } from '@tabler/icons-react';
-import { ProductImageProps } from "../api/types";
+import { ProductImageProps } from "@/app/types/products";
 
 const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
   const [images, setImages] = useState<ProductImageProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
-
+  
   const URL= `/api/images/list?folder=${folderName}`;
 
   const fetchImages = async () => {

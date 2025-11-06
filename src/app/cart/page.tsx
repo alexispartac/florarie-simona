@@ -9,8 +9,8 @@ import { useUser } from '../components/context/ContextUser';
 import axios from 'axios';
 import PopUp from '../components/PopUp';
 import { Footer } from '../components/Footer';
-import { CartItem } from './types';
-import { ProductImageProps } from '../api/types';
+import { CartItem } from '@/app/types/cart';
+import { ProductImageProps } from '@/app/types/products';
 
 const URL_CHECK_COMPOSITION = '/api/check-composition';
 

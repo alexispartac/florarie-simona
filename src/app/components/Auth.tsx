@@ -46,7 +46,7 @@ export const useHandleLogout = () => {
                 password: '',
                 phone: '',
                 address: '',
-                order: 0,
+                orders: 0,
                 createdAt: '',
                 avatar: '',
             },

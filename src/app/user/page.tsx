@@ -129,7 +129,7 @@ const UserPage = () => {
             password: user.userInfo.password,
             id: user.userInfo.id,
             createdAt: user.userInfo.createdAt || new Date().toISOString(),
-            order: user.userInfo.order || 0,
+            order: user.userInfo.orders || 0,
         },
         initialErrors: {
             name: '',
@@ -181,7 +181,7 @@ const UserPage = () => {
             password: user.userInfo.password,
             id: user.userInfo.id,
             createdAt: user.userInfo.createdAt,
-            order: user.userInfo.order || 0,
+            order: user.userInfo.orders || 0,
         });
     }, [user]);
 

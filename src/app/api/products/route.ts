@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { SimpleProductProps } from '../types';
+import { ProductStockProps } from '@/app/types/stock-products';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
         const db = client.db('florarie');
         const data = await req.json();
 
-        const post_data: SimpleProductProps = {
+        const post_data: ProductStockProps = {
             ...data,
             quantity: data.quantity || 0,
             price: data.price || 0,

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react';
-import { ProductImageProps } from "../api/types";
+import { ProductImageProps } from "@/app/types/products";
 
 const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
   const [images, setImages] = useState<ProductImageProps[]>([]);

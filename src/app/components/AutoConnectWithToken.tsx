@@ -33,7 +33,7 @@ export const AutoConnectWithToken = () => {
                                     email: loginResponse.data.user.email,
                                     phone: loginResponse.data.user.phone,
                                     address: loginResponse.data.user.address,
-                                    order: loginResponse.data.user.order,
+                                    orders: loginResponse.data.user.order,
                                     createdAt: loginResponse.data.user.createdAt,
                                     password: '',
                                     avatar: loginResponse.data.user.avatar || '',

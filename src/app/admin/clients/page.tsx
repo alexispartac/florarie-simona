@@ -2,9 +2,19 @@
 import React, { useState } from 'react';
 import { SidebarDemo } from '../components/SideBar';
 import { Modal, Button, Group, Select, TextInput, Loader } from '@mantine/core';
-import { ClientProps } from '../types';
 import { useUsers } from '@/app/components/hooks/fetchUsers';
-import { User } from '@/app/types';
+import { User } from '@/app/types/user';
+
+interface ClientProps {
+    id: string,
+    name: string,
+    surname: string,
+    email: string,
+    phone: string,
+    address: string,
+    orders: number,
+    createdAt: string,
+}
 
 const sortOptions = [
     { value: 'createdAt', label: 'Data creare' },

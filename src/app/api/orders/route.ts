@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { OrderProps } from '../types';
+import { OrderProps } from '@/app/types/order';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
 
         // Verifică dacă fiecare produs are toate câmpurile necesare
         for (const product of data.products) {
-            if (!product.id || !product.title || typeof product.price !== 'number' || !product.category || typeof product.quantity !== 'number') {
+            if (!product.id || !product.title || typeof product.price !== 'number' || !product.title_category || typeof product.quantity !== 'number') {
                 return NextResponse.json({ success: false, message: 'Invalid product data' }, { status: 400 });
             }
         }
