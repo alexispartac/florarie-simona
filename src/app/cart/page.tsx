@@ -10,37 +10,15 @@ import axios from 'axios';
 import PopUp from '../components/PopUp';
 import { Footer } from '../components/Footer';
 import { CartItem } from '@/app/types/cart';
-import { ProductImageProps } from '@/app/types/products';
 
 const URL_CHECK_COMPOSITION = '/api/check-composition';
 
 
 const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: CartItem, handleUpdateQuantity: (id: string, quantity: number) => void, handleRemoveItem: (id: string) => void }) => {
-  const [imageSrc, setImageSrc] = useState<ProductImageProps>();
-  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(`/api/images/list?folder=${item.id}&limit=1`);
-        if (response.data && response.data.images && response.data.images.length > 0) {
-          setImageSrc(response.data.images[0]);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error fetching product image:', error);
-      }
-    };
-
-    fetchImage();
-  }, [item.id]);
 
   return (
     <div>
-      {loading ? (
-        <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-200 animate-pulse rounded-lg" />
-      ) : (
         <div
           key={item.id}
           className="bg-white rounded-md border border-gray-200 p-4"
@@ -51,11 +29,15 @@ const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: Cart
               className="flex-shrink-0 cursor-pointer"
               onClick={() => router.push(`/product/${item.id}`)}
             >
+            {!item.image ? (
+              <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-200 animate-pulse rounded-lg" />
+            ) : (
               <img
-                src={imageSrc?.url}
+                src={item.image}
                 alt={item.title}
                 className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
               />
+            )}
             </div>
 
             {/* Product Details */}
@@ -118,7 +100,7 @@ const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: Cart
               </div>
             </div>
           </div>
-        </div>)}
+        </div>
     </div>
   );
 }

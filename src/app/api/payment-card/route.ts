@@ -12,7 +12,7 @@ export interface PaymentItem {
     title: string;
     price: number;
     quantity: number;
-    category: string;
+    title_category: string;
 }
 
 export interface PaymentRequest {
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
 
         // Validează fiecare produs din coș
         for (const item of body.items) {
-            if (!item.id || !item.title || !item.category || 
+            if (!item.id || !item.title || !item.title_category || 
                 typeof item.price !== 'number' || typeof item.quantity !== 'number') {
                 return NextResponse.json({ 
                     success: false, 

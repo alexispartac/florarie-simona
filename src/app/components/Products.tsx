@@ -1,9 +1,7 @@
 'use client';
 import { Breadcrumbs } from '@mantine/core';
 import Link from 'next/link';
-import { ProductImageProps, ComposedProductProps } from '@/app/types/products';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { ComposedProductProps } from '@/app/types/products';
 
 export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
   return (
@@ -22,48 +20,21 @@ export const Bread = ({ itemsBread }: { itemsBread: React.JSX.Element[] }) => {
 };
 
 export const Item = ({ item }: { item: ComposedProductProps }) => {
-  const [imageSrc, setImageSrc] = useState<ProductImageProps>();
-  const [loading, setLoading] = useState<boolean>(true);
   const isOutOfStock = !item.inStock;
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(`/api/images/list?folder=${item.id}&limit=1`);
-        if (response.data && response.data.images && response.data.images.length > 0) {
-          setImageSrc(response.data.images[0]);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error fetching product image:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchImage();
-  }, [item.id]);
-
-
   return (
     <div className="relative flex flex-col bg-white rounded-sm transition-all duration-300 overflow-hidden group">
-      {loading ? (
-        <div className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 bg-gray-200 animate-pulse" />
-      ) : (
-        <Link href={`/product/${item.id}`}>
+      <Link href={`/product/${item.id}`}>
           {/* Image Container */}
           <div className="relative overflow-hidden">
-            {imageSrc && (
+            {item.images && item.images[0] ? (
               <img
-                src={imageSrc?.url}
+                src={item.images[0].url}
                 alt={item.title}
                 className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
-            )}
-            {!imageSrc && (
-              <div >
-                <p>Image not found</p>
-              </div>
+            ) : (
+              <div className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 bg-gray-200 animate-pulse" />
             )}
           </div>
 
@@ -109,11 +80,8 @@ export const Item = ({ item }: { item: ComposedProductProps }) => {
                 )}
               </span>
             </div>
-
-
           </div>
         </Link>
-      )}
     </div>
   );
 };

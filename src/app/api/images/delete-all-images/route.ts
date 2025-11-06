@@ -29,8 +29,8 @@ export async function DELETE(req: NextRequest) {
 
     // First, delete all resources in the folder
     try {
-      const deleteResourcesResult = await cloudinary.api.delete_resources_by_prefix(`Home/${folderName}/`);
-      console.log(`Resources in folder Home/${folderName}/ deleted:`, deleteResourcesResult);
+      const deleteResourcesResult = await cloudinary.api.delete_resources_by_prefix(`${folderName}/`);
+      console.log(`Resources in folder ${folderName}/ deleted:`, deleteResourcesResult);
       resourcesDeleted = true;
     } catch (resourceError) {
       console.log('Error deleting resources:', resourceError);
@@ -38,7 +38,7 @@ export async function DELETE(req: NextRequest) {
 
       // Try to delete the folder (might already be deleted if it was empty)
     try {
-        const result = await cloudinary.api.delete_folder(`Home/${folderName}`);
+        const result = await cloudinary.api.delete_folder(`${folderName}`);
         console.log('Delete folder result:', result);
 
         if (result.result === 'ok') {

@@ -1,35 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react';
 import { ProductImageProps } from "@/app/types/products";
 
-const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
-  const [images, setImages] = useState<ProductImageProps[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const ProductImages: React.FC<{ images: ProductImageProps[] }> = ({ images }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const thumbnailContainer = useRef<HTMLDivElement | null>(null);
-
-  const fetchImages = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`/api/images/list?folder=${folderName}&limit=50`);
-      setImages(res.data.images || []);
-      setError(null);
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      setError('Failed to fetch images');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchImages();
-  }, [folderName]);
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
@@ -73,23 +51,6 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
 
   return (
     <div className="py-4">
-      {images.length === 0 && !loading && (
-        <p className="text-gray-500 text-center">Nu există imagini încărcate pentru acest produs.</p>
-      )}
-      
-      {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      {loading && (
-        <div className="flex items-center justify-center gap-2 py-8">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
-          <p className="text-gray-600">Se încarcă imaginile...</p>
-        </div>
-      )}
-      
       {/* Single Image Display with Navigation */}
       {images.length > 0 && (
         <div className="w-full">

@@ -15,7 +15,7 @@ import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import React from 'react';
-import ProductImages from '@/app/components/GalleryForShowImages';
+import ProductImages from '@/app/components/ProductImages';
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const URL_CHECK_COMPOSITION = '/api/check-composition';
@@ -30,7 +30,6 @@ const Product = () => {
     const [modalMessage, setModalMessage] = React.useState('');
     const [isAdding, setIsAdding] = React.useState(false);
     const { data: categoryproducts, isLoading, isError } = useProductsGroupedByCategory();
-    const [inStock, setInStock] = React.useState(true);
     const router = useRouter();
 
     const addForm = useForm({
@@ -68,7 +67,6 @@ const Product = () => {
                         quantity: 0,
                         image: data.info_category.standard.imageSrc,
                     });
-                    setInStock(product?.inStock ?? true);
                     axios.post(URL_CHECK_COMPOSITION, [{
                         id: data.id,
                         title: data.title,
@@ -81,13 +79,10 @@ const Product = () => {
                         if (response.status !== 200) {
                             setModalMessage('Produsul nu mai este disponibil sau nu are suficiente cantități în stoc.');
                             setModalOpened(true);
-                        } else {
-                            console.log('response:', response);
                         }
                     }).catch(error => {
                         console.log('Eroare la verificarea stocului:', error);
                         setModalMessage('Produsul nu mai este disponibil, te rugăm să încerci altul pana la următoarea reaprovizionare.');
-                        setInStock(false);
                         setModalOpened(true);
                     });
                 })
@@ -204,14 +199,14 @@ const Product = () => {
                 <Bread itemsBread={itemsBread} />
             </div>
             <div className="relative mx-8 md:mx-40 grid md:grid-cols-2 grid-cols-1 my-10">
-                {/* galerie imagini */}
-                <ProductImages folderName={product.id} />
+                {/* imagini produs */}
+                {product.images ? <ProductImages images={product.images} /> : <div className="w-full h-[300px] md:h-[400px] lg:h-[500px] bg-gray-200 animate-pulse text-gray-500 flex items-center justify-center text-center"><p className="text-lg text-center">Nu există imagini încărcate pentru acest produs.</p></div>}
                 <form
                     className='flex flex-col md:px-8 py-8'
                     onSubmit={addForm.onSubmit(() => handleAddToCart())}
                 >
-                    {product.isPopular && <span className="text-red-600 font-serif font-bold py-2">Popular</span>}
-                    {inStock ? <p className="font-semibold">In stoc</p> : <p className="text-red-600 font-semibold">Nu este in stoc</p>}
+                    {product.isPopular && <span className="text-red-600 font-bold py-2">Popular</span>}
+                    {product.inStock ? <p className="font-semibold">In stoc</p> : <p className="text-red-600 font-semibold">Nu este in stoc</p>}
                     <h2 className="text-3xl font-thin my-2">{product.title}</h2>
                     <div className='flex'>
                         <div>
@@ -255,10 +250,9 @@ const Product = () => {
                             w={300}
                             bg={'#b756a6'}
                             type='submit'
-                            disabled={!product.inStock || !inStock || isInCart || addForm.getValues().quantity < 1}
+                            disabled={!product.inStock || isInCart || addForm.getValues().quantity < 1}
                             onClick={() => {
-                                const category = addForm.getValues().category as 'standard';
-                                addForm.setValues({ image: product.info_category[category].imageSrc });
+                                addForm.setValues({ image: product.images?.[0].url || '' });
                             }}
                         >
                             {isAdding ? <Loader color="white" size="sm" /> : isInCart ? 'În coș' : 'Adaugă în coș'}

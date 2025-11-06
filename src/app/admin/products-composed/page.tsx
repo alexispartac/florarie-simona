@@ -21,7 +21,7 @@ import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
 import { useAllProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory';
 import { useSimpleProducts } from '@/app/components/hooks/fetchSimpleProducts';
-import ProductImages from '@/app/components/GalleryForAddingImages';
+import AddingProductImages from '@/app/components/AddingImagesToTheProduct';
 
 const URL_COMPOSED_PRODUCTS = '/api/products-composed';
 const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
@@ -295,7 +295,7 @@ const EditComposedProductModal = ({
                     value={editProduct.discountPercentage}
                     onChange={(value) => handleChange('discountPercentage', value)}
                 />
-                <ProductImages folderName={editProduct.id} />
+                <AddingProductImages product={editProduct} setProduct={setEditProduct}/>
                 <div>
                     <CategoryFormSection
                         categoryName="Standard"
@@ -341,6 +341,7 @@ const ListOfProducts = ({
         info_category: {
             standard: { price: 0, imageSrc: '', composition: [] }
         },
+        images: [],
         isPopular: false,
         stockCode: '',
         inStock: false,
@@ -380,7 +381,6 @@ const ListOfProducts = ({
 
         const productToAdd = {
             ...newProduct,
-            id: uuidv4(),
             info_category: {
                 standard: {
                     ...newProduct.info_category.standard,
@@ -388,6 +388,7 @@ const ListOfProducts = ({
                     composition: newProduct.info_category.standard.composition || [],
                 }
             },
+            images: newProduct.images || [],
         };
 
         try {
@@ -399,6 +400,7 @@ const ListOfProducts = ({
                 info_category: {
                     standard: { price: 0, imageSrc: '', composition: [] },
                 },
+                images: [],
                 isPopular: false,
                 stockCode: '',
                 inStock: false,
@@ -518,7 +520,7 @@ const ListOfProducts = ({
                             value={newProduct.discountPercentage}
                             onChange={(value) => handleNewProductChange('discountPercentage', value)}
                         />
-                        <ProductImages folderName={newProduct.id} />
+                        <AddingProductImages product={newProduct} setProduct={setNewProduct}/>
                         <div>
                             <CategoryFormSection
                                 categoryName="Standard"
@@ -773,8 +775,6 @@ const Page = () => {
         );
     }
 
-
-
     const handleAddCategory = (category: string) => {
         setComposedCategories((prev) => [...prev, category]);
         alert(`Categoria "${category}" a fost adăugată cu succes!`);
@@ -793,8 +793,6 @@ const Page = () => {
             }
         }
     };
-
-
 
     return (
         <SidebarDemo>

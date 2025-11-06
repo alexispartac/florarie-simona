@@ -1,31 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import axios from "axios";
 import { IconX } from '@tabler/icons-react';
+import { ComposedProductProps } from "@/app/types/products";
 import { ProductImageProps } from "@/app/types/products";
 
-const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
-  const [images, setImages] = useState<ProductImageProps[]>([]);
+const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct: (product: ComposedProductProps) => void }> = ({ product, setProduct }) => {
+  const [imagesProduct, setImagesProduct] = useState<ProductImageProps[]>(product.images || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
-  
-  const URL= `/api/images/list?folder=${folderName}`;
-
-  const fetchImages = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(URL);
-      setImages(res.data.images);
-      setError(null);
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      setError('Failed to fetch images');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async (imageUrl: string, index: number) => {
     try {
@@ -37,7 +22,9 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
       });
       
       // Elimină imaginea din starea locală
-      setImages(prev => prev.filter((_, i) => i !== index));
+      setImagesProduct(prev => prev.filter((_, i) => i !== index));
+      const updated: ComposedProductProps = {...product, images: imagesProduct.filter((_, i) => i !== index)};
+      setProduct(updated);
       setError(null);
     } catch (error) {
       console.error('Error deleting image:', error);
@@ -46,10 +33,6 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
       setDeletingIndex(null);
     }
   };
-
-  useEffect(() => {
-    fetchImages();
-  }, []);
 
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,11 +44,15 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
       reader.readAsDataURL(file);
       reader.onloadend = async () => {
         const base64 = reader.result as string;
-        const res = await axios.post("/api/images/upload", { 
+        await axios.post("/api/images/upload", { 
           image: base64,
-          folder: folderName 
+          folder: product.id 
+        }).then(async(res) => {
+          console.log(res.data)
+          const updated: ComposedProductProps = {...product, images: [...imagesProduct, res.data]};
+          setProduct(updated);
+          setImagesProduct((prev) => [...prev, res.data]);
         });
-        setImages((prev) => [...prev, res.data]);
         setError(null);
       };
     } catch (error) {
@@ -75,11 +62,11 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
       setLoading(false);
     }
   };
-  console.log(images)
+  console.log(imagesProduct)
   return (
     <div className="py-4">
       <h2 className="text-xl font-bold mb-4">Imagini produs</h2>
-      {images.length === 0 && !loading && (
+      {imagesProduct.length === 0 && !loading && (
         <p className="text-gray-500">
           Nu sunt imagini disponibile sau acest produs nu are încă imagini adăugate.
         </p>
@@ -106,7 +93,7 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
         </div>
       )}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-        {images.map((image: ProductImageProps, idx: number) => (
+        {imagesProduct.map((image: ProductImageProps, idx: number) => (
           <div key={idx} className="relative group">
             <img
               src={image.url}
@@ -141,4 +128,4 @@ const ProductImages: React.FC<{ folderName: string }> = ({ folderName }) => {
   );
 };
 
-export default ProductImages;
+export default AddingProductImages;
