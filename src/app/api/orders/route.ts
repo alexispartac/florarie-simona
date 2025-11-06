@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { OrderProps } from '@/app/types/order';
+import { OrderPropsAdmin } from '@/app/types/order';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
         const client = await clientPromise;
         const db = client.db('florarie');
-        const data: OrderProps = await req.json();
+        const data: OrderPropsAdmin = await req.json();
         const cookie = req.cookies.get('login');
         const token = cookie ? cookie.value : null;
 
