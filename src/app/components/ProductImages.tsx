@@ -168,16 +168,16 @@ const ProductImages: React.FC<{ images: ProductImageProps[] }> = ({ images }) =>
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-1 lg:left-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
+                className="absolute left-4 lg:left-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
               >
-                <IconChevronLeft size={14} className="lg:w-8 lg:h-8" />
+                <IconChevronLeft size={20} className="lg:w-8 lg:h-8" />
               </button>
               
               <button
                 onClick={nextImage}
-                className="absolute right-1 lg:right-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
+                className="absolute right-4 lg:right-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
               >
-                <IconChevronRight size={14} className="lg:w-8 lg:h-8" />
+                <IconChevronRight size={20} className="lg:w-8 lg:h-8" />
               </button>
             </>
           )}
