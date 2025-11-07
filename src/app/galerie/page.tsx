@@ -195,8 +195,6 @@ const Gallery = () => {
   };
 
   // Get patterns for current images
-  const mobilePatterns = getBrickPattern(images.length, 'mobile');
-  const tabletPatterns = getBrickPattern(images.length, 'tablet');
   const desktopPatterns = getBrickPattern(images.length, 'desktop');
 
   return (
@@ -251,105 +249,54 @@ const Gallery = () => {
       {/* Gallery Brick Wall Grid - Responsive */}
       {!loading && images.length > 0 && (
         <div className="max-w-7xl mx-auto px-6 pb-16">
-          {/* Mobile: 3 columns - Compact brick layout */}
-          <div className="grid grid-cols-3 auto-rows-[100px] gap-1 sm:hidden">
-            {images.map((image, index) => {
-              const pattern = mobilePatterns[index];
-              return (
-                <div
-                  key={image.public_id}
-                  className={`group relative cursor-pointer ${pattern.width} ${pattern.height}`}
-                  onClick={() => openModal(index)}
-                >
-                  <img
-                    src={image.url}
-                    alt={`Gallery image ${index + 1}`}
-                    className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-90 rounded-sm"
-                    loading="lazy"
-                  />
-                  
-                  {/* Mobile Overlay */}
-                  <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center rounded-sm">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white bg-opacity-90 rounded-full p-1">
-                        <svg className="w-2.5 h-2.5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
+          {/* Mobile/Tablet: single column stacked images until md */}
+          <div className="md:hidden space-y-3">
+            {images.map((image, index) => (
+              <div
+                key={image.public_id}
+                className="group relative cursor-pointer"
+                onClick={() => openModal(index)}
+              >
+                <img
+                  src={image.url}
+                  alt={`Gallery image ${index + 1}`}
+                  className="w-full h-auto object-cover transition-all duration-300 group-hover:opacity-90 rounded-md"
+                  loading="lazy"
+                />
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center rounded-md">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-white bg-opacity-90 rounded-full p-1.5">
+                      <svg className="w-3 h-3 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
                     </div>
                   </div>
-
-                  {/* Mobile Admin Delete Button */}
-                  {isAdmin && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(image);
-                      }}
-                      disabled={deletingId === image.public_id}
-                      className="absolute top-0.5 right-0.5 bg-white bg-opacity-90 hover:bg-red-500 hover:text-white text-gray-900 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all duration-300 disabled:opacity-50"
-                    >
-                      {deletingId === image.public_id ? (
-                        <div className="animate-spin rounded-full h-2.5 w-2.5 border-b-2 border-current"></div>
-                      ) : (
-                        <IconTrash size={10} />
-                      )}
-                    </button>
-                  )}
                 </div>
-              );
-            })}
+
+                {/* Admin Delete Button */}
+                {isAdmin && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(image);
+                    }}
+                    disabled={deletingId === image.public_id}
+                    className="absolute top-1 right-1 bg-white bg-opacity-90 hover:bg-red-500 hover:text-white text-gray-900 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all duration-300 disabled:opacity-50"
+                  >
+                    {deletingId === image.public_id ? (
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current"></div>
+                    ) : (
+                      <IconTrash size={12} />
+                    )}
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
 
-          {/* Tablet: 3 columns - Medium brick layout */}
-          <div className="hidden sm:grid md:hidden grid-cols-3 auto-rows-[140px] gap-2">
-            {images.map((image, index) => {
-              const pattern = tabletPatterns[index];
-              return (
-                <div
-                  key={image.public_id}
-                  className={`group relative cursor-pointer ${pattern.width} ${pattern.height}`}
-                  onClick={() => openModal(index)}
-                >
-                  <img
-                    src={image.url}
-                    alt={`Gallery image ${index + 1}`}
-                    className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-90 rounded-md"
-                    loading="lazy"
-                  />
-                  
-                  {/* Tablet Overlay */}
-                  <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center rounded-md">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white bg-opacity-90 rounded-full p-1.5">
-                        <svg className="w-3 h-3 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Tablet Admin Delete Button */}
-                  {isAdmin && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(image);
-                      }}
-                      disabled={deletingId === image.public_id}
-                      className="absolute top-1 right-1 bg-white bg-opacity-90 hover:bg-red-500 hover:text-white text-gray-900 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all duration-300 disabled:opacity-50"
-                    >
-                      {deletingId === image.public_id ? (
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current"></div>
-                      ) : (
-                        <IconTrash size={12} />
-                      )}
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          {/* Tablet block removed: we use single column until md, brick from md up */}
 
           {/* Desktop: 3 columns - Full brick variety */}
           <div className="hidden md:grid grid-cols-3 auto-rows-[200px] gap-4">
