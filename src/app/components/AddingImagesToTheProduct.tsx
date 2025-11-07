@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, ChangeEvent } from "react";
-import axios from "axios";
+import axios, { AxiosProgressEvent } from "axios";
 import { IconX } from '@tabler/icons-react';
 import { ComposedProductProps } from "@/app/types/products";
 import { ProductImageProps } from "@/app/types/products";
@@ -11,6 +11,7 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
   const handleDelete = async (imageUrl: string, index: number) => {
     try {
@@ -38,28 +39,42 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setError(null);
+    setLoading(true);
+    setUploadProgress(0);
+
     try {
-      setLoading(true);
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        const base64 = reader.result as string;
-        await axios.post("/api/images/upload", { 
-          image: base64,
-          folder: product.id 
-        }).then(async(res) => {
-          console.log(res.data)
-          const updated: ComposedProductProps = {...product, images: [...imagesProduct, res.data]};
-          setProduct(updated);
-          setImagesProduct((prev) => [...prev, res.data]);
-        });
-        setError(null);
-      };
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('File reading failed'));
+        reader.readAsDataURL(file);
+      });
+
+      const res = await axios.post("/api/images/upload", {
+        image: base64,
+        folder: product.id,
+      }, {
+        onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+          if (progressEvent.total) {
+            const percent = (progressEvent.loaded / progressEvent.total) * 100;
+            setUploadProgress(percent);
+          }
+        }
+      });
+
+      const updated: ComposedProductProps = { ...product, images: [...imagesProduct, res.data] };
+      setProduct(updated);
+      setImagesProduct((prev) => [...prev, res.data]);
     } catch (error) {
       console.error('Error uploading image:', error);
       setError('Failed to upload image');
     } finally {
       setLoading(false);
+      setUploadProgress(null);
+      if (e.target) {
+        e.target.value = '';
+      }
     }
   };
   console.log(imagesProduct)
@@ -86,13 +101,18 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
         accept="image/*"
       />
       
-      {loading && (
-        <div className="flex items-center gap-2 mb-4">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
-          <p>Se încarcă...</p>
+      {loading ? (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
+            <p>Se încarcă imaginea{typeof uploadProgress === 'number' ? ` — ${Math.round(uploadProgress)}%` : '...'}</p>
+          </div>
+          <div className="h-2 w-full bg-gray-200 rounded">
+            <div className="h-2 bg-pink-500 rounded" style={{ width: `${uploadProgress ?? 0}%` }}></div>
+          </div>
         </div>
-      )}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         {imagesProduct.map((image: ProductImageProps, idx: number) => (
           <div key={idx} className="relative group">
             <img
@@ -124,6 +144,7 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

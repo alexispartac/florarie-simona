@@ -235,7 +235,7 @@ const EditComposedProductModal = ({
     };
 
     return (
-        <Modal opened={opened} onClose={onClose} title="Editează produs compus" centered>
+        <Modal opened={opened} onClose={() => {onClose(); onSave(editProduct)}} title="Editează produs compus" centered>
             <form className="flex flex-col gap-4 max-w-md mx-auto mt-10" onSubmit={handleSubmit}>
                 <TextInput
                     label="Denumire"
@@ -295,7 +295,6 @@ const EditComposedProductModal = ({
                     value={editProduct.discountPercentage}
                     onChange={(value) => handleChange('discountPercentage', value)}
                 />
-                <AddingProductImages product={editProduct} setProduct={setEditProduct}/>
                 <div>
                     <CategoryFormSection
                         categoryName="Standard"
@@ -310,6 +309,7 @@ const EditComposedProductModal = ({
                         idProduct={product ? product.id : uuidv4()}
                     />
                 </div>
+                <AddingProductImages product={editProduct} setProduct={setEditProduct}/>
                 <Group justify="flex-end">
                     <Button variant="default" onClick={onClose}>
                         Anulează
@@ -520,7 +520,6 @@ const ListOfProducts = ({
                             value={newProduct.discountPercentage}
                             onChange={(value) => handleNewProductChange('discountPercentage', value)}
                         />
-                        <AddingProductImages product={newProduct} setProduct={setNewProduct}/>
                         <div>
                             <CategoryFormSection
                                 categoryName="Standard"
@@ -535,6 +534,7 @@ const ListOfProducts = ({
                                 idProduct={editProduct ? editProduct.id : uuidv4()}
                             />
                         </div>
+                        <AddingProductImages product={newProduct} setProduct={setNewProduct}/>
                         <Group justify="flex-end">
                             <Button variant="default" onClick={close}>Anulează</Button>
                             <Button type="submit" color="blue">Adaugă</Button>

@@ -69,6 +69,7 @@ export const AuthModal = React.memo(() => {
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [cartItemCount, setCartItemCount] = useState(0);
     const [isMounted, setIsMounted] = useState(false);
+    const [formLogInKey, setFormLogInKey] = useState(0);
     const logout = useHandleLogout();
     const router = useRouter();
 
@@ -209,6 +210,8 @@ export const AuthModal = React.memo(() => {
         if (user.isAuthenticated) return;
         if (!data.email || !data.password) {
             setErrorMessage("Email și parola sunt obligatorii.");
+            formLogIn.reset();
+            setFormLogInKey((k) => k + 1);
             return;
         }
         setErrorMessage(null);
@@ -223,15 +226,18 @@ export const AuthModal = React.memo(() => {
                 setCookie('login', response.data.token, { path: '/' });
                 setSuccessMessage('Autentificare reușită! Bine ai venit!');
                 setSuccessModalOpened(true); 
+                formLogIn.reset();
                 close();
             }
         } catch (error) {
             console.log('Error logging in', error);
+            formLogIn.reset();
+            setFormLogInKey((k) => k + 1);
             setErrorMessage("Eroare la autentificare.");
         } finally {
             setLoading(false);
         }
-    }, [setUser, setCookie, close, user.isAuthenticated]);
+    }, [setUser, setCookie, close, user.isAuthenticated, formLogIn, setFormLogInKey]);
 
     const signup = useCallback(async (data: { id: string; name: string; surname: string; email: string; password: string }) => {
         setLoading(true);
@@ -247,6 +253,7 @@ export const AuthModal = React.memo(() => {
 
         } catch (error) {
             console.log('Error signing up', error);
+            formSignUp.reset();
             setErrorMessage("Eroare la înregistrare. Verifică datele introduse.");
         } finally {
             setLoading(false);
@@ -322,7 +329,7 @@ export const AuthModal = React.memo(() => {
             );
         } else if (!user.isAuthenticated && typeAuth === 'login') {
             return (
-                <form className="flex flex-col gap-4 my-5" onSubmit={formLogIn.onSubmit(handleLogin)}>
+                <form key={formLogInKey} className="flex flex-col gap-4 my-5" onSubmit={formLogIn.onSubmit(handleLogin)}>
                     <TextInput w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="your-email@example.com" {...formLogIn.getInputProps('email')} />
                     <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
                     {errorMessage && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{errorMessage}</div>}
