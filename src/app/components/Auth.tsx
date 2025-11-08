@@ -346,7 +346,7 @@ export const AuthModal = React.memo(() => {
                     <Group>
                         <Avatar size={50} radius="xl" src={user.userInfo.avatar} alt={`${user.userInfo.name} ${user.userInfo.surname}`} />
                         <div>
-                            <h1 className="text-lg font-bold">Salut, </h1>
+                            <h1 className="text-lg font-bold">Buna, </h1>
                             <h3>{user.userInfo.name} {user.userInfo.surname}</h3>
                         </div>
                     </Group>

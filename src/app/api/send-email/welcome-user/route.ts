@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       to: clientEmail,
       subject: 'Confirmare creare cont pe site-ul - Buchetul Simonei',
       html: `
-        <h1>Salut ${clientName},</h1>
+        <h1>Buna ${clientName},</h1>
         <p>Mulțumim că te-ai înregistrat pe site-ul nostru!</p>
         <p>Poti incepe cuparaturile accesând următorul link:</p>
         <p><a href="https://buchetul-simonei.com">Buchetul Simonei</a></p>

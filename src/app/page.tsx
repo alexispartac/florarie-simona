@@ -283,16 +283,27 @@ const IntroScreen: React.FC = () => {
       />
 
       <div className="flex items-center justify-center relative z-30">
-        <h1
+        <span
           ref={textRef}
-          className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-bold landscape:text-7xl tracking-wide split text-center"
+          className="flex flex-col text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-bold landscape:text-7xl tracking-wide split text-center"
           style={{
             fontFamily: "'Dancing Script', cursive, serif",
             textShadow: "0 0 40px rgba(255, 255, 255, 0.5)"
           }}
         >
-          Buchetul Simonei
-        </h1>
+          <p className="text-2xl pb-2 text-red-500">
+            Since 2016
+          </p>
+          <p className="text-2xl pb-2 text-red-500">
+            De 10 ani înflorim alaturi de tine!
+          </p>
+          <h1 className="text-6xl pb-2">
+            Buchetul Simonei
+          </h1>
+          <p className="text-2xl pb-2">
+            ~poezia florilor~
+          </p>
+        </span>
       </div>
 
       {/* Static particles pentru consistency */}

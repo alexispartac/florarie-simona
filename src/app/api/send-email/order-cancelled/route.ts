@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       to: order.clientEmail,
       subject: 'Comanda ta a fost anulata',
       html: `
-        <h2>Salut ${order.clientName},</h2>
+        <h2>Buna ${order.clientName},</h2>
         <p>Comanda ta cu numarul <strong>#${order.orderNumber}</strong> a fost anulata.</p>
         <p>Daca ai intrebari sau nelamuriri, nu ezita sa ne contactezi!</p>
         <p>Gasiti la finalul acestui email datele de contact</p>

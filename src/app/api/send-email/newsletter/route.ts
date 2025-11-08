@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
         to: email,
         subject: 'Multumim ca te-ai abonat la newsletter-ul - Buchetul Simonei',
         html: `
-            <h1>Salut </h1>
+            <h1>Buna </h1>
             <p>Mulțumim că te-ai abonat la newsletter-ul nostru!</p>
             <p>Te vom ține la curent cu cele mai noi oferte și produse disponibile pe site-ul nostru.</p>
             <p>Dacă ai întrebări sau sugestii, nu ezita să ne contactezi.</p>

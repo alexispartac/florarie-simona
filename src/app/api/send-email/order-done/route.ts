@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       to: order.clientEmail,
       subject: 'Multumim ca ne-ai ales! Aceasta este comanda ta! Multumim pentru incredere!',
       html: `
-        <h2>Salut ${order.clientName},</h2>
+        <h2>Buna ${order.clientName},</h2>
         <p>Comanda ta cu numarul <strong>#${order.orderNumber}</strong> a fost finalizata cu succes!</p>
         <p>Aceasta va fi livrata in curand la adresa specificata.</p>
         <p>Daca s-a produs vreo schimbare in comanda ta, te rugam sa ne contactezi cat mai curand posibil.</p>

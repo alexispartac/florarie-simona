@@ -10,27 +10,31 @@ const EventPlanning = () => {
   const services = [
     {
       icon: <IconHeart size={48} className="text-rose-500" />,
-      title: "Nunți de Vis",
-      description: "Transformăm cea mai importantă zi din viața voastră într-un poveste florală. De la buchetul miresei la decorarea sălii, fiecare detaliu este gândit cu dragoste.",
-      features: ["Buchet mireasă personalizat", "Decoruri florale pentru sală", "Aranjamente pentru masă", "Corsaje pentru nași"]
+      title: "Nunta, botez, majorat, se anunta party?",
+      description: "Transformăm cea mai importantă zi din viața voastră într-un poveste florală. De la buchetul miresei la decorarea sălii, de la lumanarea de botez pana la aranjamentul masinii, fiecare detaliu este asezat cu dragoste.",
+      features: ["Buchet mireasă personalizat", "Decoruri florale pentru sală", "Lumanari, cocarde, bratari, aranjament masina, etc.", "Corsaje pentru nași"],
+      moreInfo: "Hai sa stabilim o sedinta de consultanta sa-ti cream evenimentul perfect!"
     },
     {
       icon: <IconUsers size={48} className="text-purple-500" />,
-      title: "Evenimente Corporate",
-      description: "Aducem eleganța și prospețimea florilor în evenimentele voastre de business. Creăm atmosfera perfectă pentru orice întâlnire profesională.",
-      features: ["Decoruri pentru conferințe", "Aranjamente pentru recepții", "Corsaje pentru VIP-uri", "Decoruri pentru lansări"]
+      title: "Livrare la domiciliu",
+      description: "Aducem eleganța și prospețimea florilor în casele voastre. Doresti sa faci o surpriza persoanei dragi si nu esti in zona sau emotiile te coplesesc? Nicio problema, de asta suntem noi aici!",
+      features: ["Stabilim ce cadou o/il/ii reprezinta", "Tu ne transmiti adresa noi facem magia", "Ai prea multe cuvinte adunate dar nu stii cum sa le transmiti, nu-i problema te ajutam cu textul, ba chiar cream si poezii personalizate.", "Versuri unice create pe baza detaliilor date de tine!"],
+      moreInfo: "Da-ne un semn la 0769 141 250 sau trimi-mi un email la laurasimona97@yahoo.com. Poti si pe pagina de Facebook gasiti link-ul pe pagina principală, si facem!"
     },
     {
       icon: <IconCalendar size={48} className="text-blue-500" />,
-      title: "Sărbători Speciale",
-      description: "De la aniversări la botezuri, de la logodne la petreceri tematice - fiecare sărbătoare merită să fie înfrumusețată cu flori proaspete.",
-      features: ["Decoruri tematice", "Centrepieces personalizate", "Decoruri pentru photo corner"]
+      title: "Sărbători speciale cu flori si baloane",
+      description: "De la aniversări la botezuri, de la logodne la petreceri tematice - fiecare sărbătoare merită să fie înfrumusețată decorul perfect!",
+      features: ["Decoruri tematice", "Photo corner din baloane", "Decoruri flori artificiale, welcome board, seat list, etc."],
+      moreInfo: "Hai sa stabilim o sedinta de consultanta sa-ti cream evenimentul perfect!"
     },
     {
       icon: <IconFlower size={48} className="text-green-500" />,
       title: "Consultanță Florală",
-      description: "Vă ghidăm pas cu pas în alegerea perfectă a florilor pentru evenimentul vostru, respectând bugetul și preferințele voastre.",
-      features: ["Consultații personalizate", "Planuri florale detaliate", "Estimări de buget", "Suport pe tot parcursul planificării"]
+      description: "Vă ghidăm pas cu pas în alegerea perfectă a decorului pentru evenimentul vostru, respectând bugetul și preferințele voastre.",
+      features: ["Consultații personalizate", "Planuri florale detaliate", "Estimări de buget", "Suport pe tot parcursul planificării"],
+      moreInfo: "Hai sa stabilim o sedinta de consultanta sa-ti cream evenimentul perfect!"
     }
   ];
 
@@ -64,12 +68,6 @@ const EventPlanning = () => {
       event: "Botez",
       rating: 5,
       text: "Profesionalism și creativitate la cel mai înalt nivel. Decorurile pentru botezul fiicei mele au fost absolut superbe. Recomand cu încredere!"
-    },
-    {
-      name: "SC Tech Solutions",
-      event: "Eveniment Corporate",
-      rating: 5,
-      text: "Colaborarea cu echipa lor pentru evenimentele noastre corporate a fost excepțională. Florile au adus o notă de eleganță și prospețime în toate întâlnirile noastre."
     }
   ];
 
@@ -141,6 +139,9 @@ const EventPlanning = () => {
                     </li>
                   ))}
                 </ul>
+                <p className="text-gray-600 mt-6 text-center leading-relaxed">
+                  {service.moreInfo}
+                </p>
               </div>
             ))}
           </div>
