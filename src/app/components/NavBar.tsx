@@ -48,12 +48,12 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
       category: groupedCategories["bouquets"] || [],
     },
     {
-      name: "Aranjamente florale",
+      name: "Aranjamente",
       link: "arrangements",
       category: groupedCategories["arrangements"] || [],
     },
     {
-      name: "Ocazii și evenimente",
+      name: "Ocazii",
       link: "occasion&events",
       category: groupedCategories["occasion&events"] || [],
     },
@@ -68,13 +68,13 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
       category: groupedCategories["features"] || [],
     },
     {
-      name: "Organizari evenimente",
+      name: "Organizare evenimente",
       link: "event-planning",
       category: [],
     },
     {
-      name: "Galerie foto",
-      link: "galerie",
+      name: "Despre noi",
+      link: "about-us",
       category: [],
     },
     {

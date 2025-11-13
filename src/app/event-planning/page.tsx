@@ -45,11 +45,6 @@ const EventPlanning = () => {
       image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=500&h=300&fit=crop",
     },
     {
-      title: "Eveniment Corporate",
-      description: "Aranjamente elegante pentru lansarea unui produs",
-      image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=500&h=300&fit=crop",
-    },
-    {
       title: "Aniversare de Lux",
       description: "Centrepieces spectaculoase pentru o petrecere memorabilă",
       image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&h=300&fit=crop",
@@ -92,7 +87,7 @@ const EventPlanning = () => {
             Transformăm visele voastre în realitate prin magia florilor
           </p>
           <p className="text-lg mb-12 opacity-80 max-w-3xl mx-auto">
-            De la nunți de poveste la evenimente corporate elegante, creăm decoruri florale care lasă o impresie de neuitat. 
+            De la nunți de poveste la majorate, creăm decoruri florale care lasă o impresie de neuitat. 
             Fiecare eveniment este o operă de artă florală unică.
           </p>
           <button

@@ -5,6 +5,8 @@ import axios, { AxiosProgressEvent } from "axios";
 import { IconX } from '@tabler/icons-react';
 import { ComposedProductProps } from "@/app/types/products";
 import { ProductImageProps } from "@/app/types/products";
+import imageCompression from 'browser-image-compression';
+
 
 const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct: (product: ComposedProductProps) => void }> = ({ product, setProduct }) => {
   const [imagesProduct, setImagesProduct] = useState<ProductImageProps[]>(product.images || []);
@@ -21,7 +23,6 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
       await axios.delete(`/api/images/delete-image`, {
         data: { imageUrl }
       });
-      
       // Elimină imaginea din starea locală
       setImagesProduct(prev => prev.filter((_, i) => i !== index));
       const updated: ComposedProductProps = {...product, images: imagesProduct.filter((_, i) => i !== index)};
@@ -39,22 +40,25 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const compressedFile = await imageCompression(file, {
+      maxSizeMB: 5,
+      maxWidthOrHeight: 2000,
+      useWebWorker: true,
+    });
+
     setError(null);
     setLoading(true);
     setUploadProgress(0);
 
     try {
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error('File reading failed'));
-        reader.readAsDataURL(file);
-      });
 
       const res = await axios.post("/api/images/upload", {
-        image: base64,
+        file: compressedFile,
         folder: product.id,
       }, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
         onUploadProgress: (progressEvent: AxiosProgressEvent) => {
           if (progressEvent.total) {
             const percent = (progressEvent.loaded / progressEvent.total) * 100;
@@ -77,7 +81,7 @@ const AddingProductImages: React.FC<{ product: ComposedProductProps, setProduct:
       }
     }
   };
-  console.log(imagesProduct)
+
   return (
     <div className="py-4">
       <h2 className="text-xl font-bold mb-4">Imagini produs</h2>
