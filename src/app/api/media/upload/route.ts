@@ -29,62 +29,78 @@ export async function POST(request: Request) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const isVideo = file.type.startsWith('video/');
 
-    // ✅ Optimize and upload to Cloudinary
-    const result = await new Promise<Post>((resolve, reject) => {
-      sharp(buffer)
-        .resize({ width: 2000, withoutEnlargement: true }) // limitează dimensiunea
-        .webp({ quality: 80 }) // convertește în WebP și comprimă
-        .toBuffer()
-        .then((optimizedBuffer) => {
-          const uploadStream = cloudinary.uploader.upload_stream(
-            {
-              folder: 'florarie-simona/media',
-              resource_type: 'image',
-              format: 'webp',
-            },
-            (error, cloudinaryResult) => {
-              if (error) {
-                reject(error);
-                return;
-              }
+    const uploadToCloudinary = (): Promise<Post> => {
+      return new Promise((resolve, reject) => {
 
-              if (!cloudinaryResult) {
-                reject(new Error('No result from Cloudinary upload'));
-                return;
-              }
-
-              // Map Cloudinary response to Post type
-              const post: Post = {
-                title,
-                description,
-                mediaUrl: cloudinaryResult.secure_url,
-                mediaType: cloudinaryResult.resource_type as 'image' | 'video',
-                publicId: cloudinaryResult.public_id,
-                format: cloudinaryResult.format || 'webp',
-                width: cloudinaryResult.width,
-                height: cloudinaryResult.height,
-                duration: cloudinaryResult.duration,
-                thumbnailUrl: cloudinaryResult.secure_url,
-                isFeatured,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                resourceType: cloudinaryResult.resource_type,
-                url: cloudinaryResult.secure_url,
-              };
-
-              resolve(post);
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'florarie-simona/media',
+            resource_type: isVideo ? 'video' : 'image',
+            ...(isVideo ? {} : { format: 'webp' }),
+          },
+          (error, cloudinaryResult) => {
+            if (error) {
+              reject(error);
+              return;
             }
-          );
 
+            if (!cloudinaryResult) {
+              reject(new Error('No result from Cloudinary upload'));
+              return;
+            }
+
+            const post: Post = {
+              title,
+              description,
+              mediaUrl: cloudinaryResult.secure_url,
+              mediaType: isVideo ? 'video' : 'image',
+              publicId: cloudinaryResult.public_id,
+              format: isVideo ? cloudinaryResult.format : 'webp',
+              width: cloudinaryResult.width,
+              height: cloudinaryResult.height,
+              duration: cloudinaryResult.duration,
+              thumbnailUrl: isVideo 
+                ? cloudinaryResult.secure_url.replace(/\.(mp4|mov|avi|webm)$/, '.jpg') 
+                : cloudinaryResult.secure_url,
+              isFeatured,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              resourceType: cloudinaryResult.resource_type,
+              url: cloudinaryResult.secure_url,
+            };
+
+            resolve(post);
+          }
+        );
+
+        if (isVideo) {
+          // For videos, just pipe the buffer directly
           const readable = new Readable();
           readable._read = () => {};
-          readable.push(optimizedBuffer);
+          readable.push(buffer);
           readable.push(null);
           readable.pipe(uploadStream);
-        })
-        .catch((err) => reject(err));
-    });
+        } else {
+          // For images, use sharp for optimization
+          sharp(buffer)
+            .resize({ width: 2000, withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toBuffer()
+            .then(optimizedBuffer => {
+              const readable = new Readable();
+              readable._read = () => {};
+              readable.push(optimizedBuffer);
+              readable.push(null);
+              readable.pipe(uploadStream);
+            })
+            .catch(reject);
+        }
+      });
+    };
+
+    const result = await uploadToCloudinary();
 
     // Save to MongoDB
     const client = await clientPromise;
@@ -101,9 +117,9 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error('Upload failed:', error);
+    console.error('Error uploading media:', error);
     return NextResponse.json(
-      { success: false, error: 'Upload failed' },
+      { error: 'Failed to upload media', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

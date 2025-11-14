@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { IconTrash, IconX, IconPlus, IconVideo, IconPhoto } from '@tabler/icons-react';
-import { Modal, Button, FileInput, Alert, TextInput, Textarea, Text, Container, Title, Tabs } from '@mantine/core';
+import { Modal, Button, FileInput, Alert, TextInput, Textarea, Container, Tabs } from '@mantine/core';
 import { useUser } from '../components/context/ContextUser';
 import { Footer } from '../components/Footer';
 import axios from 'axios';
@@ -63,16 +63,23 @@ const AboutUs = () => {
   const handleUpload = async () => {
     if (!selectedFile) return;
 
-    const compressedFile = await imageCompression(selectedFile, {
-      maxSizeMB: 5,
-      maxWidthOrHeight: 2000,
-      useWebWorker: true,
-    });
-
     try {
       setUploading(true);
       const formData = new FormData();
-      formData.append('file', compressedFile);
+
+      // Only compress if it's an image
+      if (mediaType === 'image') {
+        const compressedFile = await imageCompression(selectedFile, {
+          maxSizeMB: 5,
+          maxWidthOrHeight: 2000,
+          useWebWorker: true,
+        });
+        formData.append('file', compressedFile);
+      } else {
+        // For videos, append the original file
+        formData.append('file', selectedFile);
+      }
+
       formData.append('title', title);
       formData.append('description', description);
       formData.append('isFeatured', String(isFeatured));
@@ -120,15 +127,6 @@ const AboutUs = () => {
     <div className="min-h-screen flex flex-col">
       <div className="py-28 px-4 sm:px-6 lg:px-8 flex-grow">
         <Container size="xl" className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <Title mb={12} order={1} className="text-4xl font-bold font-italic text-gray-900">
-              Despre Noi
-            </Title>
-            <Text className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Descoperă povestea din spatele florăriei noastre și pasiunea noastră pentru flori și aranjamente unice.
-              Fiecare buchet este creat cu atenție la detalii și dragoste pentru frumusețea naturii.
-            </Text>
-          </div>
 
           {isAdmin && (
             <div className="flex justify-end mb-8">
@@ -522,6 +520,33 @@ const MediaCard = ({ item, isAdmin, onPreview, onDelete }: {
 
 // Media Preview Modal Component
 const MediaPreviewModal = ({ media, onClose }: { media: Post | null, onClose: () => void }) => {
+  
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(console.error);
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(console.error);
+        setIsFullscreen(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        document.exitFullscreen().catch(console.error);
+        setIsFullscreen(false);
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
+
   if (!media) return null;
 
   return (
@@ -531,45 +556,73 @@ const MediaPreviewModal = ({ media, onClose }: { media: Post | null, onClose: ()
       size="xl"
       withCloseButton={false}
       padding={0}
-      className="[&_.mantine-Modal-body]:p-0"
+      fullScreen={isFullscreen}
+      transitionProps={{ transition: 'fade', duration: 200 }}
+      className="[&_.mantine-Modal-body]:p-0 [&_.mantine-Modal-content]:bg-black/90"
+      overlayProps={{
+        backgroundOpacity: 0.9,
+        blur: 2,
+      }}
     >
-      <div className="relative bg-black">
-        <div className="relative pt-[56.25%]">
+      <div className="relative w-full h-full flex items-center justify-center bg-black">
+        <div className="relative w-full h-full max-h-[80vh] md:max-h-[90vh] flex items-center justify-center p-4">
           {media.resourceType === 'image' ? (
             <img
               src={media.url}
               alt={media.title || 'Preview'}
-              className="absolute inset-0 w-full h-full object-contain"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              style={{ 
+                maxHeight: 'calc(100vh - 120px)',
+                width: 'auto',
+                height: 'auto'
+              }}
             />
           ) : (
             <video
               src={media.url}
               controls
               autoPlay
-              className="absolute inset-0 w-full h-full"
+              className="max-w-full max-h-full rounded-lg shadow-2xl"
+              style={{ maxHeight: 'calc(100vh - 120px)' }}
             />
           )}
         </div>
 
-        <Button
+        {/* Close Button */}
+        <button
           onClick={onClose}
-          variant="light"
-          color="gray"
-          className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white"
-          size="sm"
-          p={4}
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/70 hover:bg-black/90 text-white transition-all duration-200 hover:scale-110"
+          aria-label="Close preview"
         >
-          <IconX size={20} />
-        </Button>
+          <IconX size={24} />
+        </button>
 
+        {/* Fullscreen Toggle */}
+        <button
+          onClick={toggleFullscreen}
+          className="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/70 hover:bg-black/90 text-white transition-all duration-200 hover:scale-110"
+          aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+        >
+          {isFullscreen ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+          )}
+        </button>
+
+        {/* Media Info (shows on hover) */}
         {(media.title || media.description) && (
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6 pt-12">
-            <div className="max-w-4xl mx-auto">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6 pt-12 opacity-0 hover:opacity-100 transition-opacity duration-300">
+            <div className="max-w-4xl mx-auto text-center">
               {media.title && (
-                <h3 className="text-xl font-bold text-white">{media.title}</h3>
+                <h3 className="text-xl font-bold text-white mb-2">{media.title}</h3>
               )}
               {media.description && (
-                <p className="mt-2 text-gray-200">{media.description}</p>
+                <p className="text-gray-200 text-sm">{media.description}</p>
               )}
             </div>
           </div>
