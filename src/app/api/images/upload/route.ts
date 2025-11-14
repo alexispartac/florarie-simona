@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { v2 as cloudinary, UploadStream } from 'cloudinary';
-import { Post } from '@/app/models/Posts';
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import sharp from 'sharp';
 import { Readable } from 'stream';
 
@@ -28,49 +27,52 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // Process the image and upload to Cloudinary
+    const optimizedBuffer = await sharp(buffer)
+      .resize({ width: 2000, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+
     // Create a promise that resolves with the upload result
-    await new Promise<Post>((resolve, reject) => {
-      sharp(buffer)
-        .resize({ width: 2000, withoutEnlargement: true }) // limitează dimensiunea
-        .webp({ quality: 80 }) // convertește în WebP și comprimă
-        .toBuffer()
-        .then((optimizedBuffer) => {
-          const uploadStream = cloudinary.uploader.upload_stream(
-            {
-              folder: folder || 'florarie-uploads',
-              resource_type: 'image',
-              format: 'webp',
-            },
-            (error, result) => {
-              if (error) {
-                reject(error);
-                return;
-              }
-              if (!result) {
-                reject(new Error('No result from Cloudinary upload'));
-                return;
-              }
-
-            }
-          );
-
-          // Create a readable stream from buffer and pipe it to the upload stream
-          const readable = new Readable();
-          readable._read = () => { };
-          readable.push(optimizedBuffer);
-          readable.push(null);
-          readable.pipe(uploadStream);
-        });
-
-      return NextResponse.json(UploadStream, { status: 200 });
-    }).catch((error) => {
-      console.error('Error uploading file:', error);
-      return NextResponse.json(
-        { error: 'Failed to upload file' },
-        { status: 500 }
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: folder || 'florarie-uploads',
+          resource_type: 'image',
+          format: 'webp',
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          if (!result) {
+            reject(new Error('No result from Cloudinary upload'));
+            return;
+          }
+          resolve(result);
+        }
       );
-    })
-  } catch (error) {
+
+      // Create a readable stream from buffer and pipe it to the upload stream
+      const readable = new Readable();
+      readable._read = () => {};
+      readable.push(optimizedBuffer);
+      readable.push(null);
+      readable.pipe(uploadStream);
+    });
+
+    // Return the upload result
+    return NextResponse.json({
+      success: true,
+      url: result.secure_url,
+      public_id: result.public_id,
+      width: result.width,
+      height: result.height,
+      format: result.format
+    }, { status: 200 });
+    }
+    catch (error) {
       console.error('Error uploading file:', error);
       return NextResponse.json(
         { error: 'Failed to upload file' },
