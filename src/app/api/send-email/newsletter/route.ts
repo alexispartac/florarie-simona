@@ -8,7 +8,17 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// POST /api/newsletter
+// GET /api/send-email/newsletter
+export async function GET() {
+  const client = await clientPromise;
+  const db = client.db('florarie');
+  const newsletterCollection = db.collection('newsletter');
+  
+  const subscribers = await newsletterCollection.find().toArray();
+  return NextResponse.json(subscribers);
+}
+
+// POST /api/send-email/newsletter
 export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {
     return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });
@@ -91,7 +101,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE /api/newsletter
+// DELETE /api/send-email/newsletter
 export async function DELETE(req: NextRequest) {
   if (req.method !== 'DELETE') {
     return NextResponse.json({ success: false, message: 'Metoda HTTP nu este permisă.' }, { status: 405 });

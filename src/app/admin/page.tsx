@@ -39,6 +39,25 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        <div className="grid grid-cols-1 gap-4 mt-4">
+          <div className="h-full w-full rounded-lg bg-gray-100 dark:bg-neutral-800">
+            <div className="h-full w-full text-center py-7">
+              <Link href="/admin/open-ads" className="flex items-center justify-center gap-2">
+                Setare panou de deschidere
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4 mt-4">
+          <div className="h-full w-full rounded-lg bg-gray-100 dark:bg-neutral-800">
+            <div className="h-full w-full text-center py-7">
+              <Link href="/admin/newsletter" className="flex items-center justify-center gap-2">
+                Trimitere newsletter
+              </Link>
+            </div>
+          </div>
+        </div>
+
         <div>
         </div>
       </div>

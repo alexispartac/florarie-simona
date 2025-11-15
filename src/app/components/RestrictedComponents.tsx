@@ -19,6 +19,7 @@ export const RestrictedComponents = ({ children }: { children: React.ReactNode }
         "/admin/clients",
         "/admin/settings",
         "/admin/close-period",
+        "/admin/newsletter",
     ];
     const isRestricted = restrictedPaths.includes(pathname);
 
