@@ -313,7 +313,7 @@ export const AuthModal = React.memo(() => {
                         <TextInput w={'47%'} label='Last Name' required placeholder="Ex: your-name" {...formSignUp.getInputProps('name')} />
                         <TextInput w={'47%'} label='First Name' required placeholder="Ex: your-firstname" {...formSignUp.getInputProps('surname')} />
                     </Group>
-                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} type="email" label='Email' required placeholder="Ex: your-email@example.com" {...formSignUp.getInputProps('email')} />
+                    <TextInput w={'99%'} leftSection={<IconAt name='at' id='email-icon' size={16} />} type="email" label='Email' required placeholder="Ex: your-email@example.com" {...formSignUp.getInputProps('email')} />
                     <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
                     <PasswordInput w={'99%'} label='Confirm Password' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
                     <Group>
@@ -330,7 +330,7 @@ export const AuthModal = React.memo(() => {
         } else if (!user.isAuthenticated && typeAuth === 'login') {
             return (
                 <form key={formLogInKey} className="flex flex-col gap-4 my-5" onSubmit={formLogIn.onSubmit(handleLogin)}>
-                    <TextInput w={'99%'} leftSection={<IconAt size={16} />} label='Email' type="email" required placeholder="your-email@example.com" {...formLogIn.getInputProps('email')} />
+                    <TextInput w={'99%'} leftSection={<IconAt id='email-icon' name='at' size={16} />} label='Email' type="email" required placeholder="your-email@example.com" {...formLogIn.getInputProps('email')} />
                     <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
                     {errorMessage && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{errorMessage}</div>}
                     <Group justify="space-between">
@@ -401,7 +401,7 @@ export const AuthModal = React.memo(() => {
                     {user.isAuthenticated && user.userInfo.email === "laurasimona97@yahoo.com"
                         ? (
                             <Button variant="transparent" p={0} color="red">
-                                <Link href="/admin"><IconFlower size={18} /></Link>
+                                <Link href="/admin"><IconFlower name='flower' id="admin-icon" size={18} /></Link>
                             </Button>
                         ) : (
                             <div className="relative flex flex-col">
@@ -424,7 +424,7 @@ export const AuthModal = React.memo(() => {
                     }
                 </NavbarButton>
                 <NavbarButton variant="secondary" onClick={open} className='flex items-center justify-center h-[34px]'>
-                    {user.isAuthenticated ? <IconUser color='blue' size={18} /> : <IconUser size={18} />}
+                    {user.isAuthenticated ? <IconUser color='blue'  size={18} /> : <IconUser size={18} />}
                 </NavbarButton>
             </div>
         </>

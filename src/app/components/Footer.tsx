@@ -157,10 +157,10 @@ export const Footer = () => {
                     <p className="text-xs opacity-75 mt-1">Procesare securizată prin partenerii noștri de încredere</p>
                     <div className="flex justify-center items-center space-x-4 mt-2">
                         <a href="https://anpc.ro/ce-este-sal/" target="_blank">
-                            <img src="https://cdn.shopify.com/s/files/1/0553/9925/2156/t/7/assets/anpc-sal.webp?v=1661023053" className="w-[165px] h-[45px]" />
+                            <img src="https://cdn.shopify.com/s/files/1/0553/9925/2156/t/7/assets/anpc-sal.webp?v=1661023053" className="w-[165px] h-[45px]" alt="ANPC - Sal"/>
                         </a>
                         <a href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&amp;lng=RO" target="_blank">
-                            <img src="https://cdn.shopify.com/s/files/1/0553/9925/2156/t/7/assets/anpc-sol.png?v=1661023076" className="w-[165px] h-[45px]" />
+                            <img src="https://cdn.shopify.com/s/files/1/0553/9925/2156/t/7/assets/anpc-sol.png?v=1661023076" className="w-[165px] h-[45px]" alt="ANPC - SOL"/>
                         </a>
                     </div>
                 </div>

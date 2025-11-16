@@ -34,7 +34,7 @@ const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: Cart
             ) : (
               <img
                 src={item.image}
-                alt={item.title}
+                alt={item.title || 'Product image'}
                 className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
               />
             )}

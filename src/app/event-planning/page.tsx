@@ -161,7 +161,7 @@ const EventPlanning = () => {
                 <div className="relative overflow-hidden rounded-2xl mb-4">
                   <img
                     src={item.image}
-                    alt={item.title}
+                    alt={item.title || 'Event portfolio item'}
                     className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-300"></div>

@@ -91,7 +91,7 @@ const ItemCartCheckout = ({ product, currency, getConvertedPrice }: { product: O
                         >
                             <img
                                 src={imageSrc?.url}
-                                alt={product.title}
+                                alt={product.title || 'Product image'}
                                 className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg"
                             />
                         </div>

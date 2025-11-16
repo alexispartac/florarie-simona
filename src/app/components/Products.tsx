@@ -29,7 +29,7 @@ export const Item = ({ item }: { item: ComposedProductProps }) => {
             {item.images && item.images[0] ? (
               <img
                 src={item.images[0].url}
-                alt={item.title}
+                alt={item.title || 'Product image'}
                 className="w-full h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
