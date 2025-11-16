@@ -310,12 +310,12 @@ export const AuthModal = React.memo(() => {
             return (
                 <form className="flex flex-col gap-4 my-5" onSubmit={formSignUp.onSubmit(handleSignUp)}>
                     <Group>
-                        <TextInput w={'47%'} label='Last Name' required placeholder="Ex: your-name" {...formSignUp.getInputProps('name')} />
-                        <TextInput w={'47%'} label='First Name' required placeholder="Ex: your-firstname" {...formSignUp.getInputProps('surname')} />
+                        <TextInput w={'47%'} label='Nume' required placeholder="Ex: your-name" {...formSignUp.getInputProps('name')} />
+                        <TextInput w={'47%'} label='Prenume' required placeholder="Ex: your-firstname" {...formSignUp.getInputProps('surname')} />
                     </Group>
                     <TextInput w={'99%'} leftSection={<IconAt name='at' id='email-icon' size={16} />} type="email" label='Email' required placeholder="Ex: your-email@example.com" {...formSignUp.getInputProps('email')} />
-                    <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
-                    <PasswordInput w={'99%'} label='Confirm Password' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
+                    <PasswordInput w={'99%'} label='Parola' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('password')} />
+                    <PasswordInput w={'99%'} label='Confirma Parola' required placeholder="password" type="password" autoComplete="off" {...formSignUp.getInputProps('confirmPassword')} />
                     <Group>
                         <Checkbox c={"#b756a6"} color={"#b756a6"} checked={check} onChange={(event) => setCheck(event.currentTarget.checked)} />
                         <span className='text-sm'>Sunt de acord cu <Anchor href="/terms&conditions" target="_blank" c={"#b756a6"}>Termenii și condițiile</Anchor> </span>
@@ -323,7 +323,7 @@ export const AuthModal = React.memo(() => {
                     {errorMessage && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{errorMessage}</div>}
                     <Group justify="space-between">
                         <Anchor c={"#b756a6"} onClick={() => { setTypeAuth('login'); setErrorMessage(''); }} size="xs">Ai deja un cont? Login</Anchor>
-                        <Button type="submit" variant='filled' color='#b756a6' disabled={loading || !check}>Sign in</Button>
+                        <Button type="submit" variant='filled' color='#b756a6' disabled={loading || !check}>Inregistreaza-te</Button>
                     </Group>
                 </form>
             );
@@ -334,7 +334,7 @@ export const AuthModal = React.memo(() => {
                     <PasswordInput w={'99%'} label='Password' required placeholder="password" type="password" autoComplete="off" {...formLogIn.getInputProps('password')} />
                     {errorMessage && <div style={{ color: 'red', fontSize: 14, marginBottom: 8 }}>{errorMessage}</div>}
                     <Group justify="space-between">
-                        <Anchor c={"#b756a6"} onClick={() => { setTypeAuth('signin'); setErrorMessage(''); }} size="xs">Nu ai cont? SignUp</Anchor>
+                        <Anchor c={"#b756a6"} onClick={() => { setTypeAuth('signin'); setErrorMessage(''); }} size="xs">Nu ai cont? Inregistreaza-te</Anchor>
                         <ForgotPasswordModal />
                         <Button type="submit" variant='filled' color='#b756a6' disabled={loading}>Login</Button>
                     </Group>
@@ -381,7 +381,7 @@ export const AuthModal = React.memo(() => {
 
     return (
         <>
-            <Modal opened={opened} onClose={close} title={`${typeAuth === 'login' ? 'Login' : 'Sign Up'}`} withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
+            <Modal opened={opened} onClose={close} title={`${typeAuth === 'login' ? 'Intra in cont' : 'Inregistreaza-te'}`} withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
                 {loading && <Group justify="center" my="md"><Loader color="blue" /></Group>}
                 {renderForm}
             </Modal>

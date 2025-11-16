@@ -49,9 +49,14 @@ const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: Cart
                 <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
                   {item.title}
                 </h3>
-                <p>
-                  <span className="font-medium">Categorie:</span> {item.category}
-                </p>
+                <div className="text-lg md:text-xl font-semibold text-gray-900">
+                  {(item.price * item.quantity).toFixed(2)} RON
+                </div>
+                {item.quantity > 1 && (
+                  <div className="text-sm text-gray-500">
+                    {item.price} RON × {item.quantity}
+                  </div>
+                )}
               </div>
 
               {/* Controls Row */}
@@ -77,7 +82,7 @@ const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: Cart
                 </div>
 
                 {/* Price */}
-                <div className="text-right">
+                {/* <div className="text-right">
                   <div className="text-lg md:text-xl font-semibold text-gray-900">
                     {(item.price * item.quantity).toFixed(2)} RON
                   </div>
@@ -86,7 +91,7 @@ const ItemCart = ({ item, handleUpdateQuantity, handleRemoveItem }: { item: Cart
                       {item.price} RON × {item.quantity}
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               {/* Remove Button */}
