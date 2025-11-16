@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
 // Only enable in development
-const withBundleAnalyzerConfig = process.env.ANALYZE === 'true'
+const withA = false;
+const withBundleAnalyzerConfig = withA
   ? withBundleAnalyzer({ enabled: true })
   : (config: NextConfig) => config;
 
