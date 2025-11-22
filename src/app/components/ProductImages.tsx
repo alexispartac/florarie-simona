@@ -142,9 +142,9 @@ const ProductImages: React.FC<{ images: ProductImageProps[] }> = ({ images }) =>
           {/* Close Button */}
           <button
             onClick={closeModal}
-            className="absolute top-2 right-2 lg:top-6 lg:right-6 z-100 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1.5 lg:p-3 transition-all duration-200"
+            className="absolute top-3 right-3 lg:top-6 lg:right-6 z-100 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1.5 lg:p-3 transition-all duration-200"
           >
-            <IconX size={18} className="lg:w-7 lg:h-7" />
+            <IconX size={18} className="w-6 h-6 lg:w-7 lg:h-7" />
           </button>
 
           {/* Main Image */}
@@ -168,16 +168,16 @@ const ProductImages: React.FC<{ images: ProductImageProps[] }> = ({ images }) =>
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-4 lg:left-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
+                className="absolute left-4 lg:left-6 top-1/2 transform -translate-y-1/2 bg-black hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
               >
-                <IconChevronLeft size={20} className="lg:w-8 lg:h-8" />
+                <IconChevronLeft size={20} className="w-6 h-6 lg:w-8 lg:h-8" />
               </button>
               
               <button
                 onClick={nextImage}
-                className="absolute right-4 lg:right-6 top-1/2 transform -translate-y-1/2 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
+                className="absolute right-4 lg:right-6 top-1/2 transform -translate-y-1/2 bg-black hover:bg-opacity-30 text-white rounded-full p-1 lg:p-4 transition-all duration-200"
               >
-                <IconChevronRight size={20} className="lg:w-8 lg:h-8" />
+                <IconChevronRight size={20} className="w-6 h-6 lg:w-8 lg:h-8" />
               </button>
             </>
           )}

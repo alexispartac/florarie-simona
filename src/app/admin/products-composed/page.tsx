@@ -350,7 +350,7 @@ const ListOfProducts = ({
         category: composedCategories[0],
         promotion: false,
         newest: false,
-        discountPercentage: 0,
+        discountPercentage: undefined,
     });
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editProduct, setEditProduct] = useState<ComposedProductProps | null>(null);
@@ -409,7 +409,7 @@ const ListOfProducts = ({
                 category: composedCategories[0],
                 promotion: false,
                 newest: false,
-                discountPercentage: 0,
+                discountPercentage: undefined,
             });
             close();
         } catch (error) {
@@ -634,6 +634,11 @@ const CategoryModal = ({
                     ', '
                 )}`
             );
+            return;
+        }
+
+        if (categoryName.endsWith(' ')) {
+            alert('Numele categoriei nu poate fi urmat de spatiu.');
             return;
         }
 
