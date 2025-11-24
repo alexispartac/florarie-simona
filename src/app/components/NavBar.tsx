@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { CallModal } from "./CallModal";
 import { AuthModal } from "./Auth";
 import axios from "axios";
+import SearchBar from "./SearchBar";
+import Filter from "./Filter";
 
 const URL_COMPOSED_CATEGORIES = '/api/products-composed-categories';
 
@@ -63,11 +65,6 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
       category: groupedCategories["gifts"] || [],
     },
     {
-      name: "Noutati",
-      link: "features",
-      category: groupedCategories["features"] || [],
-    },
-    {
       name: "Organizare evenimente",
       link: "event-planning",
       category: [],
@@ -92,6 +89,8 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
+            <SearchBar />
+            <Filter />
             <AuthModal />
             <CallModal />
           </div>
@@ -102,6 +101,8 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
           <MobileNavHeader>
             <NavbarLogo />
             <div className="flex w-full flex-row justify-end items-center">
+              <SearchBar />
+              <Filter />
               <AuthModal />
               <CallModal />
             </div>

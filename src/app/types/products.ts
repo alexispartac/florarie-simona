@@ -30,3 +30,12 @@ export interface ComposedProductProps {
     newest: boolean,
     discountPercentage?: number,
 }
+
+export interface CriteriaFilterProps {
+    category: string,
+    color: string,
+    price_min: number,
+    price_max: number,
+    promotion: boolean,
+    newest: boolean,
+}
