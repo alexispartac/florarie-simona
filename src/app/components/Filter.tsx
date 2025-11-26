@@ -268,12 +268,12 @@ const Filter = () => {
 
             <Modal opened={opened} onClose={close} title="Filtrare" withCloseButton={true} fullScreen={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
                 {loading ? (
-                    <div className='flex flex-col h-[calc(100vh-124px)] items-center justify-center'>
+                    <div className='flex flex-col h-[calc(100vh-180px)] items-center justify-center'>
                         <Loader size="xl" />
                     </div>
                 ) : (
                     <>
-                        <div className='flex flex-col h-[calc(100vh-124px)]'>
+                        <div className='flex flex-col h-[calc(100vh-180spx)]'>
                             {message && (
                                 <div className='w-full bg-yellow-100 text-yellow-600 p-2 rounded-md my-4 border border-yellow-600'>
                                     {message}
