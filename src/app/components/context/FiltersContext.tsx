@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 export interface CriteriaFilterProps {
     category: string[],
+    components: string[],
     colors: string[],
     price_min: number,
     price_max: number,
@@ -26,6 +27,7 @@ const FiltersContext = createContext<FiltersContextType>({
         sorter: '',
         filter: {
             category: [],
+            components: [],
             colors: [],
             price_min: 0,
             price_max: 0,
@@ -41,6 +43,7 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
         sorter: '',
         filter: {
             category: [],
+            components: [],
             colors: [],
             price_min: 0,
             price_max: 0,

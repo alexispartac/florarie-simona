@@ -7,6 +7,7 @@ import { useFilters } from '@/app/components/context/FiltersContext';
 import { CriteriaFilterProps } from '@/app/components/context/FiltersContext';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { ProductStockProps } from '../types/stock-products';
 
 const sortCriteria = [
     "Pret crescator",
@@ -31,6 +32,14 @@ const FilterContiner = ({ setSelectedFilters, selectedFilters, filteredData }: {
             setSelectedFilters({ ...selectedFilters, colors: selectedFilters.colors.filter((item) => item !== color) });
         } else {
             setSelectedFilters({ ...selectedFilters, colors: [...selectedFilters.colors, color] });
+        }
+    };
+
+    const handleComponentClick = (component: string) => {
+        if (selectedFilters.components.includes(component)) {
+            setSelectedFilters({ ...selectedFilters, components: selectedFilters.components.filter((item) => item !== component) });
+        } else {
+            setSelectedFilters({ ...selectedFilters, components: [...selectedFilters.components, component] });
         }
     };
 
@@ -64,6 +73,16 @@ const FilterContiner = ({ setSelectedFilters, selectedFilters, filteredData }: {
                     <div className='flex flex-nowrap gap-2 overflow-x-scroll'>
                         {filteredData.colors.map((color, index) => (
                             <p onClick={() => handleColorClick(color)} className={`flex items-center justify-center text-center p-2 cursor-pointer border border-gray-300 rounded-md ${selectedFilters.colors.includes(color) ? 'bg-gray-200' : ''}`} key={`${color}-${index}`}>{color}</p>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p className='font-bold py-2'>Continut</p>
+                <div>
+                    <div className='flex flex-nowrap gap-2 overflow-x-scroll'>
+                        {filteredData.components.map((component, index) => (
+                            <p onClick={() => handleComponentClick(component)} className={`flex items-center justify-center text-center p-2 cursor-pointer border border-gray-300 rounded-md ${selectedFilters.components.includes(component) ? 'bg-gray-200' : ''}`} key={`${component}-${index}`}>{component}</p>
                         ))}
                     </div>
                 </div>
@@ -146,6 +165,7 @@ const Filter = () => {
     const [selectedSort, setSelectedSort] = useState<string>('');
     const [selectedFilters, setSelectedFilters] = useState<CriteriaFilterProps>({
         category: [],
+        components: [],
         colors: [],
         price_min: 0,
         price_max: 0,
@@ -155,6 +175,7 @@ const Filter = () => {
     const { filters, setFilters } = useFilters();
     const [filteredData, setFilteredData] = useState<CriteriaFilterProps>({
         category: [],
+        components: [],
         colors: ['rosu', 'galben', 'albastru', 'mov', 'verde', 'portocaliu', 'alb', 'negru', 'maro',],
         price_min: 100,
         price_max: 1000,
@@ -174,6 +195,14 @@ const Filter = () => {
             .catch((error) => {
                 console.error('Error fetching categories and colors:', error);
             });
+        axios.get('/api/products')
+            .then((response) => {
+                const componentNames = response.data.map((item: ProductStockProps) => item.title);
+                setFilteredData(prev => ({ ...prev, components: componentNames }));
+            })
+            .catch((error) => {
+                console.error('Error fetching categories and colors:', error);
+            });
         setLoading(false);
     }, []);
 
@@ -181,6 +210,7 @@ const Filter = () => {
         setMessage("Filtrele au fost sterse!");
         setSelectedFilters({
             category: [],
+            components: [],
             colors: [],
             price_min: 0,
             price_max: 0,
@@ -192,6 +222,7 @@ const Filter = () => {
             ...filters,
             filter: {
                 category: [],
+                components: [],
                 colors: [],
                 price_min: 0,
                 price_max: 0,

@@ -7,6 +7,7 @@ import { ComposedProductProps } from "@/app/types/products";
 import { ContinerItems } from "../components/Products";
 import { useAllProducts } from "../components/hooks/fetchProductsGroupedByCategory";
 import { useFilters } from "../components/context/FiltersContext";
+import { ProductStockProps } from "../types/stock-products";
 
 const itemsBread = [
     { title: 'Buchetul Simonei', href: '/homepage' }
@@ -37,6 +38,11 @@ const Content = () => {
         const colorsMatch = filters.filter.colors.length === 0 ||
             colors.some(color => filters.filter.colors.includes(color));
 
+        const components: string[] = product.info_category.standard.composition.map((item: ProductStockProps) => item.title);
+
+        const componentsMatch = filters.filter.components.length === 0 ||
+            components.some(component => filters.filter.components.includes(component));
+
         const priceMatch = (filters.filter.price_min === 0 ||
             product.info_category.standard.price >= filters.filter.price_min) &&
             (filters.filter.price_max === 0 ||
@@ -45,7 +51,7 @@ const Content = () => {
         const promotionMatch = !filters.filter.promotion || product.promotion === true;
         const popularMatch = !filters.filter.popular || product.isPopular === true;
 
-        return categoryMatch && colorsMatch && priceMatch && promotionMatch && popularMatch;
+        return categoryMatch && colorsMatch && componentsMatch && priceMatch && promotionMatch && popularMatch;
     });
 
     let orderedProducts = [...filteredProducts];
