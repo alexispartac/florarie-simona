@@ -88,7 +88,7 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
         <NavBody>
           <NavbarLogo />
           <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center">
             <SearchBar />
             <Filter />
             <AuthModal />
@@ -100,7 +100,7 @@ export function NavbarDemo({ children }: { children: React.ReactNode }) {
         <MobileNav>
           <MobileNavHeader>
             <NavbarLogo />
-            <div className="flex w-full flex-row justify-end items-center">
+            <div className="flex w-full flex-row justify-end items-center p-0">
               <SearchBar />
               <Filter />
               <AuthModal />

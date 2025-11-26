@@ -1,3 +1,4 @@
+import { FiltersProvider } from "./components/context/FiltersContext";
 import { StoreProvider } from "./components/context/StoreContext";
 import { UserProvider } from "./components/context/ContextUser";
 import QueryProvider from "./components/context/QueryProvider";
@@ -65,7 +66,9 @@ export default function RootLayout({
             <QueryProvider>
               <ReduxProvider>
                 <StoreProvider>
-                  <ClientWrapper>{children}</ClientWrapper>
+                  <FiltersProvider>
+                    <ClientWrapper>{children}</ClientWrapper>
+                  </FiltersProvider>
                 </StoreProvider>
               </ReduxProvider>
             </QueryProvider>

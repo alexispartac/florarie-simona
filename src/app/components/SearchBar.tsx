@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
-import { Modal } from '@mantine/core';
+import { Button, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAllProducts } from '@/app/components/hooks/fetchProductsGroupedByCategory';
 import { ComposedProductProps } from '@/app/types/products';
@@ -83,9 +83,9 @@ const SearchBar = () => {
 
     return (
         <div>
-            <button onClick={() => {open()}} className='flex items-center justify-center h-[34px] w-[34px] cursor-pointer '>
-                <IconSearch size={20} />
-            </button>
+            <Button variant="transparent" onClick={open} p={0} pr={12}>
+                <IconSearch size={20}/>
+            </Button>
 
             <Modal opened={opened} onClose={close} title="Cautare" fullScreen={true} withCloseButton={true} centered overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}>
                 <div className='flex flex-col h-[calc(100vh-90px)]'>
@@ -112,7 +112,6 @@ const SearchBar = () => {
                     </div>
                 </div>
             </Modal>    
-
         </div>
     );
 };

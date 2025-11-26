@@ -137,7 +137,7 @@ const Story = () => {
                             className="pt-4"
                         >
                             <Link
-                                href="/features"
+                                href="/filtered-products"
                                 className="inline-flex items-center gap-2 bg-[#b756a64f] text-white px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                             >
                                 <span>Descoperă Colecția</span>

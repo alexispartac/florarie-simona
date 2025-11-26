@@ -107,7 +107,7 @@ const GlobalMessage = () => {
           <button onClick={open}> 🥲 </button>
         </h1>
         <p className="text-lg">Vă mulțumim pentru înțelegere!</p>
-        <p>Dacă aveți întrebări contactați: 0772055889</p>
+        <p>Dacă aveți întrebări contactați: 0769141250</p>
         <Group className="mt-4">
           <Link href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" className="hover:text-gray-300"><IconBrandFacebook /></Link>
           <Link href="https://www.instagram.com/poeziaflorilor/" className="hover:text-gray-300"><IconBrandInstagram /></Link>
