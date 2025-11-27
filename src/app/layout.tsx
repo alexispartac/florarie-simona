@@ -6,11 +6,10 @@ import ReduxProvider from "./cart/components/ReduxProvider";
 import ClientWrapper from './components/ClientWrapper';
 import { Geist, Geist_Mono } from "next/font/google";
 import { MantineProvider } from '@mantine/core';
-
+import BackToTop from "./components/BackToTop";
 import type { Metadata } from "next";
 import '@mantine/core/styles.css';
 import "./globals.css";
-import BackToTop from "./components/BackToTop";
 
 
 const geistSans = Geist({

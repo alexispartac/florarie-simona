@@ -9,9 +9,15 @@ export interface UserContext {
     isAuthenticated: boolean;
 }
 
+export interface AdvertisementContext {
+    isVisible: boolean;
+}
+
 export interface UserContextType {
     user: UserContext;
     setUser: React.Dispatch<React.SetStateAction<UserContext>>;
+    advertisement: AdvertisementContext;
+    setAdvertisement: React.Dispatch<React.SetStateAction<AdvertisementContext>>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -30,7 +36,11 @@ const UserContext = createContext<UserContextType>({
         },
         isAuthenticated: false,
     },
+    advertisement: {
+        isVisible: false,
+    },
     setUser: () => {},
+    setAdvertisement: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -49,9 +59,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         },
         isAuthenticated: false,
     });
+    const [advertisement, setAdvertisement] = useState<AdvertisementContext>({
+        isVisible: true,
+    });
 
     return (
-        <UserContext.Provider value={{ user, setUser}}>
+        <UserContext.Provider value={{ user, setUser, advertisement, setAdvertisement}}>
           <CookiesProvider>
             {children}
           </CookiesProvider>
