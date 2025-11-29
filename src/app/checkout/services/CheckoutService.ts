@@ -109,7 +109,8 @@ export class CheckoutService {
                 deliveryInfo: {
                     address: orderData.clientAddress,
                     phone: orderData.clientPhone,
-                    notes: orderData.info
+                    notes: orderData.info,
+                    paymentMethod: orderData.paymentMethod,
                 }
             });
 

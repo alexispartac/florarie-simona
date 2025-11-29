@@ -101,7 +101,7 @@ export default function Contact() {
                                     autoFocus={false}
                                     key={formContact.key('first_name')}
                                     {...formContact.getInputProps('first_name')}
-                                    placeholder={"Ex: First Name"}
+                                    placeholder={"Ex: Prenume"}
                                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 invalid:border-pink-500 invalid:text-pink-600 focus:border-sky-500"
                                 />
                             </div>
@@ -115,7 +115,7 @@ export default function Contact() {
                                     autoFocus={false}
                                     key={formContact.key('last_name')}
                                     {...formContact.getInputProps('last_name')}
-                                    placeholder={"Ex: Last Name"}
+                                    placeholder={"Ex: Nume"}
                                     className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                                 />
                             </div>

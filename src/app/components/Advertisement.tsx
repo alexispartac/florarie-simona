@@ -21,8 +21,10 @@ export default function Advertisement({
   const { advertisement, setAdvertisement } = useUser();
 
   const handleClose = () => {
-    setIsVisible(false);
-    setAdvertisement({ isVisible: false });
+    setTimeout(() => {
+      setIsVisible(false);
+      setAdvertisement({ isVisible: false });
+    }, 1000);
   };
 
   if (!isVisible || advertisement.isVisible === false) return null;

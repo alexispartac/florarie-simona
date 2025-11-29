@@ -37,10 +37,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { clientEmail, clientName, orderDetails, totalPrice } = await req.json();
+    const { clientEmail, clientName, orderDetails, totalPrice, deliveryInfo } = await req.json();
 
     // Verifică dacă toate câmpurile necesare sunt prezente
-    if (!clientEmail || !clientName || !orderDetails || !totalPrice) {
+    if (!clientEmail || !clientName || !orderDetails || !totalPrice || !deliveryInfo) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields.' },
         { status: 400 }
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Conținutul email-ului
-    const mailOptions = {
+    const mailOptionsClient = {
       from: process.env.EMAIL_USER,
       to: clientEmail,
       subject: 'Confirmare Comandă - Buchetul Simonei',
@@ -97,6 +97,7 @@ export async function POST(req: NextRequest) {
             .join('')}
         </ul>
         <p><strong>Total: ${totalPrice} RON</strong></p>
+        <p><strong>Veti primi o confirmare de la adresa de email: ${process.env.EMAIL_USER} si un apel telefonic de la numarul: 0769 141 250</strong></p>
         <p>Comanda dumneavoastră va fi procesată în cel mai scurt timp posibil.</p>
         <p>Vă rugăm să verificați detaliile comenzii și să ne contactați dacă aveți întrebări.</p>
         <p>Pentru orice întrebări sau nelămuriri, nu ezitați să ne contactați la <a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a>.</p>
@@ -110,7 +111,34 @@ export async function POST(req: NextRequest) {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    const mailOptionsAdmin = {
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: 'Comandă nouă - Buchetul Simonei',
+      html: `
+        <h1>Comandă nouă, ${clientName}!</h1>
+        <p>Detalii comandă:</p>
+        <ul>
+          ${orderDetails
+            .map(
+              (item: { title: string; quantity: number; price: number }) =>
+                `<li>${item.title} - Cantitate: ${item.quantity} - Preț: ${item.price} RON</li>`
+            )
+            .join('')}
+        </ul>
+        <p><strong>Total: ${totalPrice} RON</strong></p>
+        <p><strong>Clientul: ${clientName}</strong></p>
+        <p><strong>Email: ${clientEmail}</strong></p>
+        <p><strong>Telefon: ${deliveryInfo.phone}</strong></p>
+        <p><strong>Adresa: ${deliveryInfo.address}</strong></p>
+        <p><strong>Metoda de plata: ${deliveryInfo.paymentMethod}</strong></p>
+        <p><strong>Note suplimentare: ${deliveryInfo.notes}</strong></p>
+
+      `,
+    };
+
+    await transporter.sendMail(mailOptionsClient);
+    await transporter.sendMail(mailOptionsAdmin);
 
     return NextResponse.json({ success: true, message: 'Email trimis cu succes!' }, { status: 200 });
   } catch (error) {

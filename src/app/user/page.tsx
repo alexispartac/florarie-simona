@@ -71,15 +71,15 @@ const [loading, setLoading] = useState(false); // Starea pentru loader
                     setModalOpened(true); // Deschide modalul la apăsarea butonului
                 })}
             >
-                <TextInput w={'99%'} label="Last Name" {...form.getInputProps("name")} />
-                <TextInput w={'99%'} label="First Name" {...form.getInputProps("surname")} />
+                <TextInput w={'99%'} label="Nume" {...form.getInputProps("name")} />
+                <TextInput w={'99%'} label="Prenume" {...form.getInputProps("surname")} />
                 <TextInput w={'99%'} label="Email" type="email" {...form.getInputProps("email")} disabled />
-                <TextInput w={'99%'} label="Phone" placeholder="Ex: 0799999999" type="tel" {...form.getInputProps("phone")} />
-                <TextInput w={'99%'} label="Address" placeholder="Ex: jud. loc. str. nr." {...form.getInputProps("address")} />
-                <PasswordInput w={'99%'} label="Password" type="password" placeholder="password" {...form.getInputProps("password")} />
+                <TextInput w={'99%'} label="Numar de telefon" placeholder="Ex: 0799999999" type="tel" {...form.getInputProps("phone")} />
+                <TextInput w={'99%'} label="Adresa" placeholder="Ex: jud. loc. str. nr." {...form.getInputProps("address")} />
+                <PasswordInput w={'99%'} label="Parola" type="password" placeholder="password" {...form.getInputProps("password")} />
                 <TextInput w={'99%'} label="User ID" value={form.values.id} disabled />
-                <TextInput w={'99%'} label="Account Creation Date" value={form.values.createdAt} disabled />
-                <TextInput w={'99%'} label="Number of Orders" value={form.values.order?.toString() || "0"} disabled />
+                <TextInput w={'99%'} label="Data crearii contului" value={form.values.createdAt} disabled />
+                <TextInput w={'99%'} label="Numarul de comenzi" value={form.values.order?.toString() || "0"} disabled />
                 <Group mt="md">
                     <Button type="submit" color='#b756a6' disabled={loading}>
                         {loading ? <Loader size="xs" color="white" /> : "Actualizează datele"}
