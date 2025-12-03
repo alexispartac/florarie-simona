@@ -30,19 +30,19 @@ export default function Advertisement({
   if (!isVisible || advertisement.isVisible === false) return null;
 
   return (
-    <div className="fixed inset-0 z-70 flex items-center justify-center bg-black bg-opacity-90">
+    <div className="fixed inset-0 z-70 flex items-center justify-center bg-green-900 bg-opacity-90">
       <div className="relative h-screen w-full">
         <Image
           src={imageSrc}
           alt="Advertisement"
           fill
-          className="object-cover"
+          className="object-contain md:object-cover"
           priority
         />
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 transform">
+        <div className="absolute bottom-60 left-1/2 -translate-x-1/2 transform">
           <Link
             href={buttonLink}
-            className="text-sm md:text-lg rounded-full bg-white px-4 py-3 text-lg font-semibold text-black transition hover:bg-gray-200"
+            className="text-sm md:text-lg rounded-full bg-gray-100 px-4 py-3 text-lg font-semibold text-black transition hover:bg-gray-200"
             onClick={handleClose}
           >
             {buttonText}
@@ -50,7 +50,7 @@ export default function Advertisement({
         </div>
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 rounded-full bg-white p-2 text-black hover:bg-gray-200"
+          className="absolute right-4 top-8 rounded-full bg-white p-2 text-black hover:bg-gray-200"
           aria-label="Close advertisement"
         >
           <svg
