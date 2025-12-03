@@ -74,6 +74,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
         <motion.div
             ref={ref}
             className={cn("sticky inset-x-0 top-20 z-40 w-full", className)}
+            aria-hidden={!visible}
         >
             {React.Children.map(children, (child) =>
                 React.isValidElement(child)
