@@ -25,7 +25,7 @@ function RestrictedContent({ children }: { children: React.ReactNode }) {
 
     return (
         <div>
-            {isRestricted ? <NavbarDemo>{children}</NavbarDemo> : children}
+            {isRestricted ? children : <NavbarDemo>{children}</NavbarDemo>}
         </div>
     );
 }
