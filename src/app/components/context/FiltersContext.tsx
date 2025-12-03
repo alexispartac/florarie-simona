@@ -53,9 +53,9 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return (
-        <FiltersContext.Provider value={{ filters, setFilters }}>
+        <FiltersContext value={{ filters, setFilters }}>
             {children}
-        </FiltersContext.Provider>
+        </FiltersContext>
     );
 };
 

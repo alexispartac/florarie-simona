@@ -1,11 +1,11 @@
 'use client';
+
 import { usePathname } from "next/navigation";
 import { NavbarDemo } from "./NavBar";
-import React from "react";
+import React, { Suspense } from "react";
 
-export const RestrictedComponents = ({ children }: { children: React.ReactNode }) => {
+function RestrictedContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-
     const restrictedPaths = [
         "/",
         "/checkout",
@@ -21,17 +21,19 @@ export const RestrictedComponents = ({ children }: { children: React.ReactNode }
         "/admin/close-period",
         "/admin/newsletter",
     ];
-    const isRestricted = restrictedPaths.includes(pathname);
+    const isRestricted = restrictedPaths.includes(pathname || '');
 
     return (
         <div>
-            {isRestricted ? (
-                <div>{children}</div>
-            ) : (
-                <div>
-                    <NavbarDemo>{children}</NavbarDemo>
-                </div>
-            )}
+            {isRestricted ? <NavbarDemo>{children}</NavbarDemo> : children}
         </div>
     );
-};
+}
+
+export function RestrictedComponents({ children }: { children: React.ReactNode }) {
+    return (
+        <Suspense fallback={<div>Se încarcă...</div>}>
+            <RestrictedContent>{children}</RestrictedContent>
+        </Suspense>
+    );
+}

@@ -39,9 +39,9 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <StoreContext.Provider value={{ isClosed, setIsClosed, closePeriod }}>
+    <StoreContext value={{ isClosed, setIsClosed, closePeriod }}>
       {children}
-    </StoreContext.Provider>
+    </StoreContext>
   );
 };
 

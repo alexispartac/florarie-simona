@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Activity } from 'react';
 import { IconFilters, IconFilter, IconSortAZ, IconTrash } from '@tabler/icons-react';
 import { Modal, RangeSlider, Button, Loader } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -274,11 +274,11 @@ const Filter = () => {
                 ) : (
                     <>
                         <div className='flex flex-col h-[calc(100vh-180spx)]'>
-                            {message && (
+                            <Activity name='filter-message' mode={message ? 'visible' : 'hidden'}>
                                 <div className='w-full bg-yellow-100 text-yellow-600 p-2 rounded-md my-4 border border-yellow-600'>
                                     {message}
                                 </div>
-                            )}
+                            </Activity>
                             <div className='flex flex-row h-[5%] mt-3'>
                                 <div className='flex flex-row w-full justify-between items-center'>
                                     <div
