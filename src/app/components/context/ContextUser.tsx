@@ -64,11 +64,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return (
-        <UserContext.Provider value={{ user, setUser, advertisement, setAdvertisement}}>
+        <UserContext value={{ user, setUser, advertisement, setAdvertisement}}>
           <CookiesProvider>
             {children}
           </CookiesProvider>
-        </UserContext.Provider>
+        </UserContext>
     );
 };
 

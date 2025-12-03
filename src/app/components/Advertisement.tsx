@@ -39,7 +39,7 @@ export default function Advertisement({
           className="object-contain md:object-cover"
           priority
         />
-        <div className="absolute bottom-60 left-1/2 -translate-x-1/2 transform">
+        <div className="absolute bottom-30 md:bottom-60 left-1/2 -translate-x-1/2 transform">
           <Link
             href={buttonLink}
             className="text-sm md:text-lg rounded-full bg-gray-100 px-4 py-3 text-lg font-semibold text-black transition hover:bg-gray-200"

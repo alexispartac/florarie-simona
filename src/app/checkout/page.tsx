@@ -7,7 +7,6 @@ import { TextInput, Button, Textarea, Modal, Select, Divider, Text } from '@mant
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
-import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '../components/context/ContextUser';
 import { CartItem } from '@/app/types/cart';
 import { Footer } from '../components/Footer';
@@ -183,16 +182,24 @@ const CheckoutPage = () => {
         CheckoutService.fetchOrderNumber().then((number) => setOrderNumber(number + 1));
     }, [cartItems.length, router]);
 
+    const [formId, setFormId] = useState('');
+    const [orderDate, setOrderDate] = useState('');
+
+    useEffect(() => {
+        setFormId(crypto.randomUUID());
+        setOrderDate(new Date().toISOString());
+    }, []);
+
     const checkoutForm = useForm<OrderPropsAdmin>({
         initialValues: {
-            id: uuidv4(),
+            id: formId,
             userId: user.userInfo.id || '',
             orderNumber: orderNumber || 0,
             clientName: user.userInfo.name + ' ' + user.userInfo.surname || '',
             clientEmail: user.userInfo.email || '',
             clientPhone: user.userInfo.phone || '',
             clientAddress: user.userInfo.address || '',
-            orderDate: new Date().toISOString(),
+            orderDate: orderDate,
             deliveryDate: '',
             info: '',
             status: 'Pending',
