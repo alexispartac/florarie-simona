@@ -12,7 +12,7 @@ cloudinary.config({
 export async function GET(req: NextRequest) {
   try {
     // Extrage parametrii din URL
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const folder = searchParams.get('folder');
     const limit = searchParams.get('limit') || '10';
     const sortBy = searchParams.get('sortBy') || 'created_at';

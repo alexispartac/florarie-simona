@@ -1,5 +1,4 @@
-// This route is responsible for fetching a specific image from Cloudinary
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary
@@ -9,9 +8,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const publicId = searchParams.get('public_id');
 
     if (!publicId) {
@@ -20,7 +19,7 @@ export async function GET(req: Request) {
 
     const result = await cloudinary.api.resource(publicId);
 
-    return NextResponse.json(result , { status: 200 });
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error('Error fetching image:', error);
     return NextResponse.json({ error: 'Failed to fetch image' }, { status: 500 });

@@ -10,7 +10,6 @@ const withBundleAnalyzerConfig = withA
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  cacheComponents: true,
   compress: true,
   reactCompiler: true,
   images: {
@@ -22,6 +21,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
     turbopackFileSystemCacheForDev: true,
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
     optimizePackageImports: [
       'lucide-react',
       '@radix-ui/react-dialog',
