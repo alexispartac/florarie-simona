@@ -1,5 +1,5 @@
 'use client';
-import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar, Badge, PasswordInput } from '@mantine/core';
+import { Modal, Button, TextInput, Group, Checkbox, Anchor, Loader, Avatar, PasswordInput } from '@mantine/core';
 import { IconAt, IconFlower, IconShoppingCart, IconUser } from "@tabler/icons-react";
 import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { ForgotPasswordModal } from "./ForgotPassword";
@@ -406,13 +406,7 @@ export const AuthModal = React.memo(() => {
                         ) : (
                             <div className="relative flex flex-col">
                                 {cartItemCount > 0 && (
-                                    <Badge
-                                        color="red"
-                                        size="xs"
-                                        className="absolute top-1 -right-3 z-10"
-                                    >
-                                        {cartItemCount}
-                                    </Badge>
+                                    <div className="absolute top-2 right-1 z-10 w-2 h-2 bg-red-500 rounded-full"></div>
                                 )}
                                 <Button variant="transparent" p={0} pr={3} color="red">
                                     <Link href="/cart" className="relative inline-block">

@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { NavbarDemo } from "./NavBar";
 import React, { Suspense } from "react";
+import { Loader } from "@mantine/core";
 
 function RestrictedContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -32,7 +33,7 @@ function RestrictedContent({ children }: { children: React.ReactNode }) {
 
 export function RestrictedComponents({ children }: { children: React.ReactNode }) {
     return (
-        <Suspense fallback={<div>Se încarcă...</div>}>
+        <Suspense fallback={<Loader color="#b756a6"/>}>
             <RestrictedContent>{children}</RestrictedContent>
         </Suspense>
     );

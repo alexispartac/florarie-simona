@@ -5,14 +5,17 @@ import Content from "../components/Content";
 import PopUp from "../components/PopUp";
 import React from "react";
 import Advertisement from "../components/Advertisement";
+import { getSeasonalAd } from "../components/seasonalAds";
 
 export default function Home() {
+  const seasonalAd = getSeasonalAd();
+
   return (
     <div>
       <Advertisement 
-        imageSrc="/Christmas.webp" // Make sure this image exists in your public folder
-        buttonText="Vezi ofertele de Crăciun"
-        buttonLink="/arrangements/Christmas%20decorations"
+        imageSrc={seasonalAd.imageSrc}
+        buttonText={seasonalAd.buttonText}
+        buttonLink={seasonalAd.buttonLink}
       />
       <PopUp />
       <Content />
