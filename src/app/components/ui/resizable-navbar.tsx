@@ -297,9 +297,9 @@ export const MobileNavToggle = ({
     onClick: () => void;
 }) => {
     return isOpen ? (
-        <IconX className="text-black dark:color-theme" onClick={onClick} size={28} />
+        <IconX className="text-black dark:color-theme mx-2" onClick={onClick} size={32}/>
     ) : (
-        <IconMenu2 className="text-black dark:color-theme" onClick={onClick} size={28} />
+        <IconMenu2 className="text-black dark:color-theme mx-2" onClick={onClick} size={32} />
     );
 };
 
@@ -331,7 +331,7 @@ export const NavbarButton = ({
         | React.ComponentPropsWithoutRef<"button">
     )) => {
     const baseStyles =
-        "px-4 py-2 rounded-md button bg-transparent text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center";
+        "rounded-md button bg-transparent text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center";
 
     const variantStyles = {
         primary:

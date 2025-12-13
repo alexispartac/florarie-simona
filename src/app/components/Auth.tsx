@@ -400,8 +400,8 @@ export const AuthModal = React.memo(() => {
                 <NavbarButton as={"div"} variant="secondary" className='flex h-[34px] items-center justify-center'>
                     {user.isAuthenticated && user.userInfo.email === "laurasimona97@yahoo.com"
                         ? (
-                            <Button variant="transparent" p={0} color="red">
-                                <Link href="/admin"><IconFlower name='flower' id="admin-icon" size={18} /></Link>
+                            <Button variant="transparent" p={0} pr={3} color="red">
+                                <Link href="/admin"><IconFlower name='flower' id="admin-icon" size={20} /></Link>
                             </Button>
                         ) : (
                             <div className="relative flex flex-col">
@@ -414,9 +414,9 @@ export const AuthModal = React.memo(() => {
                                         {cartItemCount}
                                     </Badge>
                                 )}
-                                <Button variant="transparent" p={0} color="red">
+                                <Button variant="transparent" p={0} pr={3} color="red">
                                     <Link href="/cart" className="relative inline-block">
-                                        <IconShoppingCart size={18} />
+                                        <IconShoppingCart size={20} />
                                     </Link>
                                 </Button>
                             </div>
@@ -424,7 +424,7 @@ export const AuthModal = React.memo(() => {
                     }
                 </NavbarButton>
                 <NavbarButton variant="secondary" onClick={open} className='flex items-center justify-center h-[34px]'>
-                    {user.isAuthenticated ? <IconUser color='blue'  size={18} /> : <IconUser size={18} />}
+                    {user.isAuthenticated ? <IconUser color='blue' size={20} /> : <IconUser size={20} />}
                 </NavbarButton>
             </div>
         </>

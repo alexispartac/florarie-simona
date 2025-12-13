@@ -30,8 +30,8 @@ export const CallModal = () => {
         </Group>
       </Modal>
 
-      <Button variant="transparent" color="green" onClick={open} p={0} pr={16}>
-        <IconPhoneCall size={18} />
+      <Button variant="transparent" color="green" onClick={open} p={0}>
+        <IconPhoneCall size={20} />
       </Button>
     </>
   );

@@ -83,7 +83,7 @@ const SearchBar = () => {
 
     return (
         <div>
-            <Button variant="transparent" onClick={open} p={0} pr={12}>
+            <Button variant="transparent" onClick={open} p={0}>
                 <IconSearch size={20}/>
             </Button>
 
