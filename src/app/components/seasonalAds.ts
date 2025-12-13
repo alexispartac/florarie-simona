@@ -65,7 +65,7 @@ export const getSeasonalAd = (): SeasonalAd => {
   return {
     imageSrc: "/Christmas.webp", // Make sure this image exists in your public folder
     buttonText: "Vezi ofertele de Crăciun",
-    buttonLink: "/arrangements/Decoratiuni%20de%20Crăciun",
+    buttonLink: "/arrangements/Decoratiuni%20de%20Craciun",
     season: "Crăciun"
   };
 };
