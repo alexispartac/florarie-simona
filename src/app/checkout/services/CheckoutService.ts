@@ -365,7 +365,7 @@ export class CheckoutService {
                     <div class="icon">💳</div>
                     <h1>Se inițializează plata</h1>
                     <div class="sub-message">
-                        Vă rugăm așteptați, sunteți redirecționat către pagina securizată de plată pentru a finaliza comanda.
+                        Sunteți redirecționat către pagina securizată de plată pentru a finaliza comanda.
                     </div>
                     <div class="divider"></div>
                     <a href="${redirectUrl}" class="continue-btn">

@@ -1,9 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { User } from '@/app/types/user';
 import { OrderPropsAdmin, OrderProductProps } from '@/app/types/order';
 import { ProductImageProps } from "@/app/types/products";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, Textarea, Modal, Select, Divider, Text } from '@mantine/core';
+import { TextInput, Button, Textarea, Modal, Select, Divider, Text, Checkbox } from '@mantine/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, clearCart } from '../cart/components/CartRedux';
 import { useRouter } from 'next/navigation';
@@ -128,9 +129,11 @@ const CheckoutPage = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [receiveEmail, setReceiveEmail] = useState<boolean>(false);
     const [modalOpened, setModalOpened] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [delivery, setDelivery] = useState<boolean>(false);
+    const [saveAddress, setSaveAddress] = useState<boolean>(false);
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
@@ -177,6 +180,24 @@ const CheckoutPage = () => {
         const totalRON = cartItems.reduce((total, product) => total + product.price * product.quantity, 0);
         return getConvertedPrice(totalRON);
     };
+
+    const saveInfoDelivery = async(data: User) => {
+        try {
+            const response = await axios.put('/api/users', data);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const newsLetter = async(email: string) => {
+        try {
+            const response = await axios.post('/api/send-email/newsletter', { email } );
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const checkoutForm = useForm<OrderPropsAdmin>({
         initialValues: {
@@ -256,6 +277,18 @@ const CheckoutPage = () => {
                     CheckoutService.redirectToPayment(redirectUrl);
                 }
             });
+
+            if (saveAddress) {
+                saveInfoDelivery({
+                    ...user.userInfo,
+                    address: values.clientAddress,
+                    phone: values.clientPhone,
+                });
+            }
+
+            if (receiveEmail) {
+                newsLetter(values.clientEmail);
+            }
 
             if (!result.success) {
                 setModalMessage(result.message);
@@ -351,8 +384,12 @@ const CheckoutPage = () => {
                             defaultValue={user.userInfo.email}
                         />
                         <label className='flex items-center gap-2'>
-                            <input type='checkbox' className='w-4 h-4 text-pink-500' />
-                            <span className='text-sm'>Doresc să primesc e-mailuri cu noutăți și oferte</span>
+                           <Checkbox
+                                    label="Doresc să primesc e-mailuri cu noutăți și oferte"
+                                    onChange={(e) => {
+                                        setReceiveEmail(e.currentTarget.checked);
+                                    }}
+                            />
                         </label>
                     </div>
                 </div>
@@ -422,6 +459,12 @@ const CheckoutPage = () => {
                                     placeholder="Adaugă note suplimentare pentru livrare (ex: etaj, interfon, instrucțiuni speciale)"
                                     {...checkoutForm.getInputProps('info')}
                                     maxLength={150}
+                                />
+                                <Checkbox
+                                    label="Doresc să salvez această adresă ca adresa de livrare"
+                                    onChange={(e) => {
+                                        setSaveAddress(e.currentTarget.checked);
+                                    }}
                                 />
                             </div>
                         )}
