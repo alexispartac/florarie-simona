@@ -139,17 +139,12 @@ export const Footer = () => {
                 </div>
                 
                 <div className="flex flex-col items-center gap-4 max-w-5xl mx-auto">
-                    {/* First Row - Payment Methods */}
-                    <div className="flex flex-wrap justify-center items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                        {/* <div className="w-14 h-9 bg-white rounded flex items-center justify-center shadow-md border">
-                            <span className="text-gray-800 text-xs font-bold">G Pay</span>
-                        </div>
-                         */}
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="w-16 h-10 object-contain" />
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" className="w-16 h-10 object-contain" />
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" className="w-10 h-10 object-contain" />
+                    <div className="flex flex-wrap flex-row justify-center items-center gap-4 bg-white/10 backdrop-blur-sm rounded-lg px-4">
+                        <img src="/EuPlatescTransparent.png" alt="EuPlatesc" className="h-15 md:h-30 w-auto object-contain" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="h-5 md:h-10 w-auto object-contain" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" className="h-5 md:h-10 w-auto object-contain" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" className="h-5 md:h-10 w-auto object-contain" />
                     </div>
-
                 </div>
 
                 <div className="text-center mt-6">

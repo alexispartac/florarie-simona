@@ -19,12 +19,17 @@ export default function Advertisement({
 }: AdvertisementProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15); // 15 seconds countdown
+  const [timeLeft, setTimeLeft] = useState(15); 
   const { advertisement, setAdvertisement } = useUser();
 
   useEffect(() => {
     // Add a class to body when ad is open to prevent scrolling
     document.body.style.overflow = 'hidden';
+
+    if( advertisement.isVisible === false) {
+      document.body.style.overflow = 'unset';
+      setIsVisible(false);
+    }
     
     // Start countdown timer
     const timer = setInterval(() => {
@@ -53,7 +58,7 @@ export default function Advertisement({
     }, 500);
   };
 
-  if (!isVisible || advertisement.isVisible === false) return null;
+  if (!isVisible) return null;
 
   return (
     <AnimatePresence>

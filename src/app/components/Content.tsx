@@ -264,7 +264,7 @@ export function AuroraBackgroundDemo() {
                     Flori care vorbesc sufletului.
                 </div>
                 <button className="bg-white content dark:bg-white rounded-sm h-[70px] w-[200px] text-white dark:text-black px-4 py-2">
-                    <Link href="/features">
+                    <Link href="/arrangements">
                         <p className="text-2xl font-bold">
                             Descoperă
                         </p>
@@ -417,7 +417,7 @@ const NewOfers = () => {
                                 Florile spun mai mult decât cuvintele. Alege un buchet minunat pentru cei dragi și bucură-te de reduceri!
                             </p>
                             <Link
-                                href="/features/Promotii"
+                                href="/bouquets"
                                 className="inline-flex items-center gap-2 bg-[#b756a64f] text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
                             >
                                 <span>Comandă acum</span>
@@ -444,7 +444,7 @@ const NewOfers = () => {
                                 Această săptămână îți aduce buchete la prețuri imbatabile, gata să transforme orice moment într-o amintire de neuitat. <span className="font-bold" style={{ color: '#b756a6' }}>Timp limitat!</span>
                             </p>
                             <Link
-                                href="/features/Promotii%20saptamanale"
+                                href="/filtered-products"
                                 className="inline-flex items-center gap-2 bg-[#b756a64f] text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
                             >
                                 <span>Comandă acum</span>

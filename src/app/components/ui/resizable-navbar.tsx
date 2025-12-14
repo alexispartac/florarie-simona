@@ -261,7 +261,7 @@ export const MobileNavMenu = ({
                                         <span className="block w-full">{item.name}</span>
                                     </Link>
                                     {
-                                        idx < 5 &&
+                                        idx < 4 &&
                                         <span
                                             onClick={() => setHovered(idx)}
                                             className="absolute right-0 top-0 flex h-full items-center justify-center">
