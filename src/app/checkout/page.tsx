@@ -123,36 +123,23 @@ const ItemCartCheckout = ({ product, currency, getConvertedPrice }: { product: O
 
 const CheckoutPage = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
-    const [modalOpened, setModalOpened] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'ramburs' | 'card'>('ramburs');
     const [currency, setCurrency] = useState<'RON' | 'EUR'>('RON');
-    const [orderNumber, setOrderNumber] = useState<number | null>(null);
+    const [modalMessage, setModalMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [modalOpened, setModalOpened] = useState(false);
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [delivery, setDelivery] = useState<boolean>(false);
     const router = useRouter();
     const dispatch = useDispatch();
     const { user } = useUser();
-    const [agreedToTerms, setAgreedToTerms] = useState(false);
-
-    // Funcție pentru calculul prețului în funcție de monedă
-    const getConvertedPrice = (priceInRON: number) => {
-        if (currency === 'EUR') {
-            return Number((priceInRON / 5).toFixed(2)); // 1 EUR = 5 RON aproximativ
-        }
-        return priceInRON;
-    };
-
-    const getTotalPrice = () => {
-        const totalRON = cartItems.reduce((total, product) => total + product.price * product.quantity, 0);
-        return getConvertedPrice(totalRON);
-    };
-
+    
     React.useEffect(() => {
         // Verifică coșul din Redux și localStorage
         const localCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]') as CartItem[];
-        
+        CheckoutService.clearPendingOrderData();
+
         // Dacă ambele surse sunt goale, redirecționează către cart
         if (cartItems.length === 0 && localCartItems.length === 0) {
             router.push('/cart');
@@ -167,8 +154,7 @@ const CheckoutPage = () => {
 
         // Verifică dacă produsele sunt valide
         if (!Array.isArray(localCartItems) || localCartItems.some((product: CartItem) => !product.id || !product.title || !product.price || !product.quantity)) {
-            setModalMessage('Coșul tău conține produse invalide. Te rugăm să reîncarci pagina.');
-            setModalOpened(true);
+            router.push('/cart');
             return;
         }
 
@@ -177,29 +163,31 @@ const CheckoutPage = () => {
             router.push('/cart');
             return;
         }
-
-        // Dacă totul e în regulă, încarcă numărul comenzii
-        CheckoutService.fetchOrderNumber().then((number) => setOrderNumber(number + 1));
     }, [cartItems.length, router]);
 
-    const [formId, setFormId] = useState('');
-    const [orderDate, setOrderDate] = useState('');
+    // Funcție pentru calculul prețului în funcție de monedă
+    const getConvertedPrice = (priceInRON: number) => {
+        if (currency === 'EUR') {
+            return Number((priceInRON / 5).toFixed(2)); // 1 EUR = 5 RON aproximativ
+        }
+        return priceInRON;
+    };
 
-    useEffect(() => {
-        setFormId(crypto.randomUUID());
-        setOrderDate(new Date().toISOString());
-    }, []);
+    const getTotalPrice = () => {
+        const totalRON = cartItems.reduce((total, product) => total + product.price * product.quantity, 0);
+        return getConvertedPrice(totalRON);
+    };
 
     const checkoutForm = useForm<OrderPropsAdmin>({
         initialValues: {
-            id: formId,
+            id: 'secret',
             userId: user.userInfo.id || '',
-            orderNumber: orderNumber || 0,
+            orderNumber: 0,
             clientName: user.userInfo.name + ' ' + user.userInfo.surname || '',
             clientEmail: user.userInfo.email || '',
             clientPhone: user.userInfo.phone || '',
             clientAddress: user.userInfo.address || '',
-            orderDate: orderDate,
+            orderDate: new Date().toISOString(),
             deliveryDate: '',
             info: '',
             status: 'Pending',

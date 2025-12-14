@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         const client = await clientPromise;
         const db = client.db('florarie');
         const orders = await db.collection('orders').find().toArray();
-        const length = orders.length;
+        const length = orders.length + 1;
         return NextResponse.json(length, { status: 200 });
     } catch (error) {
         console.error('Eroare la obținerea comenzilor:', error);

@@ -4,6 +4,7 @@ import { OrderPropsAdmin } from '@/app/types/order';
 import clientPromise from '@/app/components/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -105,6 +106,7 @@ export async function POST(req: NextRequest) {
 
         const orderNumber = await db.collection('orders').countDocuments() + 1;
         data.orderNumber = orderNumber;
+        data.id = uuidv4();
 
         const result = await db.collection('orders').insertOne(data);
         if (!result.acknowledged) {

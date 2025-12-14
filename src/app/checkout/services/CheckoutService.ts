@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { OrderPropsAdmin } from '@/app/types/order';
+import { OrderPropsAdmin, OrderProductProps } from '@/app/types/order';
 
 interface ProcessOrderParams {
     orderData: OrderPropsAdmin;
@@ -22,21 +22,9 @@ interface ProcessResult {
     redirectUrl?: string;
 }
 
-const URL_ORDER_NUMBER_API = '/api/orders/number';
 const URL_PLACED_ORDER_EMAIL_API = '/api/send-email/placed-order';
 
 export class CheckoutService {
-    
-    static async fetchOrderNumber(): Promise<number> {
-        try {
-            const response = await axios.get(URL_ORDER_NUMBER_API, { withCredentials: true });
-            const orders: OrderPropsAdmin[] = response.data;
-            return orders.length;
-        } catch (error) {
-            console.error('Error fetching order number:', error);
-            return 0;
-        }
-    }
 
     static validateOrder(orderData: OrderPropsAdmin): OrderValidation {
         // Validare număr de telefon
@@ -57,10 +45,10 @@ export class CheckoutService {
         }
 
         // Validare nume
-        if (orderData.clientName.length < 2) {
+        if (orderData.clientName.length < 5) {
             return {
                 isValid: false,
-                message: 'Numele trebuie să conțină cel puțin 2 caractere.'
+                message: 'Numele trebuie să conțină cel puțin 5 caractere.'
             };
         }
 
@@ -80,6 +68,40 @@ export class CheckoutService {
                 message: 'Coșul de cumpărături este gol.'
             };
         }
+
+        // Verificare produse
+        orderData.products.forEach((product: OrderProductProps) => {
+            if( typeof product.id !== 'string' ) {
+                return {
+                    isValid: false,
+                    message: 'Eroare la verificarea produselor'
+                };
+            }
+            if( typeof product.title !== 'string' ) {
+                return {
+                    isValid: false,
+                    message: 'Eroare la verificarea produselor'
+                };
+            }
+            if( typeof product.title_category !== 'string' ) {
+                return {
+                    isValid: false,
+                    message: 'Eroare la verificarea produselor'
+                };
+            }
+            if( typeof product.price !== 'number' ) {
+                return {
+                    isValid: false,
+                    message: 'Eroare la verificarea produselor'
+                };
+            }
+            if( typeof product.quantity !== 'number' ) {
+                return {
+                    isValid: false,
+                    message: 'Eroare la verificarea produselor'
+                };
+            }
+        });
 
         return {
             isValid: true,
@@ -144,8 +166,8 @@ export class CheckoutService {
             
             const { orderData, timestamp } = JSON.parse(saved);
             
-            // Verifică dacă datele nu sunt prea vechi (30 minute)
-            if (Date.now() - timestamp > 30 * 60 * 1000) {
+            // Verifică dacă datele nu sunt prea vechi (20 minute)
+            if (Date.now() - timestamp > 20 * 60 * 1000) {
                 sessionStorage.removeItem('pendingOrderData');
                 return null;
             }
@@ -229,126 +251,127 @@ export class CheckoutService {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>Redirecționare către EuPlătesc</title>
+                <title>Redirecționare către pagina de plată</title>
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
                 <style>
                     body { 
-                        font-family: 'Arial', sans-serif; 
-                        text-align: center; 
-                        padding: 50px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        font-family: 'Roboto', sans-serif;
+                        background-color: #f8f5f0;
+                        color: #333;
                         margin: 0;
+                        padding: 0;
                         min-height: 100vh;
                         display: flex;
                         align-items: center;
                         justify-content: center;
+                        line-height: 1.6;
                     }
                     .container {
-                        max-width: 500px;
+                        width: 100%;
+                        max-width: 600px;
                         background: white;
-                        padding: 40px;
-                        border-radius: 20px;
-                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                        position: relative;
-                        overflow: hidden;
+                        padding: 2.5rem;
+                        border: 1px solid #e0d8c9;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                        text-align: center;
                     }
-                    .container::before {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        height: 5px;
-                        background: linear-gradient(90deg, #b756a6, #667eea);
+                    h1 {
+                        font-family: 'Playfair Display', serif;
+                        color: #2c3e50;
+                        margin: 0 0 1.5rem 0;
+                        font-size: 1.8rem;
+                        font-weight: 600;
                     }
                     .icon {
-                        font-size: 48px;
-                        margin-bottom: 20px;
-                        animation: pulse 2s infinite;
-                    }
-                    @keyframes pulse {
-                        0%, 100% { transform: scale(1); }
-                        50% { transform: scale(1.1); }
+                        font-size: 3rem;
+                        margin-bottom: 1.5rem;
+                        color: #8b7355;
                     }
                     .message {
-                        color: #333;
-                        font-size: 20px;
-                        margin-bottom: 15px;
-                        font-weight: 600;
+                        font-size: 1.25rem;
+                        margin-bottom: 1rem;
+                        color: #2c3e50;
                     }
                     .sub-message {
                         color: #666;
-                        font-size: 16px;
-                        margin-bottom: 30px;
-                        line-height: 1.5;
+                        margin-bottom: 2rem;
+                        max-width: 450px;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+                    .divider {
+                        height: 1px;
+                        background-color: #e0d8c9;
+                        margin: 1.5rem 0;
                     }
                     .continue-btn {
-                        background: linear-gradient(45deg, #b756a6, #667eea);
-                        color: white;
-                        padding: 15px 30px;
-                        border: none;
-                        border-radius: 25px;
-                        font-size: 16px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        text-decoration: none;
                         display: inline-block;
-                        transition: transform 0.3s ease;
-                        box-shadow: 0 5px 15px rgba(183, 86, 166, 0.4);
+                        background-color: #8b7355;
+                        color: white;
+                        padding: 0.8rem 2rem;
+                        text-decoration: none;
+                        border-radius: 2px;
+                        font-weight: 500;
+                        transition: background-color 0.2s;
+                        border: none;
+                        cursor: pointer;
+                        font-size: 1rem;
                     }
                     .continue-btn:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 7px 20px rgba(183, 86, 166, 0.6);
+                        background-color: #6e5d47;
                     }
-                    .progress-bar {
-                        width: 100%;
-                        height: 4px;
-                        background-color: #f0f0f0;
-                        border-radius: 2px;
-                        margin: 20px 0;
-                        overflow: hidden;
+                    .countdown {
+                        margin-top: 1.5rem;
+                        color: #7f8c8d;
+                        font-size: 0.9rem;
                     }
-                    .progress-fill {
-                        height: 100%;
-                        background: linear-gradient(90deg, #b756a6, #667eea);
-                        border-radius: 2px;
-                        animation: loading 2s ease-in-out;
-                    }
-                    @keyframes loading {
-                        0% { width: 0%; }
-                        100% { width: 100%; }
+                    @media (max-width: 480px) {
+                        .container {
+                            padding: 1.5rem;
+                            margin: 1rem;
+                        }
+                        h1 {
+                            font-size: 1.5rem;
+                        }
                     }
                 </style>
                 <script>
-                    let countdown = 3;
-                    const countdownElement = document.createElement('div');
-                    countdownElement.style.cssText = 'color: #666; font-size: 14px; margin-top: 15px;';
-                    document.querySelector('.container').appendChild(countdownElement);
-                    
-                    const updateCountdown = () => {
-                        countdownElement.textContent = \`Redirecționare automată în \${countdown} secunde...\`;
-                        countdown--;
-                        if (countdown < 0) {
-                            window.location.href = "${redirectUrl}";
+                    (function() {
+                        let countdown = 3;
+                        const countdownElement = document.getElementById('countdown');
+                        
+                        function updateCountdown() {
+                            if (countdownElement) {
+                                countdownElement.textContent = 'Redirecționare automată în ' + countdown + ' ' + 
+                                    (countdown === 1 ? 'secundă' : 'secunde') + '...';
+                            }
+                            
+                            if (countdown <= 0) {
+                                window.location.href = "${redirectUrl}";
+                                return;
+                            }
+                            
+                            countdown--;
+                            setTimeout(updateCountdown, 1000);
                         }
-                    };
-                    
-                    updateCountdown();
-                    setInterval(updateCountdown, 1000);
+                        
+                        // Start the countdown immediately
+                        updateCountdown();
+                    })();
                 </script>
             </head>
             <body>
                 <div class="container">
                     <div class="icon">💳</div>
-                    <div class="message">Se inițializează plata...</div>
+                    <h1>Se inițializează plata</h1>
                     <div class="sub-message">
-                        Te redirecționăm către platforma de plăți securizată EuPlătesc pentru a finaliza comanda.
+                        Vă rugăm așteptați, sunteți redirecționat către pagina securizată de plată pentru a finaliza comanda.
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
-                    </div>
+                    <div class="divider"></div>
                     <a href="${redirectUrl}" class="continue-btn">
-                        🚀 Continuă către EuPlătesc
+                        Continuă către pagina de plată
                     </a>
+                    <div id="countdown" class="countdown"></div>
                 </div>
             </body>
             </html>
