@@ -98,7 +98,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       >
                         {item.name}
                       </Link>
-                      <p className="text-sm text-gray-500">${item.price.toFixed(2)} Size-{item.variant.size} Color-{item.variant.color}</p>
+                      <p className="text-sm text-gray-500">${(item.price / 100).toFixed(2)} Size-{item.variant.size} Color-{item.variant.color}</p>
                       
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center">
@@ -147,7 +147,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       </div>
                     </div>
                     <div className="text-sm font-medium">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${((item.price * item.quantity) / 100).toFixed(2)}
                     </div>
                   </div>
                 ))}
@@ -157,15 +157,15 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>${(subtotal / 100).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Shipping</span>
-                      <span>{shipping > 0 ? `$${shipping.toFixed(2)}` : 'Free'}</span>
+                      <span>{shipping > 0 ? `$${(shipping / 100).toFixed(2)}` : 'Free'}</span>
                     </div>
                     <div className="flex justify-between font-medium text-base pt-2 border-t border-gray-200 mt-2">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>${(total / 100).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                 className="block w-full text-center py-3 px-4 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
                 onClick={onClose}
               >
-                Proceed to Checkout (${total.toFixed(2)})
+                Proceed to Checkout ${((total / 100).toFixed(2))}
               </Link>
             </div>
           )}

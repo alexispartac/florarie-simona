@@ -41,7 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <p className="mt-1 text-sm text-gray-500">{product.category}</p>
           </div>
           <p className="text-sm font-medium text-gray-900">
-            ${product.price.toFixed(2)}
+            ${(product.price / 100).toFixed(2)}
           </p>
         </div>
         <div className="mt-3 flex items-center justify-between">

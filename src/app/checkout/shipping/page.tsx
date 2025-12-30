@@ -27,7 +27,7 @@ export default function ShippingPage() {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [savedShippingData, setSavedShippingData] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { cart, getCartItemCount, getCartTotal } = useShop();
+  const { cart, getCartItemCount, getCartTotal, getPriceShipping } = useShop();
   const [errors, setErrors] = useState<Partial<ShippingData>>({});
 
   const { toast } = useToast();
@@ -439,7 +439,7 @@ export default function ShippingPage() {
                 {cart.map((item) => (
                   <div key={`${item.productId}-${item.variant.variantId}-${item.variant.color}`} className="flex justify-between text-sm">
                     <span className="text-gray-600">{item.name} ({item.variant.size}, {item.variant.color}) x {item.quantity}</span>
-                    <span className="text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                    <span className="text-gray-900">${(item.price * item.quantity / 100).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -447,8 +447,8 @@ export default function ShippingPage() {
 
             <div className="mt-4 p-4 bg-gray-50 rounded-md">
               <p className="text-sm text-gray-600">Total items: {getCartItemCount()}</p>
-              <p className="text-sm text-gray-600">Estimated shipping: 5.00$</p>
-              <p className="text-sm font-semibold text-gray-900 mt-2">Total: ${getCartTotal().toFixed(2)}</p>
+              <p className="text-sm text-gray-600">Shipping: ${(getPriceShipping() / 100).toFixed(2)}</p>
+              <p className="text-sm font-semibold text-gray-900 mt-2">Total: ${(getCartTotal() / 100).toFixed(2)}</p>
             </div>
             
             <div className="mt-4">

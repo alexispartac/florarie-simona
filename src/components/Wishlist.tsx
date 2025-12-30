@@ -93,7 +93,7 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
                       >
                         {item.name}
                       </Link>
-                      <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
+                      <p className="text-sm text-gray-500">${(item.price / 100).toFixed(2)}</p>
                     </div>
                     <Button
                       onClick={() => {

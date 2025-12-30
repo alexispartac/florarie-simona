@@ -72,7 +72,7 @@ export async function sendOrderConfirmationEmail(order: Order) {
           <small>Size: ${item.size} | Color: ${item.color}</small>
         </td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price)}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price / 100)}</td>
       </tr>
     `).join('');
 
@@ -114,15 +114,15 @@ export async function sendOrderConfirmationEmail(order: Order) {
             ${itemsHtml}
             <tr>
               <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 2px solid #eee;">Subtotal:</td>
-              <td style="text-align: right; padding: 12px 10px; border-top: 2px solid #eee;">${formatPrice(subtotal)}</td>
+              <td style="text-align: right; padding: 12px 10px; border-top: 2px solid #eee;">${formatPrice(subtotal / 100)}</td>
             </tr>
             <tr>
               <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold;">Shipping:</td>
-              <td style="text-align: right; padding: 5px 10px;">${formatPrice(order.shippingCost)}</td>
+              <td style="text-align: right; padding: 5px 10px;">${formatPrice(order.shippingCost / 100)}</td>
             </tr>
             <tr>
               <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">Total:</td>
-              <td style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">${formatPrice(total)}</td>
+              <td style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">${formatPrice(total / 100)}</td>
             </tr>
           </tbody>
         </table>
@@ -283,7 +283,7 @@ export async function sendOrderProcessedEmail(order: Order) {
           <small>Size: ${item.size} | Color: ${item.color}</small>
         </td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price)}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price / 100)}</td>
       </tr>
     `).join('');
 
@@ -322,9 +322,9 @@ export async function sendOrderProcessedEmail(order: Order) {
         
         <div style="margin: 30px 0; padding: 15px; background-color: #e8f4fd; border-radius: 5px; border-left: 4px solid #3498db;">
           <h3 style="margin-top: 0; color: #2c3e50;">Order Total</h3>
-          <p><strong>Subtotal:</strong> ${formatPrice(subtotal)}</p>
-          <p><strong>Shipping:</strong> ${formatPrice(order.shippingCost)}</p>
-          <p><strong>Total:</strong> ${formatPrice(total)}</p>
+          <p><strong>Subtotal:</strong> ${formatPrice(subtotal / 100)}</p>
+          <p><strong>Shipping:</strong> ${formatPrice(order.shippingCost / 100)}</p>
+          <p><strong>Total:</strong> ${formatPrice(total / 100)}</p>
         </div>
 
         <div style="display: flex; gap: 20px; margin: 25px 0;">

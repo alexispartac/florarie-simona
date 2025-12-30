@@ -97,7 +97,7 @@ export default function ProductPage() {
             addToCart({
                 productId: product.productId,
                 name: product.name,
-                price: product.price,
+                price: product.price + (selectedVariant?.priceAdjustment || 0),
                 variant: selectedVariant,
                 quantity: quantity,
             });
@@ -212,7 +212,7 @@ export default function ProductPage() {
                 {/* Product Info */}
                 <div className="md:pl-8">
                     <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                    <p className="text-2xl font-semibold text-primary mb-4">${((product.price + (selectedVariant?.priceAdjustment || 0))).toFixed(2)}</p>
+                    <p className="text-2xl font-semibold text-primary mb-4">${((product.price + (selectedVariant?.priceAdjustment || 0)) / 100).toFixed(2)}</p>
 
                     <div className="mb-6">
                         <p className="text-gray-700">{product.description}</p>
@@ -326,7 +326,7 @@ export default function ProductPage() {
                         ) : !selectedVariant ? (
                             'Variant not available'
                         ) : selectedVariant.stock > 0 ? (
-                            `Add to Cart - $${((product.price + (selectedVariant.priceAdjustment || 0)) * quantity).toFixed(2)}`
+                            `Add to Cart - $${(((product.price + (selectedVariant.priceAdjustment || 0)) * quantity) / 100).toFixed(2)}`
                         ) : (
                             'Out of Stock'
                         )}

@@ -95,7 +95,7 @@ export default function CartPage() {
                           </Link>
                         </h3>
                         <p className="ml-4 text-lg font-medium text-gray-900">
-                          ${item.price.toFixed(2)}
+                          ${(item.price / 100).toFixed(2)}
                         </p>
                       </div>
 
@@ -170,17 +170,17 @@ export default function CartPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="font-medium">${(subtotal / 100).toFixed(2)}</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                 <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">${shipping.toFixed(2)}</span>
+                <span className="font-medium">${(shipping / 100).toFixed(2)} USD</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                 <span className="text-lg font-medium">Total</span>
-                <span className="text-lg font-bold">${total.toFixed(2)}</span>
+                <span className="text-lg font-bold">${(total / 100).toFixed(2)} USD</span>
               </div>
               
               <div className="pt-4">

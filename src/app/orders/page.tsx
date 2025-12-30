@@ -145,7 +145,7 @@ export default function OrderLookupPage() {
                                             <p className="text-sm text-gray-500">Size: {item.size} | Color: {item.color}</p>
                                             <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                                             <p className="text-sm font-medium text-gray-900 mt-1">
-                                                ${(item.price * item.quantity).toFixed(2)}
+                                                ${(item.price * item.quantity / 100).toFixed(2)}
                                             </p>
                                         </div>
                                     </div>
@@ -158,16 +158,16 @@ export default function OrderLookupPage() {
                                     <div className="flex justify-between">
                                         <span className="text-sm text-gray-600">Subtotal</span>
                                         <span className="text-sm font-medium">
-                                            ${order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
+                                            ${((order.items.reduce((sum, item) => sum + (item.price * item.quantity / 100), 0))).toFixed(2)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-sm text-gray-600">Shipping</span>
-                                        <span className="text-sm font-medium">${ order.shippingCost }</span>
+                                        <span className="text-sm font-medium">${ (order.shippingCost / 100).toFixed(2) }</span>
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
                                         <span className="text-base font-medium">Total</span>
-                                        <span className="text-base font-bold">${order.total.toFixed(2)}</span>
+                                        <span className="text-base font-bold">${(order.total / 100).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>

@@ -28,7 +28,7 @@ const StripeForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
-  const { getCartTotal } = useShop();
+  const { getCartTotal, getPriceShipping } = useShop();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,7 +48,7 @@ const StripeForm = ({ onSuccess }: { onSuccess: () => void }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: Math.round(getCartTotal() * 100), // Convert to cents
+          amount: Math.round(getCartTotal() + getPriceShipping()), // Convert to cents
           currency: 'usd',
         }),
       });
@@ -420,15 +420,15 @@ export default function PaymentPage() {
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium" aria-label="Order subtotal">${getCartTotal().toFixed(2)}</span>
+                <span className="font-medium" aria-label="Order subtotal">${(getCartTotal() / 100).toFixed(2)} USD</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">${getPriceShipping().toFixed(2)}</span>
+                <span className="font-medium">${(getPriceShipping() / 100).toFixed(2)} USD</span>
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-4">
                 <span className="text-lg font-bold">Total</span>
-                <span className="text-lg font-bold">${(getCartTotal() + getPriceShipping()).toFixed(2)}</span>
+                <span className="text-lg font-bold">${((getCartTotal() + getPriceShipping()) / 100).toFixed(2)} USD</span>
               </div>
               {paymentMethod === 'credit-card' && (
                 <div className="mt-6">

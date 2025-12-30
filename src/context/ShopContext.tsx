@@ -229,7 +229,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
     const getPriceShipping = useCallback(() => {
         const total = getCartTotal();
-        return total > 150 ? 0 : 10;
+        return total > 15000 ? 0 : 500;
     }, [getCartTotal]);
     
     const getCartItemCount = useCallback(() => 
