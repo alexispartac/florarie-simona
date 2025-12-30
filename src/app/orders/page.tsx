@@ -85,11 +85,10 @@ export default function OrderLookupPage() {
                                     Order Tracking Number
                                 </label>
                                 <div className="flex rounded-md shadow-sm">
-                                    <Input
+                                    <input
                                         type="text"
                                         name="trackingNumber"
                                         id="trackingNumber"
-                                        fullWidth
                                         value={trackingNumber}
                                         onChange={(e) => setTrackingNumber(e.target.value)}
                                         className="p-2 focus:ring-primary focus:border-primary flex-1 block w-full rounded-l-md sm:text-sm border-gray-300"

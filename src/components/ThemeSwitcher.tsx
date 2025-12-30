@@ -10,12 +10,32 @@ const ThemeSwitcher = () => {
   const pathname = usePathname();
   const isHomepage = pathname === '/' || pathname === '/shop';
   
-  const themes: { value: Theme; icon: string }[] = [
-    { value: 'black', icon: '⚫' },
-    { value: 'petrol', icon: '⚫' },
-    { value: 'bleumarin-decolorat', icon: '⚫' },
-    { value: 'gri-albăstrui', icon: '⚫' },
-    { value: 'turcoaz-stins', icon: '⚫' }
+  const themes = [
+    { 
+      id: 'black',
+      name: 'Black',
+      color: 'var(--theme-black)'
+    },
+    { 
+      id: 'petrol',
+      name: 'Petrol',
+      color: 'var(--theme-petrol)'
+    },
+    { 
+      id: 'bleumarin-decolorat',
+      name: 'Bleu Marin',
+      color: 'var(--theme-bleumarin-decolorat)'
+    },
+    { 
+      id: 'gri-albăstrui',
+      name: 'Gri Albăstrui',
+      color: 'var(--theme-gri-albăstrui)'
+    },
+    { 
+      id: 'turcoaz-stins',
+      name: 'Turcoaz Stins',
+      color: 'var(--theme-turcoaz-stins)'
+    }
   ];
 
   return (
@@ -68,20 +88,20 @@ const ThemeSwitcher = () => {
           <div className="flex flex-wrap gap-2">
             {themes.map((t) => (
               <button
-                key={t.value}
+                key={t.id}
                 onClick={() => {
-                  setTheme(t.value);
+                  setTheme(t.id as Theme);
                   setIsOpen(false);
                 }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition-transform hover:scale-110 ${
-                  theme === t.value 
-                    ? 'ring-2 ring-offset-2 ring-primary' 
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  theme === t.id 
+                    ? 'ring-2 ring-offset-2 ring-primary transform scale-110' 
+                    : 'hover:scale-105 hover:shadow-md'
                 }`}
-                aria-label={`Set theme to ${t.value}`}
-                title={t.value.charAt(0).toUpperCase() + t.value.slice(1)}
+                aria-label={`Set theme to ${t.name}`}
+                title={t.name}
+                style={{ backgroundColor: t.color }}
               >
-                {t.icon}
               </button>
             ))}
           </div>
