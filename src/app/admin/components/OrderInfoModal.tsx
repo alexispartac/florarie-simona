@@ -1,28 +1,69 @@
 'use client';
-
+import { useState } from 'react';
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { Order, PaymentStatus } from '@/types/orders';
 import { InfoModal } from '@/components/ui/InfoModal';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Package, MapPin, CreditCard, Truck, Calendar, DollarSign } from 'lucide-react';
-
 interface OrderInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
   order: Order | null;
-  onStatusChange?: (paymentStatus: PaymentStatus) => void;
+  onStatusChange?: (trackingNumber: string, status: PaymentStatus) => void;
 }
 
 export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: OrderInfoModalProps) {
+  const [selectedStatus, setSelectedStatus] = useState<PaymentStatus | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   if (!order) return null;
-
   const statusVariant = {
-    processing: 'bg-yellow-100 text-yellow-800',
-    shipped: 'bg-blue-100 text-blue-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-  }[order.status];
+    pending: 'bg-yellow-100 text-yellow-800',
+    paid: 'bg-green-100 text-green-800',
+    failed: 'bg-red-100 text-red-800',
+    refunded: 'bg-blue-100 text-blue-800',
+  }[order.payment.status];
+  const statusConfig = {
+    pending: {
+      bg: 'bg-yellow-100 hover:bg-yellow-200',
+      text: 'text-yellow-800',
+      label: 'Pending'
+    },
+    paid: {
+      bg: 'bg-green-100 hover:bg-green-200',
+      text: 'text-green-800',
+      label: 'Paid'
+    },
+    failed: {
+      bg: 'bg-red-100 hover:bg-red-200',
+      text: 'text-red-800',
+      label: 'Failed'
+    },
+    refunded: {
+      bg: 'bg-blue-100 hover:bg-blue-200',
+      text: 'text-blue-800',
+      label: 'Refunded'
+    }
+  };
+  const handleStatusSelect = (status: PaymentStatus) => {
+    setSelectedStatus(status);
+    setIsConfirmOpen(true);
+  };
+  const handleConfirmStatusChange = async () => {
+    if (!selectedStatus || !onStatusChange || !order) return;
 
+    setIsUpdating(true);
+    try {
+      await onStatusChange(order.trackingNumber, selectedStatus);
+      setIsConfirmOpen(false);
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+      // You might want to show a toast notification here
+    } finally {
+      setIsUpdating(false);
+    }
+  };
   const paymentMethodIcons = {
     'credit-card': <CreditCard className="h-4 w-4 mr-2" />,
     'bank-transfer': <CreditCard className="h-4 w-4 mr-2" />,
@@ -30,11 +71,11 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
   };
 
   return (
-    <InfoModal 
-      isOpen={isOpen} 
-      onClose={onClose} 
+    <InfoModal
+      isOpen={isOpen}
+      onClose={onClose}
       title={`Order #${order.orderId}`}
-      size="xl"
+      size="lg"
     >
       <div className="space-y-6">
         {/* Order Summary */}
@@ -68,7 +109,7 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               <div className="flex items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Amount</p>
-                  <p>{((order.total + order.shippingCost / 100)).toFixed(2)} USD</p>
+                  <p>{(((order.total + order.shippingCost) / 100)).toFixed(2)} USD</p>
                 </div>
               </div>
             </div>
@@ -166,7 +207,7 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                     </p>
                   </div>
                 </div>
-                
+
                 {order.trackingNumber && (
                   <div className="flex items-center">
                     <Truck className="h-5 w-5 mr-2 text-muted-foreground" />
@@ -180,29 +221,44 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                 )}
               </div>
 
-                {onStatusChange && (
-                    <div className="mt-6 space-y-4">
-                        <div>
-                            <p className="text-sm font-medium mb-2">Update Payment Status</p>
-                            <div className="flex flex-wrap gap-2">
-                                {(['pending', 'paid', 'failed', 'refunded'] as const).map((status) => (
-                                    <button
-                                        key={status}
-                                        onClick={() => onStatusChange(status)}
-                                        disabled={order.payment.status === status}
-                                        className={`px-3 py-1 text-sm rounded-md ${status === 'paid' ? 'bg-green-500 hover:bg-green-400' :
-                                            status === 'failed' ? 'bg-red-500 hover:bg-red-400' :
-                                            status === 'refunded' ? 'bg-amber-500 hover:bg-amber-400' : 'bg-gray-100 hover:bg-gray-200'} ${order.payment.status === status ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                                    >
-                                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+              {onStatusChange && (
+                <div className="mt-6 space-y-4">
+                  <div>
+                    <p className="text-sm font-medium mb-2">Update Payment Status</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(Object.keys(statusConfig) as PaymentStatus[]).map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => handleStatusSelect(status)}
+                          disabled={order.payment.status === status || isUpdating}
+                          className={`px-3 py-1 text-sm rounded-md font-medium ${statusConfig[status].bg
+                            } ${statusConfig[status].text} ${order.payment.status === status || isUpdating
+                              ? 'opacity-50 cursor-not-allowed'
+                              : 'cursor-pointer'
+                            }`}
+                        >
+                          {statusConfig[status].label}
+                        </button>
+                      ))}
                     </div>
-                )}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
+          <ConfirmationModal
+            isOpen={isConfirmOpen}
+            title="Confirm Status Update"
+            message={`Are you sure you want to update the payment status to "${selectedStatus}"?`}
+            confirmText="Update Status"
+            cancelText="Cancel"
+            isDeleting={isUpdating}
+            onConfirm={handleConfirmStatusChange}
+            onCancel={() => {
+              setIsConfirmOpen(false);
+              setSelectedStatus(null);
+            }}
+          />
         </div>
       </div>
     </InfoModal>

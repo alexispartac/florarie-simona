@@ -1,12 +1,14 @@
 // Update the OrdersTab component in /src/app/admin/components/OrdersTab.tsx
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useOrders } from '@/hooks/useOrders';
 import { OrderStatus, PaymentStatus } from '@/types/orders';
 import { Order } from '@/types/orders';
 import { OrderInfoModal } from './OrderInfoModal';
 import { OrderStatusModal } from './OrderStatusModal';
+import { useToast } from '@/components/hooks/use-toast';
+import axios from 'axios';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -18,8 +20,16 @@ export default function OrdersTab() {
     const [isModalOrderInfoOpen, setIsModalOrderInfoOpen] = useState(false);
     const [isModalMoreOpen, setIsModalMoreOpen] = useState(false);
     
+    const { data, isLoading, error, refetch } = useOrders(ITEMS_PER_PAGE * currentPage, statusFilter);
 
-    const { data, isLoading, error } = useOrders(ITEMS_PER_PAGE * currentPage, statusFilter);
+    const { toast } = useToast();
+    
+    const toastRef = useRef(toast);
+    
+    // Keep toast ref updated
+    useEffect(() => {
+        toastRef.current = toast;
+    }, [toast]);
 
     // Add these handler functions
     const handleViewOrderInfoModal = (order: Order) => {
@@ -42,33 +52,46 @@ export default function OrdersTab() {
         setSelectedMoreOrder(null);
     };
 
-    const handlePaymentStatusUpdate = (paymentStatus: PaymentStatus) => {
-        if (paymentStatus) {
-            // Update payment status
-            console.log('Updating payment status to:', paymentStatus);
-            // Make API call to update payment status
-        } else {
-            // Update order status
-            console.log('Updating order status to:', paymentStatus);
-            // Make API call to update order status
+    const handlePaymentStatusUpdate = async (trackingNumber: string, status: PaymentStatus) => {
+        try {
+            const response = await axios.patch(`/api/orders/${trackingNumber}?scope=payment-status`, { status: status });
+            if (response.status === 200) {
+                await refetch();
+                toastRef.current({
+                    title: "Success",
+                    description: "Payment status updated successfully",
+                });
+            }
+        } catch (error) {
+            console.error('Error updating payment status:', error);
+            toastRef.current({
+                title: "Error",
+                description: "Failed to update payment status",
+                variant: "destructive",
+            });
         }
-        // Refresh orders list after update
     };
 
-    
+    const handleOrderStatusUpdate = async (trackingNumber: string, status: OrderStatus) => {
+        try {
+            const response = await axios.patch(`/api/orders/${trackingNumber}?scope=status`, { status });
+            if (response.data.success) {
 
-    const handleOrderStatusUpdate = (orderStatus: OrderStatus) => {
-        if (orderStatus) {
-            // Update order status
-            console.log('Updating order status to:', orderStatus);
-            // Make API call to update order status
+                await refetch();
+                toastRef.current({
+                    title: "Success",
+                    description: "Order status updated successfully",
+                });
+            }
+        } catch (error) {
+            console.error('Error updating order status:', error);
+            toastRef.current({
+                title: "Error",
+                description: "Failed to update order status",
+                variant: "destructive",
+            });
         }
-        // Refresh orders list after update
     };
-
-    const orders = data?.data || [];
-    const { total = 0 } = data?.pagination || {};
-    const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
     const handlePageChange = useCallback((page: number) => {
         setCurrentPage(page);
@@ -78,6 +101,10 @@ export default function OrdersTab() {
         setStatusFilter(e.target.value as OrderStatus | 'all');
         setCurrentPage(1);
     };
+
+    const orders = data?.data || [];
+    const { total = 0 } = data?.pagination || {};
+    const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
     if (isLoading) {
         return (
@@ -342,8 +369,12 @@ export default function OrdersTab() {
             <OrderStatusModal
                 isOpen={isModalMoreOpen}
                 onClose={handleCloseMoreInfoModal}
-                order={selectedMoreOrder}
-                onStatusChange={handleOrderStatusUpdate} // This handles order status updates
+                order={selectedMoreOrder!}
+                onStatusChange={(status) => {
+                    if (selectedMoreOrder) {
+                        handleOrderStatusUpdate(selectedMoreOrder.trackingNumber, status);
+                    }
+                }}
             />
         </div>
     );

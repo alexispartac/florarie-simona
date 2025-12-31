@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { ProductVariant } from '@/types/products';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui';
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
+import axios from 'axios';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -15,8 +17,11 @@ export default function ProductsTab() {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productId, setProductId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, isLoading, error } = useProductsAdmin({
+  const { data, isLoading, error, refetch } = useProductsAdmin({
     page: currentPage,
     limit: ITEMS_PER_PAGE,
     search: searchQuery,
@@ -37,6 +42,34 @@ export default function ProductsTab() {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleDeleteClick = (productId: string) => {
+    setProductId(productId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!productId) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await axios.delete(`/api/products/${productId}`);
+
+      console.log('Delete response:', response.data);
+
+      if (response.status !== 200) {
+        throw new Error('Failed to delete product');
+      }
+      // Refresh the products list
+      await refetch();
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      // You might want to show a toast notification here
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (isLoading) {
@@ -68,6 +101,19 @@ export default function ProductsTab() {
 
   return (
     <div className="p-6">
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        confirmText="Delete Product"
+        isDeleting={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setProductId(null);
+        }}
+      />
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-lg font-medium text-gray-900">Products</h2>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -151,10 +197,15 @@ export default function ProductsTab() {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button 
                         onClick={() => router.push(`/admin/products/${product.productId}`)}
-                        className="text-primary-600 hover:text-primary-900 mr-4">
+                        className="text-primary-600 hover:text-primary-900 mr-4 cursor-pointer">
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-900">
+                      <button
+                        onClick={() => handleDeleteClick(product.productId)}
+                        className="text-red-600 hover:text-red-900 cursor-pointer"
+                        disabled={isDeleting}
+                        title="Delete product"
+                      >
                         <TrashIcon className="h-4 w-4" />
                       </button>
                     </td>
