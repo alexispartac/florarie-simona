@@ -22,31 +22,36 @@ export default function ProductPage() {
     const [currentImage, setCurrentImage] = useState<number>(0);
     const [selectedColor, setSelectedColor] = useState<string>();
     const [selectedSize, setSelectedSize] = useState<string>('');
-    const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
     const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
     const [isAddingToWishlist, setIsAddingToWishlist] = useState<boolean>(false);
     const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
     const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useShop();
-
+    
     const params = useParams();
     const id = params.id;
-
+    
     const { data: product, isLoading, isError } = useProduct(id as string);
+    const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(product?.variants[0] as ProductVariant | undefined ?? null);
 
     const router = useRouter();
-    
-    // Update variant when color or size changes
+    // Set initial variant when product loads
+    useEffect(() => {
+        if (product && product.variants && product.variants.length > 0) {
+            const firstVariant = product.variants[0];
+            setSelectedVariant(firstVariant);
+            setSelectedColor(firstVariant.colorCode);
+            setSelectedSize(firstVariant.size);
+        }
+    }, [product]);
+
     useEffect(() => {
         if (product && selectedColor && selectedSize) {
             const variant = product.variants.find(
-                v => v.size === selectedSize && v.color === selectedColor
+                v => v.size === selectedSize && v.colorCode === selectedColor
             );
             setSelectedVariant(variant || null);
-        } else {
-            // If either color or size is not selected, clear the variant
-            setSelectedVariant(null);
         }
-    }, [selectedColor, selectedSize, product]);
+    }, [selectedColor, selectedSize, product, selectedVariant]);
 
     if (isLoading) {
         return (
@@ -169,8 +174,9 @@ export default function ProductPage() {
     };
 
     // get unique colors once
-    const stockColors = [...new Set(product.variants?.map(v => v.color) || [])];
-    const stockSizes = [...new Set(product.variants?.map(v => v.size) || [])];
+    const stockColors = [...new Set(product.variants?.map(v => v.colorCode) || [])];
+    // const stockSizes = [...new Set(product.variants?.map(v => v.size) || [])];
+    const stockSizes = product.availableSizes
 
     return (
         <div className="container mx-auto px-4 py-24">
@@ -179,7 +185,7 @@ export default function ProductPage() {
                 <div>
                     <div className="mb-4 bg-gray-100 rounded-lg overflow-hidden">
                         <Image
-                            src={product.images?.[currentImage] || '/placeholder-product.jpg'}
+                            src={selectedVariant?.images[0] || '/placeholder-product.jpg'}
                             alt={product.name}
                             width={600}
                             height={800}
@@ -188,9 +194,9 @@ export default function ProductPage() {
                         />
                     </div>
 
-                    {product.images?.length > 1 && (
+                    {selectedVariant?.images && selectedVariant.images.length > 1 && (
                         <div className="grid grid-cols-4 gap-2 mt-2">
-                            {product.images.map((image, index) => (
+                            {selectedVariant.images.map((image, index) => (
                                 <button
                                     key={index}
                                     onClick={() => setCurrentImage(index)}
@@ -224,7 +230,7 @@ export default function ProductPage() {
                         <div className="mb-6">
                             <h3 className="text-sm font-medium text-gray-900 mb-2">Color</h3>
                             <div className="flex space-x-2">
-                                {stockColors.map((color) => (
+                                {stockColors.map((color) => 
                                     <button
                                         key={color}
                                         onClick={(e) => {
@@ -235,7 +241,7 @@ export default function ProductPage() {
                                         style={{ backgroundColor: color }}
                                         aria-label={`Select color ${color}`}
                                     />
-                                ))}
+                                )}
                             </div>
                         </div>
                     )}
@@ -333,7 +339,7 @@ export default function ProductPage() {
                     </Button>
                     
                     {selectedVariant?.stock && selectedVariant.stock > 0 && selectedVariant.stock < 5 && (
-                        <p className="text-sm text-amber-600 text-center mb-4">
+                        <p className="text-sm text-amber-600 font-semibold text-center mb-4">
                             Only {selectedVariant.stock} {selectedVariant.stock === 1 ? 'item' : 'items'} left in stock!
                         </p>
                     )}

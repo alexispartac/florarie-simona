@@ -3,6 +3,7 @@ import { Heart } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { ProductInCatalog } from '@/types/products';
+import Image from 'next/image';
 
 export interface ProductCardProps {
   product: ProductInCatalog;
@@ -22,7 +23,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-      <div className="aspect-square bg-gray-100 relative overflow-hidden">
+      <div className="aspect-square relative overflow-hidden">
+        <Image 
+          src={product.images[0] || '/placeholder-product.jpg'}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          width={200}
+          height={200}
+        />
         <div className="absolute top-3 right-3">
           <button
             onClick={() => onToggleWishlist(product.productId, product.name, product.price, product.images)}
@@ -45,19 +53,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </p>
         </div>
         <div className="mt-3 flex items-center justify-between">
-          <div className="flex -space-x-1">
+          <p className="text-xs text-gray-500">
+            View details and variants colors
+          </p>
+          {/* <div className="flex -space-x-1">
             {product.availableColors.map((color, i) => (
               <div
                 key={i}
                 className="h-4 w-4 rounded-full border border-gray-200"
-                style={{ backgroundColor: color.code === '#ffffff' ? '#ffffff' : color.code }}
+                style={{ backgroundColor: color.code }}
                 title={color.name}
               />
             ))}
           </div>
           <div className="flex items-center gap-1 text-xs text-gray-500">
             {product.availableSizes.join(', ')}
-          </div>
+          </div> */}
         </div>
         <Button
           variant="outline"
