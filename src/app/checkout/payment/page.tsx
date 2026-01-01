@@ -115,6 +115,7 @@ const StripeForm = ({ onSuccess }: { onSuccess: () => void }) => {
 export default function PaymentPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit-card');
   const [stripeReady, setStripeReady] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [paymentReferenceConfirmed, setPaymentReferenceConfirmed] = useState(false);
   const [paymentReferenceCashOnDelivery, setPaymentReferenceCashOnDelivery] = useState(false);
   const { getCartTotal, getPriceShipping, cart } = useShop();
@@ -144,6 +145,10 @@ export default function PaymentPage() {
   }, []);
 
   const handlePaymentSuccess = async () => {
+    if (!isCartReady || isProcessing) return;
+    setIsProcessing(true);
+    
+    try {
 
     const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
     if (!shippingData || Object.keys(shippingData).length === 0) {
@@ -194,7 +199,13 @@ export default function PaymentPage() {
       throw new Error('Order creation or email sending failed');
     }
     
-    router.push('/checkout/success');
+      router.push('/checkout/success');
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      alert('An error occurred while processing your payment. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handlePaymentMethodChange = (method: PaymentMethod) => {
@@ -324,14 +335,26 @@ export default function PaymentPage() {
 
                   <Button
                     type="button"
-                    className={`inline-flex items-center ${!paymentReferenceCashOnDelivery ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
+                    className={`inline-flex items-center ${(!paymentReferenceCashOnDelivery || !isCartReady || isProcessing) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
                     onClick={handlePaymentSuccess}
-                    disabled={!paymentReferenceCashOnDelivery}
+                    disabled={!paymentReferenceCashOnDelivery || !isCartReady || isProcessing}
                   >
-                    <svg className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Process Cash on Delivery
+                    {isProcessing ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Process Cash on Delivery
+                      </>
+                    )}
                   </Button>
                 </div>
               )}
@@ -374,14 +397,26 @@ export default function PaymentPage() {
 
                   <Button
                     type="button"
-                    className={`inline-flex items-center ${paymentReferenceConfirmed ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'} px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
+                    className={`inline-flex items-center ${(paymentReferenceConfirmed && isCartReady && !isProcessing) ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'} px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
                     onClick={handlePaymentSuccess}
-                    disabled={!paymentReferenceConfirmed}
+                    disabled={!paymentReferenceConfirmed || !isCartReady || isProcessing}
                   >
-                    <svg className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Process Payment
+                    {isProcessing ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Process Payment
+                      </>
+                    )}
                   </Button>
                 </div>
               )}
