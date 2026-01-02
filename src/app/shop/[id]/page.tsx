@@ -351,21 +351,21 @@ export default function ProductPage() {
                         )}
                     </Button>
                     
-                    {selectedVariant?.stock && selectedVariant.stock > 0 && selectedVariant.stock < 5 && (
+                    {(selectedVariant?.stock && selectedVariant.stock > 0 && selectedVariant.stock < 5) ? (
                         <p className="text-sm text-amber-600 font-semibold text-center mb-4">
                             Only {selectedVariant.stock} {selectedVariant.stock === 1 ? 'item' : 'items'} left in stock!
                         </p>
-                    )}
+                    ) : null}
 
                     {/* Product Details */}
-                    <div className="border-t border-gray-200 pt-6">
+                    {/* <div className="border-t border-gray-200 pt-6">
                         <h3 className="text-sm font-medium text-gray-900 mb-2">Details</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm text-gray-600">
                             {product.details?.map((detail, index) => (
                                 <li key={index}>{detail}</li>
                             ))}
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
