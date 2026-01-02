@@ -6,6 +6,8 @@ import Particles from "../components/ui/animations/Particles";
 import type { Variants } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/context/LanguageContext';
+
 
 // Dynamically import TextGlowEffect with SSR disabled
 const TextGlowEffect = dynamic(
@@ -38,6 +40,7 @@ const item: Variants = {
 export default function Home() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useLanguage();
   
   return (
     <div className="relative min-h-screen w-full">
@@ -54,18 +57,18 @@ export default function Home() {
             variants={item}
           >
             <TextGlowEffect 
-              text="Welcome to"
+              text={t('homepage.heroTitle')}
               className="text-4xl md:text-6xl font-bold"
             />
             <br />
             <TextGlowEffect 
-              text="Wear You The Best"
+              text={t('homepage.heroSubtitle')}
               className="text-4xl md:text-6xl font-bold text-primary"
             />
           </motion.div>
 
           <motion.p className="text-md md:text-2xl mb-8 text-gray-500" variants={item}>
-            Discover amazing products for everyone
+            {t('homepage.banner')}
           </motion.p>
 
           <motion.div variants={item}>
@@ -75,7 +78,7 @@ export default function Home() {
               size="lg" 
               className='cursor-pointer'
               onClick={() => router.push('/shop')}
-            >Shop Now</Button>
+            >{t('homepage.shopNow')}</Button>
           </motion.div>
 
           <motion.div variants={item}>
@@ -84,7 +87,7 @@ export default function Home() {
               size="lg" 
               className='cursor-pointer mt-4'
               onClick={() => router.push('/collections')}
-            >Or Explore Our Collections</Button>
+            >{t('homepage.exploreColl')}</Button>
           </motion.div>
           
           <motion.div 
@@ -92,7 +95,7 @@ export default function Home() {
             variants={item}
           >
             <div className="text-center text-sm md:text-md text-gray-500 flex items-center gap-2">
-              <span>Change the color of the background in the theme switcher</span>
+              <span>{t('homepage.themeSwitch')}</span>
             </div>
           </motion.div>
         </motion.section>

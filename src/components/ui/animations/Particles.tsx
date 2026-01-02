@@ -61,11 +61,11 @@ const Particles = ({ color = 'rgba(0, 0, 0, 0.8)' }: ParticlesProps) => {
     // Initialize particles
     const init = () => {
         const particles: Particle[] = [];
-        const particleCount = 250; // Increased from 50 to 120 for more particles
+        const particleCount = 1500; // Increased from 50 to 120 for more particles
 
         for (let i = 0; i < particleCount; i++) {
             const size = Math.random() * 3 + 1; // Slightly larger particles (1-4px)
-            const radius = Math.random() * 450 + 250; // Increased from 200+100 to 350+200 for wider spread
+            const radius = Math.random() * 600 + 260; // Increased from 200+100 to 350+200 for wider spread
             const speed = Math.random() * 0.004 + 0.003; // Slightly slower for smoother motion
             const angle = Math.random() * Math.PI * 2;
 

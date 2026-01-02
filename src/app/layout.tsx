@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import { ShopProvider } from "@/context/ShopContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { QueryProvider } from "./providers/QueryProvider";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,16 +33,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <ToastProvider>
-            <QueryProvider>
-              <ShopProvider>
-                <Navigation />
-                {children}
-              </ShopProvider>
-            </QueryProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <QueryProvider>
+                <ShopProvider>
+                  <Navigation />
+                  {children}
+                </ShopProvider>
+              </QueryProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

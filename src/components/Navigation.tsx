@@ -5,18 +5,13 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { FiMenu, FiX, FiShoppingBag, FiHeart } from 'react-icons/fi';
 import ThemeSwitcher from './ThemeSwitcher';
+import LanguageSwitcher from './LanguageSwitcher';
 import Wishlist from './Wishlist';
 import Cart from './Cart';
 import { useShop } from '@/context/ShopContext';
 import { Spinner } from '@/components/ui/Spinner';
+import { useLanguage } from '@/context/LanguageContext';
 
-const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Shop', href: '/shop' },
-  { name: 'Collections', href: '/collections' },
-  { name: 'Contact', href: '/contact' },
-  { name: 'Track your order', href: '/orders' }
-];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +22,15 @@ export default function Navigation() {
   const pathname = usePathname();
   const prevPathnameRef = useRef(pathname);
   const [isMounted, setIsMounted] = useState(false);
+  const { t } = useLanguage();
+  
+  const navLinks = [
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.shop'), href: '/shop' },
+    { name: t('nav.collections'), href: '/collections' },
+    { name: t('nav.contact'), href: '/contact' },
+    { name: t('nav.trackOrder'), href: '/orders' }
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -132,6 +136,7 @@ export default function Navigation() {
             </button>
             
             <ThemeSwitcher />
+            <LanguageSwitcher />
             
             {/* Mobile menu button */}
             <div className="md:hidden">

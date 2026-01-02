@@ -9,6 +9,7 @@ import { useShop } from '@/context/ShopContext';
 import { ProductInCatalog, WishlistItem } from '@/types/products';
 import { useProductsCatalog } from '@/hooks/useProducts';
 import { Spinner } from '@/components/ui/Spinner';
+import { useLanguage } from '@/context/LanguageContext';
 
 const ProductList = memo(({
   products,
@@ -42,6 +43,7 @@ export default function Shop() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const { data: products, isLoading, isError } = useProductsCatalog();
+  const { t } = useLanguage();
 
   const { addToWishlist } = useShop();
 
@@ -104,8 +106,8 @@ export default function Shop() {
   return (
     <div className="min-h-screen bg-gray-50">
       <ShopHero
-        title="Discover Our Store"
-        subtitle="Find the perfect outfit for any occasion from our curated selection of premium clothing"
+        title={t('shop.title')}
+        subtitle={t('shop.subtitle')}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -124,14 +126,14 @@ export default function Shop() {
         <div className="mb-12">
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12">
-              <h3 className="text-lg font-medium text-gray-900">No products found</h3>
-              <p className="mt-1 text-gray-500">Try adjusting your search or filter criteria</p>
+              <h3 className="text-lg font-medium text-gray-900">{t('shop.noProducts')}</h3>
+              <p className="mt-1 text-gray-500">{t('shop.tryDifferentSearch')}</p>
               <Button
                 onClick={clearFilters}
                 variant="outline"
                 className="mt-4"
               >
-                Clear all filters
+                {t('shop.clearFilters')}
               </Button>
             </div>
           ) : (
