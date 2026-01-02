@@ -6,7 +6,6 @@ import { AuroraBackground } from "./ui/aurora-background";
 import { Loader } from '@mantine/core';
 import { motion } from "motion/react";
 import Link from 'next/link';
-import React from 'react'
 import ReviewForm from './ReviewForm';
 import Reviews from './Reviews';
 import axios from 'axios';

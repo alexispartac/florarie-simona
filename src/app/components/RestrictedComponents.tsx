@@ -33,7 +33,11 @@ function RestrictedContent({ children }: { children: React.ReactNode }) {
 
 export function RestrictedComponents({ children }: { children: React.ReactNode }) {
     return (
-        <Suspense fallback={<Loader color="#b756a6"/>}>
+        <Suspense fallback={
+            <div className="h-screen w-full flex justify-center items-center">
+                <Loader color="#b756a6" size="xl" />
+            </div>
+        }>
             <RestrictedContent>{children}</RestrictedContent>
         </Suspense>
     );

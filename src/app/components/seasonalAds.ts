@@ -62,10 +62,19 @@ export const getSeasonalAd = (): SeasonalAd => {
   }
   
   // Winter/Christmas (December 1 - January 31)
+  if (month === 12 && day <= 25 ){
+    return {
+      imageSrc: "/Christmas.webp", // Make sure this image exists in your public folder
+      buttonText: "Vezi ofertele de Crăciun",
+      buttonLink: "/arrangements/Decoratiuni%20de%20Craciun",
+      season: "Crăciun"
+    };  
+  }
+
   return {
-    imageSrc: "/Christmas.webp", // Make sure this image exists in your public folder
-    buttonText: "Vezi ofertele de Crăciun",
-    buttonLink: "/arrangements/Decoratiuni%20de%20Craciun",
-    season: "Crăciun"
+    imageSrc: "/dashbordflower.jpg",
+    buttonText: "Bucură-te de ofertele noastre",
+    buttonLink: "/bouquets",
+    season: "Off season"
   };
 };
