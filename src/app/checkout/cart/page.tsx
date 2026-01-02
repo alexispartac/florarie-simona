@@ -8,7 +8,6 @@ import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@/components/ui/Spinner';
-import type { CartItem } from '@/types/products';
 
 export default function CartPage() {
   const router = useRouter();
@@ -90,7 +89,7 @@ export default function CartPage() {
                     <div className="mt-4 sm:mt-0 sm:ml-6 flex-1">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-medium text-gray-900">
-                          <Link href={`/shop/${item.productId}`} className="hover:text-primary hover:underline">
+                          <Link href={`/shop/${item.productId}?slug=${item.name.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-primary hover:underline">
                             {item.name}
                           </Link>
                         </h3>

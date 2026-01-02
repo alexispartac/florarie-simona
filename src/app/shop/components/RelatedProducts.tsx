@@ -16,7 +16,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
         {products.map((product, index) => (
           <Link 
             key={`${product.id}-${index}`} 
-            href={`/shop/${product.id}`}
+            href={`/shop/${product.id}?slug=${product.slug}`}
             className="group block overflow-hidden rounded-lg transition-shadow hover:shadow-lg"
           >
             <div className="relative h-64 w-full">

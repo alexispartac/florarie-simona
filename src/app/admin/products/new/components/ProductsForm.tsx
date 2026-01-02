@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface ProductFormProps {
   initialData?: Partial<Product>;
-  onSubmit: (data: Omit<Product, 'reviews' | 'rating' | 'reviewCount'>) => Promise<void>;
+  onSubmit: (data: Product) => Promise<void>;
   isSubmitting: boolean;
 }
 
@@ -65,6 +65,9 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
       image: '',
       category: ''
     }],
+    rating: initialData?.rating || 0,
+    reviewCount: initialData?.reviewCount || 0,
+    reviews: initialData?.reviews || []
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -111,6 +114,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
 
     await onSubmit({
       ...formData,
+      slug: formData.name.toLowerCase().replace(/\s+/g, '-'),
       price: Number(formData.price) || 0,
       tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
       details: formData.details.split('\n').filter(Boolean),

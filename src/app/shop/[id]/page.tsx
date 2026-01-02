@@ -148,6 +148,8 @@ export default function ProductPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     reviews: [...product.reviews, { ...review, createdAt: new Date().toISOString() }],
+                    reviewCount: product.reviewCount + 1,
+                    rating: product.rating !== undefined ? ((product.rating * product.reviewCount) + review.rating) / (product.reviewCount + 1) : review.rating
                 })
             });
             
@@ -371,9 +373,9 @@ export default function ProductPage() {
             <div className="mt-16">
                 <Tabs defaultValue="details" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 max-w-md mb-8">
-                        <TabsTrigger value="details">Details</TabsTrigger>
-                        <TabsTrigger value="reviews">Reviews ({product.reviewCount})</TabsTrigger>
-                        <TabsTrigger value="size-guide">Size Guide</TabsTrigger>
+                        <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Details</TabsTrigger>
+                        <TabsTrigger value="reviews" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Reviews ({product.reviewCount})</TabsTrigger>
+                        <TabsTrigger value="size-guide" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Size Guide</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="details" className="space-y-6">

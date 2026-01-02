@@ -92,7 +92,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                     </div>
                     <div className="flex-1">
                       <Link 
-                        href={`/shop/${item.productId}`}
+                        href={`/shop/${item.productId}?slug=${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                         className="font-medium hover:underline line-clamp-1 cursor-pointer"
                         onClick={onClose}
                       >

@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push(`/shop/${product.productId}`)}
+          onClick={() => router.push(`/shop/${product.productId}?slug=${product.slug}`)}
           className="w-full mt-3 bg-primary cursor-pointer text-white group-hover:bg-gray-50 transition-colors"
         >
           Quick View
