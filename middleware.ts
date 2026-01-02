@@ -6,7 +6,7 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(40, '1 m'), // 30 requests per minute
+  limiter: Ratelimit.slidingWindow(1000, '1 m'), // 30 requests per minute
 });
 
 export async function middleware(req: NextRequest) {
