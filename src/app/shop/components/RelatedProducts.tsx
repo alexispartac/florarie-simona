@@ -21,7 +21,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
           >
             <div className="relative h-64 w-full">
               <Image
-                src={product.image}
+                src={product.image || '/placeholder-product.jpg'}
                 alt={product.name}
                 fill
                 className="object-cover"

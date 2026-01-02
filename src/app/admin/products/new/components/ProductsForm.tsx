@@ -15,7 +15,7 @@ interface ProductFormProps {
 
 export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductFormProps) {
   const [formData, setFormData] = useState({
-    productId: initialData?.productId || '',
+    productId: initialData?.productId || uuidv4(),
     name: initialData?.name || '',
     slug: initialData?.slug || '',
     description: initialData?.description || '',

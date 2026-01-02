@@ -120,7 +120,7 @@ export default function ProductsTab() {
           <form onSubmit={handleSubmit} className="relative">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <SearchIcon className="h-4 w-4 text-gray-400" />
+                <SearchIcon color='black' className="h-4 w-4 text-gray-400" />
               </div>
               <Input
                 type="text"
@@ -184,6 +184,7 @@ export default function ProductsTab() {
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                          <div className="text-sm text-red-500">{product.productId}</div>
                           <div className="text-sm text-gray-500">{product.category}</div>
                         </div>
                       </div>

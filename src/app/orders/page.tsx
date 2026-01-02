@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { FiSearch, FiPackage, FiCalendar, FiCreditCard, FiTruck, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import { OrderStatus, Order } from '@/types/orders';
+import { Package } from 'lucide-react';
 import axios from 'axios';
 
 
@@ -135,8 +136,8 @@ export default function OrderLookupPage() {
                             <div className="space-y-4">
                                 {order.items.map((item) => (
                                     <div key={item.itemId} className="flex items-start space-x-4 py-4 border-b border-gray-100 last:border-0">
-                                        <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
-                                            {/* Product image would go here */}
+                                        <div className="w-20 h-20 bg-gray-100 rounded-md flex items-center justify-center">
+                                            <Package className="h-6 w-6 text-muted-foreground" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="text-sm font-medium text-gray-900">{item.name}</h4>

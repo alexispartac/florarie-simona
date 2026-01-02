@@ -105,38 +105,36 @@ export default function CartPage() {
                       </div>
 
                       <div className="mt-4 flex items-center justify-between">
-                        <div className="flex items-center border border-gray-300 rounded-md">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const cartItem = {
-                                productId: item.productId,
-                                variant: item.variant,
-                                quantity: item.quantity + 1
-                              } as Omit<CartItem, 'addedAt'>;
-                              updateCartItemQuantity(cartItem, item.quantity - 1);
-                            }}
-                            className="p-2 text-gray-600 hover:text-gray-700 focus:outline-none cursor-pointer"
-                            disabled={item.quantity <= 1}
-                          >
-                            <FiMinus className="h-4 w-4" />
-                          </button>
-                          <span className="px-4 text-gray-900">{item.quantity}</span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const cartItem = {
-                                productId: item.productId,
-                                variant: item.variant,
-                                quantity: item.quantity + 1
-                              } as Omit<CartItem, 'addedAt'>;
-                              updateCartItemQuantity(cartItem, item.quantity + 1);
-                            }}
-                            className="p-2 text-gray-600 hover:text-gray-700 focus:outline-none cursor-pointer"
-                          >
-                            <FiPlus className="h-4 w-4" />
-                          </button>
+                        <div>
+                          <div className="flex items-center border border-gray-300 rounded-md">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                updateCartItemQuantity(item, item.quantity - 1);
+                              }}
+                              className={`p-2 focus:outline-none ${item.quantity <= 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:text-gray-700 cursor-pointer'}`}
+                              disabled={item.quantity <= 1}
+                            >
+                              <FiMinus className="h-4 w-4" />
+                            </button>
+                            <span className="px-4 text-gray-900">{item.quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (item.quantity < (item.variant?.stock || 0)) {
+                                  updateCartItemQuantity(item, item.quantity + 1);
+                                }
+                              }}
+                              disabled={!item.variant || item.quantity >= (item.variant?.stock || 0)}
+                              className={`p-2 focus:outline-none ${!item.variant || item.quantity >= (item.variant?.stock || 0) ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:text-gray-700 cursor-pointer'}`}
+                            >
+                              <FiPlus className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
+                          {item.variant && item.quantity >= (item.variant?.stock || 0) && (
+                            <p className="text-xs text-red-600 mt-1">Maximum quantity available: {item.variant.stock}</p>
+                          )}
 
                         <button
                           type="button"

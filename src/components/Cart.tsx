@@ -119,19 +119,29 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                           <span className="w-8 text-center text-sm">{item.quantity}</span>
                           <button
                             onClick={() => {
-                              const cartItem = {
-                                productId: item.productId,
-                                variant: item.variant,
-                                quantity: item.quantity + 1
-                              } as Omit<CartItem, 'addedAt'>;
-                              updateCartItemQuantity(cartItem, item.quantity + 1);
+                              if (item.quantity < (item.variant?.stock || 0)) {
+                                const cartItem = {
+                                  productId: item.productId,
+                                  variant: item.variant,
+                                  quantity: item.quantity + 1
+                                } as Omit<CartItem, 'addedAt'>;
+                                updateCartItemQuantity(cartItem, item.quantity + 1);
+                              }
                             }}
-                            className="px-2 py-1 text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
+                            disabled={!item.variant || item.quantity >= (item.variant?.stock || 0)}
+                            className={`px-2 py-1 transition-colors ${
+                              !item.variant || item.quantity >= (item.variant?.stock || 0) 
+                                ? 'text-gray-300 cursor-not-allowed' 
+                                : 'text-gray-500 hover:bg-gray-100 cursor-pointer'
+                            }`}
                           >
                             <FiPlus className="w-3 h-3" />
                           </button>
                         </div>
-                        <button
+                      {item.variant && item.quantity >= (item.variant?.stock || 0) && (
+                        <p className="text-xs text-red-600">Max: {item.variant.stock}</p>
+                      )}
+                      <button
                           onClick={() => {
                             const itemToRemove = {
                               productId: item.productId,

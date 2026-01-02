@@ -203,7 +203,7 @@ export default function ProductPage() {
                                     className={`border-2 rounded overflow-hidden ${currentImage === index ? 'border-primary' : 'border-transparent'}`}
                                 >
                                     <Image
-                                        src={image}
+                                        src={image || '/placeholder-product.jpg'}
                                         alt={`${product.name} ${index + 1}`}
                                         width={100}
                                         height={100}
@@ -267,27 +267,38 @@ export default function ProductPage() {
                         </div>
                     )}
 
-                    {/* Quantity */}
-                    <div className="mb-6">
-                        <h3 className="text-sm font-medium text-gray-900 mb-2">Quantity</h3>
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                className="px-3 py-1 border border-gray-300 rounded-l-md cursor-pointer"
-                            >
-                                -
-                            </button>
-                            <span className="px-4 py-1 border-t border-b border-gray-300">
-                                {quantity}
-                            </span>
-                            <button
-                                onClick={() => setQuantity(quantity + 1)}
-                                className="px-3 py-1 border border-gray-300 rounded-r-md cursor-pointer"
-                            >
-                                +
-                            </button>
+                    {/* Quantity - Only show if variant is selected and has stock */}
+                    {selectedVariant && (selectedVariant.stock ?? 0) > 0 && (
+                        <div className="mb-6">
+                            <h3 className="text-sm font-medium text-gray-900 mb-2">Quantity</h3>
+                            <div className="flex items-center">
+                                <button
+                                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                                    disabled={quantity <= 1}
+                                    className={`px-3 py-1 border border-gray-300 rounded-l-md ${quantity <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                >
+                                    -
+                                </button>
+                                <span className="px-4 py-1 border-t border-b border-gray-300">
+                                    {quantity}
+                                </span>
+                                <button
+                                    onClick={() => {
+                                        if (selectedVariant && quantity < (selectedVariant.stock ?? 0)) {
+                                            setQuantity(prev => prev + 1);
+                                        }
+                                    }}
+                                    disabled={!selectedVariant || quantity >= (selectedVariant.stock ?? 0)}
+                                    className={`px-3 py-1 border border-gray-300 rounded-r-md ${!selectedVariant || quantity >= (selectedVariant.stock ?? 0) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                >
+                                    +
+                                </button>
+                            </div>
+                            {selectedVariant && quantity >= (selectedVariant.stock ?? 0) && (
+                                <p className="text-sm text-red-600 mt-1">Maximum available quantity reached</p>
+                            )}
                         </div>
-                    </div>
+                    )}
                     
                     {/* Wishlist Button */}
                     <button
@@ -320,7 +331,7 @@ export default function ProductPage() {
                     {/* Add to Cart Button */}
                     <Button
                         onClick={handleAddToCart}
-                        className="w-full py-3 mb-4 cursor-pointer"
+                        className={`w-full py-3 mb-4 ${isAddingToCart || !selectedVariant || selectedVariant.stock <= 0 ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isAddingToCart || !selectedVariant || selectedVariant.stock <= 0}
                     >
                         {isAddingToCart ? (
