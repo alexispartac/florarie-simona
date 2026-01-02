@@ -61,7 +61,7 @@ const Particles = ({ color = 'rgba(0, 0, 0, 0.8)' }: ParticlesProps) => {
     // Initialize particles
     const init = () => {
         const particles: Particle[] = [];
-        const particleCount = 1500; // Increased from 50 to 120 for more particles
+        const particleCount = 750; // Increased from 50 to 120 for more particles
 
         for (let i = 0; i < particleCount; i++) {
             const size = Math.random() * 3 + 1; // Slightly larger particles (1-4px)
