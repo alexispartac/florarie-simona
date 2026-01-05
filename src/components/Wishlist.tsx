@@ -6,6 +6,7 @@ import { useShop } from '@/context/ShopContext';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from './ui/Button';
+import { useLanguage } from '@/context/LanguageContext';
 
 type WishlistProps = {
   isOpen: boolean;
@@ -15,6 +16,7 @@ type WishlistProps = {
 export default function Wishlist({ isOpen, onClose }: WishlistProps) {
   const { wishlist, removeFromWishlist } = useShop();
   const wishlistRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   // Close when clicking outside
   useEffect(() => {
@@ -50,7 +52,7 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
       >
         <div className="flex flex-col h-screen">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold">Your Wishlist</h2>
+            <h2 className="text-xl font-semibold">{t('wishlist.title')}</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
@@ -64,13 +66,13 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
             {wishlist.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8">
                 <FiHeart className="w-12 h-12 text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">Your wishlist is empty</h3>
-                <p className="text-gray-500 mb-6">Save items you love by clicking the heart icon</p>
+                <h3 className="text-lg font-medium text-gray-700 mb-2">{t('wishlist.empty')}</h3>
+                <p className="text-gray-500 mb-6">{t('wishlist.description')}</p>
                 <button
                   onClick={onClose}
                   className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors cursor-pointer"
                 >
-                  Continue Shopping
+                  {t('button.continueShopping')}
                 </button>
               </div>
             ) : (
@@ -103,7 +105,7 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
                       className="p-2 cursor-pointer"
                       aria-label="Remove from wishlist"
                     >
-                      Remove
+                      {t('button.remove')}
                     </Button>
                   </div>
                 ))}

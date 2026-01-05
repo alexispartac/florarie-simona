@@ -58,12 +58,12 @@ export default function Home() {
           >
             <TextGlowEffect 
               text={t('homepage.heroTitle')}
-              className="text-4xl md:text-6xl font-bold"
+              className="text-4xl md:text-6xl font-bold text-primary"
             />
             <br />
             <TextGlowEffect 
               text={t('homepage.heroSubtitle')}
-              className="text-4xl md:text-6xl font-bold text-primary"
+              className="text-4xl md:text-6xl !important-text-[var(--color-primary)] font-bold"
             />
           </motion.div>
 

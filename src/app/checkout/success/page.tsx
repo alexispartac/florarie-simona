@@ -4,9 +4,11 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { IoConstruct } from 'react-icons/io5';
 import { useShop } from '@/context/ShopContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CheckoutSuccessPage() {
   const { clearCart, cart } = useShop();
+  const { t } = useLanguage();
 
   useEffect(() => {
     clearCart();
@@ -29,23 +31,23 @@ export default function CheckoutSuccessPage() {
                   <IoConstruct className="h-6 w-6 text-green-600" aria-hidden="true" />
                 </div>
                 <h2 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
-                  Thank you for your order!
+                  {t('checkout.success.title')}
                 </h2>
                 <p className="mt-4 text-gray-500">
-                  Your order has been placed and is being processed. You will receive an email confirmation with your order details shortly.
+                  {t('checkout.success.text')}
                 </p>
                 <div className="mt-10">
                   <Link
                     href="/"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                   >
-                    Continue Shopping
+                    {t('checkout.success.continueShopping')}
                   </Link>
                 </div>
               </div>
               
               <div className="mt-12 border-t border-gray-200 pt-8">
-                <h3 className="text-lg font-medium text-gray-900">What&apos;s next?</h3>
+                <h3 className="text-lg font-medium text-gray-900">{t('checkout.success.nextStep')}</h3>
                 <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-medium text-gray-900">Order Status</h4>

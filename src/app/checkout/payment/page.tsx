@@ -17,6 +17,7 @@ import {
 import Button from '@/components/ui/Button';
 import { v4 as uuidv4 } from 'uuid';
 import { Order, ShippingInfo } from '@/types/orders';
+import { useLanguage } from '@/context/LanguageContext';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -24,6 +25,7 @@ type PaymentMethod = 'credit-card' | 'cash-on-delivery' | 'bank-transfer';
 
 // Stripe Form Component
 const StripeForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const { t } = useLanguage();
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +108,7 @@ const StripeForm = ({ onSuccess }: { onSuccess: () => void }) => {
         disabled={!stripe || processing}
         className="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {processing ? 'Processing...' : 'Pay Now'}
+        {processing ? 'Processing...' : t('checkout.payNow')}
       </button>
     </form>
   );
@@ -120,6 +122,7 @@ export default function PaymentPage() {
   const [paymentReferenceCashOnDelivery, setPaymentReferenceCashOnDelivery] = useState(false);
   const { getCartTotal, getPriceShipping, cart } = useShop();
   const router = useRouter();
+  const { t } = useLanguage();
 
   // Derive isCartReady from cart state
   const isCartReady = cart.length > 0 && getCartTotal() > 0;
@@ -233,10 +236,10 @@ export default function PaymentPage() {
         {/* Payment Form */}
         <div className="lg:col-span-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Method</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('checkout.payment')}</h2>
 
             <div className="mb-8">
-              <p className="text-sm text-gray-500 mb-4">All transactions are secure and encrypted.</p>
+              <p className="text-sm text-gray-500 mb-4">{t('checkout.allTransactionsSecure')}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <button
                   type="button"
@@ -290,28 +293,28 @@ export default function PaymentPage() {
 
               {paymentMethod === 'cash-on-delivery' && (
                 <div className="text-center py-8">
-                  <p className="mb-6 text-gray-600">You can make a cash-on-delivery payment for your purchase.</p>
+                  <p className="mb-6 text-gray-600">{t('checkout.cashOnDelivery')}</p>
 
                   {localStorage.getItem('shippingData') && (
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mt-8">
-                      <h3 className="text-lg font-medium mb-4">Your Delivery Information</h3>
+                      <h3 className="text-lg font-medium mb-4">{t('checkout.yourDeliveryInformation')}</h3>
                       <div className="mt-4 space-y-2">
-                        <p className="text-sm text-gray-600">Name: {JSON.parse(localStorage.getItem('shippingData') || '{}').firstName} {JSON.parse(localStorage.getItem('shippingData') || '{}').lastName}</p>
-                        <p className="text-sm text-gray-600">Address: {' '}
+                        <p className="text-sm text-gray-600">{t('checkout.name')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').firstName} {JSON.parse(localStorage.getItem('shippingData') || '{}').lastName}</p>
+                        <p className="text-sm text-gray-600">{t('checkout.address')}: {' '}
                           {JSON.parse(localStorage.getItem('shippingData') || '{}').address}, {' '}
                           {JSON.parse(localStorage.getItem('shippingData') || '{}').city}, {' '}
                           {JSON.parse(localStorage.getItem('shippingData') || '{}').state},  {' '}
                           {JSON.parse(localStorage.getItem('shippingData') || '{}').country} {' '}
                         </p>
-                        <p className="text-sm text-gray-600">Postal Code: {JSON.parse(localStorage.getItem('shippingData') || '{}').postalCode}</p>
-                        <p className="text-sm text-gray-600">Phone: {JSON.parse(localStorage.getItem('shippingData') || '{}').phone}</p>
-                        <p className="text-sm text-gray-600">Email: {JSON.parse(localStorage.getItem('shippingData') || '{}').email || ''}</p>
+                        <p className="text-sm text-gray-600">{t('checkout.postalCode')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').postalCode}</p>
+                        <p className="text-sm text-gray-600">{t('checkout.phone')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').phone}</p>
+                        <p className="text-sm text-gray-600">{t('checkout.email')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').email || ''}</p>
                       </div>
                     </div>
                   )}
 
                   <p className="text-sm text-gray-500 my-2">
-                    Please note: You will pay the delivery person in cash when your order is delivered.
+                    {t('checkout.deliveryInfo')}
                   </p>
 
                   <div className="my-6 flex items-center">
@@ -323,13 +326,13 @@ export default function PaymentPage() {
                       className="mt-1 mr-2 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                     />
                     <label htmlFor="payment-reference" className="text-sm text-gray-700">
-                      I confirm that I have reviewed the order details and will make the payment in cash upon delivery.
+                      {t('checkout.paymentReferenceText')}
                     </label>
                   </div>
 
                   {!paymentReferenceCashOnDelivery && (
                     <div className="mb-4">
-                      <p className="text-sm text-red-500">Please confirm that you understand you will pay the delivery person in cash upon delivery.</p>
+                      <p className="text-sm text-red-500">{t('checkout.paymentReferenceText')}</p>
                     </div>
                   )}
 
@@ -362,18 +365,18 @@ export default function PaymentPage() {
               {paymentMethod === 'bank-transfer' && (
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-900 mb-2">Bank Transfer Details</h3>
+                    <h3 className="font-medium text-gray-900 mb-2">{t('checkout.bankTransferDetails')}</h3>
                     <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-medium">Account Name:</span> Vintage Custom Clothes SRL</p>
-                      <p><span className="font-medium">Bank:</span> Example Bank</p>
-                      <p><span className="font-medium">IBAN:</span> RO49 AAAA 1B31 0075 9384 0000</p>
-                      <p><span className="font-medium">SWIFT/BIC:</span> EXAMPLEBANK</p>
+                      <p><span className="font-medium">{t('checkout.accountName')}:</span> Vintage Custom Clothes SRL</p>
+                      <p><span className="font-medium">{t('checkout.bankName')}:</span> Example Bank</p>
+                      <p><span className="font-medium">{t('checkout.iban')}:</span> RO49 AAAA 1B31 0075 9384 0000</p>
+                      <p><span className="font-medium">{t('checkout.swiftBic')}:</span> EXAMPLEBANK</p>
                     </div>
                     <p className="mt-4 text-sm text-gray-500 font-bold">
-                      !!! Please use your order number as the payment reference. Your order will be processed once the payment is received. (Include the order number in the payment description).
+                      {t('checkout.paymentReference')}
                     </p>
                     <p className="mt-2 text-xs text-gray-400">
-                      Failure to include the order number may delay processing of your payment.
+                      {t('checkout.paymentReferenceText')}
                     </p>
                   </div>
 
@@ -386,12 +389,12 @@ export default function PaymentPage() {
                       onChange={handlePaymentReferenceChange}
                     />
                     <label htmlFor="payment-reference" className="text-sm text-gray-600">
-                      I have included the order number in the payment reference and will upload the proof of payment after checkout.
+                      {t('checkout.paymentReferenceText')}
                     </label>
                   </div>
                   {!paymentReferenceConfirmed && (
                     <p className="text-sm text-red-600 my-2">
-                      Please confirm that you have included the order number in the payment reference.
+                      {t('checkout.paymentReferenceText')}
                     </p>
                   )}
 
@@ -414,7 +417,7 @@ export default function PaymentPage() {
                         <svg className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
-                        Process Payment
+                        {t('checkout.processBankTransfer')}
                       </>
                     )}
                   </Button>
@@ -424,7 +427,7 @@ export default function PaymentPage() {
 
             {paymentMethod === 'credit-card' && (
               <div className="border-t border-gray-200 pt-6 mt-8">
-                <h3 className="text-sm font-medium text-gray-900 mb-4">Secure Payment</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-4">{t('checkout.securePayment')}</h3>
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center">
                     <svg className="h-6 w-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
@@ -447,27 +450,27 @@ export default function PaymentPage() {
         {/* Order Summary */}
         <div className="lg:col-span-4 mt-10 lg:mt-0 gap-4 flex flex-col">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Information</h2>
-              <p className="text-sm text-gray-600">Your order number will be sent to your email shortly.</p>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">{t('checkout.paymentInfo')}</h2>
+              <p className="text-sm text-gray-600">{t('checkout.paymentInfoText')}</p>
           </div>
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+            <h2 className="text-lg font-medium text-gray-900 mb-4">{t('checkout.orderSummary')}</h2>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
+                <span className="text-gray-600">{t('checkout.subtotal')}</span>
                 <span className="font-medium" aria-label="Order subtotal">${(getCartTotal() / 100).toFixed(2)} USD</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Shipping</span>
+                <span className="text-gray-600">{t('checkout.shipping')}</span>
                 <span className="font-medium">${(getPriceShipping() / 100).toFixed(2)} USD</span>
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-4">
-                <span className="text-lg font-bold">Total</span>
+                <span className="text-lg font-bold">{t('checkout.total')}</span>
                 <span className="text-lg font-bold">${((getCartTotal() + getPriceShipping()) / 100).toFixed(2)} USD</span>
               </div>
               {paymentMethod === 'credit-card' && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Credit Card Details</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">{t('checkout.creditCardDetails')}</h3>
                   {stripeReady ? (
                     <Elements stripe={stripePromise}>
                       <StripeForm onSuccess={handlePaymentSuccess} />
@@ -482,9 +485,9 @@ export default function PaymentPage() {
             </div>
 
             <div className="mt-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">Need help?</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-2">{t('checkout.needHelp')}</h3>
               <p className="text-sm text-gray-600">
-                Contact us at{' '}
+                {t('checkout.contactUs')}{' '}
                 <a href="mailto:support@vintageclothes.com" className="text-primary hover:underline">
                   support@vintageclothes.com
                 </a>
@@ -499,7 +502,7 @@ export default function PaymentPage() {
               <svg className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Return to Shipping
+              {t('checkout.returnToShipping')}
             </Link>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { CartItem } from '@/types/products';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from './ui/Button';
+import { useLanguage } from '@/context/LanguageContext';
 
 type CartProps = {
   isOpen: boolean;
@@ -16,6 +17,8 @@ type CartProps = {
 export default function Cart({ isOpen, onClose }: CartProps) {
   const { cart, removeFromCart, updateCartItemQuantity, getCartTotal, getPriceShipping } = useShop();
   const cartRef = useRef<HTMLDivElement>(null);
+
+  const { t } = useLanguage();
 
   // Close when clicking outside
   useEffect(() => {
@@ -55,7 +58,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
       >
         <div className="flex flex-col h-screen">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold">Your Cart</h2>
+            <h2 className="text-xl font-semibold">{t('cart.title')}</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
@@ -69,13 +72,13 @@ export default function Cart({ isOpen, onClose }: CartProps) {
             {cart.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8">
                 <FiShoppingBag className="w-12 h-12 text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">Your cart is empty</h3>
-                <p className="text-gray-500 mb-6">Add some items to get started</p>
+                <h3 className="text-lg font-medium text-gray-700 mb-2">{t('cart.empty')}</h3>
+                <p className="text-gray-500 mb-6">{t('cart.description')}</p>
                 <Button
                   onClick={onClose}
                   className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
                 >
-                  Continue Shopping
+                  {t('button.continueShopping')}
                 </Button>
               </div>
             ) : (
@@ -152,7 +155,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                           }}
                           className="text-xs text-red-500 hover:text-red-700 cursor-pointer hover:underline"
                         >
-                          Remove
+                          {t('cart.removeItem')}
                         </button>
                       </div>
                     </div>
@@ -190,7 +193,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                 className="block w-full text-center py-3 px-4 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
                 onClick={onClose}
               >
-                Proceed to Checkout ${((total / 100).toFixed(2))}
+                {t('button.checkout')} ${((total / 100).toFixed(2))}
               </Link>
             </div>
           )}

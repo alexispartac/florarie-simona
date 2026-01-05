@@ -27,7 +27,7 @@ export default function Navigation() {
   const navLinks = [
     { name: t('nav.home'), href: '/' },
     { name: t('nav.shop'), href: '/shop' },
-    { name: t('nav.collections'), href: '/collections' },
+    // { name: t('nav.collections'), href: '/collections' },
     { name: t('nav.contact'), href: '/contact' },
     { name: t('nav.trackOrder'), href: '/orders' }
   ];
@@ -89,7 +89,7 @@ export default function Navigation() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="text-2xl font-bold text-gray-900">
-              WYTB
+              Brand Stock
             </Link>
           </div>
 

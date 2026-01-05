@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@/components/ui/Spinner';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CartPage() {
   const router = useRouter();
@@ -24,6 +25,8 @@ export default function CartPage() {
   const subtotal = getCartTotal();
   const shipping = getPriceShipping();
   const total = subtotal + shipping;
+
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,7 +59,7 @@ export default function CartPage() {
           href="/shop"
           className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         >
-          Continue Shopping
+          {t('button.continueShopping')}
         </Link>
       </div>
     );
@@ -64,7 +67,7 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 my-8">Your Cart ({itemCount})</h1>
+      <h1 className="text-3xl font-bold text-gray-900 my-8"> {t('cart.title')} ({itemCount})</h1>
       
       <div className="lg:grid lg:grid-cols-12 lg:gap-8">
         {/* Cart Items */}
@@ -99,8 +102,8 @@ export default function CartPage() {
                       </div>
 
                       <div className="mt-2 text-sm text-gray-600">
-                        <p>Color: <span className="capitalize">{item.variant.color}</span></p>
-                        <p className="mt-1">Size: {item.variant.size}</p>
+                        <p>{t('cart.checkout.color')}: <span className="capitalize">{item.variant.color}</span></p>
+                        <p className="mt-1">{t('cart.checkout.size')}: {item.variant.size}</p>
                       </div>
 
                       <div className="mt-4 flex items-center justify-between">
@@ -132,7 +135,7 @@ export default function CartPage() {
                           </div>
                         </div>
                           {item.variant && item.quantity >= (item.variant?.stock || 0) && (
-                            <p className="text-xs text-red-600 mt-1">Maximum quantity available: {item.variant.stock}</p>
+                            <p className="text-xs text-red-600 mt-1">{t('cart.checkout.maximumQuantity')}: {item.variant.stock}</p>
                           )}
 
                         <button
@@ -148,7 +151,7 @@ export default function CartPage() {
                           className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center cursor-pointer"
                         >
                           <FiTrash2 className="mr-1 h-4 w-4" />
-                          Remove
+                          {t('cart.checkout.remove')}
                         </button>
                       </div>
                     </div>
@@ -162,21 +165,21 @@ export default function CartPage() {
         {/* Order Summary */}
         <div className="mt-10 lg:mt-0 lg:col-span-4">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+            <h2 className="text-lg font-medium text-gray-900 mb-4">{t('cart.checkout.orderSummary')}</h2>
             
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Subtotal</span>
+                <span className="text-gray-600">{t('cart.checkout.subtotal')}</span>
                 <span className="font-medium">${(subtotal / 100).toFixed(2)}</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                <span className="text-gray-600">Shipping</span>
+                <span className="text-gray-600">{t('cart.checkout.shipping')}</span>
                 <span className="font-medium">${(shipping / 100).toFixed(2)} USD</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                <span className="text-lg font-medium">Total</span>
+                <span className="text-lg font-medium">{t('cart.checkout.total')}</span>
                 <span className="text-lg font-bold">${(total / 100).toFixed(2)} USD</span>
               </div>
               
@@ -185,7 +188,7 @@ export default function CartPage() {
                   onClick={() => router.push('/checkout/shipping')}
                   className="w-full flex cursor-pointer justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  Proceed to Shipping
+                  {t('cart.checkout.proceedToPayment')}
                 </Button>
               </div>
               
@@ -194,7 +197,7 @@ export default function CartPage() {
                   href="/shop" 
                   className="text-sm font-medium text-primary hover:text-primary/80 hover:underline cursor-pointer"
                 >
-                  Continue Shopping
+                  {t('cart.checkout.proceedToShipping')}
                 </Link>
               </div>
             </div>

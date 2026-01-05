@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastContext';
 import { Spinner } from '@/components/ui/Spinner';
 import { Input } from '@/components/ui';
+import { useLanguage } from '@/context/LanguageContext';
 
 type ShippingData = {
   firstName: string;
@@ -31,6 +32,7 @@ export default function ShippingPage() {
   const [errors, setErrors] = useState<Partial<ShippingData>>({});
 
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -185,13 +187,13 @@ export default function ShippingPage() {
         {/* Shipping Form */}
         <div className="lg:col-span-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 my-6">Shipping Information</h2>
+            <h2 className="text-2xl font-bold text-gray-900 my-6">{t('cart.checkout.shippingInfo')}</h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                    First Name *
+                    {t('cart.checkout.firstName')}
                   </label>
                   <Input
                     type="text"
@@ -199,6 +201,7 @@ export default function ShippingPage() {
                     name="firstName"
                     fullWidth
                     value={formData.firstName}
+                    required
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
                       errors.firstName ? 'border-red-500' : 'border-gray-300'
@@ -211,7 +214,7 @@ export default function ShippingPage() {
                 
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                    Last Name *
+                    {t('cart.checkout.lastName')}
                   </label>
                   <Input
                     type="text"
@@ -219,6 +222,7 @@ export default function ShippingPage() {
                     name="lastName"
                     fullWidth
                     value={formData.lastName}
+                    required
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
                       errors.lastName ? 'border-red-500' : 'border-gray-300'
@@ -232,13 +236,14 @@ export default function ShippingPage() {
 
               <div>
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Address *
+                  {t('cart.checkout.address')}
                 </label>
                 <Input
                   type="text"
                   id="address"
                   name="address"
                   fullWidth
+                  required
                   value={formData.address}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border ${
@@ -253,7 +258,7 @@ export default function ShippingPage() {
 
               <div>
                 <label htmlFor="apartment" className="block text-sm font-medium text-gray-700 mb-1">
-                  Apartment, suite, etc. (optional)
+                  {t('cart.checkout.apartment')}
                 </label>
                 <Input
                   type="text"
@@ -269,13 +274,14 @@ export default function ShippingPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                    City *
+                    {t('cart.checkout.city')}
                   </label>
                   <Input
                     type="text"
                     id="city"
                     name="city"
                     fullWidth
+                    required
                     value={formData.city}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
@@ -289,13 +295,14 @@ export default function ShippingPage() {
 
                 <div>
                   <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
-                    Postal Code *
+                    {t('cart.checkout.postalCode')}
                   </label>
                   <Input
                     type="text"
                     id="postalCode"
                     name="postalCode"
                     fullWidth
+                    required
                     value={formData.postalCode}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
@@ -311,12 +318,13 @@ export default function ShippingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                    Country *
+                    {t('cart.checkout.country')}
                   </label>
                   <select
                     id="country"
                     name="country"
                     value={formData.country}
+                    required
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
                       errors.country ? 'border-red-500' : 'border-gray-300'
@@ -335,13 +343,14 @@ export default function ShippingPage() {
 
                 <div>
                   <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
-                    State/Province *
+                    {t('cart.checkout.state')}
                   </label>
                   <Input
                     type="text"
                     id="state"
                     name="state"
                     fullWidth
+                    required
                     value={formData.state}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
@@ -357,13 +366,14 @@ export default function ShippingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email *
+                    {t('cart.checkout.email')}
                   </label>
                   <Input
                     type="email"
                     id="email"
                     name="email"
                     fullWidth
+                    required
                     value={formData.email}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
@@ -377,13 +387,14 @@ export default function ShippingPage() {
 
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone *
+                    {t('cart.checkout.phone')}
                   </label>
                   <Input
                     type="tel"
                     id="phone"
                     name="phone"
                     fullWidth
+                    required
                     value={formData.phone}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
@@ -399,7 +410,7 @@ export default function ShippingPage() {
               <div className="flex items-start">
                 <div className="ml-3 text-sm">
                   <label htmlFor="saveInfo" className="font-medium text-gray-700">
-                    We do not save this information for next time (for security reasons)
+                    {t('cart.checkout.saveInfoInfo')}
                   </label>
                 </div>
               </div>
@@ -409,7 +420,7 @@ export default function ShippingPage() {
                   type="submit"
                   className="w-full flex cursor-pointer justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  {isLoading ? 'Saving...' : 'Save information'}
+                  {isLoading ? 'Saving...' : t('cart.checkout.saveInfo')}
                 </Button>
               </div>
 
@@ -419,7 +430,7 @@ export default function ShippingPage() {
                   className="text-primary hover:text-primary/80 hover:underline cursor-pointer"
                   onClick={handleResetForm}
                 >
-                  Reset all fields
+                  {t('cart.checkout.resetAllFields')}
                 </Button>
               </div>
             </form>
@@ -429,12 +440,12 @@ export default function ShippingPage() {
         {/* Order Summary */}
         <div className="lg:col-span-4 mt-10 lg:mt-0">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+            <h2 className="text-lg font-medium text-gray-900 mb-4">{t('cart.checkout.orderSummary')}</h2>
             {/* Order summary content would go here */}
-            <p className="text-sm text-gray-600">Review your order details before proceeding to payment.</p>
+            <p className="text-sm text-gray-600">{t('cart.checkout.reviewOrderDetails')}</p>
 
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-gray-900">Items in your cart</h3>
+              <h3 className="text-sm font-medium text-gray-900">{t('cart.checkout.itemsInCart')}</h3>
               <div className="mt-2 space-y-2">
                 {cart.map((item) => (
                   <div key={`${item.productId}-${item.variant.variantId}-${item.variant.color}`} className="flex justify-between text-sm">
@@ -446,18 +457,18 @@ export default function ShippingPage() {
             </div>
 
             <div className="mt-4 p-4 bg-gray-50 rounded-md">
-              <p className="text-sm text-gray-600">Total items: {getCartItemCount()}</p>
-              <p className="text-sm text-gray-600">Shipping: ${(getPriceShipping() / 100).toFixed(2)}</p>
-              <p className="text-sm font-semibold text-gray-900 mt-2">Total: ${(getCartTotal() / 100).toFixed(2)}</p>
+              <p className="text-sm text-gray-600">{t('cart.checkout.totalItems')}: {getCartItemCount()}</p>
+              <p className="text-sm text-gray-600">{t('cart.checkout.shipping')}: ${(getPriceShipping() / 100).toFixed(2)}</p>
+              <p className="text-sm font-semibold text-gray-900 mt-2">{t('cart.checkout.total')}: ${(getCartTotal() / 100).toFixed(2)}</p>
             </div>
             
             <div className="mt-4">
-              <p className="text-sm text-gray-600">Your order is secure. We use industry-standard encryption to protect your information.</p>
+              <p className="text-sm text-gray-600">{t('cart.checkout.orderSecure')}</p>
             </div>
 
             <div className="mt-2 rounded-md text-sm">
               {savedShippingData ? null : (
-                <p className="text-red-500">Please complete and save your shipping information to proceed.</p>
+                <p className="text-red-500">{t('cart.checkout.saveInfoText')}</p>
               )}
              
               {savedShippingData && (
@@ -472,8 +483,8 @@ export default function ShippingPage() {
             
             {/* info shipping */}
             <div className="mt-4 p-4 bg-primary/50 rounded-md">
-              <h4 className="text-sm font-medium text-primary-800">Shipping Information</h4>
-              <p className="text-xs text-primary-600 mt-1">Standard shipping: 10-15 business days (Free shipping on orders over $150)</p>
+              <h4 className="text-sm font-medium text-primary-800">{t('cart.checkout.shippingInfo')}</h4>
+              <p className="text-xs text-primary-600 mt-1">{t('cart.checkout.shippingInfoText')}</p>
             </div>
 
             <div className="pt-4">
@@ -482,7 +493,7 @@ export default function ShippingPage() {
                 onClick={redirectToPayment}
                 disabled={isLoading}
               >
-                Continue to Payment
+                {t('cart.checkout.continueToPayment')}
               </Button>
             </div>
 
@@ -496,7 +507,7 @@ export default function ShippingPage() {
               <svg className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Return to Cart
+              {t('cart.checkout.returnToCart')}
             </Link>
           </div>
         </div>

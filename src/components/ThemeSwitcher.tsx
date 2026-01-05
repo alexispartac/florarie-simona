@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme, type Theme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isHomepage = pathname === '/' || pathname === '/shop';
+  const { t } = useLanguage();
   
   const themes = [
     { 
@@ -65,7 +67,7 @@ const ThemeSwitcher = () => {
             <svg className="w-3 h-3 -mt-1 transform rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 9l6 6 6-6"/>
             </svg>
-            <span>Theme Switcher</span>
+            <span>{t('button.themeSwitcher')}</span>
           </div>
         )}
       
@@ -75,7 +77,7 @@ const ThemeSwitcher = () => {
           onMouseLeave={() => setIsOpen(false)}
         >
           <div className="flex items-center justify-between px-2 py-1 border-b border-gray-100 mb-2">
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Colors</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('themeSwitcher.colors')}</span>
             <button 
               onClick={() => setIsOpen(false)}
               className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
-import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { ProductInCatalog } from '@/types/products';
 import Image from 'next/image';
@@ -22,7 +21,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter(); 
 
   return (
-    <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+    <div 
+      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
+    >
       <div className="aspect-square relative overflow-hidden">
         <Image 
           src={product.images[0] || '/placeholder-product.jpg'}
@@ -40,7 +41,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         </div>
       </div>
-      <div className="p-4">
+      <div 
+        className="p-4 cursor-pointer"
+        onClick={() => router.push(`/shop/${product.productId}?slug=${product.slug}`)}
+      >
         <div className="flex justify-between items-start">
           <div>
             <h3 className="text-sm font-medium text-gray-900 line-clamp-1">
@@ -70,14 +74,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.availableSizes.join(', ')}
           </div> */}
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => router.push(`/shop/${product.productId}?slug=${product.slug}`)}
-          className="w-full mt-3 bg-primary cursor-pointer text-white group-hover:bg-gray-50 transition-colors"
-        >
-          Quick View
-        </Button>
       </div>
     </div>
   );
