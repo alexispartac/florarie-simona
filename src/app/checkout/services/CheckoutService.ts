@@ -143,15 +143,23 @@ export class CheckoutService {
         }
     }
 
-    // Salvează doar datele temporare pentru plata cu cardul
+    // Salvează datele comenzii temporar pentru webhook (NU în orders până la confirmare)
     static async savePendingOrderData(orderData: OrderPropsAdmin): Promise<boolean> {
         try {
-            // Salvează datele comenzii în sessionStorage pentru a fi recuperate după plată
+            // 1. Salvează în sessionStorage pentru recovery rapid pe client
             sessionStorage.setItem('pendingOrderData', JSON.stringify({
                 orderData,
                 timestamp: Date.now()
             }));
-            return true;
+
+            // 2. Salvează în pending-orders pentru webhook
+            const response = await axios.post('/api/pending-orders', {
+                ...orderData,
+                createdAt: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 20 * 60 * 1000).toISOString() // 20 minute
+            });
+
+            return response.status === 200;
         } catch (error) {
             console.error('Error saving pending order data:', error);
             return false;
@@ -223,19 +231,43 @@ export class CheckoutService {
         }
     }
 
-    // Procesează comanda după plata cu cardul reușită
+    // Verifică dacă comanda există în baza de date
+    static async checkOrderExists(orderId: string): Promise<boolean> {
+        try {
+            const response = await axios.get(`/api/orders/check/${orderId}`);
+            return response.status === 200 && response.data.exists === true;
+        } catch (error) {
+            console.error('Error checking order existence:', error);
+            return false;
+        }
+    }
+
+    // Procesează comanda după plata cu cardul reușită (fallback manual)
     static async processCardOrderAfterPayment(orderData: OrderPropsAdmin, totalPrice: number, currency: string): Promise<boolean> {
         try {
-            // 1. Salvează comanda în baza de date
-            const orderCreated = await this.createOrder(orderData);
-            if (!orderCreated) {
-                throw new Error('Eroare la salvarea comenzii în baza de date.');
+            // Comanda ar trebui să existe deja din checkout
+            // Actualizăm doar paymentStatus la 'paid'
+            const response = await axios.put('/api/orders', {
+                id: orderData.id,
+                paymentStatus: 'paid',
+                paymentDetails: {
+                    euplatescId: 'manual_confirmation',
+                    approval: 'manual',
+                    timestamp: new Date().toISOString(),
+                    amount: totalPrice.toString(),
+                    currency: currency
+                },
+                updatedAt: new Date().toISOString()
+            });
+
+            if (response.status !== 200) {
+                throw new Error('Eroare la actualizarea status-ului plății.');
             }
 
-            // 2. Trimite email-ul de confirmare
+            // Trimite email-ul de confirmare
             await this.sendConfirmationEmail(orderData, totalPrice, currency);
 
-            // 3. Curăță datele temporare
+            // Curăță datele temporare
             this.clearPendingOrderData();
 
             return true;
@@ -384,9 +416,12 @@ export class CheckoutService {
         try {
             // Procesare în funcție de metoda de plată
             if (paymentMethod === 'card') {
-                // Pentru plata cu cardul - DOAR salvează datele temporar și inițializează plata
+                // Pentru plata cu cardul:
+                // 1. Salvează temporar în pending-orders (NU în orders!)
+                // 2. Inițializează plata EuPlătesc
+                // 3. Webhook va crea comanda în orders + va trimite email DOAR după plată reușită
                 try {
-                    // 1. Salvează datele comenzii temporar
+                    // 1. Salvează temporar (fără email, fără orders)
                     const dataSaved = await this.savePendingOrderData(orderData);
                     if (!dataSaved) {
                         throw new Error('Eroare la salvarea datelor temporare.');
@@ -396,6 +431,7 @@ export class CheckoutService {
                     const redirectUrl = await this.initializeCardPayment(orderData, currency, totalPrice);
                     
                     // 3. Redirecționează către procesatorul de plăți
+                    // Webhook-ul va procesa totul după confirmare
                     onCardPaymentRedirect(redirectUrl);
                     
                     return {

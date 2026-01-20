@@ -15,36 +15,65 @@ const SuccessPage = () => {
     useEffect(() => {
         const processCardPaymentSuccess = async () => {
             try {
-                // Verifică dacă există date de comandă în așteptare
+                // Verifică dacă există date de comandă în așteptare în sessionStorage
                 const pendingOrderData = CheckoutService.getPendingOrderData();
                 
                 if (!pendingOrderData) {
                     // Nu există date în așteptare - probabil plată ramburs sau eroare
+                    // Sau utilizatorul a venit direct la success fără să plătească
                     setIsProcessing(false);
                     return;
                 }
 
-                // Procesează comanda după plata cu cardul reușită
+                // Extrage parametrii de la EuPlătesc din URL
                 const urlParams = new URLSearchParams(window.location.search);
-                const paymentStatus = urlParams.get('status'); // Presupunem că EuPlătesc returnează status
+                const invoiceId = urlParams.get('invoice_id');
+                const action = urlParams.get('action'); // 0 = success
+                const epId = urlParams.get('ep_id');
+                const fpHash = urlParams.get('fp_hash');
                 
-                if (paymentStatus === 'success' || !paymentStatus) {
-                    // Calculează totalPrice și currency din datele salvate
-                    const totalPrice = pendingOrderData.totalPrice;
-                    const currency = pendingOrderData.paymentMethod === 'card' ? 'RON' : 'RON'; // Ajustează după logica ta
-                    
-                    // Procesează comanda finală
-                    await CheckoutService.processCardOrderAfterPayment(
-                        pendingOrderData,
-                        totalPrice,
-                        currency
-                    );
-                    
+                console.log('Payment callback params:', { invoiceId, action, epId });
+
+                // Verifică dacă avem parametrii EuPlătesc (callback implicit)
+                if (!invoiceId && !action) {
+                    // Nu avem parametrii - poate fi acces direct sau redirect vechi
+                    // Așteptăm puțin pentru ca webhook-ul să proceseze comanda
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+
+                // Verifică în baza de date dacă comanda a fost procesată de webhook
+                const orderExists = await CheckoutService.checkOrderExists(pendingOrderData.id);
+                
+                if (orderExists) {
+                    // Comanda a fost procesată cu succes de webhook
+                    console.log('✅ Order found in database - payment confirmed');
                     setOrderNumber(pendingOrderData.orderNumber);
-                } else {
-                    // Plata a eșuat
                     CheckoutService.clearPendingOrderData();
-                    setError('Plata cu cardul a eșuat. Te rugăm să încerci din nou.');
+                } else {
+                    // Comanda nu există încă - poate webhook-ul nu a fost apelat
+                    // sau plata a eșuat
+                    
+                    if (action === '0') {
+                        // Parametrii indică succes dar comanda nu e în DB
+                        // Așteptăm mai mult pentru webhook
+                        console.log('⏳ Waiting for webhook to process order...');
+                        await new Promise(resolve => setTimeout(resolve, 5000));
+                        
+                        const orderExistsRetry = await CheckoutService.checkOrderExists(pendingOrderData.id);
+                        
+                        if (orderExistsRetry) {
+                            setOrderNumber(pendingOrderData.orderNumber);
+                            CheckoutService.clearPendingOrderData();
+                        } else {
+                            // Webhook-ul nu a fost apelat
+                            console.log('❌ Webhook not received - order not created');
+                            setError('Comanda nu a putut fi confirmată. Te rugăm să contactezi suportul cu numărul comenzii #' + pendingOrderData.orderNumber);
+                        }
+                    } else {
+                        // Plata a eșuat sau a fost anulată
+                        CheckoutService.clearPendingOrderData();
+                        setError('Plata cu cardul a eșuat sau a fost anulată. Te rugăm să încerci din nou.');
+                    }
                 }
                 
             } catch (error) {

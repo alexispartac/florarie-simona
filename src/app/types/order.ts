@@ -35,4 +35,15 @@ export interface OrderPropsAdmin {
     totalPrice: number,
     paymentMethod: 'ramburs' | 'card',
     products: OrderProductProps[],
+    paymentStatus?: 'pending' | 'paid' | 'failed',
+    paymentDetails?: {
+        euplatescId?: string,
+        approval?: string,
+        timestamp?: string,
+        amount?: string,
+        currency?: string,
+    },
+    paymentFailureReason?: string,
+    createdAt?: string,
+    updatedAt?: string,
 }
