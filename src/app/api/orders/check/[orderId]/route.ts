@@ -10,6 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 /**
  * GET - Verifică dacă o comandă există în baza de date
  * Endpoint: /api/orders/check/:orderId
+ * Note: No-cache headers sunt setate în NextResponse
  */
 export async function GET(
     req: NextRequest,
@@ -68,7 +69,15 @@ export async function GET(
         return NextResponse.json({ 
             exists: !!order,
             orderId: orderId 
-        }, { status: 200 });
+        }, { 
+            status: 200,
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+                'Surrogate-Control': 'no-store'
+            }
+        });
 
     } catch (error) {
         console.error('Eroare la verificarea comenzii:', error);

@@ -234,7 +234,9 @@ export class CheckoutService {
     // Verifică dacă comanda există în baza de date
     static async checkOrderExists(orderId: string): Promise<boolean> {
         try {
-            const response = await axios.get(`/api/orders/check/${orderId}`);
+            // Adaugă timestamp pentru a evita cache-ul
+            const cacheBust = new Date().getTime();
+            const response = await axios.get(`/api/orders/check/${orderId}?_=${cacheBust}`);
             return response.status === 200 && response.data.exists === true;
         } catch (error) {
             console.error('Error checking order existence:', error);

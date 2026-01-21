@@ -15,6 +15,14 @@ const SuccessPage = () => {
     useEffect(() => {
         const processCardPaymentSuccess = async () => {
             try {
+                // Verifică dacă suntem pe client (window este definit)
+                if (typeof window === 'undefined') {
+                    return;
+                }
+
+                // Așteaptă puțin pentru ca pagina să se încarce complet
+                await new Promise(resolve => setTimeout(resolve, 300));
+
                 // Verifică dacă există date de comandă în așteptare în sessionStorage
                 const pendingOrderData = CheckoutService.getPendingOrderData();
                 
@@ -30,7 +38,6 @@ const SuccessPage = () => {
                 const invoiceId = urlParams.get('invoice_id');
                 const action = urlParams.get('action'); // 0 = success
                 const epId = urlParams.get('ep_id');
-                const fpHash = urlParams.get('fp_hash');
                 
                 console.log('Payment callback params:', { invoiceId, action, epId });
 

@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || 'florarie-internal-secret-key-2026';
 
 export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {
@@ -20,27 +21,41 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message: 'Secretul JWT nu este definit.' }, { status: 500 });
   }
 
-  const cookie = req.cookies.get('login');
-  const token = cookie ? cookie.value : null;
+  // Verifică autentificarea: fie JWT cookie (frontend), fie Internal API Key (backend/webhook)
+  const internalApiKey = req.headers.get('x-internal-api-key');
+  
+  if (internalApiKey === INTERNAL_API_KEY) {
+    // Apel autentificat de la backend (webhook)
+    console.log('✅ Internal API call authenticated');
+  } else {
+    // Verifică JWT pentru apeluri de la frontend
+    const cookie = req.cookies.get('login');
+    const token = cookie ? cookie.value : null;
 
-  if (!token) {
-    return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
-  }
+    if (!token) {
+      return NextResponse.json({ success: false, message: 'Token lipsă' }, { status: 400 });
+    }
 
-  const decoded = jwt.verify(token, JWT_SECRET);
-  if (!decoded || typeof decoded === 'string') {
-    return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
-  }
-  const payload = decoded as jwt.JwtPayload;
-  if (!payload.email || !payload.password) {
-    return NextResponse.json({ success: false, message: 'Token invalid' }, { status: 401 });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (!decoded || typeof decoded === 'string') {
+      return NextResponse.json({ success: false, message: 'Token invalid sau expirat' }, { status: 401 });
+    }
+    const payload = decoded as jwt.JwtPayload;
+    if (!payload.email || !payload.password) {
+      return NextResponse.json({ success: false, message: 'Token invalid' }, { status: 401 });
+    }
   }
 
   try {
     const { clientEmail, clientName, orderDetails, totalPrice, deliveryInfo } = await req.json();
 
+    console.log('📧 Email API called for:', clientEmail);
+    console.log('Order details count:', orderDetails?.length);
+    console.log('Total price:', totalPrice);
+
     // Verifică dacă toate câmpurile necesare sunt prezente
     if (!clientEmail || !clientName || !orderDetails || !totalPrice || !deliveryInfo) {
+      console.error('❌ Missing required fields:', { clientEmail: !!clientEmail, clientName: !!clientName, orderDetails: !!orderDetails, totalPrice: !!totalPrice, deliveryInfo: !!deliveryInfo });
       return NextResponse.json(
         { success: false, message: 'Missing required fields.' },
         { status: 400 }
@@ -137,12 +152,21 @@ export async function POST(req: NextRequest) {
       `,
     };
 
+    console.log('📤 Sending email to client:', clientEmail);
     await transporter.sendMail(mailOptionsClient);
+    console.log('✅ Client email sent successfully');
+    
+    console.log('📤 Sending email to admin:', process.env.EMAIL_USER);
     await transporter.sendMail(mailOptionsAdmin);
+    console.log('✅ Admin email sent successfully');
 
     return NextResponse.json({ success: true, message: 'Email trimis cu succes!' }, { status: 200 });
   } catch (error) {
-    console.error('Eroare la trimiterea email-ului:', error);
+    console.error('❌ Eroare la trimiterea email-ului:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
     return NextResponse.json({ success: false, message: 'Eroare la trimiterea email-ului.' }, { status: 500 });
   }
 }

@@ -9,6 +9,7 @@ dotenv.config();
 
 const EUPLATESC_SECRET_KEY = process.env.EUPLATESC_SECRET_KEY;
 const BASE_URL = process.env.BASE_URL;
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || 'florarie-internal-secret-key-2026';
 
 interface EuPlatescCallback {
     amount: string;
@@ -38,6 +39,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ 
                 success: false, 
                 message: 'Server configuration error' 
+            }, { status: 500 });
+        }
+
+        if (!BASE_URL) {
+            console.error('❌ BASE_URL not configured');
+            return NextResponse.json({ 
+                success: false, 
+                message: 'Server configuration error - BASE_URL missing' 
             }, { status: 500 });
         }
 
@@ -235,7 +244,9 @@ async function createOrderAfterPayment(orderId: string, callbackData: EuPlatescC
 
         // Trimite email de confirmare
         try {
-            await axios.post(`${BASE_URL}/api/send-email/placed-order`, {
+            console.log('📧 Sending confirmation email to:', orderData.clientEmail);
+            
+            const emailResponse = await axios.post(`${BASE_URL}/api/send-email/placed-order`, {
                 clientEmail: orderData.clientEmail,
                 clientName: orderData.clientName,
                 orderDetails: orderData.products,
@@ -248,10 +259,20 @@ async function createOrderAfterPayment(orderId: string, callbackData: EuPlatescC
                     notes: orderData.info,
                     paymentMethod: orderData.paymentMethod,
                 }
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-internal-api-key': INTERNAL_API_KEY
+                }
             });
-            console.log('✅ Confirmation email sent');
+            
+            console.log('✅ Confirmation email sent successfully:', emailResponse.data);
         } catch (emailError) {
             console.error('⚠️ Failed to send email:', emailError);
+            if (axios.isAxiosError(emailError)) {
+                console.error('Email API error response:', emailError.response?.data);
+                console.error('Email API error status:', emailError.response?.status);
+            }
             // Nu returnăm false - comanda este salvată
         }
 
