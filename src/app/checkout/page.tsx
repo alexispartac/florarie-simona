@@ -481,49 +481,23 @@ const CheckoutPage = () => {
                             <p className='text-sm text-gray-600 mb-4'>Toate tranzacțiile sunt securizate și criptate.</p>
 
                             <div className="space-y-3">
-                                {/* Card Payment */}
+                                {/* Card Payment - DISABLED */}
                                 <div
-                                    onClick={() => {
-                                        setPaymentMethod('card');
-                                        checkoutForm.setFieldValue('paymentMethod', 'card');
-                                    }}
-                                    className={`${paymentMethod === 'card' ? 'bg-pink-50 border-pink-300' : 'bg-white border-gray-300'} border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200`}
+                                    className="bg-gray-100 border border-gray-300 rounded-lg p-4 opacity-60 cursor-not-allowed"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className={`w-5 h-5 ${paymentMethod === 'card' ? 'bg-pink-500' : 'border-2 border-gray-400'} rounded-full flex items-center justify-center`}>
-                                            {paymentMethod === 'card' && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full flex items-center justify-center">
                                         </div>
                                         <div>
-                                            <span className="font-medium text-gray-800">Plată cu cardul online</span>
-                                            <p className="text-sm text-gray-600">Securizat prin EuPlătesc</p>
+                                            <span className="font-medium text-gray-600">Plată cu cardul online</span>
+                                            <p className="text-sm text-red-600 font-semibold">⚠️ Momentan indisponibil</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 ml-8">
+                                    <div className="flex items-center gap-2 ml-8 opacity-50">
                                         <img src="/visa-logo.png" alt="VISA" className="h-6" />
                                         <img src="/mastercard-logo.png" alt="Mastercard" className="h-6" />
                                         <span className="text-sm text-gray-600">și alte carduri</span>
                                     </div>
-
-                                    {paymentMethod === 'card' && (
-                                        <div className="mt-4 ml-8">
-                                            <Select
-                                                label="Alege moneda"
-                                                placeholder="Selectează moneda pentru plată"
-                                                data={[
-                                                    { value: 'RON', label: 'RON (Lei români)' },
-                                                    { value: 'EUR', label: 'EUR (Euro)' },
-                                                ]}
-                                                value={currency}
-                                                onChange={(value) => {
-                                                    if (value) {
-                                                        setCurrency(value as 'RON' | 'EUR');
-                                                        checkoutForm.setFieldValue('totalPrice', getTotalPrice());
-                                                    }
-                                                }}
-                                                required
-                                            />
-                                        </div>
-                                    )}
                                 </div>
 
                                 {/* Cash on Delivery */}
