@@ -61,7 +61,7 @@ export default function ShippingPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center space-y-4">
           <Spinner className="w-12 h-12" />
-          <p className="text-gray-600">Loading shipping information...</p>
+          <p className="text-[var(--muted-foreground)]">Loading shipping information...</p>
         </div>
       </div>
     );
@@ -169,11 +169,11 @@ export default function ShippingPage() {
   if (getCartItemCount() === 0) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
-        <p className="text-gray-600 mb-6">There&apos;s nothing in your cart to check out.</p>
+        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Your cart is empty</h2>
+        <p className="text-[var(--muted-foreground)] mb-6">There&apos;s nothing in your cart to check out.</p>
         <Link 
           href="/shop"
-          className="inline-flex cursor-pointer items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90"
+          className="inline-flex cursor-pointer items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)]"
         >
           Continue Shopping
         </Link>
@@ -186,13 +186,13 @@ export default function ShippingPage() {
       <div className="lg:grid lg:grid-cols-12 lg:gap-12">
         {/* Shipping Form */}
         <div className="lg:col-span-8">
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 my-6">{t('cart.checkout.shippingInfo')}</h2>
+          <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg p-6 mb-8 border border-[var(--border)]">
+            <h2 className="text-2xl font-bold text-[var(--foreground)] my-6">{t('cart.checkout.shippingInfo')}</h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="firstName" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.firstName')}
                   </label>
                   <Input
@@ -204,16 +204,16 @@ export default function ShippingPage() {
                     required
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.firstName ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.firstName ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.firstName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.firstName}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="lastName" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.lastName')}
                   </label>
                   <Input
@@ -225,17 +225,17 @@ export default function ShippingPage() {
                     required
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.lastName ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.lastName ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.lastName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.lastName}</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="address" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                   {t('cart.checkout.address')}
                 </label>
                 <Input
@@ -247,17 +247,17 @@ export default function ShippingPage() {
                   value={formData.address}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border ${
-                    errors.address ? 'border-red-500' : 'border-gray-300'
-                  } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                    errors.address ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                  } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   placeholder="Street address"
                 />
                 {errors.address && (
-                  <p className="mt-1 text-sm text-red-600">{errors.address}</p>
+                  <p className="mt-1 text-sm text-[var(--destructive)]">{errors.address}</p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="apartment" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="apartment" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                   {t('cart.checkout.apartment')}
                 </label>
                 <Input
@@ -267,13 +267,13 @@ export default function ShippingPage() {
                   fullWidth
                   value={formData.apartment}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-2 border border-[var(--border)] rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="city" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.city')}
                   </label>
                   <Input
@@ -285,16 +285,16 @@ export default function ShippingPage() {
                     value={formData.city}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.city ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.city ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.city && (
-                    <p className="mt-1 text-sm text-red-600">{errors.city}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.city}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="postalCode" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.postalCode')}
                   </label>
                   <Input
@@ -306,18 +306,18 @@ export default function ShippingPage() {
                     value={formData.postalCode}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.postalCode ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.postalCode ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.postalCode && (
-                    <p className="mt-1 text-sm text-red-600">{errors.postalCode}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.postalCode}</p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="country" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.country')}
                   </label>
                   <select
@@ -327,8 +327,8 @@ export default function ShippingPage() {
                     required
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.country ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.country ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]`}
                   >
                     <option value="United States">United States</option>
                     <option value="Canada">Canada</option>
@@ -337,12 +337,12 @@ export default function ShippingPage() {
                     {/* Add more countries as needed */}
                   </select>
                   {errors.country && (
-                    <p className="mt-1 text-sm text-red-600">{errors.country}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.country}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="state" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.state')}
                   </label>
                   <Input
@@ -354,18 +354,18 @@ export default function ShippingPage() {
                     value={formData.state}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.state ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.state ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.state && (
-                    <p className="mt-1 text-sm text-red-600">{errors.state}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.state}</p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="email" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.email')}
                   </label>
                   <Input
@@ -377,16 +377,16 @@ export default function ShippingPage() {
                     value={formData.email}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.email ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.email}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="phone" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.phone')}
                   </label>
                   <Input
@@ -398,18 +398,18 @@ export default function ShippingPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.phone ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.phone ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
                   />
                   {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+                    <p className="mt-1 text-sm text-[var(--destructive)]">{errors.phone}</p>
                   )}
                 </div>
               </div>
 
               <div className="flex items-start">
                 <div className="ml-3 text-sm">
-                  <label htmlFor="saveInfo" className="font-medium text-gray-700">
+                  <label htmlFor="saveInfo" className="font-medium text-[var(--foreground)]">
                     {t('cart.checkout.saveInfoInfo')}
                   </label>
                 </div>
@@ -418,7 +418,6 @@ export default function ShippingPage() {
               <div className="pt-4">
                 <Button
                   type="submit"
-                  className="w-full flex cursor-pointer justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   {isLoading ? 'Saving...' : t('cart.checkout.saveInfo')}
                 </Button>
@@ -427,7 +426,6 @@ export default function ShippingPage() {
               <div className="mt-2 text-center">
                 <Button
                   variant='link'
-                  className="text-primary hover:text-primary/80 hover:underline cursor-pointer"
                   onClick={handleResetForm}
                 >
                   {t('cart.checkout.resetAllFields')}
@@ -439,61 +437,60 @@ export default function ShippingPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-4 mt-10 lg:mt-0">
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">{t('cart.checkout.orderSummary')}</h2>
+          <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg p-6 border border-[var(--border)]">
+            <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('cart.checkout.orderSummary')}</h2>
             {/* Order summary content would go here */}
-            <p className="text-sm text-gray-600">{t('cart.checkout.reviewOrderDetails')}</p>
+            <p className="text-sm text-[var(--muted-foreground)]">{t('cart.checkout.reviewOrderDetails')}</p>
 
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-gray-900">{t('cart.checkout.itemsInCart')}</h3>
+              <h3 className="text-sm font-medium text-[var(--foreground)]">{t('cart.checkout.itemsInCart')}</h3>
               <div className="mt-2 space-y-2">
                 {cart.map((item, index) => (
                   <div key={`${item.productId}-${index}`} className="flex justify-between text-sm">
-                    <span className="text-gray-600">
+                    <span className="text-[var(--muted-foreground)]">
                       {item.name}
                       {item.customMessage && ` 💌`}
                       {` x ${item.quantity}`}
                     </span>
-                    <span className="text-gray-900">{(item.price * item.quantity / 100).toFixed(2)} RON</span>
+                    <span className="text-[var(--foreground)]">{(item.price * item.quantity / 100).toFixed(2)} RON</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-4 p-4 bg-gray-50 rounded-md">
-              <p className="text-sm text-gray-600">{t('cart.checkout.totalItems')}: {getCartItemCount()}</p>
-              <p className="text-sm text-gray-600">{t('cart.checkout.shipping')}: {(getPriceShipping() / 100).toFixed(2)} RON</p>
-              <p className="text-sm font-semibold text-gray-900 mt-2">{t('cart.checkout.total')}: {(getCartTotal() / 100).toFixed(2)} RON</p>
+            <div className="mt-4 p-4 bg-[var(--secondary)] rounded-md border border-[var(--border)]">
+              <p className="text-sm text-[var(--muted-foreground)]">{t('cart.checkout.totalItems')}: {getCartItemCount()}</p>
+              <p className="text-sm text-[var(--muted-foreground)]">{t('cart.checkout.shipping')}: {(getPriceShipping() / 100).toFixed(2)} RON</p>
+              <p className="text-sm font-semibold text-[var(--foreground)] mt-2">{t('cart.checkout.total')}: {(getCartTotal() / 100).toFixed(2)} RON</p>
             </div>
             
             <div className="mt-4">
-              <p className="text-sm text-gray-600">{t('cart.checkout.orderSecure')}</p>
+              <p className="text-sm text-[var(--muted-foreground)]">{t('cart.checkout.orderSecure')}</p>
             </div>
 
             <div className="mt-2 rounded-md text-sm">
               {savedShippingData ? null : (
-                <p className="text-red-500">{t('cart.checkout.saveInfoText')}</p>
+                <p className="text-[var(--destructive)]">{t('cart.checkout.saveInfoText')}</p>
               )}
              
               {savedShippingData && (
-                <div className="mt-2 p-4 bg-gray-50 rounded-md text-sm">
-                  <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
-                  <p><strong>Email:</strong> {formData.email}</p>
-                  <p><strong>Address:</strong> {formData.address}, {formData.apartment ? formData.apartment + ', ' : ''}{formData.city}, {formData.state}, {formData.country} {formData.postalCode}</p>
-                  <p><strong>Phone:</strong> {formData.phone}</p>
+                <div className="mt-2 p-4 bg-[var(--secondary)] rounded-md text-sm border border-[var(--border)]">
+                  <p className="text-[var(--foreground)]"><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
+                  <p className="text-[var(--foreground)]"><strong>Email:</strong> {formData.email}</p>
+                  <p className="text-[var(--foreground)]"><strong>Address:</strong> {formData.address}, {formData.apartment ? formData.apartment + ', ' : ''}{formData.city}, {formData.state}, {formData.country} {formData.postalCode}</p>
+                  <p className="text-[var(--foreground)]"><strong>Phone:</strong> {formData.phone}</p>
                 </div>
               )}
             </div>
             
             {/* info shipping */}
-            <div className="mt-4 p-4 bg-primary/50 rounded-md">
-              <h4 className="text-sm font-medium text-primary-800">{t('cart.checkout.shippingInfo')}</h4>
-              <p className="text-xs text-primary-600 mt-1">{t('cart.checkout.shippingInfoText')}</p>
+            <div className="mt-4 p-4 bg-[var(--primary)]/10 rounded-md border border-[var(--border)]">
+              <h4 className="text-sm font-medium text-[var(--primary)]">{t('cart.checkout.shippingInfo')}</h4>
+              <p className="text-xs text-[var(--muted-foreground)] mt-1">{t('cart.checkout.shippingInfoText')}</p>
             </div>
 
             <div className="pt-4">
               <Button
-                className={`w-full flex ${isLoading ? 'cursor-not-allowed' : 'cursor-pointer'} justify-center px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}
                 onClick={redirectToPayment}
                 disabled={isLoading}
               >
@@ -506,7 +503,7 @@ export default function ShippingPage() {
           <div className="text-center mt-8">
             <Link 
               href="/checkout/cart" 
-              className="text-sm font-medium text-primary hover:text-primary/80 flex items-center justify-center hover:underline cursor-pointer"
+              className="text-sm font-medium text-[var(--primary)] hover:text-[var(--hover-primary)] flex items-center justify-center hover:underline cursor-pointer"
             >
               <svg className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

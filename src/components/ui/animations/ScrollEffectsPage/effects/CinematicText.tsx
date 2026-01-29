@@ -16,7 +16,7 @@ export const CinematicText = ({ minSize, maxSize, letterSpacing }: CinematicText
   const spacing = progress * letterSpacing;
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center bg-black px-8">
+    <div ref={ref} className="min-h-screen flex items-center justify-center bg-[var(--foreground)] px-8">
       <h2
         className="font-bold text-center bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
         style={{
@@ -49,7 +49,7 @@ export const CinematicText = ({
   const spacing = progress * letterSpacing;
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center bg-black px-8">
+    <div ref={ref} className="min-h-screen flex items-center justify-center bg-[var(--foreground)] px-8">
       <h2
         className="font-bold text-center bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
         style={{

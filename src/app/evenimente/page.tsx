@@ -120,15 +120,26 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--background)]">
       {/* Hero Section */}
-      <div className="bg-linear-to-r from-primary to-primary-200 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div 
+        className="bg-[var(--secondary)] relative overflow-hidden"
+        style={{
+          backgroundImage: 'url(/hero-bg.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div 
+          className="absolute inset-0 bg-gradient-to-b from-[var(--primary)]/25 via-[var(--primary)]/15 to-[var(--primary)]/30"
+          style={{ backgroundBlendMode: 'overlay' }}
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[var(--primary-foreground)] drop-shadow-lg">
               Evenimente
             </h1>
-            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-[var(--primary-foreground)]/95 max-w-2xl mx-auto drop-shadow-md">
               Descoperiți momentele noastre speciale și evenimentele viitoare
             </p>
           </div>
@@ -137,19 +148,19 @@ export default function EventsPage() {
 
       {/* Filters Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-[var(--card)] rounded-lg shadow-sm p-6 border border-[var(--border)]">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="relative w-full md:w-96">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-[var(--muted-foreground)]" />
               </div>
               <input
                 type="text"
                 placeholder="Caută evenimente..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="pl-10 pr-3 py-2 w-full border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
               />
             </div>
 
@@ -158,7 +169,7 @@ export default function EventsPage() {
               <select
                 value={eventTypeFilter}
                 onChange={(e) => setEventTypeFilter(e.target.value as 'all' | 'upcoming' | 'past')}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="px-4 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
               >
                 <option value="all">Toate Evenimentele</option>
                 <option value="upcoming">Viitoare</option>
@@ -173,35 +184,35 @@ export default function EventsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
           </div>
         ) : events.length > 0 ? (
           <div className="space-y-8">
             {events.map((event) => (
               <div
                 key={event.eventId}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+                className="bg-[var(--card)] rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow border border-[var(--border)]"
               >
                 {/* Event Header */}
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h2 className="text-2xl font-bold text-gray-900">{event.title}</h2>
+                        <h2 className="text-2xl font-bold text-[var(--foreground)]">{event.title}</h2>
                         {event.featured && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-[var(--accent)] text-[var(--accent-foreground)]">
                             <Sparkles className="h-3 w-3 mr-1" />
                             Featured
                           </span>
                         )}
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          event.eventType === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                          event.eventType === 'upcoming' ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'bg-[var(--secondary)] text-[var(--foreground)]'
                         }`}>
                           {event.eventType === 'upcoming' ? 'Viitor' : 'Trecut'}
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-3">
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)] mb-3">
                         <div className="flex items-center">
                           <Calendar className="h-4 w-4 mr-1" />
                           {formatDate(event.eventDate)}
@@ -214,7 +225,7 @@ export default function EventsPage() {
                         )}
                       </div>
 
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      <p className="text-[var(--foreground)] leading-relaxed whitespace-pre-line">
                         {event.description}
                       </p>
                     </div>
@@ -237,8 +248,8 @@ export default function EventsPage() {
                               className="object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                           ) : (
-                            <div className="relative w-full h-full bg-gray-900 flex items-center justify-center">
-                              <Play className="h-12 w-12 text-white absolute z-10" />
+                            <div className="relative w-full h-full bg-black/90 flex items-center justify-center">
+                              <Play className="h-12 w-12 text-[var(--primary-foreground)] absolute z-10" />
                               {media.thumbnail && (
                                 <Image
                                   src={media.thumbnail}
@@ -255,14 +266,14 @@ export default function EventsPage() {
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+                  <div className="flex items-center gap-4 pt-4 border-t border-[var(--border)]">
                     <button
                       onClick={(e) => handleLike(event.eventId, e)}
                       disabled={likeMutation.isPending || !userId}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                         hasUserLiked(event)
-                          ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-[var(--destructive)]/10 text-[var(--destructive)] hover:bg-[var(--destructive)]/20'
+                          : 'bg-[var(--secondary)] text-[var(--foreground)] hover:bg-[var(--accent)]'
                       }`}
                       title={!userId ? 'Loading...' : hasUserLiked(event) ? 'Unlike' : 'Like'}
                     >
@@ -273,7 +284,7 @@ export default function EventsPage() {
                     <button
                       onClick={() => handleShare(event)}
                       disabled={shareMutation.isPending}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--secondary)] text-[var(--foreground)] hover:bg-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Share2 className={`h-5 w-5 ${shareMutation.isPending ? 'animate-pulse' : ''}`} />
                       <span className="font-medium">{event.shares || 0}</span>
@@ -284,12 +295,12 @@ export default function EventsPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <Calendar className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-            <h3 className="text-xl font-medium text-gray-900 mb-2">
+          <div className="bg-[var(--card)] rounded-lg shadow-sm p-12 text-center border border-[var(--border)]">
+            <Calendar className="mx-auto h-16 w-16 text-[var(--muted-foreground)] mb-4" />
+            <h3 className="text-xl font-medium text-[var(--foreground)] mb-2">
               Nu există evenimente
             </h3>
-            <p className="text-gray-500">
+            <p className="text-[var(--muted-foreground)]">
               {searchQuery ? 'Încearcă să modifici filtrele' : 'Revino curând pentru evenimente noi'}
             </p>
           </div>
@@ -301,7 +312,7 @@ export default function EventsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
           <button
             onClick={closeMediaModal}
-            className="absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-full transition-colors"
+            className="absolute top-4 right-4 p-2 text-[var(--primary-foreground)] hover:bg-[var(--card)]/10 rounded-full transition-colors"
           >
             <X className="h-8 w-8" />
           </button>
@@ -310,13 +321,13 @@ export default function EventsPage() {
             <>
               <button
                 onClick={() => navigateMedia('prev')}
-                className="absolute left-4 p-2 text-white hover:bg-white/10 rounded-full transition-colors"
+                className="absolute left-4 p-2 text-[var(--primary-foreground)] hover:bg-[var(--card)]/10 rounded-full transition-colors"
               >
                 <ChevronLeft className="h-8 w-8" />
               </button>
               <button
                 onClick={() => navigateMedia('next')}
-                className="absolute right-4 p-2 text-white hover:bg-white/10 rounded-full transition-colors"
+                className="absolute right-4 p-2 text-[var(--primary-foreground)] hover:bg-[var(--card)]/10 rounded-full transition-colors"
               >
                 <ChevronRight className="h-8 w-8" />
               </button>
@@ -342,7 +353,7 @@ export default function EventsPage() {
               />
             )}
             {selectedMedia.event.media[selectedMedia.mediaIndex].caption && (
-              <p className="text-white text-center mt-4">
+              <p className="text-[var(--primary-foreground)] text-center mt-4">
                 {selectedMedia.event.media[selectedMedia.mediaIndex].caption}
               </p>
             )}

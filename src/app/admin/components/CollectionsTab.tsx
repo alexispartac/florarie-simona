@@ -93,7 +93,7 @@ export default function CollectionsTab() {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
         </div>
       </div>
     );
@@ -102,10 +102,10 @@ export default function CollectionsTab() {
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-[var(--destructive)]/10 border border-[var(--destructive)]/30 rounded-lg p-4">
           <div className="flex items-center">
             <svg
-              className="h-5 w-5 text-red-400 mr-3"
+              className="h-5 w-5 text-[var(--destructive)] mr-3"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -116,7 +116,7 @@ export default function CollectionsTab() {
                 clipRule="evenodd"
               />
             </svg>
-            <p className="text-red-700">Error loading collections. Please try again later.</p>
+            <p className="text-[var(--destructive)]">Error loading collections. Please try again later.</p>
           </div>
         </div>
         </div>
@@ -154,12 +154,12 @@ export default function CollectionsTab() {
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 className="text-lg font-medium text-gray-900">Collections</h2>
+        <h2 className="text-lg font-medium text-[var(--foreground)]">Collections</h2>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           {/* Search */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <SearchIcon className="h-4 w-4 text-gray-400" />
+              <SearchIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
             </div>
             <Input
               type="text"
@@ -167,14 +167,14 @@ export default function CollectionsTab() {
               placeholder="Search collections..."
               value={searchQuery}
               onChange={handleSearch}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-[var(--border)] rounded-md leading-5 bg-[var(--card)] placeholder-[var(--muted-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
           {/* Add Button */}
           <button
             onClick={handleAddCollection}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium cursor-pointer rounded-md shadow-sm text-white bg-primary hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium cursor-pointer rounded-md shadow-sm text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add Collection
@@ -183,17 +183,17 @@ export default function CollectionsTab() {
       </div>
 
       {/* Collections Grid */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg">
         {collections.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
               {collections.map((collection) => (
                 <div
                   key={collection.collectionId}
-                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                  className="bg-[var(--card)] border border-[var(--border)] rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
                 >
                   {/* Image */}
-                  <div className="relative h-48 bg-gray-100">
+                  <div className="relative h-48 bg-[var(--muted)]">
                     {collection.image ? (
                       <Image
                         src={collection.image}
@@ -203,12 +203,12 @@ export default function CollectionsTab() {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
-                        <ImageIcon className="h-12 w-12 text-gray-300" />
+                        <ImageIcon className="h-12 w-12 text-[var(--muted-foreground)]" />
                       </div>
                     )}
                     {collection.featured && (
                       <div className="absolute top-2 right-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--accent)]/20 text-[var(--accent-foreground)]">
                           Featured
                         </span>
                       </div>
@@ -217,13 +217,13 @@ export default function CollectionsTab() {
 
                   {/* Content */}
                   <div className="p-4">
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                    <h3 className="text-lg font-medium text-[var(--foreground)] mb-1">
                       {collection.name}
                     </h3>
-                    <p className="text-sm text-gray-500 mb-2 line-clamp-2">
+                    <p className="text-sm text-[var(--muted-foreground)] mb-2 line-clamp-2">
                       {collection.description}
                     </p>
-                    <p className="text-xs text-gray-400 mb-4">
+                    <p className="text-xs text-[var(--muted-foreground)] mb-4">
                       {collection.products?.length || 0} products
                     </p>
 
@@ -231,14 +231,14 @@ export default function CollectionsTab() {
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEditCollection(collection)}
-                        className="p-2 text-primary-600 hover:text-primary-900 cursor-pointer"
+                        className="p-2 text-[var(--primary)] hover:text-[var(--foreground)] cursor-pointer"
                         title="Edit collection"
                       >
                         <PencilIcon className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(collection.collectionId)}
-                        className="p-2 text-red-600 hover:text-red-900 cursor-pointer"
+                        className="p-2 text-[var(--destructive)] hover:text-[var(--destructive)]/90 cursor-pointer"
                         title="Delete collection"
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -250,26 +250,26 @@ export default function CollectionsTab() {
             </div>
 
             {/* Pagination */}
-            <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div className="bg-[var(--card)] px-4 py-3 flex items-center justify-between border-t border-[var(--border)] sm:px-6">
               <div className="flex-1 flex justify-between sm:hidden">
                 <button
                   onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-4 py-2 border border-[var(--border)] text-sm font-medium rounded-md text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage >= totalPages}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-[var(--border)] text-sm font-medium rounded-md text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
               </div>
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-[var(--foreground)]">
                     Showing <span className="font-medium">{startItem + 1}</span> to{' '}
                     <span className="font-medium">
                       {Math.min(startItem + ITEMS_PER_PAGE, total)}
@@ -285,7 +285,7 @@ export default function CollectionsTab() {
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-[var(--border)] bg-[var(--card)] text-sm font-medium text-[var(--muted-foreground)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <span className="sr-only">Previous</span>
                       <svg
@@ -320,8 +320,8 @@ export default function CollectionsTab() {
                           onClick={() => handlePageChange(pageNum)}
                           className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                             currentPage === pageNum
-                              ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
-                              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                              ? 'z-10 bg-[var(--primary)]/10 border-[var(--primary)] text-[var(--primary)]'
+                              : 'bg-[var(--card)] border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--secondary)]'
                           }`}
                         >
                           {pageNum}
@@ -332,7 +332,7 @@ export default function CollectionsTab() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage >= totalPages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-[var(--border)] bg-[var(--card)] text-sm font-medium text-[var(--muted-foreground)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <span className="sr-only">Next</span>
                       <svg
@@ -355,13 +355,13 @@ export default function CollectionsTab() {
           </>
         ) : (
           <div className="text-center py-12">
-            <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No collections</h3>
-            <p className="mt-1 text-sm text-gray-500">Get started by creating a new collection.</p>
+            <ImageIcon className="mx-auto h-12 w-12 text-[var(--muted-foreground)]" />
+            <h3 className="mt-2 text-sm font-medium text-[var(--foreground)]">No collections</h3>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">Get started by creating a new collection.</p>
             <div className="mt-6">
               <button
                 onClick={handleAddCollection}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
               >
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add Collection

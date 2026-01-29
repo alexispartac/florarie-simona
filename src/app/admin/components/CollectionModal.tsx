@@ -75,7 +75,7 @@ function CollectionModalContent({
   return (
     <div className="sm:flex sm:items-start">
       <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+        <h3 className="text-lg leading-6 font-medium text-[var(--foreground)] mb-4">
           {collection ? 'Edit Collection' : 'Add New Collection'}
         </h3>
 
@@ -84,7 +84,7 @@ function CollectionModalContent({
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Collection Name *
             </label>
@@ -96,7 +96,7 @@ function CollectionModalContent({
               value={formData.name}
               onChange={handleChange}
               placeholder="e.g., Summer Romance Collection"
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] placeholder-gray-400 focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
@@ -104,7 +104,7 @@ function CollectionModalContent({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Description *
             </label>
@@ -116,7 +116,7 @@ function CollectionModalContent({
               value={formData.description}
               onChange={handleChange}
               placeholder="Describe this collection..."
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
@@ -124,7 +124,7 @@ function CollectionModalContent({
           <div>
             <label
               htmlFor="image"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Image URL
             </label>
@@ -135,7 +135,7 @@ function CollectionModalContent({
               value={formData.image}
               onChange={handleChange}
               placeholder="https://example.com/image.jpg"
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] placeholder-gray-400 focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
             {formData.image && !imageError && (
               <div className="mt-2 relative h-32 w-full rounded-md overflow-hidden">
@@ -149,8 +149,8 @@ function CollectionModalContent({
               </div>
             )}
             {imageError && formData.image && (
-              <div className="mt-2 h-32 w-full bg-gray-100 rounded-md flex items-center justify-center">
-                <span className="text-gray-400 text-sm">Invalid image URL</span>
+              <div className="mt-2 h-32 w-full bg-[var(--muted)] rounded-md flex items-center justify-center">
+                <span className="text-[var(--muted-foreground)] text-sm">Invalid image URL</span>
               </div>
             )}
           </div>
@@ -159,7 +159,7 @@ function CollectionModalContent({
           <div>
             <label
               htmlFor="products"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Product IDs (comma-separated)
             </label>
@@ -170,9 +170,9 @@ function CollectionModalContent({
               value={productsInput}
               onChange={handleProductsChange}
               placeholder="product_1, product_2, product_3"
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] placeholder-gray-400 focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">
               Enter product IDs separated by commas
             </p>
           </div>
@@ -185,11 +185,11 @@ function CollectionModalContent({
               type="checkbox"
               checked={formData.featured}
               onChange={handleChange}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
+              className="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary)] border-[var(--border)] rounded cursor-pointer"
             />
             <label
               htmlFor="featured"
-              className="ml-2 block text-sm text-gray-900 cursor-pointer"
+              className="ml-2 block text-sm text-[var(--foreground)] cursor-pointer"
             >
               Featured Collection
             </label>
@@ -200,7 +200,7 @@ function CollectionModalContent({
             <button
               type="submit"
               disabled={isSaving}
-              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[var(--primary)] text-base font-medium text-white hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? 'Saving...' : collection ? 'Update' : 'Create'}
             </button>
@@ -208,7 +208,7 @@ function CollectionModalContent({
               type="button"
               onClick={handleClose}
               disabled={isSaving}
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-3 w-full inline-flex justify-center rounded-md border border-[var(--border)] shadow-sm px-4 py-2 bg-[var(--card)] text-base font-medium text-[var(--foreground)] hover:bg-[var(--secondary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] sm:mt-0 sm:col-start-1 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -236,7 +236,7 @@ export default function CollectionModal({
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         {/* Background overlay */}
         <div
-          className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
+          className="fixed inset-0 transition-opacity bg-[var(--secondary)]0 bg-opacity-75"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -247,12 +247,12 @@ export default function CollectionModal({
         </span>
 
         {/* Modal panel */}
-        <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-visible shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 z-50">
+        <div className="relative inline-block align-bottom bg-[var(--card)] rounded-lg px-4 pt-5 pb-4 text-left overflow-visible shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 z-50">
           <div className="absolute top-0 right-0 pt-4 pr-4 z-10">
             <button
               type="button"
               onClick={onClose}
-              className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="bg-[var(--card)] rounded-md text-[var(--muted-foreground)] hover:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
             >
               <span className="sr-only">Close</span>
               <X className="h-6 w-6" />

@@ -140,10 +140,10 @@ export default function Shop() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="animate-pulse flex flex-col items-center space-y-4">
           <Spinner className="w-12 h-12" />
-          <p className="text-gray-600">Loading products...</p>
+          <p className="text-[var(--muted-foreground)]">Loading products...</p>
         </div>
       </div>
     );
@@ -151,9 +151,9 @@ export default function Shop() {
 
   if (isError) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="animate-pulse flex flex-col items-center space-y-4">
-          <p className="text-gray-600">Error loading products. Please try again later.</p>
+          <p className="text-[var(--muted-foreground)]">Error loading products. Please try again later.</p>
         </div>
       </div>
     );
@@ -163,7 +163,7 @@ export default function Shop() {
   // Products are already filtered and sorted when they arrive from the server
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--primary-background)]">
       <ShopHero
         title="Intra in lumea florilor"
         subtitle="Descopera buchete proaspete și aranjamente florale superbe pentru orice ocazie. Nu ezita sa ne contactezi pentru orice intrebare."
@@ -191,12 +191,11 @@ export default function Shop() {
         <div className="mb-12">
           {products.length === 0 ? (
             <div className="text-center py-12">
-              <h3 className="text-lg font-medium text-gray-900">{t('shop.noProducts')}</h3>
-              <p className="mt-1 text-gray-500">{t('shop.tryDifferentSearch')}</p>
+              <h3 className="text-lg font-medium text-[var(--foreground)]">{t('shop.noProducts')}</h3>
+              <p className="mt-1 text-[var(--muted-foreground)]">{t('shop.tryDifferentSearch')}</p>
               <Button
                 onClick={clearFilters}
                 variant="outline"
-                className="mt-4"
               >
                 {t('shop.clearFilters')}
               </Button>
@@ -213,11 +212,11 @@ export default function Shop() {
                 {isFetchingNextPage && (
                   <div className="flex flex-col items-center space-y-2">
                     <Spinner className="w-8 h-8" />
-                    <p className="text-gray-600">Se încarcă mai multe produse...</p>
+                    <p className="text-[var(--muted-foreground)]">Se încarcă mai multe produse...</p>
                   </div>
                 )}
                 {!hasNextPage && products.length > 0 && (
-                  <p className="text-gray-500">Ai ajuns la finalul catalogului 🌸</p>
+                  <p className="text-[var(--muted-foreground)]">Ai ajuns la finalul catalogului 🌸</p>
                 )}
               </div>
             </>

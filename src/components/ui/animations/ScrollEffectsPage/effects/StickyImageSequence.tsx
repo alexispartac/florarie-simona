@@ -21,7 +21,7 @@ export const StickyImageSequence = ({ transitionSpeed, imageCount }: StickyImage
   const safeIndex = Math.min(currentImageIndex, images.length - 1);
 
   return (
-    <div ref={ref} className="relative min-h-[200vh] bg-black">
+    <div ref={ref} className="relative min-h-[200vh] bg-[var(--foreground)]">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {images.map((img, index) => {
           const isActive = index === safeIndex;
@@ -43,7 +43,7 @@ export const StickyImageSequence = ({ transitionSpeed, imageCount }: StickyImage
         })}
 
         <div className="absolute bottom-20 left-0 right-0 text-center">
-          <p className="text-white text-2xl font-semibold px-8">
+          <p className="text-[var(--primary-foreground)] text-2xl font-semibold px-8">
             Imagine {safeIndex + 1} din {images.length}
           </p>
         </div>
@@ -73,7 +73,7 @@ export const StickyImageSequence = ({
   const safeIndex = Math.min(currentImageIndex, images.length - 1);
 
   return (
-    <div ref={ref} className="relative min-h-[200vh] bg-black">
+    <div ref={ref} className="relative min-h-[200vh] bg-[var(--foreground)]">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {images.map((img, index) => {
           const isActive = index === safeIndex;

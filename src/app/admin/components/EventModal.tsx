@@ -70,14 +70,14 @@ function EventModalContent({
   return (
     <div className="sm:flex sm:items-start">
       <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+        <h3 className="text-lg leading-6 font-medium text-[var(--foreground)] mb-4">
           {event ? 'Edit Event' : 'Add New Event'}
         </h3>
 
         <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="title" className="block text-sm font-medium text-[var(--foreground)] mb-1">
               Event Title *
             </label>
             <input
@@ -88,13 +88,13 @@ function EventModalContent({
               value={formData.title}
               onChange={handleChange}
               placeholder="e.g., Valentine's Day Workshop"
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] placeholder-gray-400 focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="description" className="block text-sm font-medium text-[var(--foreground)] mb-1">
               Description *
             </label>
             <textarea
@@ -105,13 +105,13 @@ function EventModalContent({
               value={formData.description}
               onChange={handleChange}
               placeholder="Describe the event..."
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] placeholder-gray-400 focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
           {/* Event Date */}
           <div>
-            <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="eventDate" className="block text-sm font-medium text-[var(--foreground)] mb-1">
               Event Date & Time *
             </label>
             <input
@@ -121,13 +121,13 @@ function EventModalContent({
               required
               value={formData.eventDate ? new Date(formData.eventDate).toISOString().slice(0, 16) : ''}
               onChange={handleChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
           {/* Location */}
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="location" className="block text-sm font-medium text-[var(--foreground)] mb-1">
               Location
             </label>
             <input
@@ -137,30 +137,30 @@ function EventModalContent({
               value={formData.location}
               onChange={handleChange}
               placeholder="e.g., Bucharest, Romania"
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm text-[var(--foreground)] placeholder-gray-400 focus:outline-none focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
             />
           </div>
 
           {/* Media Section */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Media (Images/Videos)
             </label>
             
             {/* Add Media Form */}
-            <div className="border border-gray-200 rounded-md p-3 mb-3 space-y-2">
+            <div className="border border-[var(--border)] rounded-md p-3 mb-3 space-y-2">
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="url"
                   placeholder="Media URL"
                   value={mediaInput.url}
                   onChange={(e) => setMediaInput({ ...mediaInput, url: e.target.value })}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400"
+                  className="px-3 py-2 border border-[var(--border)] rounded-md text-sm text-[var(--foreground)] placeholder-gray-400"
                 />
                 <select
                   value={mediaInput.type}
                   onChange={(e) => setMediaInput({ ...mediaInput, type: e.target.value as 'image' | 'video' })}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900"
+                  className="px-3 py-2 border border-[var(--border)] rounded-md text-sm text-[var(--foreground)]"
                 >
                   <option value="image">Image</option>
                   <option value="video">Video</option>
@@ -171,12 +171,12 @@ function EventModalContent({
                 placeholder="Caption (optional)"
                 value={mediaInput.caption}
                 onChange={(e) => setMediaInput({ ...mediaInput, caption: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400"
+                className="w-full px-3 py-2 border border-[var(--border)] rounded-md text-sm text-[var(--foreground)] placeholder-gray-400"
               />
               <button
                 type="button"
                 onClick={handleAddMedia}
-                className="w-full flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="w-full flex items-center justify-center px-3 py-2 border border-[var(--border)] rounded-md text-sm font-medium text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--secondary)]"
               >
                 <Plus className="h-4 w-4 mr-1" />
                 Add Media
@@ -187,20 +187,20 @@ function EventModalContent({
             {formData.media && formData.media.length > 0 && (
               <div className="grid grid-cols-2 gap-2">
                 {formData.media.map((item: EventMedia, index: number) => (
-                  <div key={index} className="relative border border-gray-200 rounded-md p-2">
+                  <div key={index} className="relative border border-[var(--border)] rounded-md p-2">
                     <button
                       type="button"
                       onClick={() => handleRemoveMedia(index)}
-                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      className="absolute top-1 right-1 p-1 bg-[var(--destructive)]/100 text-white rounded-full hover:bg-[var(--destructive)]/90"
                     >
                       <Trash2 className="h-3 w-3" />
                     </button>
                     {item.type === 'image' ? (
-                      <Image className="h-8 w-8 text-gray-400 mx-auto" src={item.url} alt={item.caption || 'Image'} width={32} height={32} />
+                      <Image className="h-8 w-8 text-[var(--muted-foreground)] mx-auto" src={item.url} alt={item.caption || 'Image'} width={32} height={32} />
                     ) : (
-                      <Video className="h-8 w-8 text-gray-400 mx-auto" />
+                      <Video className="h-8 w-8 text-[var(--muted-foreground)] mx-auto" />
                     )}
-                    <p className="text-xs text-gray-500 mt-1 truncate">{item.caption || 'No caption'}</p>
+                    <p className="text-xs text-[var(--muted-foreground)] mt-1 truncate">{item.caption || 'No caption'}</p>
                   </div>
                 ))}
               </div>
@@ -216,9 +216,9 @@ function EventModalContent({
                 type="checkbox"
                 checked={formData.featured}
                 onChange={handleChange}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
+                className="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary)] border-[var(--border)] rounded cursor-pointer"
               />
-              <label htmlFor="featured" className="ml-2 block text-sm text-gray-900 cursor-pointer">
+              <label htmlFor="featured" className="ml-2 block text-sm text-[var(--foreground)] cursor-pointer">
                 Featured Event
               </label>
             </div>
@@ -230,9 +230,9 @@ function EventModalContent({
                 type="checkbox"
                 checked={formData.published}
                 onChange={handleChange}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
+                className="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary)] border-[var(--border)] rounded cursor-pointer"
               />
-              <label htmlFor="published" className="ml-2 block text-sm text-gray-900 cursor-pointer">
+              <label htmlFor="published" className="ml-2 block text-sm text-[var(--foreground)] cursor-pointer">
                 Published
               </label>
             </div>
@@ -243,7 +243,7 @@ function EventModalContent({
             <button
               type="submit"
               disabled={isSaving}
-              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[var(--primary)] text-base font-medium text-white hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? 'Saving...' : event ? 'Update' : 'Create'}
             </button>
@@ -251,7 +251,7 @@ function EventModalContent({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-3 w-full inline-flex justify-center rounded-md border border-[var(--border)] shadow-sm px-4 py-2 bg-[var(--card)] text-base font-medium text-[var(--foreground)] hover:bg-[var(--secondary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] sm:mt-0 sm:col-start-1 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -277,7 +277,7 @@ export default function EventModal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div
-          className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
+          className="fixed inset-0 transition-opacity bg-[var(--secondary)]0 bg-opacity-75"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -286,12 +286,12 @@ export default function EventModal({
           &#8203;
         </span>
 
-        <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-visible shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6 z-50">
+        <div className="relative inline-block align-bottom bg-[var(--card)] rounded-lg px-4 pt-5 pb-4 text-left overflow-visible shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6 z-50">
           <div className="absolute top-0 right-0 pt-4 pr-4 z-10">
             <button
               type="button"
               onClick={onClose}
-              className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="bg-[var(--card)] rounded-md text-[var(--muted-foreground)] hover:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
             >
               <span className="sr-only">Close</span>
               <X className="h-6 w-6" />

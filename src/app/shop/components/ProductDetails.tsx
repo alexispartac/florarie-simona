@@ -21,7 +21,7 @@ export function ProductDetails({
     <div className="space-y-6">
       {/* Category and Tags */}
       <div className="space-y-2">
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-[var(--muted-foreground)]">
           <Tag className="w-4 h-4 mr-1" />
           <span className="capitalize">{category}</span>
         </div>
@@ -31,7 +31,7 @@ export function ProductDetails({
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--secondary)] text-[var(--foreground)] border border-[var(--border)]"
               >
                 {tag}
               </span>
@@ -65,11 +65,11 @@ export function ProductDetails({
       {/* Product Details */}
       {details.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-lg font-medium">Product Details</h3>
-          <ul className="space-y-2 text-gray-700">
+          <h3 className="serif-font text-lg font-medium text-[var(--foreground)]">Product Details</h3>
+          <ul className="space-y-2 text-[var(--foreground)]">
             {details.map((detail, index) => (
-              <li key={index} className="flex items-start">
-                <span className="mr-2">•</span>
+              <li key={index} className="flex items-start serif-light">
+                <span className="mr-2 text-[var(--primary)]">•</span>
                 <span>{detail}</span>
               </li>
             ))}

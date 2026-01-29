@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useScrollProgress } from '@/components/hooks/useScrollProgress';
 import Button from "../components/ui/Button";
+import ServiceCard from "../components/ui/ServiceCard";
 import Image from 'next/image';
 import { ArrowBigDown, Calendar, MapPin, Heart, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -23,7 +24,7 @@ export default function Home() {
   const { t } = useLanguage();
   
   return (
-    <div className="relative w-full overflow-x-hidden bg-rose-50/30">
+    <div className="relative w-full overflow-x-hidden bg-[var(--primary-background)]">
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
         
@@ -61,7 +62,7 @@ export default function Home() {
       <DecorativeDivider />
       
       {/* Reveal Cards Section */}
-      <RevealCardsSection router={router} />
+      <RevealCardsSection />
 
       {/* Decorative Divider */}
       <DecorativeDivider />
@@ -78,11 +79,11 @@ export default function Home() {
 // Decorative Divider Component
 function DecorativeDivider() {
   return (
-    <div className="py-12 bg-rose-50/30">
+    <div className="py-12 bg-[var(--primary-background)]">
       <div className="max-w-4xl mx-auto flex items-center justify-center gap-4 px-8">
-        <div className="h-px flex-1 bg-linear-to-r from-transparent via-rose-400/40 to-rose-400/40" />
-          <ArrowBigDown className="w-6 h-6 text-rose-400/70" />
-        <div className="h-px flex-1 bg-linear-to-l from-transparent via-rose-400/40 to-rose-400/40" />
+        <div className="h-px flex-1 bg-linear-to-r from-transparent via-[var(--primary)]/40 to-[var(--primary)]/40" />
+          <ArrowBigDown className="w-6 h-6 text-[var(--primary)]/70" />
+        <div className="h-px flex-1 bg-linear-to-l from-transparent via-[var(--primary)]/40 to-[var(--primary)]/40" />
       </div>
     </div>
   );
@@ -102,13 +103,13 @@ function HeroSection({ t, router }: SectionProps) {
       <div className="absolute inset-0 bg-linear-to-b from-stone-900/70 via-stone-900/50 to-stone-900/80" />
       
       {/* Elegant top border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-rose-400/50 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-[var(--primary)]/50 to-transparent" />
       
       <div className="relative z-10 h-full px-6 md:px-12 lg:px-16 py-16 md:py-20 flex flex-col justify-between">
         {/* Top Left - Small Label */}
         <div className="self-start mt-10">
-          <div className="flex items-center gap-2 text-rose-100">
-            <div className="h-px w-8 bg-rose-400/70" />
+          <div className="flex items-center gap-2 text-[var(--accent)]">
+            <div className="h-px w-8 bg-[var(--primary)]/70" />
             <span className="text-xs tracking-[0.3em] uppercase serif-light">Flori Premium</span>
           </div>
         </div>
@@ -118,22 +119,22 @@ function HeroSection({ t, router }: SectionProps) {
           <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             {/* Left Side - Main Title */}
             <div className="flex flex-col justify-center lg:items-end lg:text-right">
-              <h1 className="serif-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-white leading-[0.9] mb-4">
+              <h1 className="serif-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[var(--accent)] leading-[0.9] mb-4">
                 {t('homepage.heroTitle')}
               </h1>
               
               {/* Decorative element */}
               <div className="flex items-center gap-2 lg:justify-end mt-4 lg:mt-6">
-                <svg className="w-5 h-5 text-rose-400/90" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[var(--primary)]/90" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
-                <div className="h-px w-16 lg:w-20 bg-rose-400/60" />
+                <div className="h-px w-16 lg:w-20 bg-[var(--primary)]/60" />
               </div>
             </div>
 
             {/* Right Side - Subtitle and CTA */}
             <div className="flex flex-col justify-center gap-6 lg:gap-8">
-              <p className="serif-light text-2xl sm:text-2xl md:text-3xl lg:text-4xl text-rose-100 font-light leading-relaxed">
+              <p className="serif-light text-2xl sm:text-2xl md:text-3xl lg:text-4xl text-[var(--accent)] font-light leading-relaxed">
                 {t('homepage.heroSubtitle')}
               </p>
               
@@ -141,20 +142,19 @@ function HeroSection({ t, router }: SectionProps) {
                 <Button 
                   variant="primary" 
                   size="lg" 
-                  className='cursor-pointer bg-rose-500 hover:bg-rose-600 border-rose-600 px-10 lg:px-12 py-4 lg:py-5 text-base lg:text-lg tracking-wider shadow-xl shadow-rose-500/30 transition-all duration-300'
                   onClick={() => router.push('/shop')}
                 >
                   {t('homepage.shopNow')}
                 </Button>
                 
                 {/* Social Media Links */}
-                <div className="flex items-center gap-3 text-rose-100/90">
+                <div className="flex items-center gap-3 text-[var(--accent)]/90">
                   <span className="text-sm serif-light">Ne poți găsi pe:</span>
                   <a 
                     href="https://wa.me/40123456789" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="hover:text-rose-300 transition-colors"
+                    className="hover:text-[var(--primary)] transition-colors"
                     aria-label="WhatsApp"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@ function HeroSection({ t, router }: SectionProps) {
                     href="https://facebook.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="hover:text-rose-300 transition-colors"
+                    className="hover:text-[var(--primary)] transition-colors"
                     aria-label="Facebook"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ function HeroSection({ t, router }: SectionProps) {
                     href="https://instagram.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="hover:text-rose-300 transition-colors"
+                    className="hover:text-[var(--primary)] transition-colors"
                     aria-label="Instagram"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -191,15 +191,15 @@ function HeroSection({ t, router }: SectionProps) {
 
         {/* Bottom Right - Info Tags */}
         <div className="self-end flex flex-wrap gap-4 md:gap-8 items-center justify-end">
-          <div className="flex items-center gap-2 text-rose-100/80 text-xs md:text-sm serif-light">
-            <svg className="w-4 h-4 text-rose-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-2 text-[var(--accent)]/80 text-xs md:text-sm serif-light">
+            <svg className="w-4 h-4 text-[var(--primary)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
             </svg>
             <span>Livrare Rapidă în Maxim 24h de la Crearea Aranjamentului</span>
           </div>
-          <div className="h-4 md:h-6 w-px bg-rose-400/30" />
-          <div className="flex items-center gap-2 text-rose-100/80 text-xs md:text-sm serif-light">
-            <svg className="w-4 h-4 text-rose-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="h-4 md:h-6 w-px bg-[var(--primary)]/30" />
+          <div className="flex items-center gap-2 text-[var(--accent)]/80 text-xs md:text-sm serif-light">
+            <svg className="w-4 h-4 text-[var(--primary)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <span>Creat cu pasiune</span>
@@ -209,8 +209,8 @@ function HeroSection({ t, router }: SectionProps) {
 
       {/* Scroll Indicator - Bottom Center */}
       <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2">
-        <div className="flex flex-col items-center gap-2 text-rose-100">
-          <div className="w-px h-10 md:h-12 bg-linear-to-b from-transparent via-rose-400/50 to-transparent animate-pulse" />
+        <div className="flex flex-col items-center gap-2 text-[var(--accent)]">
+          <div className="w-px h-10 md:h-12 bg-linear-to-b from-transparent via-[var(--primary)]/50 to-transparent animate-pulse" />
           <span className="text-xs tracking-widest uppercase serif-light">Scroll</span>
         </div>
       </div>
@@ -229,10 +229,10 @@ function TextRevealSection({ t }: TextOnlyProps) {
   const words = text.split(' ');
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center bg-rose-50/20 px-8 py-20">
+    <div ref={ref} className="min-h-screen flex items-center justify-center bg-[var(--secondary)] px-8 py-20">
       <div className="max-w-5xl">
         {/* Title */}
-        <h2 className="serif-font text-4xl md:text-6xl font-medium text-stone-800 leading-relaxed text-center mb-12">
+        <h2 className="serif-font text-4xl md:text-6xl font-medium text-[var(--foreground)] leading-relaxed text-center mb-12">
           {words.map((word: string, index: number) => {
             const wordProgress = Math.max(
               0,
@@ -263,9 +263,9 @@ function TextRevealSection({ t }: TextOnlyProps) {
             transition: 'all 0.3s ease-out',
           }}
         >
-          <div className="h-px w-16 bg-rose-400/40" />
-          <span className="text-rose-600 text-xs tracking-widest uppercase serif-light">Cu ce ne ocupăm?</span>
-          <div className="h-px w-16 bg-rose-400/40" />
+          <div className="h-px w-16 bg-[var(--primary)]/40" />
+          <span className="text-[var(--primary)] text-xs tracking-widest uppercase serif-light">Cu ce ne ocupăm?</span>
+          <div className="h-px w-16 bg-[var(--primary)]/40" />
         </div>
     
         {/* add a paragraph here with some text about the company */}
@@ -273,7 +273,7 @@ function TextRevealSection({ t }: TextOnlyProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="serif-light text-lg md:text-xl text-stone-600 mb-8 leading-relaxed font-light"
+          className="serif-light text-lg md:text-xl text-[var(--muted-foreground)] mb-8 leading-relaxed font-light"
         >
           La Buchetul Simonei, credem că fiecare floare spune o poveste. Fondată din pasiunea pentru frumusețea naturii și dorința de a aduce bucurie în viețile oamenilor, florăria noastră a crescut de la o mică afacere locală la un nume de încredere în livrarea de flori proaspete și aranjamente florale spectaculoase.
 
@@ -314,7 +314,7 @@ function SplitScreenSection({ t, router }: SectionProps) {
         <div className="absolute inset-4 border border-rose-400/10 pointer-events-none" />
       </div>
 
-      <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 lg:p-24 bg-rose-50/20 order-1 md:order-2">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 lg:p-24 bg-[var(--secondary)] order-1 md:order-2">
         <div
           className="max-w-xl"
           style={{
@@ -325,22 +325,21 @@ function SplitScreenSection({ t, router }: SectionProps) {
         >
           {/* Small label */}
           <div className="flex items-center gap-2 mb-6">
-            <div className="h-px w-8 bg-rose-400/50" />
-            <span className="text-xs tracking-widest uppercase text-rose-600 serif-light">Excellence</span>
+            <div className="h-px w-8 bg-[var(--primary)]/50" />
+            <span className="text-xs tracking-widest uppercase text-[var(--primary)] serif-light">Excellence</span>
           </div>
           
-          <h2 className="serif-font text-4xl md:text-5xl font-medium mb-6 text-stone-900 leading-tight">
+          <h2 className="serif-font text-4xl md:text-5xl font-medium mb-6 text-[var(--foreground)] leading-tight">
             {t('homepage.heroTitle')}
           </h2>
           
-          <p className="serif-light text-lg md:text-xl text-stone-600 mb-8 leading-relaxed font-light">
+          <p className="serif-light text-lg md:text-xl text-[var(--muted-foreground)] mb-8 leading-relaxed font-light">
             Descoperiți colecția noastră unică de flori proaspete și aranjamente florale create cu pasiune și dedicație. Fiecare buchet spune o poveste specială.
           </p>
           
             <Button 
             variant="outline" 
               size="lg" 
-            className='cursor-pointer border-2 border-rose-500 text-rose-600 hover:bg-rose-500 hover:text-white px-8 serif-light tracking-wide transition-all duration-300'
             onClick={() => router.push('/shop')}
           >
             Explorează Mai Mult
@@ -348,13 +347,13 @@ function SplitScreenSection({ t, router }: SectionProps) {
           
           {/* Progress indicator */}
           <div className="mt-10 flex items-center gap-3">
-            <div className="flex-1 h-px bg-rose-100">
+            <div className="flex-1 h-px bg-[var(--accent)]">
               <div 
-                className="h-full bg-rose-500" 
+                className="h-full bg-[var(--primary)]" 
                 style={{ width: `${progress * 100}%`, transition: 'width 0.2s' }} 
               />
             </div>
-            <span className="text-xs text-rose-400 serif-light">{Math.round(progress * 100)}%</span>
+            <span className="text-xs text-[var(--primary)] serif-light">{Math.round(progress * 100)}%</span>
           </div>
 
           
@@ -365,7 +364,7 @@ function SplitScreenSection({ t, router }: SectionProps) {
 }
 
 // Reveal Cards Section
-function RevealCardsSection({ router }: Omit<SectionProps, 't'>) {
+function RevealCardsSection() {
   const { ref, progress } = useScrollProgress<HTMLDivElement>({
     startThreshold: 0.1,
     endThreshold: 0.9,
@@ -393,7 +392,7 @@ function RevealCardsSection({ router }: Omit<SectionProps, 't'>) {
   ];
 
   return (
-    <div ref={ref} className="min-h-screen bg-rose-50/10  py-24 px-8">
+    <div ref={ref} className="min-h-screen bg-[var(--secondary)] py-24 px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-20">
@@ -405,13 +404,13 @@ function RevealCardsSection({ router }: Omit<SectionProps, 't'>) {
               transition: 'all 0.3s ease-out',
             }}
           >
-            <div className="h-px w-16 bg-rose-400/40" />
-            <span className="text-rose-600  text-xs tracking-widest uppercase serif-light">Serviciile Noastre</span>
-            <div className="h-px w-16 bg-rose-400/40" />
+            <div className="h-px w-16 bg-[var(--primary)]/40" />
+            <span className="text-[var(--primary)] text-xs tracking-widest uppercase serif-light">Serviciile Noastre</span>
+            <div className="h-px w-16 bg-[var(--primary)]/40" />
           </div>
           
           <h2 
-            className="serif-font text-4xl md:text-6xl font-medium text-stone-900 "
+            className="serif-font text-4xl md:text-6xl font-medium text-[var(--foreground)]"
             style={{
               opacity: progress,
               transform: `translateY(${(1 - progress) * 25}px)`,
@@ -426,52 +425,17 @@ function RevealCardsSection({ router }: Omit<SectionProps, 't'>) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
           {cards.map((card, index) => {
             const cardProgress = Math.max(0, Math.min(1, (progress - index * 0.12) * 1.5));
-            const translateY = (1 - cardProgress) * 40;
 
             return (
-              <div
+              <ServiceCard
                 key={index}
-                style={{
-                  opacity: cardProgress,
-                  transform: `translateY(${translateY}px)`,
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
-                className="group relative overflow-hidden cursor-pointer"
-                onClick={() => router.push('/shop')}
-              >
-                {/* Card Container */}
-                <div className="relative h-[500px] bg-white border border-rose-100 transition-all duration-500 group-hover:border-rose-400/50 group-hover:shadow-2xl group-hover:shadow-rose-500/10">
-                  {/* Image */}
-                  <div className="relative h-[340px] overflow-hidden">
-                    <Image
-                      src={card.image}
-                      alt={card.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-90"
-                    />
-                    {/* Elegant overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-rose-900/70 via-rose-900/20 to-transparent" />
-                    
-                    {/* Number Badge */}
-                    <div className="absolute top-6 left-6 w-14 h-14 border border-rose-200/50 flex items-center justify-center backdrop-blur-sm bg-white/5">
-                      <span className="serif-font text-white text-lg font-light">{card.number}</span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-8">
-                    <h3 className="serif-font text-2xl font-medium mb-3 text-stone-900 group-hover:text-rose-600 transition-colors">
-                      {card.title}
-                    </h3>
-                    <p className="serif-light text-stone-600 text-base leading-relaxed">
-                      {card.description}
-                    </p>
-                    
-                    {/* Bottom decorative line */}
-                    <div className="mt-6 h-px w-0 bg-rose-500 group-hover:w-full transition-all duration-500" />
-                  </div>
-                </div>
-              </div>
+                title={card.title}
+                description={card.description}
+                number={card.number}
+                image={card.image}
+                href="/shop"
+                cardProgress={cardProgress}
+              />
             );
           })}
         </div>
@@ -509,7 +473,7 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
   }
 
   return (
-    <div ref={ref} className="min-h-screen bg-rose-50/10 py-24 px-8">
+    <div ref={ref} className="min-h-screen bg-[var(--secondary)] py-24 px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-20">
@@ -521,15 +485,15 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
               transition: 'all 0.3s ease-out',
             }}
           >
-            <div className="h-px w-16 bg-rose-400/40" />
-            <span className="text-rose-600 text-xs tracking-widest uppercase serif-light">
+            <div className="h-px w-16 bg-[var(--primary)]/40" />
+            <span className="text-[var(--primary)] text-xs tracking-widest uppercase serif-light">
               Evenimente Speciale
             </span>
-            <div className="h-px w-16 bg-rose-400/40" />
+            <div className="h-px w-16 bg-[var(--primary)]/40" />
           </div>
 
           <h2
-            className="serif-font text-4xl md:text-6xl font-medium text-stone-900 mb-4"
+            className="serif-font text-4xl md:text-6xl font-medium text-[var(--foreground)] mb-4"
             style={{
               opacity: progress,
               transform: `translateY(${(1 - progress) * 25}px)`,
@@ -540,7 +504,7 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
           </h2>
 
           <p
-            className="serif-light text-lg md:text-xl text-stone-600 max-w-2xl mx-auto"
+            className="serif-light text-lg md:text-xl text-[var(--muted-foreground)] max-w-2xl mx-auto"
             style={{
               opacity: progress,
               transform: `translateY(${(1 - progress) * 25}px)`,
@@ -554,11 +518,11 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
         {/* Events Grid */}
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-rose-500"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--primary)]"></div>
           </div>
         ) : error ? (
           <div className="text-center py-20">
-            <p className="serif-light text-lg text-stone-600">
+            <p className="serif-light text-lg text-[var(--muted-foreground)]">
               Ne pare rău, nu am putut încărca evenimentele.
             </p>
           </div>
@@ -580,7 +544,7 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
                 className="group relative overflow-hidden cursor-pointer"
               >
                 {/* Card Container */}
-                <div className="relative h-[500px] bg-white border border-rose-100 transition-all duration-500 group-hover:border-rose-400/50 group-hover:shadow-2xl group-hover:shadow-rose-500/10">
+                <div className="relative h-[500px] bg-[var(--card)] border border-[var(--border)] transition-all duration-500 group-hover:border-[var(--primary)]/50 group-hover:shadow-2xl group-hover:shadow-[var(--primary)]/10">
                   {/* Image */}
                   <div className="relative h-[300px] overflow-hidden">
                     {event.media && event.media.length > 0 && event.media[0].type === 'image' ? (
@@ -591,16 +555,16 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
                         className="object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-90"
                       />
                     ) : (
-                      <div className="w-full h-full bg-linear-to-br from-rose-100 to-rose-50 flex items-center justify-center">
-                        <Calendar className="h-16 w-16 text-rose-300" />
+                      <div className="w-full h-full bg-linear-to-br from-[var(--accent)] to-[var(--primary-background)] flex items-center justify-center">
+                        <Calendar className="h-16 w-16 text-[var(--primary)]" />
                       </div>
                     )}
                     {/* Elegant overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-rose-900/70 via-rose-900/20 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-[var(--accent-foreground)]/70 via-[var(--accent-foreground)]/20 to-transparent" />
 
                     {/* Date Badge */}
                     <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg">
-                      <div className="flex items-center gap-2 text-rose-600">
+                      <div className="flex items-center gap-2 text-[var(--primary)]">
                         <Calendar className="h-4 w-4" />
                         <span className="serif-light text-sm font-medium">
                           {formatDate(event.eventDate)}
@@ -624,31 +588,31 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
 
                   {/* Content */}
                   <div className="p-6">
-                    <h3 className="serif-font text-xl font-medium mb-3 text-stone-900 group-hover:text-rose-600 transition-colors line-clamp-2">
+                    <h3 className="serif-font text-xl font-medium mb-3 text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors line-clamp-2">
                       {event.title}
                     </h3>
 
                     {event.location && (
-                      <div className="flex items-center gap-2 text-stone-600 text-sm mb-3">
-                        <MapPin className="h-4 w-4 text-rose-400" />
+                      <div className="flex items-center gap-2 text-[var(--muted-foreground)] text-sm mb-3">
+                        <MapPin className="h-4 w-4 text-[var(--primary)]" />
                         <span className="serif-light line-clamp-1">{event.location}</span>
                       </div>
                     )}
 
-                    <p className="serif-light text-stone-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                    <p className="serif-light text-[var(--muted-foreground)] text-sm leading-relaxed mb-4 line-clamp-2">
                       {event.description}
                     </p>
 
                     {/* Stats and Action */}
-                    <div className="flex items-center justify-between pt-4 border-t border-rose-100">
-                      <div className="flex items-center gap-3 text-sm text-stone-500">
+                    <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                      <div className="flex items-center gap-3 text-sm text-[var(--muted-foreground)]">
                         <div className="flex items-center gap-1">
-                          <Heart className="h-4 w-4 text-rose-400" />
+                          <Heart className="h-4 w-4 text-[var(--primary)]" />
                           <span>{event.likes || 0}</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center text-rose-600 text-sm font-medium group-hover:text-rose-700 transition-colors">
+                      <div className="flex items-center text-[var(--primary)] text-sm font-medium group-hover:text-[var(--hover-primary)] transition-colors">
                         <span className="serif-light">Detalii</span>
                         <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -673,7 +637,6 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
           <Button
             variant="outline"
             size="lg"
-            className="cursor-pointer border-2 border-rose-500 text-rose-600 hover:bg-rose-500 hover:text-white px-12 py-4 serif-light tracking-wide transition-all duration-300"
             onClick={() => router.push('/events')}
           >
             Vezi Toate Evenimentele
@@ -692,21 +655,21 @@ function CTASection({ t, router }: SectionProps) {
   });
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center bg-linear-to-br from-rose-950 via-pink-950 to-rose-900 px-8 py-20 relative overflow-hidden">
+    <div ref={ref} className="min-h-screen flex items-center justify-center bg-[var(--primary)] px-8 py-20 relative overflow-hidden">
       {/* Elegant background pattern */}
-      <div className="absolute inset-0 opacity-[0.05]">
+      <div className="absolute inset-0 opacity-[0.08]">
         <div className="absolute inset-0" style={{
           backgroundImage: `
-            radial-gradient(circle at 20% 50%, rgba(251, 113, 133, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(244, 114, 182, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 40% 20%, rgba(251, 113, 133, 0.2) 0%, transparent 50%)
+            radial-gradient(circle at 20% 50%, var(--primary-foreground) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, var(--primary-foreground) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, var(--primary-foreground) 0%, transparent 50%)
           `,
         }} />
       </div>
       
       {/* Decorative corner elements */}
-      <div className="absolute top-12 left-12 w-32 h-32 border-l border-t border-rose-400/20" />
-      <div className="absolute bottom-12 right-12 w-32 h-32 border-r border-b border-rose-400/20" />
+      <div className="absolute top-12 left-12 w-32 h-32 border-l border-t border-[var(--primary-foreground)]/20" />
+      <div className="absolute bottom-12 right-12 w-32 h-32 border-r border-b border-[var(--primary-foreground)]/20" />
       
       <div 
         className="text-center max-w-4xl relative z-10"
@@ -718,29 +681,28 @@ function CTASection({ t, router }: SectionProps) {
       >
         {/* Top decorative element */}
         <div className="flex items-center justify-center gap-3 mb-10">
-          <div className="h-px w-12 bg-rose-300/50" />
-          <svg className="w-5 h-5 text-rose-300/70" fill="currentColor" viewBox="0 0 20 20">
+          <div className="h-px w-12 bg-[var(--primary-foreground)]/40" />
+          <svg className="w-5 h-5 text-[var(--primary-foreground)]/60" fill="currentColor" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
-          <div className="h-px w-12 bg-rose-300/50" />
+          <div className="h-px w-12 bg-[var(--primary-foreground)]/40" />
         </div>
         
-        <h2 className="serif-font text-5xl md:text-7xl font-medium text-white mb-8 leading-tight">
+        <h2 className="serif-font text-5xl md:text-7xl font-medium text-[var(--primary-foreground)] mb-8 leading-tight">
           Începeți Călătoria Voastră
         </h2>
         
-        <p className="serif-light text-xl md:text-2xl text-rose-100 mb-12 leading-relaxed font-light max-w-2xl mx-auto">
+        <p className="serif-light text-xl md:text-2xl text-[var(--primary-foreground)]/90 mb-12 leading-relaxed font-light max-w-2xl mx-auto">
           Descoperă frumusețea florilor noastre și găsește buchetul perfect pentru tine sau persoana dragă.
         </p>
         
         {/* Divider */}
-        <div className="w-24 h-px bg-rose-400/40 mx-auto mb-12" />
+        <div className="w-24 h-px bg-[var(--primary-foreground)]/30 mx-auto mb-12" />
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Button 
-            variant="primary" 
+            variant="secondary" 
             size="lg" 
-            className='cursor-pointer bg-rose-500 hover:bg-rose-600 border-rose-600 px-12 py-4 serif-light tracking-wider text-base shadow-xl shadow-rose-500/30 transition-all duration-300'
             onClick={() => router.push('/shop')}
           >
             {t('homepage.shopNow')}
@@ -748,7 +710,6 @@ function CTASection({ t, router }: SectionProps) {
           <Button 
             variant="outline" 
             size="lg" 
-            className='cursor-pointer border-2 text-rose-900 px-12 py-4 serif-light tracking-wider text-base transition-all duration-300'
             onClick={() => router.push('/collections')}
           >
             {t('homepage.exploreColl')}
@@ -763,23 +724,23 @@ function CTASection({ t, router }: SectionProps) {
             transition: 'all 0.3s ease-out',
           }}
         >
-          <div className="flex items-center gap-8 text-rose-200/80 text-sm serif-light">
+          <div className="flex items-center gap-8 text-[var(--primary-foreground)]/80 text-sm serif-light">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-rose-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[var(--primary-foreground)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
               </svg>
               <span>Calitate Premium</span>
             </div>
-            <div className="h-4 w-px bg-rose-400/30" />
+            <div className="h-4 w-px bg-[var(--primary-foreground)]/30" />
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-rose-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[var(--primary-foreground)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>Livrare Rapidă</span>
             </div>
-            <div className="h-4 w-px bg-rose-400/30" />
+            <div className="h-4 w-px bg-[var(--primary-foreground)]/30" />
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-rose-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[var(--primary-foreground)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
               <span>1000+ Clienți</span>
@@ -794,19 +755,19 @@ function CTASection({ t, router }: SectionProps) {
 // Footer Section
 function FooterSection() {
   return (
-    <footer className="bg-rose-50 text-stone-800 ">
+    <footer className="bg-[var(--secondary)] text-[var(--foreground)]">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Left Column - Company Info */}
           <div className="space-y-4">
-            <h3 className="serif-font text-3xl font-semibold text-stone-900  mb-4">
+            <h3 className="serif-font text-3xl font-semibold text-[var(--foreground)] mb-4">
               Buchetul Simonei
             </h3>
-            <p className="serif-light text-base text-stone-700  leading-relaxed">
+            <p className="serif-light text-base text-[var(--muted-foreground)] leading-relaxed">
               Povești scrise în petale, emoții transmise prin flori.
             </p>
-            <div className="space-y-2 text-sm serif-light text-stone-600 ">
+            <div className="space-y-2 text-sm serif-light text-[var(--muted-foreground)]">
               <p className="font-medium">Adresa: Str. Unirii 240, Târnșeni, Neamt</p>
               <p>Program: Luni–Sâmbătă, 09:00–20:00</p>
               <p>Duminica, 10:00-18:00</p>
@@ -815,17 +776,17 @@ function FooterSection() {
 
           {/* Middle Column - Quick Links */}
           <div className="space-y-4">
-            <h4 className="serif-font text-lg font-medium text-stone-900  mb-4">
+            <h4 className="serif-font text-lg font-medium text-[var(--foreground)] mb-4">
               Link-uri Rapide
             </h4>
             <nav className="flex flex-col space-y-3">
-              <Link href="/" className="serif-light text-stone-700  hover:text-rose-600  transition-colors">
+              <Link href="/" className="serif-light text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
                 Acasă
               </Link>
-              <Link href="/shop" className="serif-light text-stone-700  hover:text-rose-600  transition-colors">
+              <Link href="/shop" className="serif-light text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
                 Galerie foto
               </Link>
-              <a href="/contact" className="serif-light text-stone-700  hover:text-rose-600 transition-colors">
+              <a href="/contact" className="serif-light text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
                 Contact
               </a>
             </nav>
@@ -833,7 +794,7 @@ function FooterSection() {
 
           {/* Right Column - Social Media */}
           <div className="space-y-4">
-            <h4 className="serif-font text-lg font-medium text-stone-900  mb-4">
+            <h4 className="serif-font text-lg font-medium text-[var(--foreground)] mb-4">
               Urmărește-ne
             </h4>
             <div className="flex gap-4">
@@ -841,7 +802,7 @@ function FooterSection() {
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-rose-500 hover:bg-rose-600 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+                className="w-10 h-10 rounded-full bg-[var(--primary)] hover:bg-[var(--hover-primary)] flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
                 aria-label="Facebook"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -852,7 +813,7 @@ function FooterSection() {
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-rose-500 hover:bg-rose-600 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+                className="w-10 h-10 rounded-full bg-[var(--primary)] hover:bg-[var(--hover-primary)] flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
                 aria-label="Instagram"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -864,26 +825,26 @@ function FooterSection() {
         </div>
 
         {/* Legal Links */}
-        <div className="border-t border-rose-300/30  pt-8 mb-8">
+        <div className="border-t border-[var(--border)] pt-8 mb-8">
           <div className="flex flex-wrap justify-center gap-6 text-sm serif-light">
-            <a href="/termeni-conditii" className="text-stone-600 hover:text-rose-600 transition-colors">
+            <a href="/termeni-conditii" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
               Termeni&Condiții
             </a>
-            <a href="/politica-cookies" className="text-stone-600  hover:text-rose-600 transition-colors">
+            <a href="/politica-cookies" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
               Politica de cookies
             </a>
-            <a href="/gdpr" className="text-stone-600  hover:text-rose-600  transition-colors">
+            <a href="/gdpr" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
               GDPR
             </a>
           </div>
         </div>
 
         {/* Payment Methods */}
-        <div className="border-t border-rose-300/30  pt-8">
-          <h4 className="serif-font text-lg font-medium text-stone-900  text-center mb-6">
+        <div className="border-t border-[var(--border)] pt-8">
+          <h4 className="serif-font text-lg font-medium text-[var(--foreground)] text-center mb-6">
             Metode de plată acceptate
           </h4>
-          <p className="text-center text-sm serif-light text-stone-600  mb-6">
+          <p className="text-center text-sm serif-light text-[var(--muted-foreground)] mb-6">
             Plătești în siguranță cu metodele preferate
           </p>
           
@@ -927,13 +888,13 @@ function FooterSection() {
 
           {/* Security Info */}
           <div className="text-center space-y-4 mb-8">
-            <div className="flex items-center justify-center gap-2 text-sm serif-light text-stone-600 ">
+            <div className="flex items-center justify-center gap-2 text-sm serif-light text-[var(--muted-foreground)]">
               <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
               </svg>
               <span>Toate tranzacțiile sunt securizate și criptate SSL</span>
             </div>
-            <p className="text-sm serif-light text-stone-600 ">
+            <p className="text-sm serif-light text-[var(--muted-foreground)]">
               Procesare securizată prin partenerii noștri de încredere
             </p>
           </div>
@@ -973,9 +934,9 @@ function FooterSection() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-primary border-t border-rose-300/30 ">
+      <div className="bg-primary border-t border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <p className="text-center text-sm serif-light text-stone-600 ">
+          <p className="text-center text-sm serif-light text-[var(--primary-foreground)]">
             © 2026 Buchetul Simonei. Toate drepturile rezervate.
           </p>
         </div>

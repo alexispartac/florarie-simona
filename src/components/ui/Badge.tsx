@@ -18,7 +18,7 @@ const badgeVariants = cva(
           "border-transparent bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-800/50",
         warning:
           "border-transparent bg-amber-100 text-amber-800 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-800/50",
-        info: "border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-800/50",
+        info: "border-transparent bg-[var(--primary)]/20 text-[var(--primary)] hover:bg-[var(--primary)]/30 dark:bg-[var(--primary)]/30 dark:text-[var(--primary)] dark:hover:bg-[var(--primary)]/50",
       },
     },
     defaultVariants: {
@@ -55,7 +55,7 @@ function Badge({
               "bg-foreground": variant === "outline",
               "bg-emerald-500 dark:bg-emerald-400": variant === "success",
               "bg-amber-500 dark:bg-amber-400": variant === "warning",
-              "bg-blue-500 dark:bg-blue-400": variant === "info",
+              "bg-[var(--primary)]/100 dark:bg-[var(--primary)]": variant === "info",
             },
             dotClassName
           )}

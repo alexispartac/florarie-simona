@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes, FC } from 'react';
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
-  size?: 'sm' | 'md' | 'lg';
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+  variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'cta';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   isLoading?: boolean;
   fullWidth?: boolean;
   withHeartbeat?: boolean;
@@ -10,7 +10,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: FC<ButtonProps> = ({
   children,
-  className = '',
   variant = 'primary',
   size = 'md',
   isLoading = false,
@@ -19,21 +18,23 @@ const Button: FC<ButtonProps> = ({
   withHeartbeat = false,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
+  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
   
   const variants = {
-    primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-    destructive: 'bg-red-600 text-white hover:bg-red-700',
-    outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-    ghost: 'hover:bg-accent hover:text-accent-foreground',
-    link: 'text-primary underline-offset-4 underline',
+    primary: 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--hover-primary)] shadow-lg hover:shadow-xl active:scale-[0.98] border border-transparent',
+    secondary: 'bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:bg-[var(--muted)] active:scale-[0.98] border border-[var(--border)]',
+    destructive: 'bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:bg-[var(--destructive)]/90 shadow-md hover:shadow-lg active:scale-[0.98] border border-transparent',
+    outline: 'border-2 border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:bg-[var(--accent)] hover:border-[var(--primary)] active:scale-[0.98]',
+    ghost: 'bg-transparent hover:bg-[var(--accent)] text-[var(--foreground)] active:scale-[0.98] border border-transparent',
+    link: 'text-[var(--primary)] underline-offset-4 hover:underline hover:text-[var(--hover-primary)] bg-transparent border-none h-auto p-0',
+    cta: 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--hover-primary)] shadow-2xl shadow-[var(--primary)]/30 hover:shadow-[var(--primary)]/40 active:scale-[0.98] font-semibold border border-transparent',
   };
 
   const sizes = {
-    sm: 'h-9 px-3 text-sm',
-    md: 'h-10 py-2 px-4',
-    lg: 'h-11 px-8',
+    sm: 'h-9 px-4 py-2 text-sm rounded-md',
+    md: 'h-11 px-6 py-2.5 text-base rounded-lg',
+    lg: 'h-12 px-10 py-3 text-base lg:text-lg rounded-lg tracking-wide',
+    xl: 'h-14 px-12 py-4 text-lg tracking-wider rounded-xl',
   };
 
   const buttonContent = isLoading ? (
@@ -47,7 +48,7 @@ const Button: FC<ButtonProps> = ({
 
   const buttonClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${
     fullWidth ? 'w-full' : ''
-  } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''} ${className}`;
+  } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`;
 
   const buttonStyles = withHeartbeat ? `${buttonClasses} relative overflow-hidden` : buttonClasses;
 

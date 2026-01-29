@@ -44,18 +44,18 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
 
   return (
     <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-primary/50 backdrop-blur-sm h-screen" />
+      <div className="absolute inset-0 bg-[var(--primary)]/50 backdrop-blur-sm h-screen" />
       <div 
         ref={wishlistRef}
-        className={`fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-lg h-screen
+        className={`fixed inset-y-0 right-0 w-full max-w-md bg-[var(--card)] shadow-lg h-screen
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex flex-col h-screen">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold">{t('wishlist.title')}</h2>
+          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+            <h2 className="text-xl font-semibold text-[var(--foreground)]">{t('wishlist.title')}</h2>
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+              className="p-2 rounded-full hover:bg-[var(--accent)] transition-colors cursor-pointer"
               aria-label="Close wishlist"
             >
               <FiX className="w-5 h-5" />
@@ -65,12 +65,12 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
           <div className="flex-1 overflow-y-auto p-4">
             {wishlist.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <FiHeart className="w-12 h-12 text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">{t('wishlist.empty')}</h3>
-                <p className="text-gray-500 mb-6">{t('wishlist.description')}</p>
+                <FiHeart className="w-12 h-12 text-[var(--muted-foreground)] mb-4" />
+                <h3 className="text-lg font-medium text-[var(--foreground)] mb-2">{t('wishlist.empty')}</h3>
+                <p className="text-[var(--muted-foreground)] mb-6">{t('wishlist.description')}</p>
                 <button
                   onClick={onClose}
-                  className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors cursor-pointer"
+                  className="px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-md hover:bg-[var(--hover-primary)] transition-colors cursor-pointer"
                 >
                   {t('button.continueShopping')}
                 </button>
@@ -78,7 +78,7 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
             ) : (
               <div className="space-y-4">
                 {wishlist.map((item) => (
-                  <div key={item.productId} className="flex items-center gap-4 p-3 border-b border-gray-100">
+                  <div key={item.productId} className="flex items-center gap-4 p-3 border-b border-[var(--border)]">
                     <div className="relative w-20 h-20 flex-shrink-0">
                       <Image
                         src={item.images?.[0] || '/placeholder-product.jpg'}
@@ -90,19 +90,18 @@ export default function Wishlist({ isOpen, onClose }: WishlistProps) {
                     <div className="flex-1">
                       <Link 
                         href={`/shop/${item.productId}?slug=${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="font-medium hover:underline line-clamp-1"
+                        className="font-medium text-[var(--foreground)] hover:underline line-clamp-1"
                         onClick={onClose}
                       >
                         {item.name}
                       </Link>
-                      <p className="text-sm text-gray-500">${(item.price / 100).toFixed(2)}</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">${(item.price / 100).toFixed(2)}</p>
                     </div>
                     <Button
                       onClick={() => {
                         removeFromWishlist(item.productId);
                       }}
                       variant='primary'
-                      className="p-2 cursor-pointer"
                       aria-label="Remove from wishlist"
                     >
                       {t('button.remove')}

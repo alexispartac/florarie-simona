@@ -42,23 +42,23 @@ export function OrderStatusModal({ isOpen, onClose, order, onStatusChange }: Ord
 
   const statusConfig = {
     processing: {
-      bg: 'bg-yellow-100 hover:bg-yellow-200',
-      text: 'text-yellow-800',
+      bg: 'bg-[var(--accent)]/20 hover:bg-[var(--accent)]/30',
+      text: 'text-[var(--accent-foreground)]',
       label: 'Processing'
     },
     shipped: {
-      bg: 'bg-blue-100 hover:bg-blue-200',
-      text: 'text-blue-800',
+      bg: 'bg-[var(--primary)]/20 hover:bg-[var(--primary)]/30',
+      text: 'text-[var(--primary)]',
       label: 'Shipped'
     },
     delivered: {
-      bg: 'bg-green-100 hover:bg-green-200',
-      text: 'text-green-800',
+      bg: 'bg-[var(--primary)]/20 hover:bg-[var(--primary)]/30',
+      text: 'text-[var(--primary)]',
       label: 'Delivered'
     },
     cancelled: {
-      bg: 'bg-red-100 hover:bg-red-200',
-      text: 'text-red-800',
+      bg: 'bg-[var(--destructive)]/20 hover:bg-[var(--destructive)]/30',
+      text: 'text-[var(--destructive)]',
       label: 'Cancelled'
     }
   };

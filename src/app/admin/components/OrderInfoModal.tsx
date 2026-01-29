@@ -19,30 +19,30 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
   const [isUpdating, setIsUpdating] = useState(false);
   if (!order) return null;
   const statusVariant = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    paid: 'bg-green-100 text-green-800',
-    failed: 'bg-red-100 text-red-800',
-    refunded: 'bg-blue-100 text-blue-800',
+    pending: 'bg-[var(--accent)]/20 text-[var(--accent-foreground)]',
+    paid: 'bg-[var(--primary)]/20 text-[var(--primary)]',
+    failed: 'bg-[var(--destructive)]/20 text-[var(--destructive)]',
+    refunded: 'bg-[var(--primary)]/20 text-[var(--primary)]',
   }[order.payment.status];
   const statusConfig = {
     pending: {
-      bg: 'bg-yellow-100 hover:bg-yellow-200',
-      text: 'text-yellow-800',
+      bg: 'bg-[var(--accent)]/20 hover:bg-[var(--accent)]/30',
+      text: 'text-[var(--accent-foreground)]',
       label: 'Pending'
     },
     paid: {
-      bg: 'bg-green-100 hover:bg-green-200',
-      text: 'text-green-800',
+      bg: 'bg-[var(--primary)]/20 hover:bg-[var(--primary)]/30',
+      text: 'text-[var(--primary)]',
       label: 'Paid'
     },
     failed: {
-      bg: 'bg-red-100 hover:bg-red-200',
-      text: 'text-red-800',
+      bg: 'bg-[var(--destructive)]/20 hover:bg-[var(--destructive)]/30',
+      text: 'text-[var(--destructive)]',
       label: 'Failed'
     },
     refunded: {
-      bg: 'bg-blue-100 hover:bg-blue-200',
-      text: 'text-blue-800',
+      bg: 'bg-[var(--primary)]/20 hover:bg-[var(--primary)]/30',
+      text: 'text-[var(--primary)]',
       label: 'Refunded'
     }
   };
@@ -126,7 +126,7 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               {order.items.map((item, index) => (
                 <div key={index} className="flex justify-between items-start pb-4 border-b last:border-0 last:pb-0">
                   <div className="flex space-x-4">
-                    <div className="w-20 h-20 bg-gray-100 rounded-md flex items-center justify-center">
+                    <div className="w-20 h-20 bg-[var(--muted)] rounded-md flex items-center justify-center">
                       <Package className="h-6 w-6 text-muted-foreground" />
                     </div>
                     <div>

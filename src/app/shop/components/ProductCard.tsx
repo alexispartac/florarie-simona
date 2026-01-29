@@ -30,11 +30,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div 
-      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+      className="group bg-[var(--card)] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[var(--border)]"
     >
       <div className="aspect-square relative overflow-hidden">
         {isVideoUrl(product.images[0] || '') ? (
-          <div className="relative w-full h-full bg-gray-200">
+          <div className="relative w-full h-full bg-[var(--muted)]">
             <video
               src={product.images[0]}
               className="w-full h-full object-cover"
@@ -83,9 +83,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               e.stopPropagation();
               onToggleWishlist(product.productId, product.name, product.price, product.images);
             }}
-            className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white hover:scale-110 transition-all duration-200"
+            className="p-2 bg-[var(--card)]/90 rounded-full shadow-sm hover:bg-[var(--card)] hover:scale-110 transition-all duration-200"
           >
-            <Heart className="h-5 w-5 text-rose-500 hover:fill-rose-500 transition-colors" />
+            <Heart className="h-5 w-5 text-[var(--primary)] hover:fill-[var(--primary)] transition-colors" />
           </button>
         </div>
       </div>
@@ -97,10 +97,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       >
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
-            <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-rose-600 transition-colors">
+            <h3 className="text-base font-semibold text-[var(--foreground)] line-clamp-2 group-hover:text-[var(--primary)] transition-colors">
               {product.name}
             </h3>
-            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">{product.category}</p>
           </div>
         </div>
         
@@ -110,7 +110,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.flowerDetails.colors.slice(0, 3).map((color, i) => (
               <div
                 key={i}
-                className="h-4 w-4 rounded-full border-2 border-gray-200"
+                className="h-4 w-4 rounded-full border-2 border-[var(--border)]"
                 style={{ 
                   backgroundColor: 
                     color === 'rosu' ? '#ef4444' :
@@ -129,14 +129,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               />
             ))}
             {product.flowerDetails.colors.length > 3 && (
-              <span className="text-xs text-gray-500">+{product.flowerDetails.colors.length - 3}</span>
+              <span className="text-xs text-[var(--muted-foreground)]">+{product.flowerDetails.colors.length - 3}</span>
             )}
           </div>
         )}
         
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-center gap-1">
-            <span className="text-lg font-bold text-gray-900">
+            <span className="text-lg font-bold text-[var(--foreground)]">
               {(product.price / 100).toFixed(0)} RON
             </span>
           </div>
@@ -145,8 +145,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.rating && (
             <div className="flex items-center gap-1">
               <span className="text-yellow-500">★</span>
-              <span className="text-sm font-medium text-gray-700">{product.rating}</span>
-              <span className="text-xs text-gray-500">({product.reviewCount + 1})</span>
+              <span className="text-sm font-medium text-[var(--foreground)]">{product.rating}</span>
+              <span className="text-xs text-[var(--muted-foreground)]">({product.reviewCount + 1})</span>
             </div>
           )}
         </div>

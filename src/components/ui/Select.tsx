@@ -35,8 +35,8 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className={cn('block text-sm font-medium text-gray-700', labelClassName, {
-              'text-red-500': error,
+            className={cn('block text-sm font-medium text-[var(--foreground)]', labelClassName, {
+              'text-[var(--destructive)]': error,
             })}
           >
             {label}
@@ -48,7 +48,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             className={cn(
               'h-10 w-full appearance-none rounded-md border border-input bg-background pl-3 pr-8 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
               className,
-              { 'border-red-500': error }
+              { 'border-[var(--destructive)]': error }
             )}
             ref={ref}
             {...props}
@@ -62,7 +62,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           <ChevronDown className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
         </div>
         {error && (
-          <p className={cn('text-sm text-red-500', errorClassName)}>
+          <p className={cn('text-sm text-[var(--destructive)]', errorClassName)}>
             {error}
           </p>
         )}

@@ -43,10 +43,10 @@ export default function ProductPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="animate-pulse flex flex-col items-center space-y-4">
                     <Spinner className="w-12 h-12" />
-                    <p className="text-gray-600">Loading product...</p>
+                    <p className="text-[var(--muted-foreground)]">Loading product...</p>
                 </div>
             </div>
         );
@@ -54,9 +54,9 @@ export default function ProductPage() {
 
     if (isError) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="animate-pulse flex flex-col items-center space-y-4">
-                    <p className="text-gray-600">Error loading product...</p>
+                    <p className="text-[var(--muted-foreground)]">Error loading product...</p>
                 </div>
             </div>
         );
@@ -64,9 +64,9 @@ export default function ProductPage() {
 
     if (!product) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="animate-pulse flex flex-col items-center space-y-4">
-                    <p className="text-gray-600">Product not found</p>
+                    <p className="text-[var(--muted-foreground)]">Product not found</p>
                 </div>
             </div>
         )
@@ -140,11 +140,11 @@ export default function ProductPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-24">
+        <div className="container mx-auto px-4 py-24 bg-[var(--primary-background)]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Product Images */}
                 <div>
-                    <div className="mb-4 bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="mb-4 bg-[var(--muted)] rounded-lg overflow-hidden">
                         {isVideoUrl(product.images[currentImage] || '') ? (
                             <video
                                 src={product.images[currentImage]}
@@ -172,11 +172,11 @@ export default function ProductPage() {
                                 <button
                                     key={index}
                                     onClick={() => setCurrentImage(index)}
-                                    className={`border-2 rounded overflow-hidden ${currentImage === index ? 'border-primary' : 'border-transparent'}`}
+                                    className={`border-2 rounded overflow-hidden ${currentImage === index ? 'border-[var(--primary)]' : 'border-transparent'}`}
                                 >
                                     {isVideoUrl(image) ? (
-                                        <div className="relative w-full h-24 bg-gray-200 flex items-center justify-center">
-                                            <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <div className="relative w-full h-24 bg-[var(--muted)] flex items-center justify-center">
+                                            <svg className="w-8 h-8 text-[var(--muted-foreground)]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                                             </svg>
                                             <span className="absolute bottom-1 right-1 text-xs bg-black/70 text-white px-1 rounded">Video</span>
@@ -198,8 +198,8 @@ export default function ProductPage() {
 
                 {/* Product Info */}
                 <div className="md:pl-8">
-                    <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                    <p className="text-2xl font-semibold text-primary mb-4">
+                    <h1 className="serif-font text-3xl font-bold mb-2 text-[var(--foreground)]">{product.name}</h1>
+                    <p className="serif-font text-2xl font-semibold text-[var(--primary)] mb-4">
                         {(product.price / 100).toFixed(2)} RON
                     </p>
 
@@ -210,7 +210,7 @@ export default function ProductPage() {
                                 {[...Array(5)].map((_, i) => (
                                     <svg
                                         key={i}
-                                        className={`w-5 h-5 ${i < Math.floor(product.rating!) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                        className={`w-5 h-5 ${i < Math.floor(product.rating!) ? 'text-yellow-400' : 'text-[var(--muted-foreground)]'}`}
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -218,23 +218,23 @@ export default function ProductPage() {
                                     </svg>
                                 ))}
                             </div>
-                            <span className="text-sm text-gray-600">({product.reviewCount} reviews)</span>
+                            <span className="text-sm text-[var(--muted-foreground)]">({product.reviewCount} reviews)</span>
                         </div>
                     )}
 
                     <div className="mb-6">
-                        <p className="text-gray-700">{product.description}</p>
+                        <p className="serif-light text-[var(--foreground)]">{product.description}</p>
                     </div>
 
                     {/* Flower Details */}
                     {product.flowerDetails && (
-                        <div className="mb-6 p-4 bg-gray-50 rounded-lg space-y-3">
+                        <div className="mb-6 p-4 bg-[var(--secondary)] rounded-lg space-y-3 border border-[var(--border)]">
                             {product.flowerDetails.colors && product.flowerDetails.colors.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-900 mb-1">🎨 Colors:</h3>
+                                    <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">🎨 Colors:</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {product.flowerDetails.colors.map((color) => (
-                                            <span key={color} className="px-3 py-1 bg-white border rounded-full text-sm capitalize">
+                                            <span key={color} className="px-3 py-1 bg-[var(--card)] border border-[var(--border)] rounded-full text-sm capitalize text-[var(--foreground)]">
                                                 {color}
                                             </span>
                                         ))}
@@ -244,10 +244,10 @@ export default function ProductPage() {
 
                             {product.flowerDetails.occasions && product.flowerDetails.occasions.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-900 mb-1">🎉 Perfect for:</h3>
+                                    <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">🎉 Perfect for:</h3>
                             <div className="flex flex-wrap gap-2">
                                         {product.flowerDetails.occasions.map((occasion) => (
-                                            <span key={occasion} className="px-3 py-1 bg-white border rounded-full text-sm capitalize">
+                                            <span key={occasion} className="px-3 py-1 bg-[var(--card)] border border-[var(--border)] rounded-full text-sm capitalize text-[var(--foreground)]">
                                                 {occasion.replace('-', ' ')}
                                             </span>
                                 ))}
@@ -256,7 +256,7 @@ export default function ProductPage() {
                             )}
 
                             {product.flowerDetails.stemCount && (
-                                <p className="text-sm text-gray-700">
+                                <p className="text-sm text-[var(--foreground)]">
                                     <span className="font-medium">🌹 Stem Count:</span> {product.flowerDetails.stemCount} stems
                                 </p>
                             )}
@@ -272,21 +272,21 @@ export default function ProductPage() {
                     {/* Quantity */}
                     {product.available && (
                         <div className="mb-6">
-                            <h3 className="text-sm font-medium text-gray-900 mb-2">Quantity</h3>
+                            <h3 className="text-sm font-medium text-[var(--foreground)] mb-2">Quantity</h3>
                             <div className="flex items-center">
                                 <button
                                     onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                                     disabled={quantity <= 1}
-                                    className={`px-3 py-1 border border-gray-300 rounded-l-md ${quantity <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    className={`px-3 py-1 border border-[var(--border)] rounded-l-md bg-[var(--card)] text-[var(--foreground)] ${quantity <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-[var(--accent)]'}`}
                                 >
                                     -
                                 </button>
-                                <span className="px-4 py-1 border-t border-b border-gray-300">
+                                <span className="px-4 py-1 border-t border-b border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]">
                                     {quantity}
                                 </span>
                                 <button
                                     onClick={() => setQuantity(prev => prev + 1)}
-                                    className="px-3 py-1 border border-gray-300 rounded-r-md cursor-pointer"
+                                    className="px-3 py-1 border border-[var(--border)] rounded-r-md cursor-pointer bg-[var(--card)] text-[var(--foreground)] hover:bg-[var(--accent)]"
                                 >
                                     +
                                 </button>
@@ -300,8 +300,8 @@ export default function ProductPage() {
                         disabled={isAddingToWishlist}
                         className={`w-full cursor-pointer py-2 mb-3 flex items-center justify-center gap-2 border rounded-md transition-colors ${
                             isInWishlist(product.productId) 
-                                ? 'bg-white text-red-500 border-red-500 hover:bg-red-50' 
-                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                                ? 'bg-[var(--card)] text-red-500 border-red-500 hover:bg-red-50' 
+                                : 'bg-[var(--card)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--accent)]'}`}
                     >
                         {isAddingToWishlist ? (
                             'Processing...'
@@ -325,8 +325,10 @@ export default function ProductPage() {
                     {/* Add to Cart Button */}
                     <Button
                         onClick={handleAddToCart}
-                        className={`w-full py-3 mb-4 ${isAddingToCart || !product.available ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={isAddingToCart || !product.available}
+                        variant="primary"
+                        size="lg"
+                        fullWidth
                     >
                         {isAddingToCart ? (
                             'Adding to Cart...'
@@ -342,10 +344,10 @@ export default function ProductPage() {
             {/* Product Tabs */}
             <div className="mt-16">
                 <Tabs defaultValue="details" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 max-w-md mb-8">
-                        <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Details</TabsTrigger>
-                        <TabsTrigger value="reviews" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Reviews ({product.reviewCount})</TabsTrigger>
-                        <TabsTrigger value="care" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Flower Care</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-3 max-w-md mb-8 bg-[var(--secondary)] border border-[var(--border)]">
+                        <TabsTrigger value="details" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Details</TabsTrigger>
+                        <TabsTrigger value="reviews" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Reviews ({product.reviewCount})</TabsTrigger>
+                        <TabsTrigger value="care" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Flower Care</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="details" className="space-y-6">
@@ -359,7 +361,7 @@ export default function ProductPage() {
                         />
                         
                         <div className="prose max-w-none">
-                            <p>{product.description}</p>
+                            <p className="text-[var(--foreground)] serif-light">{product.description}</p>
                         </div>
                     </TabsContent>
 
@@ -372,7 +374,7 @@ export default function ProductPage() {
                         { isSubmittingReview ? (
                             <div className="animate-pulse flex flex-col items-center space-y-4">
                                 <Spinner className="w-12 h-12" />
-                                <p>Submitting your review...</p>
+                                <p className="text-[var(--muted-foreground)]">Submitting your review...</p>
                             </div>
                         ) : (
                             <AddReview
@@ -384,49 +386,49 @@ export default function ProductPage() {
 
                     <TabsContent value="care">
                         <div className="prose max-w-none">
-                            <h2 className="text-2xl font-bold mb-4">🌱 Flower Care Instructions</h2>
+                            <h2 className="serif-font text-2xl font-bold mb-4 text-[var(--foreground)]">🌱 Flower Care Instructions</h2>
                             
                             {product.flowerDetails?.careInstructions ? (
                                 <div className="space-y-4">
                                     {product.flowerDetails.careInstructions.wateringFrequency && (
-                                        <div className="p-4 bg-blue-50 rounded-lg">
-                                            <h3 className="font-semibold text-blue-900 mb-2">💧 Watering</h3>
-                                            <p className="text-blue-800">{product.flowerDetails.careInstructions.wateringFrequency}</p>
+                                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                                            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">💧 Watering</h3>
+                                            <p className="text-blue-800 dark:text-blue-200 serif-light">{product.flowerDetails.careInstructions.wateringFrequency}</p>
                                         </div>
                                     )}
                                     
                                     {product.flowerDetails.careInstructions.sunlightRequirement && (
-                                        <div className="p-4 bg-yellow-50 rounded-lg">
-                                            <h3 className="font-semibold text-yellow-900 mb-2">☀️ Sunlight</h3>
-                                            <p className="text-yellow-800">{product.flowerDetails.careInstructions.sunlightRequirement}</p>
+                                        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                                            <h3 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">☀️ Sunlight</h3>
+                                            <p className="text-yellow-800 dark:text-yellow-200 serif-light">{product.flowerDetails.careInstructions.sunlightRequirement}</p>
                                         </div>
                                     )}
                                     
                                     {product.flowerDetails.careInstructions.temperature && (
-                                        <div className="p-4 bg-green-50 rounded-lg">
-                                            <h3 className="font-semibold text-green-900 mb-2">🌡️ Temperature</h3>
-                                            <p className="text-green-800">{product.flowerDetails.careInstructions.temperature}</p>
+                                        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                                            <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">🌡️ Temperature</h3>
+                                            <p className="text-green-800 dark:text-green-200 serif-light">{product.flowerDetails.careInstructions.temperature}</p>
                                         </div>
                                     )}
                                     
                                     {product.flowerDetails.careInstructions.expectedLifespan && (
-                                        <div className="p-4 bg-purple-50 rounded-lg">
-                                            <h3 className="font-semibold text-purple-900 mb-2">⏱️ Expected Lifespan</h3>
-                                            <p className="text-purple-800">{product.flowerDetails.careInstructions.expectedLifespan}</p>
+                                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                                            <h3 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">⏱️ Expected Lifespan</h3>
+                                            <p className="text-purple-800 dark:text-purple-200 serif-light">{product.flowerDetails.careInstructions.expectedLifespan}</p>
                                         </div>
                                     )}
                                     
                                     {product.flowerDetails.careInstructions.specialNotes && (
-                                        <div className="p-4 bg-gray-50 rounded-lg">
-                                            <h3 className="font-semibold text-gray-900 mb-2">📝 Special Notes</h3>
-                                            <p className="text-gray-800">{product.flowerDetails.careInstructions.specialNotes}</p>
+                                        <div className="p-4 bg-[var(--secondary)] rounded-lg border border-[var(--border)]">
+                                            <h3 className="font-semibold text-[var(--foreground)] mb-2">📝 Special Notes</h3>
+                                            <p className="text-[var(--foreground)] serif-light">{product.flowerDetails.careInstructions.specialNotes}</p>
                                         </div>
                                     )}
                                 </div>
                             ) : (
-                                <div className="p-6 bg-gray-50 rounded-lg">
-                                    <h3 className="font-semibold mb-2">General Flower Care Tips:</h3>
-                                    <ul className="list-disc pl-5 space-y-2">
+                                <div className="p-6 bg-[var(--secondary)] rounded-lg border border-[var(--border)]">
+                                    <h3 className="font-semibold mb-2 text-[var(--foreground)]">General Flower Care Tips:</h3>
+                                    <ul className="list-disc pl-5 space-y-2 text-[var(--foreground)] serif-light">
                                         <li>Keep flowers in fresh, clean water</li>
                                         <li>Change water every 2-3 days</li>
                                         <li>Trim stems at a 45° angle</li>
@@ -451,7 +453,6 @@ export default function ProductPage() {
                 <Button
                     variant="outline"
                     onClick={() => router.push('/shop')}
-                    className="inline-flex items-center cursor-pointer"
                 >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

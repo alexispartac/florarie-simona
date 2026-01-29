@@ -39,7 +39,7 @@ export function ImageModal({ isOpen, onClose, images, initialIndex = 0 }: ImageM
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
       <button
         onClick={onClose}
-        className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
+        className="absolute right-4 top-4 z-10 rounded-full bg-[var(--card)]/20 p-2 text-white hover:bg-[var(--card)]/30 transition-colors backdrop-blur-sm"
         aria-label="Close modal"
       >
         <X className="h-6 w-6" />
@@ -67,7 +67,7 @@ export function ImageModal({ isOpen, onClose, images, initialIndex = 0 }: ImageM
                 // Update the URL without triggering a navigation
                 window.history.replaceState({}, '', `#image-${prevIndex}`);
               }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-[var(--card)]/20 p-2 text-white hover:bg-[var(--card)]/30 transition-colors backdrop-blur-sm"
               aria-label="Previous image"
             >
               <svg
@@ -87,7 +87,7 @@ export function ImageModal({ isOpen, onClose, images, initialIndex = 0 }: ImageM
                 // Update the URL without triggering a navigation
                 window.history.replaceState({}, '', `#image-${nextIndex}`);
               }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-[var(--card)]/20 p-2 text-white hover:bg-[var(--card)]/30 transition-colors backdrop-blur-sm"
               aria-label="Next image"
             >
               <svg

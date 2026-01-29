@@ -75,7 +75,7 @@ export default function ProductsTab() {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
         </div>
       </div>
     );
@@ -84,12 +84,12 @@ export default function ProductsTab() {
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-[var(--destructive)]/10 border border-[var(--destructive)]/30 rounded-lg p-4">
           <div className="flex items-center">
-            <svg className="h-5 w-5 text-red-400 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5 text-[var(--destructive)] mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
             </svg>
-            <p className="text-red-700">Error loading products. Please try again later.</p>
+            <p className="text-[var(--destructive)]">Error loading products. Please try again later.</p>
           </div>
         </div>
       </div>
@@ -114,12 +114,12 @@ export default function ProductsTab() {
       />
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 className="text-lg font-medium text-gray-900">Products</h2>
+        <h2 className="text-lg font-medium text-[var(--foreground)]">Products</h2>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <form onSubmit={handleSubmit} className="relative">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <SearchIcon color='black' className="h-4 w-4 text-gray-400" />
+                <SearchIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
               </div>
               <Input
                 type="text"
@@ -127,13 +127,13 @@ export default function ProductsTab() {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={handleSearch}
-                className="block w-full pl-4 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="block w-full pl-4 pr-3 py-2 border border-[var(--border)] rounded-md leading-5 bg-[var(--card)] placeholder-[var(--muted-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
               />
             </div>
           </form>
           <button
             onClick={() => router.push('/admin/products/new')}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium cursor-pointer rounded-md shadow-sm text-white bg-primary hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium cursor-pointer rounded-md shadow-sm text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add Product
@@ -141,18 +141,18 @@ export default function ProductsTab() {
         </div>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--secondary)]">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
                   Product
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
                   Price
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
                   Stock
                 </th>
                 <th scope="col" className="relative px-6 py-3">
@@ -160,10 +160,10 @@ export default function ProductsTab() {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[var(--card)] divide-y divide-[var(--border)]">
               {products.length > 0 ? (
                 products.map((product) => (
-                  <tr key={product.productId} className="hover:bg-gray-50">
+                  <tr key={product.productId} className="hover:bg-[var(--secondary)]">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
@@ -176,33 +176,33 @@ export default function ProductsTab() {
                               height={40}
                             />
                           ) : (
-                            <div className="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
-                              <span className="text-gray-400 text-xs">No image</span>
+                            <div className="h-10 w-10 rounded-md bg-[var(--muted)] flex items-center justify-center">
+                              <span className="text-[var(--muted-foreground)] text-xs">No image</span>
                             </div>
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          <div className="text-sm text-red-500">{product.productId}</div>
-                          <div className="text-sm text-gray-500">{product.category}</div>
+                          <div className="text-sm font-medium text-[var(--foreground)]">{product.name}</div>
+                          <div className="text-sm text-[var(--destructive)]">{product.productId}</div>
+                          <div className="text-sm text-[var(--muted-foreground)]">{product.category}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       ${product.price ? (product.price / 100).toFixed(2) : '0.00'} USD
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-[var(--muted-foreground)]">
                       {product.stock || 0} in stock
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button 
                         onClick={() => router.push(`/admin/products/${product.productId}`)}
-                        className="text-primary-600 hover:text-primary-900 mr-4 cursor-pointer">
+                        className="text-[var(--primary)] hover:text-[var(--foreground)] mr-4 cursor-pointer">
                         <PencilIcon className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(product.productId)}
-                        className="text-red-600 hover:text-red-900 cursor-pointer"
+                        className="text-[var(--destructive)] hover:text-[var(--destructive)]/90 cursor-pointer"
                         disabled={isDeleting}
                         title="Delete product"
                       >
@@ -213,7 +213,7 @@ export default function ProductsTab() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-[var(--muted-foreground)]">
                     No products found
                   </td>
                 </tr>
@@ -223,26 +223,26 @@ export default function ProductsTab() {
         </div>
 
         {/* Pagination */}
-        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div className="bg-[var(--card)] px-4 py-3 flex items-center justify-between border-t border-[var(--border)] sm:px-6">
           <div className="flex-1 flex justify-between sm:hidden">
             <button
               onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-4 py-2 border border-[var(--border)] text-sm font-medium rounded-md text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
             <button
               onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage >= totalPages}
-              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ml-3 relative inline-flex items-center px-4 py-2 border border-[var(--border)] text-sm font-medium rounded-md text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-[var(--foreground)]">
                 Showing <span className="font-medium">{startItem + 1}</span> to{' '}
                 <span className="font-medium">
                   {Math.min(startItem + ITEMS_PER_PAGE, total)}
@@ -255,7 +255,7 @@ export default function ProductsTab() {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-[var(--border)] bg-[var(--card)] text-sm font-medium text-[var(--muted-foreground)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="sr-only">Previous</span>
                   <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -281,8 +281,8 @@ export default function ProductsTab() {
                       onClick={() => handlePageChange(pageNum)}
                       className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                         currentPage === pageNum
-                          ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
-                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                          ? 'z-10 bg-[var(--primary)]/10 border-[var(--primary)] text-[var(--primary)]'
+                          : 'bg-[var(--card)] border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--secondary)]'
                       }`}
                     >
                       {pageNum}
@@ -293,7 +293,7 @@ export default function ProductsTab() {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage >= totalPages}
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-[var(--border)] bg-[var(--card)] text-sm font-medium text-[var(--muted-foreground)] hover:bg-[var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="sr-only">Next</span>
                   <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

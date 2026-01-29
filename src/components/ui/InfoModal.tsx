@@ -72,7 +72,7 @@ const InfoModal: FC<InfoModalProps> = ({
     >
       <div
         className={cn(
-          'relative w-full rounded-lg bg-white p-6 shadow-xl',
+          'relative w-full rounded-lg bg-[var(--card)] p-6 shadow-xl',
           'max-h-[90vh] overflow-y-auto',
           sizeClasses[size],
           'transform transition-all duration-300',
@@ -86,7 +86,7 @@ const InfoModal: FC<InfoModalProps> = ({
             type="button"
             onClick={onClose}
             className={cn(
-              'absolute right-4 top-4 rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500',
+              'absolute right-4 top-4 rounded-md p-1 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--muted-foreground)]',
               'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
               'transition-colors duration-200'
             )}
@@ -101,7 +101,7 @@ const InfoModal: FC<InfoModalProps> = ({
             {title && (
               <h2
                 className={cn(
-                  'text-lg font-semibold text-gray-900',
+                  'text-lg font-semibold text-[var(--foreground)]',
                   titleClassName
                 )}
               >

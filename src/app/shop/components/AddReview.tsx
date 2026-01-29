@@ -94,8 +94,8 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
     };
 
     return (
-        <div className="mt-8 border-t border-gray-200 pt-8">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Write a Review</h3>
+        <div className="mt-8 border-t border-[var(--border)] pt-8">
+            <h3 className="serif-font text-lg font-medium text-[var(--foreground)] mb-4">Write a Review</h3>
             
             {showSuccess && (
                 <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-start">
@@ -111,7 +111,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                         Your Rating <span className="text-red-500">*</span>
                     </label>
                     <div className="flex">
@@ -128,7 +128,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                                 <Star
                                     className={`h-6 w-6 ${(hoverRating || rating) >= star
                                             ? 'text-yellow-400 fill-yellow-400'
-                                            : 'text-gray-300'
+                                            : 'text-[var(--muted-foreground)]'
                                         }`}
                                 />
                             </button>
@@ -137,21 +137,21 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                 </div>
 
                 <div>
-                    <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="userName" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                         Your Name</label>
                     <Input
                         type="text"
                         id="userName"
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm focus:ring-[var(--primary)] focus:border-[var(--primary)] bg-[var(--card)] text-[var(--foreground)]"
                         placeholder="Enter your name"
                         required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="title" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                         Review Title
                     </label>
                     <Input
@@ -159,7 +159,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                         id="title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm focus:ring-[var(--primary)] focus:border-[var(--primary)] bg-[var(--card)] text-[var(--foreground)]"
                         placeholder="Great product!"
                         required
                         maxLength={100}
@@ -167,7 +167,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                 </div>
 
                 <div>
-                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="comment" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                         Your Review <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -175,7 +175,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                         rows={4}
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 border border-[var(--border)] rounded-md shadow-sm focus:ring-[var(--primary)] focus:border-[var(--primary)] bg-[var(--card)] text-[var(--foreground)]"
                         placeholder="Share your experience with this product..."
                         required
                     />
@@ -185,7 +185,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                     <Button
                         type="submit"
                         disabled={isSubmitting || rating === 0}
-                        className="px-4 py-2 cursor-pointer"
+                        variant="primary"
                     >
                         {isSubmitting ? 'Submitting...' : 'Submit Review'}
                     </Button>

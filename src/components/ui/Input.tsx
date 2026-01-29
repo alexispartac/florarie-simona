@@ -36,7 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
       {label && (
         <label 
           htmlFor={inputId}
-          className={cn('block text-sm font-medium text-gray-700', labelClassName)}
+          className={cn('block text-sm font-medium text-[var(--foreground)]', labelClassName)}
         >
           {label}
         </label>
@@ -58,7 +58,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
             'disabled:cursor-not-allowed disabled:opacity-50',
             leftIcon && 'pl-10',
             rightIcon && 'pr-10',
-            error && 'border-red-500 focus-visible:ring-red-200',
+            error && 'border-[var(--destructive)] focus-visible:ring-red-200',
             className
           )}
           {...props}
@@ -70,7 +70,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
         )}
       </div>
       {error && (
-        <p className={cn('text-sm text-red-600', errorClassName)}>
+        <p className={cn('text-sm text-[var(--destructive)]', errorClassName)}>
           {error}
         </p>
       )}

@@ -73,7 +73,7 @@ export const EnhancedZoomShowcase = ({
     : (1 - textOpacity) * 100;   // Din dreapta
 
   return (
-    <div ref={ref} className="relative bg-black" style={{ minHeight: `${scrollHeight}vh` }}>
+    <div ref={ref} className="relative bg-[var(--foreground)]" style={{ minHeight: `${scrollHeight}vh` }}>
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Background with color transition */}
         <div 
@@ -112,17 +112,17 @@ export const EnhancedZoomShowcase = ({
           }}
         >
           <div className="space-y-6">
-            <h2 className="text-5xl md:text-6xl font-bold text-white leading-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-[var(--primary-foreground)] leading-tight">
               {currentSlide.title}
             </h2>
-            <p className="text-xl text-gray-300 leading-relaxed">
+            <p className="text-xl text-[var(--muted-foreground)] leading-relaxed">
               {currentSlide.description}
             </p>
             <div className="flex gap-4">
-              <button className="px-8 py-3 bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-colors">
+              <button className="px-8 py-3 bg-[var(--card)] text-[var(--foreground)] rounded-full font-semibold hover:bg-[var(--muted)] transition-colors">
                 Learn More
               </button>
-              <button className="px-8 py-3 border-2 border-white text-white rounded-full font-semibold hover:bg-white hover:text-black transition-colors">
+              <button className="px-8 py-3 border-2 border-[var(--border)] text-[var(--primary-foreground)] rounded-full font-semibold hover:bg-[var(--card)] hover:text-[var(--foreground)] transition-colors">
                 Buy Now
               </button>
             </div>
@@ -207,7 +207,7 @@ export const EnhancedZoomShowcase = ({
     : (1 - textOpacity) * 100;
 
   return (
-    <div ref={ref} className="relative bg-black" style={{ minHeight: \`\${scrollHeight}vh\` }}>
+    <div ref={ref} className="relative bg-[var(--foreground)]" style={{ minHeight: \`\${scrollHeight}vh\` }}>
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Background with color */}
         <div className={\`absolute inset-0 bg-gradient-to-br \${currentSlide.backgroundColor} transition-all duration-700\`} />

@@ -24,12 +24,12 @@ const Tag: FC<TagProps> = ({
   const baseStyles = 'inline-flex items-center rounded-full font-medium transition-colors';
   
   const variants = {
-    default: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
-    primary: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
-    success: 'bg-green-100 text-green-800 hover:bg-green-200',
-    warning: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
-    error: 'bg-red-100 text-red-800 hover:bg-red-200',
-    outline: 'bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50',
+    default: 'bg-[var(--muted)] text-[var(--foreground)] hover:bg-[var(--muted)]',
+    primary: 'bg-[var(--primary)]/20 text-[var(--primary)] hover:bg-[var(--primary)]/30',
+    success: 'bg-[var(--primary)]/20 text-[var(--primary)] hover:bg-[var(--primary)]/30',
+    warning: 'bg-[var(--accent)]/20 text-[var(--accent-foreground)] hover:bg-[var(--accent)]/30',
+    error: 'bg-[var(--destructive)]/20 text-[var(--destructive)] hover:bg-[var(--destructive)]/30',
+    outline: 'bg-transparent border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--secondary)]',
   };
 
   const sizes = {

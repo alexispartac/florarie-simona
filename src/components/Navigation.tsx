@@ -140,8 +140,8 @@ export default function Navigation() {
                 href={link.href}
                 className={`px-3 py-2 text-sm font-medium ${
                   pathname === link.href
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-gray-700 hover:text-primary transition-colors'
+                    ? 'text-[var(--primary)] border-b-2 border-[var(--primary)]'
+                    : 'text-[var(--foreground)] hover:text-[var(--primary)] transition-colors'
                 }
                 ${link.href === '/orders' ? 'underline' : ''}
                 `}
@@ -155,7 +155,7 @@ export default function Navigation() {
           <div className="flex items-center space-x-4">
             {/* Search button */}
             <button 
-              className="p-2 hover:text-gray-900 relative cursor-pointer text-primary"
+              className="p-2 hover:text-[var(--foreground)] relative cursor-pointer text-[var(--primary)]"
               onClick={() => setSearchOpen(!searchOpen)}
               aria-label="Search"
             >
@@ -163,7 +163,7 @@ export default function Navigation() {
             </button>
             
             <button 
-              className="p-2 hover:text-gray-900 relative cursor-pointer text-primary"
+              className="p-2 hover:text-[var(--foreground)] relative cursor-pointer text-[var(--primary)]"
               onClick={() => setWishlistOpen(true)}
               aria-label="Wishlist"
             >
@@ -171,13 +171,13 @@ export default function Navigation() {
             </button>
             
             <button 
-              className="p-2 hover:text-gray-900 relative cursor-pointer text-primary"
+              className="p-2 hover:text-[var(--foreground)] relative cursor-pointer text-[var(--primary)]"
               onClick={() => setCartOpen(true)}
               aria-label="Cart"
             >
               <FiShoppingBag className="h-5 w-5" />
               {getCartItemCount() > 0 && hydrated && (
-                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {getCartItemCount() > 9 ? '9+' : getCartItemCount()}
                 </span>
               )}
@@ -190,7 +190,7 @@ export default function Navigation() {
             <div className="md:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+                className="p-2 rounded-md text-[var(--foreground)] hover:text-[var(--primary)] hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary)]"
                 aria-expanded="false"
               >
                 <span className="sr-only">Open main menu</span>
@@ -209,17 +209,17 @@ export default function Navigation() {
       {searchOpen && (
         <div 
           ref={searchRef}
-          className="absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-gray-200 animate-slide-down"
+          className="absolute top-16 left-0 right-0 bg-[var(--card)] shadow-lg border-t border-[var(--border)] animate-slide-down"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--muted-foreground)] h-5 w-5" />
               <input
                 type="text"
                 placeholder="Caută buchete, flori..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
                 autoFocus
               />
             </div>
@@ -237,7 +237,7 @@ export default function Navigation() {
                       <button
                         key={product.productId}
                         onClick={() => handleSearchResultClick(product.productId, product.slug)}
-                        className="w-full flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors text-left"
+                        className="w-full flex items-center space-x-4 p-3 hover:bg-[var(--accent)] rounded-lg transition-colors text-left"
                       >
                         <Image
                           src={product.images[0]}
@@ -247,13 +247,13 @@ export default function Navigation() {
                           className="rounded-md object-cover shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-gray-900 truncate">
+                          <h4 className="text-sm font-medium text-[var(--foreground)] truncate">
                             {product.name}
                           </h4>
-                          <p className="text-sm text-gray-500">{product.category}</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{product.category}</p>
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="text-sm font-medium text-primary">
+                          <p className="text-sm font-medium text-[var(--primary)]">
                             {(product.price / 100).toFixed(2)} RON
                           </p>
                         </div>
@@ -261,7 +261,7 @@ export default function Navigation() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-[var(--muted-foreground)]">
                     Nu s-au găsit rezultate pentru &quot;{searchQuery}&quot;
                   </div>
                 )}
@@ -273,7 +273,7 @@ export default function Navigation() {
 
       {/* Mobile menu */}
       <div
-        className={`md:hidden transition-all bg-white duration-300 ease-in-out ${
+        className={`md:hidden transition-all bg-[var(--card)] duration-300 ease-in-out ${
           isOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
@@ -284,8 +284,8 @@ export default function Navigation() {
               href={link.href}
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 pathname === link.href
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'bg-[var(--primary)]/10 text-[var(--primary)]'
+                  : 'text-[var(--foreground)] hover:bg-[var(--accent)]'
               }
               ${link.href === '/orders' ? 'underline' : ''}
               `}

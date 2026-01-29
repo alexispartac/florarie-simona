@@ -13,17 +13,17 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white shadow">
+    <div className="min-h-screen bg-[var(--primary-background)]">
+      <nav className="bg-[var(--card)] shadow border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-xl font-bold text-[var(--foreground)]">Admin Dashboard</h1>
             </div>
             <div className="flex items-center">
               <button
                 onClick={handleLogout}
-                className="text-red-500 cursor-pointer hover:text-red-700 px-3 py-2 rounded-md text-sm font-medium bg-red-50 hover:bg-red-100 transition-colors shadow-sm"
+                className="text-[var(--destructive)] cursor-pointer hover:text-[var(--destructive)]/80 px-3 py-2 rounded-md text-sm font-medium bg-[var(--destructive)]/10 hover:bg-[var(--destructive)]/20 transition-colors shadow-sm"
               >
                 Logout
               </button>

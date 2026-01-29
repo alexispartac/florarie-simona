@@ -36,7 +36,7 @@ export const ImageZoomSequence = ({
   const currentZoom = 1 + imageProgress * zoomIntensity;
 
   return (
-    <div ref={ref} className="relative bg-black" style={{ minHeight: `${scrollHeight}vh` }}>
+    <div ref={ref} className="relative bg-[var(--foreground)]" style={{ minHeight: `${scrollHeight}vh` }}>
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Current Image - Simplu, fără tranziție */}
         <div
@@ -55,7 +55,7 @@ export const ImageZoomSequence = ({
         {/* Info overlay */}
         <div className="absolute bottom-20 left-0 right-0 text-center z-10">
           <div className="bg-black/50 backdrop-blur-sm inline-block px-8 py-4 rounded-full">
-            <p className="text-white text-xl font-semibold">
+            <p className="text-[var(--primary-foreground)] text-xl font-semibold">
               Imagine {currentImageIndex + 1} / {Math.min(imageCount, images.length)}
             </p>
             <div className="mt-2 flex items-center gap-2 justify-center">
@@ -66,8 +66,8 @@ export const ImageZoomSequence = ({
                     index === currentImageIndex
                       ? 'w-8 bg-white'
                       : index < currentImageIndex
-                      ? 'w-2 bg-white/50'
-                      : 'w-2 bg-white/20'
+                      ? 'w-2 bg-[var(--card)]/50'
+                      : 'w-2 bg-[var(--card)]/20'
                   }`}
                 />
               ))}
@@ -78,9 +78,9 @@ export const ImageZoomSequence = ({
         {/* Progress indicator */}
         <div className="absolute top-8 left-0 right-0 z-10">
           <div className="max-w-md mx-auto px-6">
-            <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+            <div className="h-1 bg-[var(--card)]/20 rounded-full overflow-hidden">
               <div
-                className="h-full bg-white rounded-full transition-all duration-100"
+                className="h-full bg-[var(--card)] rounded-full transition-all duration-100"
                 style={{ width: `${progress * 100}%` }}
               />
             </div>
@@ -90,7 +90,7 @@ export const ImageZoomSequence = ({
         {/* Scroll indicator (only show at start) */}
         {progress < 0.05 && (
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="flex flex-col items-center gap-2 text-white">
+            <div className="flex flex-col items-center gap-2 text-[var(--primary-foreground)]">
               <span className="text-sm">Scroll pentru Zoom</span>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -141,7 +141,7 @@ export const ImageZoomSequence = ({
   const nextZoom = 1 + transitionProgress * 0.2;
 
   return (
-    <div ref={ref} className="relative bg-black" style={{ minHeight: \`\${scrollHeight}vh\` }}>
+    <div ref={ref} className="relative bg-[var(--foreground)]" style={{ minHeight: \`\${scrollHeight}vh\` }}>
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Current Image */}
         <div
@@ -170,7 +170,7 @@ export const ImageZoomSequence = ({
         {/* Info overlay */}
         <div className="absolute bottom-20 left-0 right-0 text-center z-10">
           <div className="bg-black/50 backdrop-blur-sm inline-block px-8 py-4 rounded-full">
-            <p className="text-white text-xl font-semibold">
+            <p className="text-[var(--primary-foreground)] text-xl font-semibold">
               Imagine {currentImageIndex + 1} / {Math.min(imageCount, images.length)}
             </p>
           </div>

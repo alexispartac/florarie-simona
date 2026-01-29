@@ -22,8 +22,8 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
   if (reviewCount === 0) {
     return (
       <section className="mt-16">
-        <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
-        <p className="text-gray-600">No reviews yet. Be the first to review this product!</p>
+        <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">Customer Reviews</h2>
+        <p className="text-[var(--muted-foreground)]">No reviews yet. Be the first to review this product!</p>
       </section>
     );
   }
@@ -37,7 +37,7 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
         initialIndex={selectedImageIndex ?? 0}
       />
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Customer Reviews</h2>
+        <h2 className="serif-font text-2xl font-bold text-[var(--foreground)]">Customer Reviews</h2>
         {averageRating !== undefined && (
           <div className="flex items-center">
             <div className="flex items-center mr-2">
@@ -45,28 +45,28 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
                 <Star
                   key={star}
                   className={`w-5 h-5 ${
-                    star <= Math.round(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                    star <= Math.round(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-[var(--muted-foreground)]'
                   }`}
                 />
               ))}
             </div>
-            <span className="text-gray-700">{averageRating.toFixed(1)} ({reviewCount} reviews)</span>
+            <span className="text-[var(--foreground)]">{averageRating.toFixed(1)} ({reviewCount} reviews)</span>
           </div>
         )}
       </div>
 
       <div className="space-y-8">
         {reviews.map((review) => (
-          <div key={review.id} className="border-b pb-6 last:border-0 last:pb-0">
+          <div key={review.id} className="border-b border-[var(--border)] pb-6 last:border-0 last:pb-0">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <h3 className="font-medium">{review.userName}</h3>
+                <h3 className="font-medium text-[var(--foreground)]">{review.userName}</h3>
                 <div className="flex items-center">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
                       className={`w-4 h-4 ${
-                        star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                        star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-[var(--muted-foreground)]'
                       }`}
                     />
                   ))}
@@ -79,8 +79,8 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
               )}
             </div>
             
-            <h4 className="font-medium text-lg mb-1">{review.title}</h4>
-            <p className="text-gray-600 mb-3">{review.comment}</p>
+            <h4 className="font-medium text-lg mb-1 text-[var(--foreground)]">{review.title}</h4>
+            <p className="text-[var(--muted-foreground)] mb-3 serif-light">{review.comment}</p>
             
             {review.images && review.images.length > 0 && (
               <div className="flex space-x-2 mt-2">
@@ -88,7 +88,7 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
                   <button
                     key={idx}
                     onClick={() => handleImageClick(review.images, idx)}
-                    className="w-16 h-16 border rounded overflow-hidden hover:opacity-90 transition-opacity"
+                    className="w-16 h-16 border border-[var(--border)] rounded overflow-hidden hover:opacity-90 transition-opacity"
                     aria-label={`View image ${idx + 1} in full screen`}
                   >
                     <Image 
@@ -103,7 +103,7 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
               </div>
             )}
             
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-[var(--muted-foreground)] mt-2">
               Reviewed on {new Date(review.createdAt).toLocaleDateString()}
             </p>
           </div>

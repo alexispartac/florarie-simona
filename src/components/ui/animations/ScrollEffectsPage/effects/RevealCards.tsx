@@ -34,9 +34,9 @@ export const RevealCards = ({ scaleFrom, scaleTo, staggerDelay }: RevealCardsPro
   ];
 
   return (
-    <div ref={ref} className="min-h-screen bg-gray-50 dark:bg-gray-900 py-20 px-8">
+    <div ref={ref} className="min-h-screen bg-[var(--secondary)] dark:bg-[var(--foreground)] py-20 px-8">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white">
+        <h2 className="text-5xl font-bold text-center mb-16 text-[var(--foreground)] dark:text-[var(--primary-foreground)]">
           Efecte Populare
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -65,7 +65,7 @@ export const RevealCards = ({ scaleFrom, scaleTo, staggerDelay }: RevealCardsPro
 
                 <div className={`absolute inset-0 bg-gradient-to-t ${card.gradient} opacity-60 mix-blend-multiply`} />
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-[var(--primary-foreground)]">
                   <h3 className="text-2xl font-bold mb-2">{card.title}</h3>
                   <p className="text-white/90">{card.description}</p>
                 </div>
@@ -97,7 +97,7 @@ export const RevealCards = ({
   ];
 
   return (
-    <div ref={ref} className="min-h-screen bg-gray-50 dark:bg-gray-900 py-20 px-8">
+    <div ref={ref} className="min-h-screen bg-[var(--secondary)] dark:bg-[var(--foreground)] py-20 px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {cards.map((card, index) => {
@@ -119,7 +119,7 @@ export const RevealCards = ({
                   <img src={card.image} alt={card.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 </div>
                 <div className={\`absolute inset-0 bg-gradient-to-t \${card.gradient} opacity-60 mix-blend-multiply\`} />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-[var(--primary-foreground)]">
                   <h3 className="text-2xl font-bold mb-2">{card.title}</h3>
                   <p className="text-white/90">{card.description}</p>
                 </div>

@@ -33,10 +33,10 @@ export const InfiniteMarquee = ({
     <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-20 px-4">
       {/* Title Section */}
       <div className="text-center mb-16 max-w-4xl mx-auto">
-        <h2 className="text-6xl font-bold text-white mb-4">
+        <h2 className="text-6xl font-bold text-[var(--primary-foreground)] mb-4">
           Infinite Marquee
         </h2>
-        <p className="text-xl text-gray-300">
+        <p className="text-xl text-[var(--muted-foreground)]">
           Endless scrolling animation - perfect for showcasing features, logos, or testimonials
         </p>
       </div>
@@ -60,10 +60,10 @@ export const InfiniteMarquee = ({
             {[...items, ...items, ...items].map((item, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-8 py-6 flex items-center gap-4 hover:bg-white/20 transition-all hover:scale-105"
+                className="flex-shrink-0 bg-[var(--card)]/10 backdrop-blur-sm border border-[var(--border)]/20 rounded-2xl px-8 py-6 flex items-center gap-4 hover:bg-[var(--card)]/20 transition-all hover:scale-105"
               >
                 <span className="text-4xl">{item.icon}</span>
-                <span className="text-2xl font-bold text-white whitespace-nowrap">
+                <span className="text-2xl font-bold text-[var(--primary-foreground)] whitespace-nowrap">
                   {item.text}
                 </span>
               </div>
@@ -86,7 +86,7 @@ export const InfiniteMarquee = ({
                 className="flex-shrink-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl px-8 py-6 flex items-center gap-4 hover:shadow-2xl transition-all hover:scale-105"
               >
                 <span className="text-4xl">{item.icon}</span>
-                <span className="text-2xl font-bold text-white whitespace-nowrap">
+                <span className="text-2xl font-bold text-[var(--primary-foreground)] whitespace-nowrap">
                   {item.text}
                 </span>
               </div>
@@ -106,10 +106,10 @@ export const InfiniteMarquee = ({
             {[...items, ...items, ...items].map((item, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 bg-white/5 border-2 border-white/30 rounded-2xl px-8 py-6 flex items-center gap-4 hover:border-white/60 transition-all hover:scale-105"
+                className="flex-shrink-0 bg-[var(--card)]/5 border-2 border-[var(--border)]/30 rounded-2xl px-8 py-6 flex items-center gap-4 hover:border-[var(--border)]/60 transition-all hover:scale-105"
               >
                 <span className="text-4xl">{item.icon}</span>
-                <span className="text-2xl font-bold text-white whitespace-nowrap">
+                <span className="text-2xl font-bold text-[var(--primary-foreground)] whitespace-nowrap">
                   {item.text}
                 </span>
               </div>
@@ -119,7 +119,7 @@ export const InfiniteMarquee = ({
       </div>
 
       {/* Info Text */}
-      <div className="mt-16 text-center text-gray-400">
+      <div className="mt-16 text-center text-[var(--muted-foreground)]">
         <p className="text-lg">
           {pauseOnHover ? '🖱️ Hover to pause' : '🔄 Always scrolling'}
         </p>
@@ -181,9 +181,9 @@ export const InfiniteMarquee = ({
         >
           {/* Duplicate items 3x for seamless loop */}
           {[...items, ...items, ...items].map((item, index) => (
-            <div key={index} className="flex-shrink-0 bg-white/10 rounded-2xl px-8 py-6">
+            <div key={index} className="flex-shrink-0 bg-[var(--card)]/10 rounded-2xl px-8 py-6">
               <span className="text-4xl">{item.icon}</span>
-              <span className="text-2xl font-bold text-white">{item.text}</span>
+              <span className="text-2xl font-bold text-[var(--primary-foreground)]">{item.text}</span>
             </div>
           ))}
         </div>

@@ -116,9 +116,9 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--primary-background)]">
       {/* Hero Section */}
-      <div className="bg-primary text-gray-800 py-20"
+      <div className="relative bg-[var(--secondary)] text-[var(--foreground)] py-20"
         style={{
           backgroundImage: 'url(https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=1200&q=80)',
           backgroundSize: 'cover',
@@ -126,9 +126,12 @@ export default function ContactPage() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold my-4 text-gray-800">Contactează-ne</h1>
-          <p className="text-xl text-gray-800 max-w-2xl mx-auto">
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--primary)]/25 via-[var(--primary)]/15 to-[var(--primary)]/30" />
+        
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <h1 className="serif-font text-4xl md:text-5xl font-bold my-4 text-[var(--primary-foreground)] drop-shadow-lg">Contactează-ne</h1>
+          <p className="serif-light text-xl text-[var(--primary-foreground)]/95 max-w-2xl mx-auto drop-shadow-md">
             Ai întrebări sau dorești să comanzi un buchet personalizat? Suntem aici pentru tine!
           </p>
         </div>
@@ -138,15 +141,15 @@ export default function ContactPage() {
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">Trimite-ne un mesaj</h2>
+          <div className="bg-[var(--card)] rounded-lg shadow-lg p-8 border border-[var(--border)]">
+            <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">Trimite-ne un mesaj</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               {submitStatus && (
                   <div
                     className={`mt-4 p-4 rounded-md ${
                       submitStatus.success
-                        ? 'bg-green-50 text-green-800'
-                        : 'bg-red-50 text-red-800'
+                        ? 'bg-green-50 text-green-800 border border-green-200'
+                        : 'bg-red-50 text-red-800 border border-red-200'
                     }`}
                   >
                     {submitStatus.message}
@@ -154,7 +157,7 @@ export default function ContactPage() {
                 )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="name" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     Nume *
                   </label>
                   <Input
@@ -165,15 +168,15 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.name ? 'border-red-500' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]`}
                   />
                   {errors.name && (
                     <p className="mt-1 text-sm text-red-600">{errors.name}</p>
                   )}
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="email" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     Email *
                   </label>
                   <Input
@@ -184,8 +187,8 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     className={`w-full px-4 py-2 border ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      errors.email ? 'border-red-500' : 'border-[var(--border)]'
+                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]`}
                   />
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -193,7 +196,7 @@ export default function ContactPage() {
                 </div>
               </div>
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="subject" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                   Subiect *
                 </label>
                 <Input
@@ -204,15 +207,15 @@ export default function ContactPage() {
                   value={formData.subject}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border ${
-                    errors.subject ? 'border-red-500' : 'border-gray-300'
-                  } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                    errors.subject ? 'border-red-500' : 'border-[var(--border)]'
+                  } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]`}
                 />
                 {errors.subject && (
                   <p className="mt-1 text-sm text-red-600">{errors.subject}</p>
                 )}
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="message" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                   Mesaj *
                 </label>
                 <textarea
@@ -222,8 +225,8 @@ export default function ContactPage() {
                   value={formData.message}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border ${
-                    errors.message ? 'border-red-500' : 'border-gray-300'
-                  } rounded-md focus:ring-2 focus:ring-primary focus:border-transparent`}
+                    errors.message ? 'border-red-500' : 'border-[var(--border)]'
+                  } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]`}
                 ></textarea>
                 {errors.message && (
                   <p className="mt-1 text-sm text-red-600">{errors.message}</p>
@@ -233,7 +236,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-md transition duration-200 ${
+                  className={`w-full bg-[var(--primary)] hover:bg-[var(--hover-primary)] text-[var(--primary-foreground)] font-medium py-3 px-6 rounded-md transition duration-200 ${
                     isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
                   }`}
                 >
@@ -245,61 +248,61 @@ export default function ContactPage() {
 
           {/* Contact Information */}
           <div className="space-y-8">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">Informații de contact</h2>
+            <div className="bg-[var(--card)] rounded-lg shadow-lg p-8 border border-[var(--border)]">
+              <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">Informații de contact</h2>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-[var(--primary)]/10 p-3 rounded-full text-[var(--primary)]">
                     <MapPin className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Locația Atelierului</h3>
-                    <p className="mt-1 text-gray-600">Str. Unirii 240</p>
-                    <p className="text-gray-600">Târmșeni, Neamț, România</p>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Locația Atelierului</h3>
+                    <p className="mt-1 text-[var(--muted-foreground)] serif-light">Str. Unirii 240</p>
+                    <p className="text-[var(--muted-foreground)] serif-light">Târmșeni, Neamț, România</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-[var(--primary)]/10 p-3 rounded-full text-[var(--primary)]">
                     <Mail className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Email</h3>
-                    <p className="mt-1 text-blue-600 hover:underline">
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Email</h3>
+                    <p className="mt-1 text-[var(--primary)] hover:underline">
                       <a href="mailto:laurasimona97@yahoo.com">laurasimona97@yahoo.com</a>
                     </p>
-                    <p className="mt-1 text-blue-600 hover:underline">
+                    <p className="mt-1 text-[var(--primary)] hover:underline">
                       <a href="mailto:simonabuzau2@gmail.com">simonabuzau2@gmail.com</a>
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-[var(--primary)]/10 p-3 rounded-full text-[var(--primary)]">
                     <Phone className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Telefon</h3>
-                    <p className="mt-1 text-gray-600">0769141250</p>
-                    <p className="text-gray-600">Luni - Sâmbătă, 09:00 - 20:00</p>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Telefon</h3>
+                    <p className="mt-1 text-[var(--muted-foreground)] serif-light">0769141250</p>
+                    <p className="text-[var(--muted-foreground)] serif-light">Luni - Sâmbătă, 09:00 - 20:00</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-[var(--primary)]/10 p-3 rounded-full text-[var(--primary)]">
                     <Clock className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Program</h3>
-                    <p className="mt-1 text-gray-600">Luni - Sâmbătă: 09:00 - 20:00</p>
-                    <p className="text-gray-600">Duminică: Închis</p>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Program</h3>
+                    <p className="mt-1 text-[var(--muted-foreground)] serif-light">Luni - Sâmbătă: 09:00 - 20:00</p>
+                    <p className="text-[var(--muted-foreground)] serif-light">Duminică: Închis</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Google Maps */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="bg-[var(--card)] rounded-lg shadow-lg overflow-hidden border border-[var(--border)]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2723.4448476744797!2d26.952465776893473!3d47.00269067115149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDfCsDAwJzA5LjciTiAyNsKwNTcnMTYuOCJF!5e0!3m2!1sen!2sro!4v1737748800000!5m2!1sen!2sro"
                 width="100%"

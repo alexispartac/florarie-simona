@@ -13,7 +13,7 @@ export const SplitScreen = ({ zoomIntensity, slideDistance }: SplitScreenProps) 
 
   return (
     <div ref={ref} className="min-h-screen flex flex-col md:flex-row">
-      <div className="w-full md:w-1/2 relative overflow-hidden bg-gray-900">
+      <div className="w-full md:w-1/2 relative overflow-hidden bg-[var(--foreground)]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -25,7 +25,7 @@ export const SplitScreen = ({ zoomIntensity, slideDistance }: SplitScreenProps) 
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50" />
       </div>
 
-      <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 bg-white dark:bg-gray-900">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 bg-[var(--card)] dark:bg-[var(--foreground)]">
         <div
           style={{
             transform: `translateX(${(1 - progress) * slideDistance}px)`,
@@ -33,15 +33,15 @@ export const SplitScreen = ({ zoomIntensity, slideDistance }: SplitScreenProps) 
             transition: 'all 0.2s ease-out',
           }}
         >
-          <h2 className="text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+          <h2 className="text-5xl font-bold mb-6 text-[var(--foreground)] dark:text-[var(--primary-foreground)]">
             Design Modern
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-xl text-[var(--muted-foreground)] dark:text-[var(--muted-foreground)] mb-6">
             Textul apare din dreapta în timp ce imaginea face zoom treptat. 
             Efectul creează o experiență vizuală dinamică și captivantă.
           </p>
           <div className="flex gap-4">
-            <div className="h-1 bg-blue-600" style={{ width: `${progress * 100}%`, transition: 'width 0.2s' }} />
+            <div className="h-1 bg-[var(--primary)]" style={{ width: `${progress * 100}%`, transition: 'width 0.2s' }} />
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@ export const SplitScreen = ({
   return (
     <div ref={ref} className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side - Image */}
-      <div className="w-full md:w-1/2 relative overflow-hidden bg-gray-900">
+      <div className="w-full md:w-1/2 relative overflow-hidden bg-[var(--foreground)]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -75,7 +75,7 @@ export const SplitScreen = ({
       </div>
 
       {/* Right Side - Text */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 bg-white dark:bg-gray-900">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 bg-[var(--card)] dark:bg-[var(--foreground)]">
         <div
           style={{
             transform: \`translateX(\${(1 - progress) * slideDistance}px)\`,
@@ -83,10 +83,10 @@ export const SplitScreen = ({
             transition: 'all 0.2s ease-out',
           }}
         >
-          <h2 className="text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+          <h2 className="text-5xl font-bold mb-6 text-[var(--foreground)] dark:text-[var(--primary-foreground)]">
             Your Title
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-xl text-[var(--muted-foreground)] dark:text-[var(--muted-foreground)] mb-6">
             Your description text here.
           </p>
         </div>

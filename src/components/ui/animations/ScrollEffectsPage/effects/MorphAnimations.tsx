@@ -58,8 +58,8 @@ export const MorphAnimations = ({
     <div className="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 py-20 px-4">
       {/* Title Section */}
       <div className="text-center mb-16 max-w-4xl mx-auto">
-        <h2 className="text-6xl font-bold text-white mb-4">Morph Animations</h2>
-        <p className="text-xl text-gray-300">
+        <h2 className="text-6xl font-bold text-[var(--primary-foreground)] mb-4">Morph Animations</h2>
+        <p className="text-xl text-[var(--muted-foreground)]">
           Forme geometrice care se transformă pe scroll
         </p>
       </div>
@@ -77,10 +77,10 @@ export const MorphAnimations = ({
                 }deg)`,
               }}
             />
-            <p className="text-white text-xl mt-8 font-semibold">
+            <p className="text-[var(--primary-foreground)] text-xl mt-8 font-semibold">
               Circle → Square
             </p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-[var(--muted-foreground)] text-sm mt-2">
               Progress: {Math.round(progress1 * 100)}%
             </p>
           </div>
@@ -98,10 +98,10 @@ export const MorphAnimations = ({
                 )}deg)`,
               }}
             />
-            <p className="text-white text-xl mt-8 font-semibold">
+            <p className="text-[var(--primary-foreground)] text-xl mt-8 font-semibold">
               Diamond → Circle
             </p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-[var(--muted-foreground)] text-sm mt-2">
               Progress: {Math.round(progress2 * 100)}%
             </p>
           </div>
@@ -119,8 +119,8 @@ export const MorphAnimations = ({
                 }deg)`,
               }}
             />
-            <p className="text-white text-xl mt-8 font-semibold">Organic Blob</p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-[var(--primary-foreground)] text-xl mt-8 font-semibold">Organic Blob</p>
+            <p className="text-[var(--muted-foreground)] text-sm mt-2">
               Progress: {Math.round(progress3 * 100)}%
             </p>
           </div>
@@ -129,7 +129,7 @@ export const MorphAnimations = ({
         {/* Multi Morph Grid */}
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <p className="text-white text-2xl mb-8 font-semibold">
+            <p className="text-[var(--primary-foreground)] text-2xl mb-8 font-semibold">
               Combined Morphs
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -158,7 +158,7 @@ export const MorphAnimations = ({
       </div>
 
       {/* Info Section */}
-      <div className="text-center mt-20 text-gray-400">
+      <div className="text-center mt-20 text-[var(--muted-foreground)]">
         <p className="text-lg">👇 Scroll to see the magic happen</p>
       </div>
     </div>

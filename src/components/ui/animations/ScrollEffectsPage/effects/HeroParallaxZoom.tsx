@@ -36,7 +36,7 @@ export const HeroParallaxZoom = ({
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
       
       <div className="relative z-10 flex items-center justify-center h-full px-8">
-        <div className="text-center text-white max-w-4xl">
+        <div className="text-center text-[var(--primary-foreground)] max-w-4xl">
           <h1
             className="text-7xl md:text-9xl font-bold mb-6"
             style={{
@@ -48,7 +48,7 @@ export const HeroParallaxZoom = ({
             Parallax Zoom
           </h1>
           <p
-            className="text-xl md:text-2xl text-gray-200"
+            className="text-xl md:text-2xl text-[var(--primary-foreground)]"
             style={{
               transform: `translateY(${progress * -50}px)`,
               opacity: 1 - progress * 0.5,
@@ -67,7 +67,7 @@ export const HeroParallaxZoom = ({
           transition: 'opacity 0.2s ease-out',
         }}
       >
-        <div className="flex flex-col items-center gap-2 text-white animate-bounce">
+        <div className="flex flex-col items-center gap-2 text-[var(--primary-foreground)] animate-bounce">
           <span className="text-sm">Scroll Down</span>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -110,7 +110,7 @@ export const HeroParallaxZoom = ({
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
       
       <div className="relative z-10 flex items-center justify-center h-full px-8">
-        <div className="text-center text-white max-w-4xl">
+        <div className="text-center text-[var(--primary-foreground)] max-w-4xl">
           <h1
             className="text-7xl md:text-9xl font-bold mb-6"
             style={{

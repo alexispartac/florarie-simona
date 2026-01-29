@@ -16,22 +16,22 @@ export const CodeBlock = ({ code, language = 'typescript', title }: CodeBlockPro
   };
 
   return (
-    <div className="relative bg-gray-900 rounded-lg overflow-hidden">
+    <div className="relative bg-[var(--foreground)] rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700">
+      <div className="flex items-center justify-between px-4 py-2 bg-[var(--foreground)] border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <div className="w-3 h-3 rounded-full bg-[var(--destructive)]" />
+            <div className="w-3 h-3 rounded-full bg-[var(--accent)]" />
+            <div className="w-3 h-3 rounded-full bg-[var(--primary)]" />
           </div>
           {title && (
-            <span className="ml-3 text-sm text-gray-400 font-mono">{title}</span>
+            <span className="ml-3 text-sm text-[var(--muted-foreground)] font-mono">{title}</span>
           )}
         </div>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+          className="flex items-center gap-2 px-3 py-1 text-sm bg-[var(--primary)] hover:bg-[var(--hover-primary)] text-[var(--primary-foreground)] rounded transition-colors"
         >
           {copied ? (
             <>
@@ -54,7 +54,7 @@ export const CodeBlock = ({ code, language = 'typescript', title }: CodeBlockPro
       {/* Code Content */}
       <div className="overflow-x-auto">
         <pre className="p-4 text-sm">
-          <code className={`language-${language} text-gray-100`}>{code}</code>
+          <code className={`language-${language} text-[var(--primary-foreground)]`}>{code}</code>
         </pre>
       </div>
     </div>
