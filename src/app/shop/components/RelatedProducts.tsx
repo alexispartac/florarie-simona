@@ -15,8 +15,8 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product, index) => (
           <Link 
-            key={`${product.id}-${index}`} 
-            href={`/shop/${product.id}?slug=${product.slug}`}
+            key={`${product.productId}-${index}`} 
+            href={`/shop/${product.productId}?slug=${product.slug}`}
             className="group block overflow-hidden rounded-lg transition-shadow hover:shadow-lg"
           >
             <div className="relative h-64 w-full">
@@ -32,7 +32,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
               <h3 className="font-medium text-lg group-hover:text-primary transition-colors">
                 {product.name}
               </h3>
-              <p className="text-gray-600">${(product.price / 100).toFixed(2)}</p>
+              <p className="text-gray-600">{(product.price / 100).toFixed(2)} RON</p>
             </div>
           </Link>
         ))}

@@ -74,13 +74,13 @@ export default function CartPage() {
         <div className="lg:col-span-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <ul className="divide-y divide-gray-200">
-              {cart.map((item) => (
-                <li key={`${item.productId}-${item.variant.variantId}-${item.variant.color}`} className="p-4 sm:p-6">
+              {cart.map((item, index) => (
+                <li key={`${item.productId}-${index}`} className="p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row">
-                    <div className="flex-shrink-0 w-full sm:w-32 h-32 bg-gray-100 rounded-md overflow-hidden">
-                      {item.variant.images?.[0] && (
+                    <div className="shrink-0 w-full sm:w-32 h-32 bg-gray-100 rounded-md overflow-hidden">
+                      {item.image && (
                         <Image
-                          src={item.variant.images[0]}
+                          src={item.image}
                           alt={item.name}
                           width={128}
                           height={128}
@@ -92,18 +92,22 @@ export default function CartPage() {
                     <div className="mt-4 sm:mt-0 sm:ml-6 flex-1">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-medium text-gray-900">
-                          <Link href={`/shop/${item.productId}?slug=${item.name.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-primary hover:underline">
+                          <Link href={`/shop/${item.productId}`} className="hover:text-primary hover:underline">
                             {item.name}
                           </Link>
                         </h3>
                         <p className="ml-4 text-lg font-medium text-gray-900">
-                          ${(item.price / 100).toFixed(2)}
+                          {(item.price / 100).toFixed(2)} RON
                         </p>
                       </div>
 
                       <div className="mt-2 text-sm text-gray-600">
-                        <p>{t('cart.checkout.color')}: <span className="capitalize">{item.variant.color}</span></p>
-                        <p className="mt-1">{t('cart.checkout.size')}: {item.variant.size}</p>
+                        {item.customMessage && (
+                          <p className="mt-1">💌 Mesaj: <span className="italic">{item.customMessage}</span></p>
+                        )}
+                        {item.deliveryDate && (
+                          <p className="mt-1">📅 Livrare: {new Date(item.deliveryDate).toLocaleDateString('ro-RO')}</p>
+                        )}
                       </div>
 
                       <div className="mt-4 flex items-center justify-between">
@@ -123,30 +127,19 @@ export default function CartPage() {
                             <button
                               type="button"
                               onClick={() => {
-                                if (item.quantity < (item.variant?.stock || 0)) {
                                   updateCartItemQuantity(item, item.quantity + 1);
-                                }
                               }}
-                              disabled={!item.variant || item.quantity >= (item.variant?.stock || 0)}
-                              className={`p-2 focus:outline-none ${!item.variant || item.quantity >= (item.variant?.stock || 0) ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:text-gray-700 cursor-pointer'}`}
+                              className="p-2 focus:outline-none text-gray-600 hover:text-gray-700 cursor-pointer"
                             >
                               <FiPlus className="h-4 w-4" />
                             </button>
                           </div>
                         </div>
-                          {item.variant && item.quantity >= (item.variant?.stock || 0) && (
-                            <p className="text-xs text-red-600 mt-1">{t('cart.checkout.maximumQuantity')}: {item.variant.stock}</p>
-                          )}
 
                         <button
                           type="button"
                           onClick={() => {
-                            const itemToRemove = {
-                              productId: item.productId,
-                              variant: item.variant,
-                              quantity: item.quantity
-                            };
-                            removeFromCart(itemToRemove);
+                            removeFromCart(item);
                           }}
                           className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center cursor-pointer"
                         >
@@ -170,17 +163,17 @@ export default function CartPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">{t('cart.checkout.subtotal')}</span>
-                <span className="font-medium">${(subtotal / 100).toFixed(2)}</span>
+                <span className="font-medium">{(subtotal / 100).toFixed(2)} RON</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                 <span className="text-gray-600">{t('cart.checkout.shipping')}</span>
-                <span className="font-medium">${(shipping / 100).toFixed(2)} USD</span>
+                <span className="font-medium">{(shipping / 100).toFixed(2)} RON</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                 <span className="text-lg font-medium">{t('cart.checkout.total')}</span>
-                <span className="text-lg font-bold">${(total / 100).toFixed(2)} USD</span>
+                <span className="text-lg font-bold">{(total / 100).toFixed(2)} RON</span>
               </div>
               
               <div className="pt-4">
@@ -197,7 +190,7 @@ export default function CartPage() {
                   href="/shop" 
                   className="text-sm font-medium text-primary hover:text-primary/80 hover:underline cursor-pointer"
                 >
-                  {t('cart.checkout.proceedToShipping')}
+                  {t('button.continueShopping')}
                 </Link>
               </div>
             </div>

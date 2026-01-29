@@ -109,7 +109,7 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               <div className="flex items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Amount</p>
-                  <p>{(((order.total + order.shippingCost) / 100)).toFixed(2)} USD</p>
+                  <p>{(((order.total + order.shippingCost) / 100)).toFixed(2)} RON</p>
                 </div>
               </div>
             </div>
@@ -133,10 +133,8 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                       <p className="font-medium">{item.name}</p>
                       <div className="flex space-x-4 text-sm text-muted-foreground mt-1">
                         <span>Qty: {item.quantity}</span>
-                        {item.size && <span>Size: {item.size}</span>}
-                        {item.color && <span>Color: {item.color}</span>}
                       </div>
-                      <p className="mt-1">{(item.price * item.quantity / 100).toFixed(2)} USD</p>
+                      <p className="mt-1">{(item.price * item.quantity / 100).toFixed(2)} RON</p>
                     </div>
                   </div>
                 </div>
@@ -144,15 +142,15 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               <div className="pt-2">
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>{(order.total / 100).toFixed(2)} USD</span>
+                  <span>{(order.total / 100).toFixed(2)} RON</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span>{(order.shippingCost / 100).toFixed(2)} USD</span>
+                  <span>{(order.shippingCost / 100).toFixed(2)} RON</span>
                 </div>
                 <div className="flex justify-between py-1 font-medium">
                   <span>Total</span>
-                  <span>{((order.total + order.shippingCost) / 100).toFixed(2)} USD</span>
+                  <span>{((order.total + order.shippingCost) / 100).toFixed(2)} RON</span>
                 </div>
               </div>
             </div>

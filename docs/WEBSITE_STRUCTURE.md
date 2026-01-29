@@ -1,47 +1,49 @@
-# Custom Clothing E-commerce Website Structure
+# Buchetul Simonei - Flower Shop E-commerce Website Structure
 
 ## 1. Core Pages
 
 ### 1.1 Homepage
-- Hero section with call-to-action
-- Featured collections
-- Customization showcase
-- Testimonials
+- Hero section with featured bouquets
+- Featured collections (seasonal, occasions)
+- Popular arrangements showcase
+- Customer testimonials
 - Newsletter signup
 
 ### 1.2 Shop
-- Product categories
-- Filtering options (size, color, style, price)
-- Product cards with quick view
-- Sorting options
+- Product categories (by flower type, occasion, color)
+- Filtering options (color, occasion, price, delivery)
+- Bouquet cards with quick view
+- Sorting options (price, popularity, newest)
 
 ### 1.3 Product Detail Page
-- Product images gallery
-- Customization options
-- Size guide
-- Product description
+- Product images gallery (360° view)
+- Flower details (types, colors, stem count)
+- Size options (small, medium, large, extra-large)
+- Care instructions
 - Reviews and ratings
 - Related products
+- Add custom message option
+- Delivery date selector
 
-### 1.4 Customization Studio
-- 3D product preview
-- Fabric/material selector
-- Color picker
-- Measurement input
-- Design upload option
-- Save design feature
+### 1.4 Collections
+- Seasonal collections
+- Occasion-based collections (Birthday, Wedding, Romantic, etc.)
+- Featured arrangements
+- Best sellers
 
 ### 1.5 Cart
 - Product list with thumbnails
 - Quantity adjuster
+- Custom message preview
 - Promo code input
 - Order summary
+- Delivery date confirmation
 - Checkout button
 
 ### 1.6 Checkout
 - Multi-step process
 - Shipping information
-- Billing information
+- Delivery date and time selection
 - Payment methods
 - Order review
 - Order confirmation
@@ -54,18 +56,21 @@
 - Social login options
 
 ### 2.2 Dashboard
-- Order history
-- Saved designs
-- Address book
+- Order history with tracking
+- Saved addresses
+- Favorite bouquets
 - Payment methods
 - Account settings
+- Subscription management (for recurring deliveries)
 
 ## 3. Admin Panel
 
 ### 3.1 Product Management
-- Add/edit/delete products
-- Inventory management
+- Add/edit/delete bouquets
+- Inventory management (flower availability)
 - Category management
+- Seasonal availability settings
+- Care instructions management
 
 ### 3.2 Order Management
 - View all orders
@@ -112,17 +117,19 @@
 
 ## 5. Key Features
 
-### 5.1 Customization
-- 3D product preview
-- Real-time price calculation
-- Save design for later
-- Share design option
+### 5.1 Flower-Specific Features
+- Flower care instructions
+- Same-day delivery tracking
+- Delivery date scheduling
+- Custom message cards
+- Vase options
 
 ### 5.2 Personalization
-- Size recommendations
-- Style suggestions
-- Recently viewed items
+- Occasion-based recommendations
+- Color preferences
+- Recently viewed bouquets
 - Wishlist
+- Gift reminders (birthdays, anniversaries)
 
 ## 6. SEO & Marketing
 
@@ -182,19 +189,21 @@
 
 ## 10. Future Enhancements
 
-### 10.1 AR/VR
-- Virtual try-on
-- 3D body scanning
+### 10.1 Subscription Service
+- Weekly/monthly flower delivery
+- Customizable plans
+- Pause/resume subscriptions
 
 ### 10.2 AI Features
-- Style assistant
-- Fit predictor
-- Trend analysis
+- Occasion predictor
+- Seasonal recommendations
+- Smart gift reminders
 
 ### 10.3 Mobile App
 - iOS and Android apps
-- Push notifications
+- Push notifications for delivery
 - Mobile payments
+- Quick reorder feature
 
 ---
 

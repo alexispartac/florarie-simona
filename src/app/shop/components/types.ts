@@ -1,15 +1,22 @@
 
-import { Product } from '@/types/products';
+import { Product, FlowerColor, FlowerOccasion } from '@/types/products';
 
 export interface ProductFiltersProps {
-  searchQuery: string;
   selectedCategories: string[];
   categories: string[];
-  onSearchChange: (query: string) => void;
   onCategoryToggle: (category: string) => void;
   onClearFilters: () => void;
   showFilters: boolean;
   onToggleFilters: () => void;
+  // Flower-specific filters
+  selectedColors: FlowerColor[];
+  selectedOccasions: FlowerOccasion[];
+  sameDayDeliveryOnly: boolean;
+  sortBy: string;
+  onColorToggle: (color: FlowerColor) => void;
+  onOccasionToggle: (occasion: FlowerOccasion) => void;
+  onSameDayDeliveryToggle: () => void;
+  onSortChange: (sortBy: string) => void;
 }
 
 export interface ProductCardProps {

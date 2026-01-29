@@ -1,8 +1,16 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, Truck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ProductInCatalog } from '@/types/products';
 import Image from 'next/image';
+import { Badge } from '@/components/ui/Badge';
+
+// Helper function to check if URL is a video
+const isVideoUrl = (url: string): boolean => {
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+  const lowerUrl = url.toLowerCase();
+  return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('/video/');
+};
 
 export interface ProductCardProps {
   product: ProductInCatalog;
@@ -22,60 +30,135 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div 
-      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
+      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
     >
       <div className="aspect-square relative overflow-hidden">
-        <Image 
-          src={product.images[0] || '/placeholder-product.jpg'}
-          alt={product.name}
-          className="w-full h-full object-cover"
-          width={200}
-          height={200}
-        />
+        {isVideoUrl(product.images[0] || '') ? (
+          <div className="relative w-full h-full bg-gray-200">
+            <video
+              src={product.images[0]}
+              className="w-full h-full object-cover"
+              muted
+              playsInline
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+              <svg className="w-16 h-16 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+              </svg>
+            </div>
+          </div>
+        ) : (
+          <Image 
+            src={product.images[0] || '/placeholder-product.jpg'}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            width={400}
+            height={400}
+          />
+        )}
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {product.isNew && (
+            <Badge variant="success" className="bg-green-500 text-white text-xs px-2 py-1">
+              Nou
+            </Badge>
+          )}
+          {product.isFeatured && (
+            <Badge variant="info" className="bg-purple-500 text-white text-xs px-2 py-1">
+              Popular
+            </Badge>
+          )}
+          {product.flowerDetails?.sameDayDelivery && (
+            <Badge variant="warning" className="bg-orange-500 text-white text-xs px-2 py-1 flex items-center gap-1">
+              <Truck className="h-3 w-3" />
+              Azi
+            </Badge>
+          )}
+        </div>
+        
+        {/* Wishlist button */}
         <div className="absolute top-3 right-3">
           <button
-            onClick={() => onToggleWishlist(product.productId, product.name, product.price, product.images)}
-            className={`p-1.5 bg-white/90 rounded-full shadow-sm text-black hover:text-red-500 cursor-pointer`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleWishlist(product.productId, product.name, product.price, product.images);
+            }}
+            className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white hover:scale-110 transition-all duration-200"
           >
-            <Heart className={`h-5 w-5 fill-current`} />
+            <Heart className="h-5 w-5 text-rose-500 hover:fill-rose-500 transition-colors" />
           </button>
         </div>
       </div>
+            
+      {/* Product details */}
       <div 
         className="p-4 cursor-pointer"
         onClick={() => router.push(`/shop/${product.productId}?slug=${product.slug}`)}
       >
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-sm font-medium text-gray-900 line-clamp-1">
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1">
+            <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-rose-600 transition-colors">
               {product.name}
             </h3>
             <p className="mt-1 text-sm text-gray-500">{product.category}</p>
           </div>
-          <p className="text-sm font-medium text-gray-900">
-            ${(product.price / 100).toFixed(2)}
-          </p>
         </div>
-        <div className="mt-3 flex items-center justify-between">
-          <p className="text-xs text-gray-500">
-            View details and variants colors
-          </p>
-          {/* <div className="flex -space-x-1">
-            {product.availableColors.map((color, i) => (
+        
+        {/* Colors */}
+        {product.flowerDetails?.colors && product.flowerDetails.colors.length > 0 && (
+          <div className="flex items-center gap-1 mb-2">
+            {product.flowerDetails.colors.slice(0, 3).map((color, i) => (
               <div
                 key={i}
-                className="h-4 w-4 rounded-full border border-gray-200"
-                style={{ backgroundColor: color.code }}
-                title={color.name}
+                className="h-4 w-4 rounded-full border-2 border-gray-200"
+                style={{ 
+                  backgroundColor: 
+                    color === 'rosu' ? '#ef4444' :
+                    color === 'roz' ? '#ec4899' :
+                    color === 'alb' ? '#f9fafb' :
+                    color === 'galben' ? '#fbbf24' :
+                    color === 'mov' ? '#a855f7' :
+                    color === 'portocaliu' ? '#f97316' :
+                    color === 'albastru' ? '#3b82f6' :
+                    color === 'mixt' ? '#fce7f3' :
+                    color === 'pastel' ? '#10b981' :
+                    color === 'negru' ? '#10b981' :
+                    '#10b981'
+                }}
+                title={color}
               />
             ))}
+            {product.flowerDetails.colors.length > 3 && (
+              <span className="text-xs text-gray-500">+{product.flowerDetails.colors.length - 3}</span>
+            )}
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            {product.availableSizes.join(', ')}
-          </div> */}
+        )}
+        
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center gap-1">
+            <span className="text-lg font-bold text-gray-900">
+              {(product.price / 100).toFixed(0)} RON
+            </span>
+          </div>
+          
+          {/* Rating */}
+          {product.rating && (
+            <div className="flex items-center gap-1">
+              <span className="text-yellow-500">★</span>
+              <span className="text-sm font-medium text-gray-700">{product.rating}</span>
+              <span className="text-xs text-gray-500">({product.reviewCount + 1})</span>
+            </div>
+          )}
         </div>
+        
+        {!product.available && (
+          <div className="mt-3">
+            <Badge variant="destructive" className="w-full text-center">
+              Indisponibil
+            </Badge>
+          </div>
+        )}
       </div>
     </div>
   );
-
 };

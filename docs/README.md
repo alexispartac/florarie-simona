@@ -1,6 +1,6 @@
-# Vintage Custom Clothes - Documentation
+# Buchetul Simonei - Documentation
 
-Welcome to the documentation for our Vintage Custom Clothes e-commerce platform. This guide provides comprehensive information about the website's features, functionality, and development setup.
+Welcome to the documentation for Buchetul Simonei, your online flower shop. This guide provides comprehensive information about the website's features, functionality, and development setup.
 
 ## Table of Contents
 
@@ -15,15 +15,19 @@ Welcome to the documentation for our Vintage Custom Clothes e-commerce platform.
 
 ## Project Overview
 
-Vintage Custom Clothes is an e-commerce platform specializing in unique, handcrafted vintage-style clothing. The website allows customers to browse our collection, customize garments, and make purchases in a seamless, user-friendly interface.
+Buchetul Simonei is an e-commerce platform specializing in fresh flowers and beautiful floral arrangements. The website allows customers to browse our collection, select bouquets for any occasion, and schedule deliveries in a seamless, user-friendly interface.
 
 ## Features
 
-- **Product Catalog**: Browse through our collection of vintage-inspired clothing
-- **Customization Tool**: Personalize your garments with various options
+- **Product Catalog**: Browse through our collection of fresh flowers and bouquets
+- **Occasion-Based Shopping**: Find the perfect flowers for birthdays, weddings, anniversaries, and more
+- **Flower Care Instructions**: Detailed care guides for each bouquet
+- **Same-Day Delivery**: Quick delivery options for urgent orders
 - **Responsive Design**: Optimized for all device sizes
 - **Theme Support**: Light and dark mode for better user experience
-- **Shopping Cart**: Easy-to-use cart functionality
+- **Shopping Cart**: Easy-to-use cart with custom message option
+- **Delivery Date Scheduling**: Choose when you want your flowers delivered
+- **Multi-language Support**: Available in English and Romanian
 - **Session-based Storage**: All user data is stored in the browser's sessionStorage
 
 ## Getting Started
@@ -38,8 +42,8 @@ Vintage Custom Clothes is an e-commerce platform specializing in unique, handcra
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/vintage-custom-clothes.git
-   cd vintage-custom-clothes
+   git clone https://github.com/yourusername/buchetul-simonei.git
+   cd buchetul-simonei
    ```
 
 2. Install dependencies:

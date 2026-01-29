@@ -1,16 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { FiMenu, FiX, FiShoppingBag, FiHeart } from 'react-icons/fi';
-import ThemeSwitcher from './ThemeSwitcher';
-import LanguageSwitcher from './LanguageSwitcher';
+import { FiMenu, FiX, FiShoppingBag, FiHeart, FiSearch } from 'react-icons/fi';
 import Wishlist from './Wishlist';
 import Cart from './Cart';
 import { useShop } from '@/context/ShopContext';
 import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
+import { useProductSearch } from '@/hooks/useProducts';
+import ThemeSwitcher from './ThemeSwitcher';
+import { useTheme } from '@/context/ThemeContext';
 
 
 export default function Navigation() {
@@ -18,26 +20,44 @@ export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [hydrated, setHydrated] = useState(false);
   const { getCartItemCount } = useShop();
   const pathname = usePathname();
+  const router = useRouter();
   const prevPathnameRef = useRef(pathname);
-  const [isMounted, setIsMounted] = useState(false);
   const { t } = useLanguage();
+  const searchRef = useRef<HTMLDivElement>(null);
+  const { currentThemeConfig } = useTheme();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setHydrated(true);
+    }, 0);
+  }, []);
+  
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Fetch search results
+  const { data: searchResults, isLoading: isSearching } = useProductSearch(debouncedQuery);
   
   const navLinks = [
     { name: t('nav.home'), href: '/' },
     { name: t('nav.shop'), href: '/shop' },
-    // { name: t('nav.collections'), href: '/collections' },
+    { name: t('nav.collections'), href: '/collections' },
+    { name: t('nav.events'), href: '/events' },
     { name: t('nav.contact'), href: '/contact' },
     { name: t('nav.trackOrder'), href: '/orders' }
   ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,40 +78,59 @@ export default function Navigation() {
     };
     
     handleRouteChange();
-    
-    return () => {
-      // Cleanup function if needed
-    };
   }, [pathname, isOpen]);
 
-  if (!isMounted) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-pulse flex flex-col items-center space-y-4">
-            <Spinner className="w-12 h-12" />
-            <p className="text-gray-600">Loading your cart...</p>
-          </div>
-        </div>
-      );
+  // Close search when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+
+    if (searchOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchOpen]);
+
+  const handleSearchResultClick = (productId: string, slug: string) => {
+    router.push(`/shop/${productId}?slug=${slug}`);
+    setSearchOpen(false);
+    setSearchQuery('');
+  };
+
+  // Show loading state during hydration
+  if (!hydrated) {
+    return null; // or return a placeholder
+  }
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-white'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[var(--primary-background)] ${
+        scrolled ? 'backdrop-blur-md shadow-sm' : ''
       }`}
     >
       <Wishlist isOpen={wishlistOpen} onClose={() => setWishlistOpen(false)} />
       <Cart isOpen={cartOpen} onClose={() => setCartOpen(false)} />
      
-     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div className="max-w-7xl mx-auto pr-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-2xl font-bold text-gray-900">
-              Brand Stock
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center px-4">
+            <Image
+              src={currentThemeConfig.image}
+              alt="Buchetul Simonei Logo"
+              width={125}
+              height={50}
+              className="object-contain"
+              priority
+            />
+          </Link>
+          
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
@@ -114,8 +153,17 @@ export default function Navigation() {
 
           {/* Right side icons */}
           <div className="flex items-center space-x-4">
+            {/* Search button */}
             <button 
-              className="p-2 text-gray-700 hover:text-gray-900 relative cursor-pointer"
+              className="p-2 hover:text-gray-900 relative cursor-pointer text-primary"
+              onClick={() => setSearchOpen(!searchOpen)}
+              aria-label="Search"
+            >
+              <FiSearch className="h-5 w-5" />
+            </button>
+            
+            <button 
+              className="p-2 hover:text-gray-900 relative cursor-pointer text-primary"
               onClick={() => setWishlistOpen(true)}
               aria-label="Wishlist"
             >
@@ -123,12 +171,12 @@ export default function Navigation() {
             </button>
             
             <button 
-              className="p-2 text-gray-700 hover:text-gray-900 relative cursor-pointer"
+              className="p-2 hover:text-gray-900 relative cursor-pointer text-primary"
               onClick={() => setCartOpen(true)}
               aria-label="Cart"
             >
               <FiShoppingBag className="h-5 w-5" />
-              {getCartItemCount() > 0 && isMounted && (
+              {getCartItemCount() > 0 && hydrated && (
                 <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {getCartItemCount() > 9 ? '9+' : getCartItemCount()}
                 </span>
@@ -136,7 +184,7 @@ export default function Navigation() {
             </button>
             
             <ThemeSwitcher />
-            <LanguageSwitcher />
+            {/* <LanguageSwitcher /> */}
             
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -156,6 +204,72 @@ export default function Navigation() {
           </div>
         </div>
       </div>
+
+      {/* Search dropdown */}
+      {searchOpen && (
+        <div 
+          ref={searchRef}
+          className="absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-gray-200 animate-slide-down"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="relative">
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Caută buchete, flori..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                autoFocus
+              />
+            </div>
+
+            {/* Search Results */}
+            {searchQuery.trim() && (
+              <div className="mt-4 max-h-96 overflow-y-auto">
+                {isSearching ? (
+                  <div className="flex justify-center py-8">
+                    <Spinner className="w-6 h-6" />
+                  </div>
+                ) : searchResults?.products?.length > 0 ? (
+                  <div className="space-y-2">
+                    {searchResults.products.map((product: { productId: string; slug: string; name: string; category: string; images: string[]; price: number }) => (
+                      <button
+                        key={product.productId}
+                        onClick={() => handleSearchResultClick(product.productId, product.slug)}
+                        className="w-full flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors text-left"
+                      >
+                        <Image
+                          src={product.images[0]}
+                          alt={product.name}
+                          width={60}
+                          height={60}
+                          className="rounded-md object-cover shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-medium text-gray-900 truncate">
+                            {product.name}
+                          </h4>
+                          <p className="text-sm text-gray-500">{product.category}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-sm font-medium text-primary">
+                            {(product.price / 100).toFixed(2)} RON
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    Nu s-au găsit rezultate pentru &quot;{searchQuery}&quot;
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Mobile menu */}
       <div

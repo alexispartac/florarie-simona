@@ -8,11 +8,11 @@ interface ShopContextType {
     cart: CartItem[];
     wishlist: WishlistItem[];
     addToCart: (product: CartItem) => void;
-    removeFromCart: (product: Omit<CartItem, 'name' | 'price'>) => void;
+    removeFromCart: (product: CartItem) => void;
     updateCartItemQuantity: (product: CartItem, quantity: number) => void;
     addToWishlist: (product: WishlistItem) => void;
     removeFromWishlist: (productId: string) => void;
-    isInCart: (product: CartItem) => boolean;
+    isInCart: (productId: string) => boolean;
     isInWishlist: (productId: string) => boolean;
     clearCart: () => void;
     getCartTotal: () => number;
@@ -88,11 +88,11 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
     const addToCart = useCallback((product: CartItem) => {
         setCart(prevCart => {
-            // existing item if have same productId
+            // Check if item already exists (just by productId now)
             const existingItem = prevCart.find(item => 
-                item.variant.variantId === product.variant.variantId &&
                 item.productId === product.productId
             );
+            
             // Show toast based on whether the item is new or existing
             setTimeout(() => {
                 toastRef.current?.({
@@ -104,17 +104,22 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             }, 0);
 
             if (existingItem) {
-                return prevCart;
+                // Update quantity of existing item
+                return prevCart.map(item =>
+                    item.productId === product.productId
+                        ? { ...item, quantity: item.quantity + product.quantity }
+                        : item
+                );
             }
 
             return [...prevCart, product];
         });
     }, []);
 
-    const removeFromCart = useCallback((product: Omit<CartItem, 'name' | 'price'>) => {
+    const removeFromCart = useCallback((product: CartItem) => {
         setCart(prevCart => {
             const newCart = prevCart.filter(item => 
-                !(item.variant.variantId === product.variant.variantId && item.productId === product.productId)
+                item.productId !== product.productId
             );
             
             if (product) {
@@ -139,7 +144,9 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         
         setCart((prevCart: CartItem[]) => {
             const newCart = prevCart.map(item =>
-                item.variant.variantId === product.variant.variantId && item.productId === product.productId ? { ...item, quantity } : item
+                item.productId === product.productId
+                    ? { ...item, quantity } 
+                    : item
             );
             
             if (product) {
@@ -213,9 +220,9 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         });
     }, []);
 
-    const isInCart = useCallback((product: CartItem) => {
-        if (!product.variant) return false;
-        return cart.some(item => item.variant.productId === product.variant.productId);
+    const isInCart = useCallback((productId: string) => {
+        if (!productId) return false;
+        return cart.some(item => item.productId === productId);
     }, [cart]);
 
     const isInWishlist = useCallback((productId: string) => {

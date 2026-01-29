@@ -27,7 +27,7 @@ export async function sendContactFormEmail(formData: {
   message: string;
 }) {
   const mailOptions = {
-    from: `"Vintage Custom Clothes" <${process.env.EMAIL_USER}>`,
+    from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
     to: process.env.CONTACT_EMAIL || process.env.EMAIL_USER, // Fallback to main email if contact email not set
     subject: `New Contact Form: ${formData.subject}`,
     replyTo: formData.email,
@@ -69,7 +69,6 @@ export async function sendOrderConfirmationEmail(order: Order) {
       <tr>
         <td style="padding: 8px; border-bottom: 1px solid #ddd;">
           ${item.name}<br>
-          <small>Size: ${item.size} | Color: ${item.color}</small>
         </td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price / 100)}</td>
@@ -80,7 +79,7 @@ export async function sendOrderConfirmationEmail(order: Order) {
   const total = subtotal + order.shippingCost;
 
   const mailOptions = {
-    from: `"Vintage Custom Clothes" <${process.env.EMAIL_USER}>`,
+    from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
     to: order.shipping.email,
     subject: `Order Confirmation - #${order.orderId}`,
     html: `
@@ -156,7 +155,7 @@ export async function sendOrderConfirmationEmail(order: Order) {
         </p>
         
         <p style="margin: 30px 0 15px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
-          Thank you for shopping with Vintage Custom Clothes!
+          Thank you for shopping with Buchetul Simonei!
         </p>
       </div>
     `,
@@ -177,14 +176,13 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
       <tr>
         <td style="padding: 8px; border-bottom: 1px solid #ddd;">
           ${item.name}<br>
-          <small>Size: ${item.size} | Color: ${item.color}</small>
         </td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
       </tr>
     `).join('');
 
   const mailOptions = {
-    from: `"Vintage Custom Clothes" <${process.env.EMAIL_USER}>`,
+    from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
     to: order.shipping.email,
     subject: `🎉 Your Order #${order.orderId} Has Been Delivered!`,
     html: `
@@ -250,14 +248,14 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
         </div>
         
         <p style="margin: 30px 0 15px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
-          Thank you for shopping with Vintage Custom Clothes!
+          Thank you for shopping with Buchetul Simonei!
         </p>
         
         <div style="text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; color: #95a5a6; font-size: 0.8em;">
-          <p>© ${new Date().getFullYear()} Vintage Custom Clothes. All rights reserved.</p>
+          <p>© ${new Date().getFullYear()} Buchetul Simonei. All rights reserved.</p>
           <p>
-            <a href="https://vintageclothes.com" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Our Website</a> | 
-            <a href="https://vintageclothes.com/contact" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Contact Us</a> | 
+            <a href="https://buchetulsimonei.com" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Our Website</a> | 
+            <a href="https://buchetulsimonei.com/contact" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Contact Us</a> | 
             <a href="https://vintageclothes.com/privacy" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
           </p>
         </div>
@@ -280,7 +278,6 @@ export async function sendOrderProcessedEmail(order: Order) {
       <tr>
         <td style="padding: 8px; border-bottom: 1px solid #ddd;">
           ${item.name}<br>
-          <small>Size: ${item.size} | Color: ${item.color}</small>
         </td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price / 100)}</td>
@@ -291,7 +288,7 @@ export async function sendOrderProcessedEmail(order: Order) {
   const total = subtotal + order.shippingCost;
 
   const mailOptions = {
-    from: `"Vintage Custom Clothes" <${process.env.EMAIL_USER}>`,
+    from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
     to: order.shipping.email,
     subject: `🚀 Your Order #${order.orderId} is Being Processed!`,
     html: `
@@ -354,7 +351,7 @@ export async function sendOrderProcessedEmail(order: Order) {
         </p>
         
         <p style="margin: 30px 0 15px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
-          Thank you for shopping with Vintage Custom Clothes!
+          Thank you for shopping with Buchetul Simonei!
         </p>
       </div>
     `,

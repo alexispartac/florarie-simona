@@ -1,36 +1,33 @@
-// Base product variant interface
-export interface ProductVariant {
-  variantId: string;
-  productId: string;
-  sku: string;
-  size: string;
-  color: string;
-  colorName: string;
-  colorCode: string;
-  priceAdjustment: number;
-  stock: number;
-  images: string[];
-  barcode?: string;
-  isActive: boolean;
+// Flower-specific enums and types
+export type FlowerSize = 'small' | 'medium' | 'large' | 'extra-large';
+export type FlowerColor = 'rosu' | 'roz' | 'alb' | 'galben' | 'mov' | 'portocaliu' | 'albastru' | 'mixt' | 'pastel' | 'negru';
+export type FlowerOccasion = 'birthday' | 'anniversary' | 'wedding' | 'funeral' | 'romantic' | 'congratulations' | 'get-well' | 'thank-you' | 'just-because' | 'mothers-day' | 'valentines-day';
+export type FlowerType = 'roses' | 'tulips' | 'lilies' | 'carnations' | 'sunflowers' | 'orchids' | 'peonies' | 'hydrangeas' | 'daisies' | 'mixed';
+export type SeasonalAvailability = 'all-year' | 'spring' | 'summer' | 'fall' | 'winter';
+
+// Care instructions interface
+export interface CareInstructions {
+  wateringFrequency: string; // e.g., "daily", "every 2 days"
+  sunlightRequirement: string; // e.g., "indirect sunlight", "full sun"
+  temperature: string; // e.g., "15-25°C"
+  specialNotes?: string;
+  expectedLifespan: string; // e.g., "7-10 days"
 }
 
-// Size guide measurements
-export interface SizeMeasurements {
-  size: string;
-  chest?: string;
-  waist?: string;
-  length?: string;
-  sleeve?: string;
+// Flower-specific details
+export interface FlowerDetails {
+  size?: FlowerSize[];
+  colors?: FlowerColor[];
+  flowerTypes?: FlowerType[];
+  occasions?: FlowerOccasion[];
+  seasonalAvailability?: SeasonalAvailability;
+  stemCount?: number; // number of stems in the bouquet
+  includesVase?: boolean;
+  careInstructions?: CareInstructions;
+  sameDayDelivery?: boolean;
+  customMessageAvailable?: boolean;
 }
 
-// Size guide interface
-export interface SizeGuide {
-  category: string;
-  sizes: SizeMeasurements[];
-  measuringGuide: string;
-}
-
-// Review interface
 export interface ProductReview {
   id: string;
   productId: string;
@@ -44,22 +41,13 @@ export interface ProductReview {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
 }
-
-// Related product interface
 export interface RelatedProduct {
-  id: string;
+  productId: string;
   name: string;
-  price: number;
   slug: string;
+  price: number;
   image: string;
   category: string;
-}
-
-// Available color option
-export interface ColorOption {
-  name: string;
-  code: string;
-  image: string;
 }
 
 // Main product interface
@@ -69,6 +57,7 @@ export interface Product {
   slug: string;
   description: string;
   price: number; // Price in cents
+  salePrice?: number; // Sale price in cents (optional)
   category: string;
   tags: string[];
   isFeatured: boolean;
@@ -76,15 +65,14 @@ export interface Product {
   rating?: number;
   reviewCount: number;
   details: string[];
-  
-  // Nested objects
-  variants: ProductVariant[];
-  availableSizes: string[];
-  availableColors: ColorOption[];
+  available: boolean;
+  stock?: number; // Inventory stock count
+  sku?: string; // Stock Keeping Unit (product code)
+  weight?: number; // Weight in kg
   images: string[];
   relatedProducts: RelatedProduct[];
   reviews: ProductReview[];
-  sizeGuide: SizeGuide;
+  flowerDetails?: FlowerDetails; // Flower-specific information
 }
 
 // Type for product list response
@@ -103,19 +91,16 @@ export interface ProductFilters {
     min: number;
     max: number;
   };
-  sizes?: string[];
-  colors?: string[];
+  colors?: FlowerColor[];
+  occasions?: FlowerOccasion[];
+  flowerTypes?: FlowerType[];
+  sizes?: FlowerSize[];
   sortBy?: 'price-asc' | 'price-desc' | 'newest' | 'popular' | 'rating';
   searchQuery?: string;
   inStock?: boolean;
-  onSale?: boolean;
+  sameDayDelivery?: boolean;
   page?: number;
   limit?: number;
-}
-
-// Type for creating/updating a product
-export interface ProductFormData extends Omit<Product, 'productId' | 'createdAt' | 'updatedAt' | 'variants' | 'reviews'> {
-  variants: Array<Omit<ProductVariant, 'variantId' | 'productId' | 'createdAt' | 'updatedAt'>>;
 }
 
 export interface ProductInCatalog {
@@ -129,9 +114,13 @@ export interface ProductInCatalog {
   isNew: boolean,
   rating: number,
   reviewCount: number,
-  availableSizes: string[],
-  availableColors: ColorOption[],
-  images: string[]
+  images: string[],
+  available: boolean,
+  flowerDetails?: {
+    colors?: FlowerColor[];
+    occasions?: FlowerOccasion[];
+    sameDayDelivery?: boolean;
+  }
 }
 
 // Type for cart item
@@ -140,7 +129,10 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  variant: ProductVariant;
+  image?: string;
+  selectedSize?: FlowerSize; // For flower products
+  customMessage?: string; // Custom message for card/greeting
+  deliveryDate?: string; // ISO date string for scheduled delivery
 }
 
 // Type for wishlist item

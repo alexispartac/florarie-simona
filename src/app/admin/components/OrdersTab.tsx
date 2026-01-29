@@ -254,7 +254,7 @@ export default function OrdersTab() {
                                         {getStatusBadge(order.status)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        ${(order.total ? order.total / 100 : 0).toFixed(2)} USD
+                                        {(order.total ? order.total / 100 : 0).toFixed(2)} RON
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button 

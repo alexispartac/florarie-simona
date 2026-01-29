@@ -8,7 +8,7 @@ interface OrderQuery {
   [key: string]: unknown;
 }
 
-const DB_NAME = 'WearYouTheBest';
+const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'orders';
 
 // Helper function to generate tracking number

@@ -49,10 +49,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Update order status to 'processing' if not already
+    // Update order status to 'preparing' if not already
     const orderToSend = {
       ...order,
-      status: 'processing' as const
+      status: 'preparing' as const
     };
 
     // Send the order processed email

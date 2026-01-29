@@ -35,23 +35,23 @@ export default function ContactPage() {
     const newErrors: FormErrors = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = 'Numele este obligatoriu';
     }
     
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Email-ul este obligatoriu';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Vă rugăm să introduceți o adresă de email validă';
     }
     
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = 'Subiectul este obligatoriu';
     }
     
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = 'Mesajul este obligatoriu';
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message should be at least 10 characters long';
+      newErrors.message = 'Mesajul trebuie să aibă cel puțin 10 caractere';
     }
     
     setErrors(newErrors);
@@ -94,7 +94,7 @@ export default function ContactPage() {
       
       setSubmitStatus({
         success: true,
-        message: data.message || 'Your message has been sent successfully! We\'ll get back to you soon.'
+        message: data.message || 'Mesajul dvs. a fost trimis cu succes! Vă vom contacta în curând.'
       });
       
       // Reset form on success
@@ -108,7 +108,7 @@ export default function ContactPage() {
       console.error('Error submitting form:', error);
       setSubmitStatus({
         success: false,
-        message: 'Something went wrong. Please try again later.'
+        message: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu.'
       });
     } finally {
       setIsSubmitting(false);
@@ -118,11 +118,18 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="bg-primary text-white py-20">
+      <div className="bg-primary text-gray-800 py-20"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=1200&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold my-4">Get In Touch</h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Have questions or feedback? We&apos;d love to hear from you.
+          <h1 className="text-4xl md:text-5xl font-bold my-4 text-gray-800">Contactează-ne</h1>
+          <p className="text-xl text-gray-800 max-w-2xl mx-auto">
+            Ai întrebări sau dorești să comanzi un buchet personalizat? Suntem aici pentru tine!
           </p>
         </div>
       </div>
@@ -132,7 +139,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">Send us a message</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-900">Trimite-ne un mesaj</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               {submitStatus && (
                   <div
@@ -148,7 +155,7 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Name *
+                    Nume *
                   </label>
                   <Input
                     type="text"
@@ -187,7 +194,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-                  Subject *
+                  Subiect *
                 </label>
                 <Input
                   type="text"
@@ -206,7 +213,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                  Message *
+                  Mesaj *
                 </label>
                 <textarea
                   id="message"
@@ -230,7 +237,7 @@ export default function ContactPage() {
                     isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
                   }`}
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? 'Se trimite...' : 'Trimite mesaj'}
                 </button>
               </div>
             </form>
@@ -239,65 +246,70 @@ export default function ContactPage() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div className="bg-white rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">Informații de contact</h2>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
                     <MapPin className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Our Location</h3>
-                    <p className="mt-1 text-gray-600">123 Fashion Street, Design District</p>
-                    <p className="text-gray-600">Bucharest, 010101, Romania</p>
+                    <h3 className="text-lg font-medium text-gray-900">Locația Atelierului</h3>
+                    <p className="mt-1 text-gray-600">Str. Unirii 240</p>
+                    <p className="text-gray-600">Târmșeni, Neamț, România</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
                     <Mail className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Email Us</h3>
+                    <h3 className="text-lg font-medium text-gray-900">Email</h3>
                     <p className="mt-1 text-blue-600 hover:underline">
-                      <a href="mailto:contact@wearyou.com">contact@wearyou.com</a>
+                      <a href="mailto:laurasimona97@yahoo.com">laurasimona97@yahoo.com</a>
                     </p>
-                    <p className="text-blue-600 hover:underline">
-                      <a href="mailto:support@wearyou.com">support@wearyou.com</a>
+                    <p className="mt-1 text-blue-600 hover:underline">
+                      <a href="mailto:simonabuzau2@gmail.com">simonabuzau2@gmail.com</a>
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
                     <Phone className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Call Us</h3>
-                    <p className="mt-1 text-gray-600">+40 123 456 789</p>
-                    <p className="text-gray-600">Mon - Fri, 9:00 AM - 6:00 PM</p>
+                    <h3 className="text-lg font-medium text-gray-900">Telefon</h3>
+                    <p className="mt-1 text-gray-600">0769141250</p>
+                    <p className="text-gray-600">Luni - Sâmbătă, 09:00 - 20:00</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full text-primary">
+                  <div className="shrink-0 bg-primary/10 p-3 rounded-full text-primary">
                     <Clock className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">Working Hours</h3>
-                    <p className="mt-1 text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                    <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
-                    <p className="text-gray-600">Sunday: Closed</p>
+                    <h3 className="text-lg font-medium text-gray-900">Program</h3>
+                    <p className="mt-1 text-gray-600">Luni - Sâmbătă: 09:00 - 20:00</p>
+                    <p className="text-gray-600">Duminică: Închis</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Map Placeholder */}
+            {/* Google Maps */}
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-64 bg-gray-100 flex items-center justify-center">
-                <p className="text-gray-500">Map Integration Here</p>
-                {/* Replace with your actual map component or iframe */}
-              </div>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2723.4448476744797!2d26.952465776893473!3d47.00269067115149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDfCsDAwJzA5LjciTiAyNsKwNTcnMTYuOCJF!5e0!3m2!1sen!2sro!4v1737748800000!5m2!1sen!2sro"
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full"
+              ></iframe>
             </div>
           </div>
         </div>

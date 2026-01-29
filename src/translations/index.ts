@@ -11,19 +11,20 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.shop': 'Shop',
     'nav.contact': 'Contact',
     'nav.collections': 'Collections',
+    'nav.events': 'Events',
     'nav.trackOrder': 'Track Order',
     
     // Homepage
     'homepage.heroTitle': 'Welcome to',
-    'homepage.heroSubtitle': 'Brand Stock',
-    'homepage.banner': 'Discover Our Latest Collection',
+    'homepage.heroSubtitle': 'Buchetul Simonei Poezia Florilor',
+    'homepage.banner': 'Discover Fresh Flowers for Every Occasion',
     'homepage.shopNow': 'Shop Now',
     'homepage.exploreColl': 'Or explore our collections',
     'homepage.themeSwitch': 'Change the color of the background in the theme switcher',
     
     // Shop page
-    'shop.title': 'Discover Our Store',
-    'shop.subtitle': 'Find the perfect outfit for any occasion from our curated selection of premium clothing',
+    'shop.title': 'Discover Our Flower Shop',
+    'shop.subtitle': 'Find the perfect bouquet for any occasion from our curated selection of fresh flowers',
     'shop.search': 'Search products',
     'shop.filterBy': 'Filter by',
     'shop.allCategories': 'All Categories',
@@ -164,19 +165,20 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.shop': 'Magazin',
     'nav.contact': 'Contact',
     'nav.collections': 'Colecții',
+    'nav.events': 'Evenimente',
     'nav.trackOrder': 'Urmărește Comanda',
     
     // Homepage
     'homepage.heroTitle': 'Bine ai venit la',
-    'homepage.heroSubtitle': 'Brand Stock',
-    'homepage.banner': 'Descoperă Colecția Noastră Nouă',
+    'homepage.heroSubtitle': 'Buchetul Simonei Poezia Florilor',
+    'homepage.banner': 'Descoperă Flori Proaspete pentru Orice Ocazie',
     'homepage.shopNow': 'Cumpără Acum',
     'homepage.exploreColl': 'Sau explorează colecțiile noastre',
     'homepage.themeSwitch': 'Schimbă culoarea fundalului în selectorul de temă',
 
     // Shop page
-    'shop.title': 'Descoperă Magazinul Nostru',
-    'shop.subtitle': 'Găsește îmbrăcămintea perfectă pentru orice ocazie din selecția noastră de îmbrăcăminte de premium',
+    'shop.title': 'Descoperă Florăria Noastră',
+    'shop.subtitle': 'Găsește buchetul perfect pentru orice ocazie din selecția noastră de flori proaspete și aranjamente florale',
     'shop.search': 'Caută produse',
     'shop.filterBy': 'Filtrează după',
     'shop.allCategories': 'Toate Categoriile',
@@ -249,6 +251,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.checkout.saveInfoText': 'Informațiile de Livrare trebuișt să fie salvate pentru a putea fi folosite.',
 
      // Checkout Payment
+    'checkout.euplatescInfo': 'Voi fi redirecționat la pagina de plată a euPlatesc.ro',
+    'checkout.euplatescSecure': 'Informațiile tale de plată sunt procesate în mod securizat de euPlatesc.ro',
+    'checkout.proceedToPayment': 'Spre plată',
     'checkout.payment': 'Metoda de Plata',
     'checkout.paymentInfo': 'Informații',
     'checkout.paymentInfoText': 'Numarul comenzii tău va fi trimis la emailul tău curând.',

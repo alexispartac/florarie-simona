@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react';
 import { FiX, FiShoppingBag, FiPlus, FiMinus } from 'react-icons/fi';
 import { useShop } from '@/context/ShopContext';
-import { CartItem } from '@/types/products';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from './ui/Button';
@@ -83,36 +82,42 @@ export default function Cart({ isOpen, onClose }: CartProps) {
               </div>
             ) : (
               <div className="space-y-6">
-                {cart.map((item) => (
-                  <div key={`${item.productId}-${item.variant.variantId}-${item.variant.color}`} className="flex items-start gap-4 p-3 border-b border-gray-100">
-                    <div className="relative w-20 h-20 flex-shrink-0">
+                {cart.map((item, index) => (
+                  <div key={`${item.productId}-${index}`} className="flex items-start gap-4 p-3 border-b border-gray-100">
+                    <div className="relative w-20 h-20 shrink-0">
+                      {item.image ? (
                       <Image
-                        src={item.variant.images[0]}
+                          src={item.image}
                         alt={item.name}
                         fill
                         className="object-cover rounded"
                       />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 rounded flex items-center justify-center">
+                          🌸
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1">
                       <Link 
-                        href={`/shop/${item.productId}?slug=${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        href={`/shop/${item.productId}`}
                         className="font-medium hover:underline line-clamp-1 cursor-pointer"
                         onClick={onClose}
                       >
                         {item.name}
                       </Link>
-                      <p className="text-sm text-gray-500">${(item.price / 100).toFixed(2)} Size-{item.variant.size} Color-{item.variant.color}</p>
+                      <div className="text-sm text-gray-500 space-y-0.5">
+                        <p>{(item.price / 100).toFixed(2)} RON</p>
+                        {item.customMessage && (
+                          <p className="italic text-xs truncate">💌 {item.customMessage}</p>
+                        )}
+                      </div>
                       
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center">
                           <button
                             onClick={() => {
-                              const cartItem = {
-                                productId: item.productId,
-                                variant: item.variant,
-                                quantity: item.quantity - 1
-                              } as Omit<CartItem, 'addedAt'>;
-                              updateCartItemQuantity(cartItem, item.quantity - 1);
+                              updateCartItemQuantity(item, item.quantity - 1);
                             }}
                             className="px-2 py-1 text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
                             disabled={item.quantity <= 1}
@@ -122,36 +127,16 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                           <span className="w-8 text-center text-sm">{item.quantity}</span>
                           <button
                             onClick={() => {
-                              if (item.quantity < (item.variant?.stock || 0)) {
-                                const cartItem = {
-                                  productId: item.productId,
-                                  variant: item.variant,
-                                  quantity: item.quantity + 1
-                                } as Omit<CartItem, 'addedAt'>;
-                                updateCartItemQuantity(cartItem, item.quantity + 1);
-                              }
+                              updateCartItemQuantity(item, item.quantity + 1);
                             }}
-                            disabled={!item.variant || item.quantity >= (item.variant?.stock || 0)}
-                            className={`px-2 py-1 transition-colors ${
-                              !item.variant || item.quantity >= (item.variant?.stock || 0) 
-                                ? 'text-gray-300 cursor-not-allowed' 
-                                : 'text-gray-500 hover:bg-gray-100 cursor-pointer'
-                            }`}
+                            className="px-2 py-1 text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
                           >
                             <FiPlus className="w-3 h-3" />
                           </button>
                         </div>
-                      {item.variant && item.quantity >= (item.variant?.stock || 0) && (
-                        <p className="text-xs text-red-600">Max: {item.variant.stock}</p>
-                      )}
                       <button
                           onClick={() => {
-                            const itemToRemove = {
-                              productId: item.productId,
-                              variant: item.variant,
-                              quantity: item.quantity
-                            };
-                            removeFromCart(itemToRemove);
+                            removeFromCart(item);
                           }}
                           className="text-xs text-red-500 hover:text-red-700 cursor-pointer hover:underline"
                         >
@@ -160,7 +145,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       </div>
                     </div>
                     <div className="text-sm font-medium">
-                      ${((item.price * item.quantity) / 100).toFixed(2)}
+                      {((item.price * item.quantity) / 100).toFixed(2)} RON
                     </div>
                   </div>
                 ))}
@@ -170,15 +155,15 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
-                      <span>${(subtotal / 100).toFixed(2)}</span>
+                      <span>{(subtotal / 100).toFixed(2)} RON</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Shipping</span>
-                      <span>{shipping > 0 ? `$${(shipping / 100).toFixed(2)}` : 'Free'}</span>
+                      <span>{shipping > 0 ? `${(shipping / 100).toFixed(2)} RON` : 'Free'}</span>
                     </div>
                     <div className="flex justify-between font-medium text-base pt-2 border-t border-gray-200 mt-2">
                       <span>Total</span>
-                      <span>${(total / 100).toFixed(2)}</span>
+                      <span>{(total / 100).toFixed(2)} RON</span>
                     </div>
                   </div>
                 </div>
@@ -193,7 +178,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                 className="block w-full text-center py-3 px-4 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
                 onClick={onClose}
               >
-                {t('button.checkout')} ${((total / 100).toFixed(2))}
+                {t('button.checkout')} {((total / 100).toFixed(2))} RON
               </Link>
             </div>
           )}

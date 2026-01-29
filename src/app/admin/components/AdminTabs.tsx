@@ -2,9 +2,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Package, ShoppingCart, Users, Settings } from 'lucide-react';
+import { Package, ShoppingCart, Users, Settings, Folder, Calendar } from 'lucide-react';
 import OrdersTab from './OrdersTab';
 import ProductsTab from './ProductsTab';
+import CollectionsTab from './CollectionsTab';
+import EventsTab from './EventsTab';
 // import Link from 'next/link';
 // import { usePathname } from 'next/navigation';
 
@@ -31,6 +33,18 @@ export function AdminTabs() {
       name: 'Products',
       icon: <Package className="h-4 w-4 mr-2" />,
       component: <ProductsTab />,
+    },
+    {
+      id: 'colections',
+      name: 'Collections',
+      icon: <Folder className="h-4 w-4 mr-2" />,
+      component: <CollectionsTab />,
+    },
+    {
+      id: 'events',
+      name: 'Evenimente',
+      icon: <Calendar className="h-4 w-4 mr-2" />,
+      component: <EventsTab />,
     },
     {
       id: 'users',

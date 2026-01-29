@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Product } from '@/types/products';
 
-const DB_NAME = 'WearYouTheBest';
+const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'products';
 
 export async function GET(

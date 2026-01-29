@@ -30,12 +30,12 @@ export default function OrderLookupPage() {
         try {
             const response = await axios.get(`/api/orders/${trackingNumber}`);
 
-            if (response.status === 201) {
+            if (response.status === 404) {
                 setMessage('Order not found. Please check your order tracking number and try again.');
                 setIsLoading(false);
                 return;
             }
-            setOrder(response.data.order);
+            setOrder(response.data);
         } catch (error) {
             console.error('Error looking up order:', error);
             setSearchError('Order not found. Please check your order tracking number and try again.');
@@ -61,14 +61,14 @@ export default function OrderLookupPage() {
         };
 
         return (
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusClasses[status]}`}>
-                {statusText[status]}
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusClasses[status as keyof typeof statusClasses]}`}>
+                {statusText[status as keyof typeof statusText]}
             </span>
         );
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50/50 backdrop-blur-sm rounded-lg py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Track Your Order</h1>
@@ -121,7 +121,7 @@ export default function OrderLookupPage() {
                                 <div>
                                     <h2 className="text-lg font-medium text-gray-900">Order #{order.orderId}</h2>
                                     <div className="mt-1 flex items-center text-sm text-gray-500">
-                                        <FiCalendar className="flex-shrink-0 mr-1.5 h-4 w-4" />
+                                        <FiCalendar className="shrink-0 mr-1.5 h-4 w-4" />
                                         Placed on {new Date(order.date).toLocaleDateString()}
                                     </div>
                                 </div>
@@ -141,10 +141,9 @@ export default function OrderLookupPage() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="text-sm font-medium text-gray-900">{item.name}</h4>
-                                            <p className="text-sm text-gray-500">Size: {item.size} | Color: {item.color}</p>
                                             <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                                             <p className="text-sm font-medium text-gray-900 mt-1">
-                                                {(item.price * item.quantity / 100).toFixed(2)} USD
+                                                {(item.price * item.quantity / 100).toFixed(2)} RON
                                             </p>
                                         </div>
                                     </div>
@@ -157,16 +156,16 @@ export default function OrderLookupPage() {
                                     <div className="flex justify-between">
                                         <span className="text-sm text-gray-600">Subtotal</span>
                                         <span className="text-sm font-medium">
-                                            {((order.items.reduce((sum, item) => sum + (item.price * item.quantity / 100), 0))).toFixed(2)} USD
+                                            {((order.items.reduce((sum, item) => sum + (item.price * item.quantity / 100), 0))).toFixed(2)} RON
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-sm text-gray-600">Shipping</span>
-                                        <span className="text-sm font-medium">{ (order.shippingCost / 100).toFixed(2)} USD</span>
+                                        <span className="text-sm font-medium">{ (order.shippingCost / 100).toFixed(2)} RON</span>
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
                                         <span className="text-base font-medium">Total</span>
-                                        <span className="text-base font-bold">{((order.total + order.shippingCost) / 100).toFixed(2)} USD</span>
+                                        <span className="text-base font-bold">{((order.total + order.shippingCost) / 100).toFixed(2)} RON</span>
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +190,7 @@ export default function OrderLookupPage() {
                                             <FiTruck className="h-5 w-5 text-gray-400 mr-2" />
                                             <span className="text-sm text-gray-600">Standard Shipping</span>
                                         </div>
-                                        {order.status === 'shipped' && order.trackingNumber && (
+                                        {order.status === 'out-for-delivery' && order.trackingNumber && (
                                             <div className="mt-4">
                                                 <h4 className="text-sm font-medium text-gray-900">Tracking Information</h4>
                                                 <div className="mt-1">
@@ -207,7 +206,7 @@ export default function OrderLookupPage() {
                             <div className="mt-8 border-t border-gray-200 pt-6">
                                 <h3 className="text-lg font-medium text-gray-900 mb-4">Payment Information</h3>
                                 <div className="flex items-start">
-                                    <div className="flex-shrink-0">
+                                    <div className="shrink-0">
                                         <FiCreditCard className="h-6 w-6 text-gray-400" />
                                     </div>
                                     <div className="ml-4">
@@ -267,7 +266,7 @@ export default function OrderLookupPage() {
                     </div>
                 )}
 
-                {!order && (
+                {!order && !isLoading && !searchError && !message && (
                     <div className="bg-white shadow overflow-hidden rounded-lg">
                         <div className="px-4 py-5 sm:p-6 text-center">
                             <FiPackage className="mx-auto h-12 w-12 text-gray-400" />

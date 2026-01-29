@@ -1,10 +1,13 @@
+import { FlowerSize } from './products';
+
 export type OrderItem = {
     itemId: string;
     name: string;
     price: number;
     quantity: number;
-    size: string;
-    color: string;
+    image?: string;
+    selectedSize?: FlowerSize; // For flower products
+    customMessage?: string; // Custom message for greeting card
 };
 
 export type ShippingInfo = {
@@ -16,6 +19,13 @@ export type ShippingInfo = {
     country: string;
     phone: string;
     email: string;
+    recipientName?: string; // If sending to someone else
+    recipientPhone?: string; // Recipient's phone for delivery
+    deliveryInstructions?: string; // Special delivery instructions
+    preferredDeliveryTime?: string; // e.g., "morning", "afternoon", "evening"
+    isGift?: boolean; // Is this a gift delivery?
+    createdAt?: Date;
+    updatedAt?: Date;
 };
 
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
@@ -25,7 +35,7 @@ export type PaymentInfo = {
     status: PaymentStatus;
 };
 
-export type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'out-for-delivery' | 'delivered' | 'cancelled' | 'failed-delivery';
 
 export type Order = {
     orderId: string;
@@ -37,6 +47,12 @@ export type Order = {
     shipping: ShippingInfo;
     payment: PaymentInfo;
     trackingNumber: string;
+    deliveryDate?: string; // Scheduled delivery date (ISO string)
+    isSameDayDelivery?: boolean; // Is this a same-day delivery order?
+    deliveryTime?: string; // Actual delivery time (ISO string)
+    deliveredBy?: string; // Delivery person name
+    deliveryNotes?: string; // Notes from delivery person
+    customerNotes?: string; // Special requests from customer
     createdAt?: Date;
     updatedAt?: Date;
 };

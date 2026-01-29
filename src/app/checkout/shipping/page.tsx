@@ -447,10 +447,14 @@ export default function ShippingPage() {
             <div className="mt-4">
               <h3 className="text-sm font-medium text-gray-900">{t('cart.checkout.itemsInCart')}</h3>
               <div className="mt-2 space-y-2">
-                {cart.map((item) => (
-                  <div key={`${item.productId}-${item.variant.variantId}-${item.variant.color}`} className="flex justify-between text-sm">
-                    <span className="text-gray-600">{item.name} ({item.variant.size}, {item.variant.color}) x {item.quantity}</span>
-                    <span className="text-gray-900">${(item.price * item.quantity / 100).toFixed(2)}</span>
+                {cart.map((item, index) => (
+                  <div key={`${item.productId}-${index}`} className="flex justify-between text-sm">
+                    <span className="text-gray-600">
+                      {item.name}
+                      {item.customMessage && ` 💌`}
+                      {` x ${item.quantity}`}
+                    </span>
+                    <span className="text-gray-900">{(item.price * item.quantity / 100).toFixed(2)} RON</span>
                   </div>
                 ))}
               </div>
@@ -458,8 +462,8 @@ export default function ShippingPage() {
 
             <div className="mt-4 p-4 bg-gray-50 rounded-md">
               <p className="text-sm text-gray-600">{t('cart.checkout.totalItems')}: {getCartItemCount()}</p>
-              <p className="text-sm text-gray-600">{t('cart.checkout.shipping')}: ${(getPriceShipping() / 100).toFixed(2)}</p>
-              <p className="text-sm font-semibold text-gray-900 mt-2">{t('cart.checkout.total')}: ${(getCartTotal() / 100).toFixed(2)}</p>
+              <p className="text-sm text-gray-600">{t('cart.checkout.shipping')}: {(getPriceShipping() / 100).toFixed(2)} RON</p>
+              <p className="text-sm font-semibold text-gray-900 mt-2">{t('cart.checkout.total')}: {(getCartTotal() / 100).toFixed(2)} RON</p>
             </div>
             
             <div className="mt-4">

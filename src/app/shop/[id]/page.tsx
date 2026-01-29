@@ -1,57 +1,45 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Spinner } from '@/components/ui/Spinner';
 import { useShop } from '@/context/ShopContext';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
-import { ProductVariant } from '@/types/products';
 import Image from 'next/image';
-import { useProduct } from '@/hooks/useProducts';
+import { useProduct, useSubmitReview } from '@/hooks/useProducts';
 import { useParams } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { RelatedProducts } from '../components/RelatedProducts';
 import { ProductReviews } from '../components/ProductReviews';
-import { SizeGuide } from '../components/SizeGuide';
 import { ProductDetails } from '../components/ProductDetails';
 import { AddReview } from '../components/AddReview';
 import { ProductReview } from '@/types/products';
 
+// Helper function to check if URL is a video
+const isVideoUrl = (url: string): boolean => {
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('/video/');
+};
+
 export default function ProductPage() {
     const [quantity, setQuantity] = useState<number>(1);
     const [currentImage, setCurrentImage] = useState<number>(0);
-    const [selectedColor, setSelectedColor] = useState<string>();
-    const [selectedSize, setSelectedSize] = useState<string>('');
     const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
     const [isAddingToWishlist, setIsAddingToWishlist] = useState<boolean>(false);
     const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
     const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useShop();
     
     const params = useParams();
-    const id = params.id;
+    const id = params.id as string;
+
+    // Submit review
+    const { mutateAsync: submitReviewAsync } = useSubmitReview();
     
-    const { data: product, isLoading, isError } = useProduct(id as string);
-    const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(product?.variants[0] as ProductVariant | undefined ?? null);
+    // Fetch product from API
+    const { data: product, isLoading, isError, refetch } = useProduct(id);
 
     const router = useRouter();
-    // Set initial variant when product loads
-    useEffect(() => {
-        if (product && product.variants && product.variants.length > 0) {
-            const firstVariant = product.variants[0];
-            setSelectedVariant(firstVariant);
-            setSelectedColor(firstVariant.colorCode);
-            setSelectedSize(firstVariant.size);
-        }
-    }, [product]);
-
-    useEffect(() => {
-        if (product && selectedColor && selectedSize) {
-            const variant = product.variants.find(
-                v => v.size === selectedSize && v.colorCode === selectedColor
-            );
-            setSelectedVariant(variant || null);
-        }
-    }, [selectedColor, selectedSize, product, selectedVariant]);
 
     if (isLoading) {
         return (
@@ -85,15 +73,7 @@ export default function ProductPage() {
     }
 
     const handleAddToCart = () => {
-        if (!selectedSize && product.availableSizes?.length > 0) {
-            return;
-        }
-        
-        if (!selectedColor && product.availableColors?.length > 0) {
-            return;
-        }
-        
-        if (!selectedVariant || selectedVariant.stock <= 0) {
+        if (!product || !product.available) {
             return;
         }
 
@@ -102,9 +82,9 @@ export default function ProductPage() {
             addToCart({
                 productId: product.productId,
                 name: product.name,
-                price: product.price + (selectedVariant?.priceAdjustment || 0),
-                variant: selectedVariant,
+                price: product.price,
                 quantity: quantity,
+                image: product.images[0],
             });
         } catch (error) {
             console.error('Error adding to cart:', error);
@@ -136,49 +116,28 @@ export default function ProductPage() {
         }
     };
 
-    const handleReviewSubmit = async (review: ProductReview) => {
-        if (!product) return;
+    const handleReviewSubmit = async (review: ProductReview): Promise<{ status: number } | undefined> => {
+        if (!product) return undefined;
         
-        console.log("Review to submit:", review);
+        setIsSubmittingReview(true);
         try {
-            setIsSubmittingReview(true);
-            // TODO: Replace with actual API call to submit the review
-            const response = await fetch(`/api/products/${product.productId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    reviews: [...product.reviews, { ...review, createdAt: new Date().toISOString() }],
-                    reviewCount: product.reviewCount + 1,
-                    rating: product.rating !== undefined ? ((product.rating * product.reviewCount) + review.rating) / (product.reviewCount + 1) : review.rating
-                })
-            });
+            const response = await submitReviewAsync(review);
             
-            if (!response.ok) {
-                throw new Error('Failed to submit review. Please try again.');
+            if (response && response.success) {
+                // Refresh product data to show the new review
+                await refetch();
+                setIsSubmittingReview(false);
+                return { status: 200 };
+            } else {
+                setIsSubmittingReview(false);
+                return { status: 400 };
             }
-            
-            return response;
-            
         } catch (error) {
             console.error('Failed to submit review:', error);
-            alert('Failed to submit review. Please try again.');
-        } finally {
             setIsSubmittingReview(false);
+            return { status: 500 };
         }
     };
-
-    const handleSizeSelect = (size: string) => {
-        setSelectedSize(size);
-    };
-
-    const handleColorSelect = (color: string) => {
-        setSelectedColor(color);
-    };
-
-    // get unique colors once
-    const stockColors = [...new Set(product.variants?.map(v => v.colorCode) || [])];
-    // const stockSizes = [...new Set(product.variants?.map(v => v.size) || [])];
-    const stockSizes = product.availableSizes
 
     return (
         <div className="container mx-auto px-4 py-24">
@@ -186,31 +145,51 @@ export default function ProductPage() {
                 {/* Product Images */}
                 <div>
                     <div className="mb-4 bg-gray-100 rounded-lg overflow-hidden">
-                        <Image
-                            src={selectedVariant?.images[0] || '/placeholder-product.jpg'}
-                            alt={product.name}
-                            width={600}
-                            height={800}
-                            className="w-full h-auto object-cover"
-                            priority
-                        />
+                        {isVideoUrl(product.images[currentImage] || '') ? (
+                            <video
+                                src={product.images[currentImage]}
+                                controls
+                                className="w-full h-auto object-cover"
+                                style={{ maxHeight: '600px' }}
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        ) : (
+                            <Image
+                                src={product.images[currentImage] || '/placeholder-product.jpg'}
+                                alt={product.name}
+                                width={600}
+                                height={800}
+                                className="w-full h-auto object-cover"
+                                priority
+                            />
+                        )}
                     </div>
 
-                    {selectedVariant?.images && selectedVariant.images.length > 1 && (
+                    {product.images && product.images.length > 1 && (
                         <div className="grid grid-cols-4 gap-2 mt-2">
-                            {selectedVariant.images.map((image, index) => (
+                            {product.images.map((image, index) => (
                                 <button
                                     key={index}
                                     onClick={() => setCurrentImage(index)}
                                     className={`border-2 rounded overflow-hidden ${currentImage === index ? 'border-primary' : 'border-transparent'}`}
                                 >
-                                    <Image
-                                        src={image || '/placeholder-product.jpg'}
-                                        alt={`${product.name} ${index + 1}`}
-                                        width={100}
-                                        height={100}
-                                        className="w-full h-24 object-cover"
-                                    />
+                                    {isVideoUrl(image) ? (
+                                        <div className="relative w-full h-24 bg-gray-200 flex items-center justify-center">
+                                            <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                                            </svg>
+                                            <span className="absolute bottom-1 right-1 text-xs bg-black/70 text-white px-1 rounded">Video</span>
+                                        </div>
+                                    ) : (
+                                        <Image
+                                            src={image || '/placeholder-product.jpg'}
+                                            alt={`${product.name} ${index + 1}`}
+                                            width={100}
+                                            height={100}
+                                            className="w-full h-24 object-cover"
+                                        />
+                                    )}
                                 </button>
                             ))}
                         </div>
@@ -220,57 +199,78 @@ export default function ProductPage() {
                 {/* Product Info */}
                 <div className="md:pl-8">
                     <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                    <p className="text-2xl font-semibold text-primary mb-4">${((product.price + (selectedVariant?.priceAdjustment || 0)) / 100).toFixed(2)}</p>
+                    <p className="text-2xl font-semibold text-primary mb-4">
+                        {(product.price / 100).toFixed(2)} RON
+                    </p>
+
+                    {/* Rating */}
+                    {product.rating && (
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                    <svg
+                                        key={i}
+                                        className={`w-5 h-5 ${i < Math.floor(product.rating!) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                ))}
+                            </div>
+                            <span className="text-sm text-gray-600">({product.reviewCount} reviews)</span>
+                        </div>
+                    )}
 
                     <div className="mb-6">
                         <p className="text-gray-700">{product.description}</p>
                     </div>
 
-                    {/* Color Selection */}
-                    {stockColors.length > 0 && (
-                        
-                        <div className="mb-6">
-                            <h3 className="text-sm font-medium text-gray-900 mb-2">Color</h3>
-                            <div className="flex space-x-2">
-                                {stockColors.map((color) => 
-                                    <button
-                                        key={color}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleColorSelect(color);
-                                        }}
-                                        className={`w-8 h-8 cursor-pointer rounded-full border-2 ${selectedColor === color ? 'border-primary' : 'border-gray-300'}`}
-                                        style={{ backgroundColor: color }}
-                                        aria-label={`Select color ${color}`}
-                                    />
-                                )}
+                    {/* Flower Details */}
+                    {product.flowerDetails && (
+                        <div className="mb-6 p-4 bg-gray-50 rounded-lg space-y-3">
+                            {product.flowerDetails.colors && product.flowerDetails.colors.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-900 mb-1">🎨 Colors:</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {product.flowerDetails.colors.map((color) => (
+                                            <span key={color} className="px-3 py-1 bg-white border rounded-full text-sm capitalize">
+                                                {color}
+                                            </span>
+                                        ))}
                             </div>
                         </div>
                     )}
 
-                    {/* Size Selection */}
-                    {stockSizes.length > 0 && (
-                        <div className="mb-6">
-                            <h3 className="text-sm font-medium text-gray-900 mb-2">Size</h3>
+                            {product.flowerDetails.occasions && product.flowerDetails.occasions.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-900 mb-1">🎉 Perfect for:</h3>
                             <div className="flex flex-wrap gap-2">
-                                {stockSizes.map((size) => (
-                                    <button
-                                        key={size}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleSizeSelect(size);
-                                        }}
-                                        className={`px-4 py-2 cursor-pointer border rounded-md ${selectedSize === size ? 'bg-primary text-white border-primary' : 'border-gray-300'}`}
-                                    >
-                                        {size}
-                                    </button>
+                                        {product.flowerDetails.occasions.map((occasion) => (
+                                            <span key={occasion} className="px-3 py-1 bg-white border rounded-full text-sm capitalize">
+                                                {occasion.replace('-', ' ')}
+                                            </span>
                                 ))}
                             </div>
+                                </div>
+                            )}
+
+                            {product.flowerDetails.stemCount && (
+                                <p className="text-sm text-gray-700">
+                                    <span className="font-medium">🌹 Stem Count:</span> {product.flowerDetails.stemCount} stems
+                                </p>
+                            )}
+
+                            {product.flowerDetails.sameDayDelivery && (
+                                <p className="text-sm text-green-600 font-medium">
+                                    🚚 Same-day delivery available!
+                                </p>
+                            )}
                         </div>
                     )}
 
-                    {/* Quantity - Only show if variant is selected and has stock */}
-                    {selectedVariant && (selectedVariant.stock ?? 0) > 0 && (
+                    {/* Quantity */}
+                    {product.available && (
                         <div className="mb-6">
                             <h3 className="text-sm font-medium text-gray-900 mb-2">Quantity</h3>
                             <div className="flex items-center">
@@ -285,20 +285,12 @@ export default function ProductPage() {
                                     {quantity}
                                 </span>
                                 <button
-                                    onClick={() => {
-                                        if (selectedVariant && quantity < (selectedVariant.stock ?? 0)) {
-                                            setQuantity(prev => prev + 1);
-                                        }
-                                    }}
-                                    disabled={!selectedVariant || quantity >= (selectedVariant.stock ?? 0)}
-                                    className={`px-3 py-1 border border-gray-300 rounded-r-md ${!selectedVariant || quantity >= (selectedVariant.stock ?? 0) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                    onClick={() => setQuantity(prev => prev + 1)}
+                                    className="px-3 py-1 border border-gray-300 rounded-r-md cursor-pointer"
                                 >
                                     +
                                 </button>
                             </div>
-                            {selectedVariant && quantity >= (selectedVariant.stock ?? 0) && (
-                                <p className="text-sm text-red-600 mt-1">Maximum available quantity reached</p>
-                            )}
                         </div>
                     )}
                     
@@ -333,39 +325,17 @@ export default function ProductPage() {
                     {/* Add to Cart Button */}
                     <Button
                         onClick={handleAddToCart}
-                        className={`w-full py-3 mb-4 ${isAddingToCart || !selectedVariant || selectedVariant.stock <= 0 ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'}`}
-                        disabled={isAddingToCart || !selectedVariant || selectedVariant.stock <= 0}
+                        className={`w-full py-3 mb-4 ${isAddingToCart || !product.available ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'}`}
+                        disabled={isAddingToCart || !product.available}
                     >
                         {isAddingToCart ? (
                             'Adding to Cart...'
-                        ) : !selectedColor ? (
-                            'Select a color'
-                        ) : !selectedSize ? (
-                            'Select a size'
-                        ) : !selectedVariant ? (
-                            'Variant not available'
-                        ) : selectedVariant.stock > 0 ? (
-                            `Add to Cart - $${(((product.price + (selectedVariant.priceAdjustment || 0)) * quantity) / 100).toFixed(2)}`
-                        ) : (
+                        ) : !product.available ? (
                             'Out of Stock'
+                        ) : (
+                            `Add to Cart - ${((product.price * quantity) / 100).toFixed(2)} RON`
                         )}
                     </Button>
-                    
-                    {(selectedVariant?.stock && selectedVariant.stock > 0 && selectedVariant.stock < 5) ? (
-                        <p className="text-sm text-amber-600 font-semibold text-center mb-4">
-                            Only {selectedVariant.stock} {selectedVariant.stock === 1 ? 'item' : 'items'} left in stock!
-                        </p>
-                    ) : null}
-
-                    {/* Product Details */}
-                    {/* <div className="border-t border-gray-200 pt-6">
-                        <h3 className="text-sm font-medium text-gray-900 mb-2">Details</h3>
-                        <ul className="list-disc pl-5 space-y-1 text-sm text-gray-600">
-                            {product.details?.map((detail, index) => (
-                                <li key={index}>{detail}</li>
-                            ))}
-                        </ul>
-                    </div> */}
                 </div>
             </div>
 
@@ -375,7 +345,7 @@ export default function ProductPage() {
                     <TabsList className="grid w-full grid-cols-3 max-w-md mb-8">
                         <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Details</TabsTrigger>
                         <TabsTrigger value="reviews" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Reviews ({product.reviewCount})</TabsTrigger>
-                        <TabsTrigger value="size-guide" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Size Guide</TabsTrigger>
+                        <TabsTrigger value="care" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Flower Care</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="details" className="space-y-6">
@@ -384,7 +354,7 @@ export default function ProductPage() {
                             tags={product.tags}
                             isFeatured={product.isFeatured}
                             isNew={product.isNew}
-                            details={product.details}
+                            details={product.details || []}
                             rating={product.rating}
                         />
                         
@@ -395,7 +365,7 @@ export default function ProductPage() {
 
                     <TabsContent value="reviews" className="space-y-8">
                         <ProductReviews 
-                            reviews={product.reviews} 
+                            reviews={product.reviews || []} 
                             averageRating={product.rating} 
                             reviewCount={product.reviewCount} 
                         />
@@ -412,8 +382,61 @@ export default function ProductPage() {
                         )}
                     </TabsContent>
 
-                    <TabsContent value="size-guide">
-                        <SizeGuide sizeGuide={product.sizeGuide} />
+                    <TabsContent value="care">
+                        <div className="prose max-w-none">
+                            <h2 className="text-2xl font-bold mb-4">🌱 Flower Care Instructions</h2>
+                            
+                            {product.flowerDetails?.careInstructions ? (
+                                <div className="space-y-4">
+                                    {product.flowerDetails.careInstructions.wateringFrequency && (
+                                        <div className="p-4 bg-blue-50 rounded-lg">
+                                            <h3 className="font-semibold text-blue-900 mb-2">💧 Watering</h3>
+                                            <p className="text-blue-800">{product.flowerDetails.careInstructions.wateringFrequency}</p>
+                                        </div>
+                                    )}
+                                    
+                                    {product.flowerDetails.careInstructions.sunlightRequirement && (
+                                        <div className="p-4 bg-yellow-50 rounded-lg">
+                                            <h3 className="font-semibold text-yellow-900 mb-2">☀️ Sunlight</h3>
+                                            <p className="text-yellow-800">{product.flowerDetails.careInstructions.sunlightRequirement}</p>
+                                        </div>
+                                    )}
+                                    
+                                    {product.flowerDetails.careInstructions.temperature && (
+                                        <div className="p-4 bg-green-50 rounded-lg">
+                                            <h3 className="font-semibold text-green-900 mb-2">🌡️ Temperature</h3>
+                                            <p className="text-green-800">{product.flowerDetails.careInstructions.temperature}</p>
+                                        </div>
+                                    )}
+                                    
+                                    {product.flowerDetails.careInstructions.expectedLifespan && (
+                                        <div className="p-4 bg-purple-50 rounded-lg">
+                                            <h3 className="font-semibold text-purple-900 mb-2">⏱️ Expected Lifespan</h3>
+                                            <p className="text-purple-800">{product.flowerDetails.careInstructions.expectedLifespan}</p>
+                                        </div>
+                                    )}
+                                    
+                                    {product.flowerDetails.careInstructions.specialNotes && (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h3 className="font-semibold text-gray-900 mb-2">📝 Special Notes</h3>
+                                            <p className="text-gray-800">{product.flowerDetails.careInstructions.specialNotes}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="p-6 bg-gray-50 rounded-lg">
+                                    <h3 className="font-semibold mb-2">General Flower Care Tips:</h3>
+                                    <ul className="list-disc pl-5 space-y-2">
+                                        <li>Keep flowers in fresh, clean water</li>
+                                        <li>Change water every 2-3 days</li>
+                                        <li>Trim stems at a 45° angle</li>
+                                        <li>Remove leaves below water line</li>
+                                        <li>Keep away from direct sunlight and heat sources</li>
+                                        <li>Place in a cool location for longer freshness</li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>

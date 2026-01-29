@@ -1,44 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { useTheme, type Theme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 
 const ThemeSwitcher = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, themes } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
-  const isHomepage = pathname === '/' || pathname === '/shop';
   const { t } = useLanguage();
-  
-  const themes = [
-    { 
-      id: 'black',
-      name: 'Black',
-      color: 'var(--theme-black)'
-    },
-    { 
-      id: 'petrol',
-      name: 'Petrol',
-      color: 'var(--theme-petrol)'
-    },
-    { 
-      id: 'bleumarin-decolorat',
-      name: 'Bleu Marin',
-      color: 'var(--theme-bleumarin-decolorat)'
-    },
-    { 
-      id: 'gri-albăstrui',
-      name: 'Gri Albăstrui',
-      color: 'var(--theme-gri-albăstrui)'
-    },
-    { 
-      id: 'turcoaz-stins',
-      name: 'Turcoaz Stins',
-      color: 'var(--theme-turcoaz-stins)'
-    }
-  ];
 
   return (
     <div className="relative">
@@ -62,14 +31,14 @@ const ThemeSwitcher = () => {
           />
         </svg>
       </button>
-        {isHomepage && (
+        {/* {isHomepage && (
           <div className="absolute -z-10 left-1/2 top-12 transform -translate-x-1/2 whitespace-nowrap text-xs text-primary flex flex-col items-center bg-white rounded-lg shadow-lg p-2 opacity-70">
             <svg className="w-3 h-3 -mt-1 transform rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 9l6 6 6-6"/>
             </svg>
-            <span>{t('button.themeSwitcher')}</span>
+            <span>{t('themeSwitcher.title')}</span>
           </div>
-        )}
+        )} */}
       
       {isOpen && (
         <div 

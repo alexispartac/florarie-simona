@@ -11,7 +11,7 @@ import { useToast } from '@/context/ToastContext';
 
 interface AddReviewProps {
   productId: string;
-  onReviewSubmit: (review: ProductReview) => Promise<Response | undefined>;
+  onReviewSubmit: (review: ProductReview) => Promise<{ status: number } | undefined>;
 }
 
 export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
@@ -32,9 +32,17 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (rating === 0) return;
+        if (rating === 0) {
+            toastRef.current?.({
+                title: 'Rating Required',
+                description: 'Please select a rating before submitting your review.',
+            });
+            return;
+        }
 
         setIsSubmitting(true);
+        setShowSuccess(false);
+        
         try {
             const response = await onReviewSubmit({
                 id: uuidv4(),
@@ -50,37 +58,56 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
             });
 
             if (response && response.status === 200) {
+                // Reset form after successful submission
+                setRating(0);
+                setTitle('');
+                setComment('');
+                setUserName('');
+                setShowSuccess(true);
+                
                 setTimeout(() => {
                     toastRef.current?.({
                         title: 'Review Submitted',
                         description: 'Thank you for your review!',
                     });
                 }, 100);
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    setShowSuccess(false);
+                }, 5000);
+            } else {
+                throw new Error('Failed to submit review');
             }
-            // Reset form after successful submission
-            setRating(0);
-            setTitle('');
-            setComment('');
-            setUserName('');
-            setShowSuccess(true);
         } catch (error) {
             console.error('Failed to submit review:', error);
-            setShowSuccess(false);            
+            
             setTimeout(() => {
                 toastRef.current?.({
                     title: 'Review Submission Failed',
                     description: 'There was an error submitting your review. Please try again.',
                 });
             }, 100);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <div className="mt-8 border-t border-gray-200 pt-8">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Write a Review</h3>
-            {isSubmitting && <div className="mt-4 px-3 py-2 bg-green-100 text-green-800 my-2 rounded">Submitting your review...</div>}
-            {showSuccess && <div className="mt-4 px-3 py-2 bg-green-100 text-green-800 my-2 rounded">Review submitted successfully!</div>}
-            {!isSubmitting && rating === 0 && title === '' && comment === '' && <div className="mt-4 px-3 py-2 bg-yellow-100 text-yellow-800 my-2 rounded">Please fill out the form to submit your review. Your feedback helps us improve our products and serve you better! Thank you for sharing your experience with us.</div>}
+            
+            {showSuccess && (
+                <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-start">
+                    <svg className="w-5 h-5 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                        <p className="font-semibold">Review submitted successfully!</p>
+                        <p className="text-sm mt-1">Thank you for sharing your experience with us.</p>
+                    </div>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

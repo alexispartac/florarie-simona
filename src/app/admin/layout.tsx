@@ -34,7 +34,7 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-22 md:py-24">
+      <div className="max-w-8xl lg:px-8 py-20 sm:py-22 md:py-24">
         {children}
       </div>
     </div>

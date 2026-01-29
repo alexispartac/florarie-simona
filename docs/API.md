@@ -1,6 +1,6 @@
 # API Documentation
 
-This document provides detailed information about the API endpoints available in the Vintage Custom Clothes application.
+This document provides detailed information about the API endpoints available in the Buchetul Simonei flower shop application.
 
 ## Base URL
 
@@ -21,24 +21,38 @@ GET /api/v1/products
 ```
 
 **Query Parameters:**
-- `category` (string, optional): Filter by category
+- `category` (string, optional): Filter by category (e.g., 'Roses', 'Tulips')
 - `limit` (number, optional): Limit number of results
 - `offset` (number, optional): Offset for pagination
+- `colors` (string, optional): Filter by flower colors (comma-separated)
+- `occasions` (string, optional): Filter by occasions (comma-separated)
+- `sameDayDelivery` (boolean, optional): Filter by same-day delivery availability
 
 **Response:**
 ```json
 {
   "products": [
     {
-      "id": "prod_123",
-      "name": "Vintage Denim Jacket",
-      "description": "Handcrafted denim jacket with vintage wash",
-      "price": 129.99,
+      "productId": "flower_123",
+      "name": "Romantic Red Roses Bouquet",
+      "description": "Beautiful bouquet of 12 red roses",
+      "price": 15000,
       "images": ["..."],
-      "sizes": ["S", "M", "L"],
-      "colors": ["blue"],  // one single color
-      "category": "jackets",
-      "stock": 15
+      "category": "Roses",
+      "tags": ["romantic", "popular"],
+      "available": true,
+      "flowerDetails": {
+        "colors": ["red"],
+        "occasions": ["romantic", "valentines-day"],
+        "flowerTypes": ["roses"],
+        "size": ["medium", "large"],
+        "stemCount": 12,
+        "sameDayDelivery": true,
+        "careInstructions": {
+          "wateringFrequency": "daily",
+          "expectedLifespan": "7-10 days"
+        }
+      }
     }
   ],
   "total": 1,
@@ -54,12 +68,24 @@ User preferences and cart data are stored in `sessionStorage` using the followin
 ```typescript
 interface UserSession {
   cart: CartItem[];
+  wishlist: WishlistItem[];
   preferences: {
     theme: 'light' | 'dark';
-    currency: string;
+    language: 'en' | 'ro';
     // other user preferences
   };
   // other session data
+}
+
+interface CartItem {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  selectedSize?: 'small' | 'medium' | 'large' | 'extra-large';
+  customMessage?: string;
+  deliveryDate?: string;
 }
 ```
 
@@ -92,21 +118,19 @@ POST /api/v1/orders
 {
   "items": [
     {
-      "productId": "prod_123",
+      "productId": "flower_123",
       "quantity": 1,
-      "customizations": {
-        "size": "M",
-        "color": "blue",
-        "embroidery": "custom text"
-      }
+      "selectedSize": "medium",
+      "customMessage": "Happy Birthday!",
+      "deliveryDate": "2026-01-25"
     }
   ],
   "shippingAddress": {
     "street": "123 Main St",
-    "city": "New York",
-    "state": "NY",
-    "zipCode": "10001",
-    "country": "USA"
+    "city": "Bucharest",
+    "state": "București",
+    "zipCode": "010101",
+    "country": "Romania"
   }
 }
 ```

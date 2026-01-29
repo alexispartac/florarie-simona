@@ -79,8 +79,6 @@ export async function POST(request: Request) {
         'name',
         'price',
         'quantity',
-        'size',
-        'color'
       ];
 
       for (const field of requiredItemFields) {

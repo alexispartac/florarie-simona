@@ -79,14 +79,14 @@ export function OrderStatusModal({ isOpen, onClose, order, onStatusChange }: Ord
                 onClick={() => handleStatusSelect(status)}
                 disabled={order.status === status || isUpdating}
                 className={`justify-center px-4 py-2 rounded-md text-sm font-medium ${
-                  statusConfig[status].bg
-                } ${statusConfig[status].text} ${
+                  statusConfig[status as keyof typeof statusConfig].bg
+                } ${statusConfig[status as keyof typeof statusConfig].text} ${
                   order.status === status || isUpdating
                     ? 'opacity-50 cursor-not-allowed'
                     : 'cursor-pointer'
                 }`}
               >
-                {statusConfig[status].label}
+                {statusConfig[status as keyof typeof statusConfig].label}
               </button>
             ))}
           </div>
