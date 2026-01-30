@@ -6,6 +6,8 @@ import { FiSearch, FiPackage, FiCalendar, FiCreditCard, FiTruck, FiCheckCircle, 
 import { OrderStatus, Order } from '@/types/orders';
 import { Package } from 'lucide-react';
 import axios from 'axios';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 
 export default function OrderLookupPage() {
@@ -14,6 +16,8 @@ export default function OrderLookupPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [searchError, setSearchError] = useState('');
     const [message, setMessage] = useState('');
+    const { language } = useLanguage();
+    const t = useTranslation(language);
     
 
     const handleSubmit = async () => {
@@ -22,7 +26,7 @@ export default function OrderLookupPage() {
         setIsLoading(true);
 
         if (!trackingNumber.trim()) {
-            setSearchError('Please enter an order tracking number');
+            setSearchError(t('orders.enterTracking'));
             setIsLoading(false);
             return;
         }
@@ -31,14 +35,14 @@ export default function OrderLookupPage() {
             const response = await axios.get(`/api/orders/${trackingNumber}`);
 
             if (response.status === 404) {
-                setMessage('Order not found. Please check your order tracking number and try again.');
+                setMessage(t('orders.notFoundText'));
                 setIsLoading(false);
                 return;
             }
             setOrder(response.data);
         } catch (error) {
             console.error('Error looking up order:', error);
-            setSearchError('Order not found. Please check your order tracking number and try again.');
+            setSearchError(t('orders.notFoundText'));
             setIsLoading(false);
         } finally {
             setIsLoading(false);
@@ -54,10 +58,10 @@ export default function OrderLookupPage() {
         };
 
         const statusText = {
-            processing: 'Processing',
-            shipped: 'Shipped',
-            delivered: 'Delivered',
-            cancelled: 'Cancelled'
+            processing: t('orders.processing'),
+            shipped: t('orders.shipped'),
+            delivered: t('orders.delivered'),
+            cancelled: t('orders.cancelled')
         };
 
         return (
@@ -71,9 +75,9 @@ export default function OrderLookupPage() {
         <div className="min-h-screen bg-[var(--card)]/50 backdrop-blur-sm rounded-lg py-12 px-4 sm:px-6 lg:px-8 border border-[var(--border)]">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-[var(--foreground)]">Track Your Order</h1>
+                    <h1 className="text-3xl font-bold text-[var(--foreground)]">{t('orders.title')}</h1>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                        Enter your order tracking number to check the status of your order
+                        {t('orders.subtitle')}
                     </p>
                 </div>
 
@@ -82,7 +86,7 @@ export default function OrderLookupPage() {
                         <form className="space-y-4">
                             <div>
                                 <label htmlFor="trackingNumber" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                                    Order Tracking Number
+                                    {t('orders.trackingNumber')}
                                 </label>
                                 <div className="flex rounded-md shadow-sm">
                                     <input
@@ -103,7 +107,7 @@ export default function OrderLookupPage() {
                                         {isLoading ? 'Searching...' : (
                                             <>
                                                 <FiSearch className="h-4 w-4 mr-2" />
-                                                Track Order
+                                                {t('orders.trackOrder')}
                                             </>
                                         )}
                                     </button>
@@ -122,7 +126,7 @@ export default function OrderLookupPage() {
                                     <h2 className="text-lg font-medium text-[var(--foreground)]">Order #{order.orderId}</h2>
                                     <div className="mt-1 flex items-center text-sm text-[var(--muted-foreground)]">
                                         <FiCalendar className="shrink-0 mr-1.5 h-4 w-4" />
-                                        Placed on {new Date(order.date).toLocaleDateString()}
+                                        {t('orders.placedOn')} {new Date(order.date).toLocaleDateString()}
                                     </div>
                                 </div>
                                 <div className="mt-3 sm:mt-0">
@@ -132,7 +136,7 @@ export default function OrderLookupPage() {
                         </div>
 
                         <div className="px-4 py-5 sm:p-6">
-                            <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">Order Items</h3>
+                            <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('orders.items')}</h3>
                             <div className="space-y-4">
                                 {order.items.map((item) => (
                                     <div key={item.itemId} className="flex items-start space-x-4 py-4 border-b border-[var(--border)] last:border-0">
@@ -151,30 +155,30 @@ export default function OrderLookupPage() {
                             </div>
 
                             <div className="mt-8 border-t border-[var(--border)] pt-6">
-                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">Order Summary</h3>
+                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('checkout.orderSummary')}</h3>
                                 <div className="space-y-3">
                                     <div className="flex justify-between">
-                                        <span className="text-sm text-[var(--muted-foreground)]">Subtotal</span>
+                                        <span className="text-sm text-[var(--muted-foreground)]">{t('checkout.subtotal')}</span>
                                         <span className="text-sm font-medium text-[var(--foreground)]">
                                             {((order.items.reduce((sum, item) => sum + (item.price * item.quantity / 100), 0))).toFixed(2)} RON
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-sm text-[var(--muted-foreground)]">Shipping</span>
+                                        <span className="text-sm text-[var(--muted-foreground)]">{t('checkout.shipping')}</span>
                                         <span className="text-sm font-medium text-[var(--foreground)]">{ (order.shippingCost / 100).toFixed(2)} RON</span>
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-[var(--border)]">
-                                        <span className="text-base font-medium text-[var(--foreground)]">Total</span>
+                                        <span className="text-base font-medium text-[var(--foreground)]">{t('checkout.total')}</span>
                                         <span className="text-base font-bold text-[var(--foreground)]">{((order.total + order.shippingCost) / 100).toFixed(2)} RON</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="mt-8 border-t border-[var(--border)] pt-6">
-                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">Shipping Information</h3>
+                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('checkout.shipping')} Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <h4 className="text-sm font-medium text-[var(--foreground)]">Shipping Address</h4>
+                                        <h4 className="text-sm font-medium text-[var(--foreground)]">{t('checkout.shipping')} Address</h4>
                                         <div className="mt-2 text-sm text-[var(--muted-foreground)] space-y-1">
                                             <p>{order.shipping.name}</p>
                                             <p>{order.shipping.address}</p>
@@ -185,10 +189,10 @@ export default function OrderLookupPage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-medium text-[var(--foreground)]">Shipping Method</h4>
+                                        <h4 className="text-sm font-medium text-[var(--foreground)]">{t('checkout.shipping')} Method</h4>
                                         <div className="mt-2 flex items-center">
                                             <FiTruck className="h-5 w-5 text-[var(--muted-foreground)] mr-2" />
-                                            <span className="text-sm text-[var(--muted-foreground)]">Standard Shipping</span>
+                                            <span className="text-sm text-[var(--muted-foreground)]">Standard {t('checkout.shipping')}</span>
                                         </div>
                                         {order.status === 'out-for-delivery' && order.trackingNumber && (
                                             <div className="mt-4">
@@ -204,7 +208,7 @@ export default function OrderLookupPage() {
                             </div>
 
                             <div className="mt-8 border-t border-[var(--border)] pt-6">
-                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">Payment Information</h3>
+                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('orders.paymentInfo')}</h3>
                                 <div className="flex items-start">
                                     <div className="shrink-0">
                                         <FiCreditCard className="h-6 w-6 text-[var(--muted-foreground)]" />

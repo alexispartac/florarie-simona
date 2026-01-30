@@ -11,12 +11,14 @@ import Button from '@/components/ui/Button';
 import { v4 as uuidv4 } from 'uuid';
 import { Order, ShippingInfo } from '@/types/orders';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 type PaymentMethod = 'credit-card' | 'cash-on-delivery' | 'bank-transfer';
 
 // euPlatesc Form Component
 const EuPlatescForm = ({ onInitiate }: { onInitiate: () => void }) => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [processing, setProcessing] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -77,7 +79,8 @@ function PaymentPageContent() {
   const { getCartTotal, getPriceShipping, cart } = useShop();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const formRef = useRef<HTMLFormElement>(null);
 
   // Derive isCartReady from cart state

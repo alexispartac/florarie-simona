@@ -13,7 +13,7 @@ const ThemeSwitcher = () => {
     <div className="relative">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-gray-700 hover:text-primary transition-colors relative group cursor-pointer"
+        className="p-2 text-[var(--foreground)] hover:text-[var(--primary)] transition-colors relative group cursor-pointer"
         aria-label="Change theme"
       >
         <svg 
@@ -42,14 +42,14 @@ const ThemeSwitcher = () => {
       
       {isOpen && (
         <div 
-          className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg p-2 z-50 border border-gray-100"
+          className="absolute right-0 mt-2 w-40 bg-[var(--card)] rounded-lg shadow-lg p-2 z-50 border border-[var(--border)]"
           onMouseLeave={() => setIsOpen(false)}
         >
-          <div className="flex items-center justify-between px-2 py-1 border-b border-gray-100 mb-2">
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('themeSwitcher.colors')}</span>
+          <div className="flex items-center justify-between px-2 py-1 border-b border-[var(--border)] mb-2">
+            <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('themeSwitcher.colors')}</span>
             <button 
               onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+              className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -64,10 +64,12 @@ const ThemeSwitcher = () => {
                   setTheme(t.id as Theme);
                   setIsOpen(false);
                 }}
-                className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 border-2 ${
                   theme === t.id 
-                    ? 'ring-2 ring-offset-2 ring-primary transform scale-110' 
-                    : 'hover:scale-105 hover:shadow-md'
+                    ? 'ring-2 ring-offset-2 ring-[var(--primary)] transform scale-110 border-[var(--primary)]' 
+                    : t.id === 'white'
+                    ? 'hover:scale-105 hover:shadow-md border-[var(--foreground)]/30'
+                    : 'hover:scale-105 hover:shadow-md border-[var(--border)]'
                 }`}
                 aria-label={`Set theme to ${t.name}`}
                 title={t.name}

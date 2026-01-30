@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { IoConstruct } from 'react-icons/io5';
 import { useShop } from '@/context/ShopContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function CheckoutSuccessPage() {
   const { clearCart, cart } = useShop();
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   useEffect(() => {
     clearCart();

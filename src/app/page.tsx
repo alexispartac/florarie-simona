@@ -108,7 +108,7 @@ function HeroSection({ t, router }: SectionProps) {
       <div className="relative z-10 h-full px-6 md:px-12 lg:px-16 py-16 md:py-20 flex flex-col justify-between">
         {/* Top Left - Small Label */}
         <div className="self-start mt-10">
-          <div className="flex items-center gap-2 text-[var(--accent)]">
+          <div className="flex items-center gap-2 text-[var(--primary-foreground)]">
             <div className="h-px w-8 bg-[var(--primary)]/70" />
             <span className="text-xs tracking-[0.3em] uppercase serif-light">Flori Premium</span>
           </div>
@@ -119,7 +119,7 @@ function HeroSection({ t, router }: SectionProps) {
           <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             {/* Left Side - Main Title */}
             <div className="flex flex-col justify-center lg:items-end lg:text-right">
-              <h1 className="serif-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[var(--accent)] leading-[0.9] mb-4">
+              <h1 className="serif-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[var(--primary-foreground)] leading-[0.9] mb-4">
                 {t('homepage.heroTitle')}
               </h1>
               
@@ -134,7 +134,7 @@ function HeroSection({ t, router }: SectionProps) {
 
             {/* Right Side - Subtitle and CTA */}
             <div className="flex flex-col justify-center gap-6 lg:gap-8">
-              <p className="serif-light text-2xl sm:text-2xl md:text-3xl lg:text-4xl text-[var(--accent)] font-light leading-relaxed">
+              <p className="serif-light text-2xl sm:text-2xl md:text-3xl lg:text-4xl text-[var(--primary-foreground)]/90 font-light leading-relaxed">
                 {t('homepage.heroSubtitle')}
               </p>
               
@@ -148,7 +148,7 @@ function HeroSection({ t, router }: SectionProps) {
                 </Button>
                 
                 {/* Social Media Links */}
-                <div className="flex items-center gap-3 text-[var(--accent)]/90">
+                <div className="flex items-center gap-3 text-[var(--primary-foreground)]/90">
                   <span className="text-sm serif-light">Ne poți găsi pe:</span>
                   <a 
                     href="https://wa.me/40123456789" 
@@ -191,14 +191,14 @@ function HeroSection({ t, router }: SectionProps) {
 
         {/* Bottom Right - Info Tags */}
         <div className="self-end flex flex-wrap gap-4 md:gap-8 items-center justify-end">
-          <div className="flex items-center gap-2 text-[var(--accent)]/80 text-xs md:text-sm serif-light">
+          <div className="flex items-center gap-2 text-[var(--primary-foreground)]/80 text-xs md:text-sm serif-light">
             <svg className="w-4 h-4 text-[var(--primary)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
             </svg>
             <span>Livrare Rapidă în Maxim 24h de la Crearea Aranjamentului</span>
           </div>
           <div className="h-4 md:h-6 w-px bg-[var(--primary)]/30" />
-          <div className="flex items-center gap-2 text-[var(--accent)]/80 text-xs md:text-sm serif-light">
+          <div className="flex items-center gap-2 text-[var(--primary-foreground)]/80 text-xs md:text-sm serif-light">
             <svg className="w-4 h-4 text-[var(--primary)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
@@ -209,7 +209,7 @@ function HeroSection({ t, router }: SectionProps) {
 
       {/* Scroll Indicator - Bottom Center */}
       <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2">
-        <div className="flex flex-col items-center gap-2 text-[var(--accent)]">
+        <div className="flex flex-col items-center gap-2 text-[var(--primary-foreground)]">
           <div className="w-px h-10 md:h-12 bg-linear-to-b from-transparent via-[var(--primary)]/50 to-transparent animate-pulse" />
           <span className="text-xs tracking-widest uppercase serif-light">Scroll</span>
         </div>
@@ -827,15 +827,15 @@ function FooterSection() {
         {/* Legal Links */}
         <div className="border-t border-[var(--border)] pt-8 mb-8">
           <div className="flex flex-wrap justify-center gap-6 text-sm serif-light">
-            <a href="/termeni-conditii" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
+            <Link href="/termeni-conditii" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
               Termeni&Condiții
-            </a>
-            <a href="/politica-cookies" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
+            </Link>
+            <Link href="/politica-cookies" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
               Politica de cookies
-            </a>
-            <a href="/gdpr" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
+            </Link>
+            <Link href="/gdpr" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
               GDPR
-            </a>
+            </Link>
           </div>
         </div>
 

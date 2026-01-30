@@ -5,10 +5,14 @@ import { useEvents, useLikeEvent, useShareEvent } from '@/hooks/useEvents';
 import Image from 'next/image';
 import { Calendar, MapPin, Heart, Share2, Search, Sparkles, Play, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Event } from '@/types/events';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [eventTypeFilter, setEventTypeFilter] = useState<'all' | 'upcoming' | 'past'>('all');
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [userId] = useState<string>(() => {
     // Initialize userId on mount
     if (typeof window !== 'undefined') {
@@ -43,7 +47,7 @@ export default function EventsPage() {
     }
 
     if (!userId) {
-      alert('Please wait, loading user session...');
+      alert(t('events.waitSession'));
       return;
     }
     
@@ -75,7 +79,7 @@ export default function EventsPage() {
       } else {
         // Fallback: copy to clipboard
         await navigator.clipboard.writeText(window.location.origin + `/evenimente`);
-        alert('Link copied to clipboard!');
+        alert(t('events.linkCopied'));
         await shareMutation.mutateAsync(event.eventId);
       }
     } catch (error) {
@@ -137,10 +141,10 @@ export default function EventsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[var(--primary-foreground)] drop-shadow-lg">
-              Evenimente
+              {t('events.title')}
             </h1>
             <p className="text-lg md:text-xl text-[var(--primary-foreground)]/95 max-w-2xl mx-auto drop-shadow-md">
-              Descoperiți momentele noastre speciale și evenimentele viitoare
+              {t('events.subtitle')}
             </p>
           </div>
         </div>
@@ -157,7 +161,7 @@ export default function EventsPage() {
               </div>
               <input
                 type="text"
-                placeholder="Caută evenimente..."
+                placeholder={t('events.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-3 py-2 w-full border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
@@ -171,9 +175,9 @@ export default function EventsPage() {
                 onChange={(e) => setEventTypeFilter(e.target.value as 'all' | 'upcoming' | 'past')}
                 className="px-4 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
               >
-                <option value="all">Toate Evenimentele</option>
-                <option value="upcoming">Viitoare</option>
-                <option value="past">Trecute</option>
+                <option value="all">{t('events.filterAll')}</option>
+                <option value="upcoming">{t('events.filterUpcoming')}</option>
+                <option value="past">{t('events.filterPast')}</option>
               </select>
             </div>
           </div>
@@ -202,13 +206,13 @@ export default function EventsPage() {
                         {event.featured && (
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-[var(--accent)] text-[var(--accent-foreground)]">
                             <Sparkles className="h-3 w-3 mr-1" />
-                            Featured
+                            {t('events.featured')}
                           </span>
                         )}
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                           event.eventType === 'upcoming' ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'bg-[var(--secondary)] text-[var(--foreground)]'
                         }`}>
-                          {event.eventType === 'upcoming' ? 'Viitor' : 'Trecut'}
+                          {event.eventType === 'upcoming' ? t('events.upcoming') : t('events.past')}
                         </span>
                       </div>
 
@@ -275,7 +279,7 @@ export default function EventsPage() {
                           ? 'bg-[var(--destructive)]/10 text-[var(--destructive)] hover:bg-[var(--destructive)]/20'
                           : 'bg-[var(--secondary)] text-[var(--foreground)] hover:bg-[var(--accent)]'
                       }`}
-                      title={!userId ? 'Loading...' : hasUserLiked(event) ? 'Unlike' : 'Like'}
+                      title={!userId ? t('events.loading') : hasUserLiked(event) ? t('events.unlike') : t('events.like')}
                     >
                       <Heart className={`h-5 w-5 ${hasUserLiked(event) ? 'fill-current' : ''} ${likeMutation.isPending ? 'animate-pulse' : ''}`} />
                       <span className="font-medium">{event.likes || 0}</span>
@@ -298,10 +302,10 @@ export default function EventsPage() {
           <div className="bg-[var(--card)] rounded-lg shadow-sm p-12 text-center border border-[var(--border)]">
             <Calendar className="mx-auto h-16 w-16 text-[var(--muted-foreground)] mb-4" />
             <h3 className="text-xl font-medium text-[var(--foreground)] mb-2">
-              Nu există evenimente
+              {t('events.noEvents')}
             </h3>
             <p className="text-[var(--muted-foreground)]">
-              {searchQuery ? 'Încearcă să modifici filtrele' : 'Revino curând pentru evenimente noi'}
+              {searchQuery ? t('events.tryAdjusting') : t('events.noEventsText')}
             </p>
           </div>
         )}

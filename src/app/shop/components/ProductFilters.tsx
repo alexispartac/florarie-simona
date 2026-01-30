@@ -2,46 +2,12 @@ import React from 'react';
 import { Filter, X, Truck, SlidersHorizontal } from 'lucide-react';
 import { ProductFiltersProps } from './types';
 import { FlowerColor, FlowerOccasion } from '@/types/products';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 // Available filter options
 const FLOWER_COLORS: FlowerColor[] = ['rosu', 'roz', 'alb', 'galben', 'mov', 'portocaliu', 'albastru', 'mixt', 'pastel', 'negru'];
 const FLOWER_OCCASIONS: FlowerOccasion[] = ['birthday', 'anniversary', 'wedding', 'funeral', 'romantic', 'congratulations', 'get-well', 'thank-you', 'just-because', 'mothers-day', 'valentines-day'];
-const SORT_OPTIONS = [
-  { value: 'featured', label: 'Recomandate' },
-  { value: 'price-asc', label: 'Preț: Crescător' }, 
-  { value: 'price-desc', label: 'Preț: Descrescător' },
-  { value: 'newest', label: 'Cele mai noi' },
-  { value: 'rating', label: 'Cel mai bine cotate' },
-];
-
-// Color translation map
-const COLOR_LABELS: Record<FlowerColor, string> = {
-  rosu: 'Roșu',
-  roz: 'Roz',
-  alb: 'Alb',
-  galben: 'Galben',
-  mov: 'Mov',
-  portocaliu: 'Portocaliu',
-  albastru: 'Albastru',
-  mixt: 'Mixt',
-  pastel: 'Pastel',
-  negru: 'Negru',
-};
-
-// Occasion translation map
-const OCCASION_LABELS: Record<FlowerOccasion, string> = {
-  birthday: 'Zi de naștere',
-  anniversary: 'Aniversare',
-  wedding: 'Nuntă',
-  funeral: 'Funeralii',
-  romantic: 'Romantic',
-  congratulations: 'Felicitări',
-  'get-well': 'Însănătoșire',
-  'thank-you': 'Mulțumire',
-  'just-because': 'Fără motiv',
-  'mothers-day': 'Ziua Mamei',
-  'valentines-day': 'Ziua Îndrăgostiților',
-};
 
 // Color swatches for visual representation
 const COLOR_SWATCHES: Record<FlowerColor, string> = {
@@ -73,10 +39,34 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   showFilters,
   onToggleFilters,
 }) => {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+  
   const hasActiveFilters = selectedCategories.length > 0 || 
     selectedColors.length > 0 || selectedOccasions.length > 0 || sameDayDeliveryOnly;
 
   const activeFilterCount = selectedCategories.length + selectedColors.length + selectedOccasions.length + (sameDayDeliveryOnly ? 1 : 0);
+
+  // Dynamic sort options
+  const SORT_OPTIONS = [
+    { value: 'featured', label: t('shop.sort.featured') },
+    { value: 'price-asc', label: t('shop.sort.priceAsc') }, 
+    { value: 'price-desc', label: t('shop.sort.priceDesc') },
+    { value: 'newest', label: t('shop.sort.newest') },
+    { value: 'rating', label: t('shop.sort.rating') },
+  ];
+
+  // Helper function to get color label
+  const getColorLabel = (color: FlowerColor) => {
+    return t(`shop.color.${color}` as keyof typeof t);
+  };
+
+  // Helper function to get occasion label
+  const getOccasionLabel = (occasion: FlowerOccasion) => {
+    const key = occasion.replace(/-/g, '');
+    const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+    return t(`shop.occasion.${capitalizedKey}` as keyof typeof t);
+  };
 
   return (
     <div className="mb-8">
@@ -89,7 +79,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
             className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--card)] text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition-colors"
           >
             <Filter className="h-4 w-4" />
-            {showFilters ? 'Ascunde filtrele' : 'Arată filtrele'}
+            {showFilters ? t('shop.hideFilters') : t('shop.showFilters')}
             {activeFilterCount > 0 && (
               <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-[var(--primary-foreground)] bg-[var(--primary)] rounded-full">
                 {activeFilterCount}
@@ -125,7 +115,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
           <div className="space-y-6">
           {/* Categories */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Categorii</h3>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">{t('shop.categories')}</h3>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <button
@@ -147,7 +137,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 
           {/* Colors */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Culori</h3>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">{t('shop.colors')}</h3>
             <div className="flex flex-wrap gap-3">
               {FLOWER_COLORS.map((color) => (
                 <button
@@ -160,7 +150,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                   }`}
                 >
                   <span className={`w-4 h-4 rounded-full ${COLOR_SWATCHES[color]} ${selectedColors.includes(color) ? 'ring-2 ring-[var(--primary-foreground)]' : ''}`}></span>
-                  {COLOR_LABELS[color]}
+                  {getColorLabel(color)}
                 </button>
               ))}
             </div>
@@ -170,7 +160,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 
           {/* Occasions */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Ocazii</h3>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">{t('shop.occasions')}</h3>
             <div className="flex flex-wrap gap-2">
               {FLOWER_OCCASIONS.map((occasion) => (
                 <button
@@ -182,7 +172,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                       : 'bg-[var(--secondary)] text-[var(--foreground)] hover:bg-[var(--accent)] border border-[var(--border)]'
                   }`}
                 >
-                  {OCCASION_LABELS[occasion]}
+                  {getOccasionLabel(occasion)}
                 </button>
               ))}
             </div>
@@ -202,7 +192,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
               }`}
             >
               <Truck className="h-4 w-4" />
-              Livrare în aceeași zi
+              {t('shop.sameDayDelivery')}
             </button>
           </div>
 
@@ -241,7 +231,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
             <div className="space-y-6">
               {/* Categories Mobile */}
               <div>
-                <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">Categorii</h4>
+                <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">{t('shop.categories')}</h4>
                 <div className="space-y-2">
                   {categories.map((category) => (
                     <label
@@ -264,7 +254,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 
               {/* Colors Mobile */}
               <div>
-                <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">Culori</h4>
+                <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">{t('shop.colors')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {FLOWER_COLORS.map((color) => (
                     <button
@@ -277,7 +267,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                       }`}
                     >
                       <span className={`w-3 h-3 rounded-full ${COLOR_SWATCHES[color]}`}></span>
-                      {COLOR_LABELS[color]}
+                      {getColorLabel(color)}
                     </button>
                   ))}
                 </div>
@@ -287,7 +277,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 
               {/* Occasions Mobile */}
               <div>
-                <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">Ocazii</h4>
+                <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">{t('shop.occasions')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {FLOWER_OCCASIONS.map((occasion) => (
                     <button
@@ -299,7 +289,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                           : 'bg-[var(--secondary)] text-[var(--foreground)] border border-[var(--border)]'
                       }`}
                     >
-                      {OCCASION_LABELS[occasion]}
+                      {getOccasionLabel(occasion)}
                     </button>
                   ))}
                 </div>
@@ -319,7 +309,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                   />
                   <span className="ml-3 text-sm font-medium text-[var(--foreground)] flex items-center gap-2">
                     <Truck className="h-4 w-4" />
-                    Livrare în aceeași zi
+                    {t('shop.sameDayDelivery')}
                   </span>
                 </label>
               </div>

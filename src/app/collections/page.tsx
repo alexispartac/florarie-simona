@@ -6,8 +6,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Search, Sparkles, ArrowRight, ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function CollectionsPage() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
 
@@ -41,10 +45,10 @@ export default function CollectionsPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h1 className="serif-font text-4xl md:text-5xl font-bold mb-4 text-[var(--primary-foreground)] drop-shadow-lg">
-              Floral Collections
+              {t("collections.title")}
             </h1>
             <p className="serif-light text-lg md:text-xl text-[var(--primary-foreground)]/95 max-w-2xl mx-auto drop-shadow-md">
-              Explore our curated collections of beautiful flowers for every occasion
+              {t("collections.subtitle")}
             </p>
           </div>
         </div>
@@ -62,7 +66,7 @@ export default function CollectionsPage() {
               <Input
                 type="text"
                 fullWidth
-                placeholder="Search collections..."
+                placeholder={t("collections.searchPlaceholder")}
                 value={searchQuery}
                 onChange={handleSearch}
                 className="pl-10 pr-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
@@ -83,7 +87,7 @@ export default function CollectionsPage() {
                 className="text-sm text-[var(--foreground)] cursor-pointer flex items-center"
               >
                 <Sparkles className="h-4 w-4 mr-1 text-yellow-500" />
-                Featured Only
+                {t("collections.featuredOnly")}
               </label>
             </div>
           </div>
@@ -97,9 +101,9 @@ export default function CollectionsPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
-            <p className="text-red-700">
-              Error loading collections. Please try again later.
+          <div className="bg-[var(--destructive)]/10 border border-[var(--destructive)]/30 rounded-lg p-8 text-center">
+            <p className="text-[var(--destructive)]">
+              {t("collections.errorLoading")}
             </p>
           </div>
         ) : collections.length > 0 ? (
@@ -130,7 +134,7 @@ export default function CollectionsPage() {
                     <div className="absolute top-4 right-4">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-yellow-900 shadow-lg">
                         <Sparkles className="h-3 w-3 mr-1" />
-                        Featured
+                        {t("collections.featured")}
                       </span>
                     </div>
                   )}
@@ -138,7 +142,7 @@ export default function CollectionsPage() {
                   {/* Product Count Badge */}
                   <div className="absolute bottom-4 left-4">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[var(--card)]/90 text-[var(--foreground)] shadow-sm backdrop-blur-sm">
-                      {collection.products?.length || 0} Products
+                      {collection.products?.length || 0} {t("collections.products")}
                     </span>
                   </div>
                 </div>
@@ -154,7 +158,7 @@ export default function CollectionsPage() {
                   
                   {/* View Collection Link */}
                   <div className="flex items-center text-[var(--primary)] font-medium text-sm group-hover:text-[var(--hover-primary)] transition-colors">
-                    View Collection
+                    {t("collections.viewCollection")}
                     <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -165,12 +169,12 @@ export default function CollectionsPage() {
           <div className="bg-[var(--card)] rounded-lg shadow-sm p-12 text-center border border-[var(--border)]">
             <ImageIcon className="mx-auto h-16 w-16 text-[var(--muted-foreground)] mb-4" />
             <h3 className="text-xl font-medium text-[var(--foreground)] mb-2">
-              No collections found
+              {t("collections.noCollectionsFound")}
             </h3>
             <p className="text-[var(--muted-foreground)] mb-6">
               {searchQuery
-                ? 'Try adjusting your search or filters'
-                : 'Check back soon for new collections'}
+                ? t("collections.tryAdjusting")
+                : t("collections.noCollectionsText")}
             </p>
             {searchQuery && (
               <button
@@ -180,7 +184,7 @@ export default function CollectionsPage() {
                 }}
                 className="inline-flex items-center px-4 py-2 border border-[var(--border)] rounded-md shadow-sm text-sm font-medium text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
               >
-                Clear Filters
+                {t("collections.clearFilters")}
               </button>
             )}
           </div>
@@ -192,23 +196,23 @@ export default function CollectionsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h2 className="serif-font text-2xl font-bold text-[var(--foreground)] mb-4">
-              Nu gasesti ce cauti?
+              {t("collections.ctaTitle")}
             </h2>
             <p className="serif-light text-[var(--muted-foreground)] mb-6">
-              Navigheaza printr-o colectie sau contacteaza-ne pentru un buchet personalizat
+              {t("collections.ctaSubtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/shop"
                 className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] shadow-sm transition-colors"
               >
-                Browse All Products
+                {t("collections.browseAll")}
               </Link>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center px-6 py-3 border border-[var(--border)] text-base font-medium rounded-md text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--accent)] shadow-sm transition-colors"
               >
-                Contact Us
+                {t("collections.contactUs")}
               </Link>
             </div>
           </div>

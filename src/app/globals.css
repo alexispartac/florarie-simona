@@ -5,6 +5,11 @@
   --color-black: #000000;
   --color-white: #ffffff;
   
+  /* Theme Preview Colors */
+  --theme-white: #ffffff;
+  --theme-black: #000000;
+  --theme-rose: #f43f5e;
+  
   /* Rose Palette */
   --rose-50: #fff1f2;
   --rose-100: #ffe4e6;

@@ -10,6 +10,7 @@ import { ProductInCatalog, WishlistItem, FlowerColor, FlowerOccasion } from '@/t
 import { useProductsCatalogInfinite, useProductCategories } from '@/hooks/useProducts';
 import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 const ProductList = memo(({
   products,
@@ -66,7 +67,8 @@ export default function Shop() {
   // Fetch all categories separately
   const { data: categories = [] } = useProductCategories();
   
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const { addToWishlist } = useShop();
   
   // Flatten all pages into a single products array and remove duplicates
@@ -143,7 +145,7 @@ export default function Shop() {
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="animate-pulse flex flex-col items-center space-y-4">
           <Spinner className="w-12 h-12" />
-          <p className="text-[var(--muted-foreground)]">Loading products...</p>
+          <p className="text-[var(--muted-foreground)]">{t('shop.loading')}</p>
         </div>
       </div>
     );
@@ -153,7 +155,7 @@ export default function Shop() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="animate-pulse flex flex-col items-center space-y-4">
-          <p className="text-[var(--muted-foreground)]">Error loading products. Please try again later.</p>
+          <p className="text-[var(--muted-foreground)]">{t('shop.error')}</p>
         </div>
       </div>
     );

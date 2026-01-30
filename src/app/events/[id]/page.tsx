@@ -7,11 +7,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, MapPin, Heart, Share2, ArrowLeft, Sparkles, Play, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Event, EventMedia } from '@/types/events';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
   const eventId = params.id as string;
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   const [userId] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -39,7 +43,7 @@ export default function EventDetailPage() {
       await likeMutation.mutateAsync({ eventId: event.eventId, userId });
     } catch (error) {
       console.error('Error liking event:', error);
-      alert('Failed to like event. Please try again.');
+      alert(t('events.failedToLike'));
     }
   };
 
@@ -56,7 +60,7 @@ export default function EventDetailPage() {
         await shareMutation.mutateAsync(event.eventId);
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert('Link copied to clipboard!');
+        alert(t('events.linkCopied'));
         await shareMutation.mutateAsync(event.eventId);
       }
     } catch (error) {
@@ -112,14 +116,14 @@ export default function EventDetailPage() {
     return (
       <div className="min-h-screen bg-[var(--primary-background)] flex items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-4">Event Not Found</h1>
+          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-4">{t('events.notFound')}</h1>
           <p className="text-[var(--muted-foreground)] mb-6">The event you&apos;re looking for doesn&apos;t exist or has been removed.</p>
           <Link
             href="/events"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)]"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Events
+            {t('events.backToEvents')}
           </Link>
         </div>
       </div>
@@ -136,7 +140,7 @@ export default function EventDetailPage() {
             className="inline-flex items-center text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
-            Înapoi la Evenimente
+            {t('events.backToEvents')}
           </button>
         </div>
       </div>
@@ -153,7 +157,7 @@ export default function EventDetailPage() {
                   {event.featured && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-[var(--accent)] text-[var(--accent-foreground)]">
                       <Sparkles className="h-3 w-3 mr-1" />
-                      Featured
+                      {t('events.featured')}
                     </span>
                   )}
                   <span
@@ -161,7 +165,7 @@ export default function EventDetailPage() {
                       event.eventType === 'upcoming' ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'bg-[var(--secondary)] text-[var(--foreground)]'
                     }`}
                   >
-                    {event.eventType === 'upcoming' ? 'Viitor' : 'Trecut'}
+                    {event.eventType === 'upcoming' ? t('events.upcoming') : t('events.past')}
                   </span>
                 </div>
 

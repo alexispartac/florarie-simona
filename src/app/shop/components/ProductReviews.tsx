@@ -3,6 +3,8 @@ import { ProductReview } from '@/types/products';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ImageModal } from './ImageModal';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 interface ProductReviewsProps {
   reviews: ProductReview[];
@@ -13,6 +15,8 @@ interface ProductReviewsProps {
 export function ProductReviews({ reviews, averageRating, reviewCount }: ProductReviewsProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [selectedReviewImages, setSelectedReviewImages] = useState<string[]>([]);
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   const handleImageClick = (images: string[] = [], index: number) => {
     setSelectedReviewImages(images);
@@ -22,8 +26,8 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
   if (reviewCount === 0) {
     return (
       <section className="mt-16">
-        <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">Customer Reviews</h2>
-        <p className="text-[var(--muted-foreground)]">No reviews yet. Be the first to review this product!</p>
+        <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">{t('product.reviews')}</h2>
+        <p className="text-[var(--muted-foreground)]">{t('review.noReviews')}</p>
       </section>
     );
   }
@@ -37,7 +41,7 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
         initialIndex={selectedImageIndex ?? 0}
       />
       <div className="flex items-center justify-between mb-6">
-        <h2 className="serif-font text-2xl font-bold text-[var(--foreground)]">Customer Reviews</h2>
+        <h2 className="serif-font text-2xl font-bold text-[var(--foreground)]">{t('product.reviews')}</h2>
         {averageRating !== undefined && (
           <div className="flex items-center">
             <div className="flex items-center mr-2">
@@ -50,7 +54,7 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
                 />
               ))}
             </div>
-            <span className="text-[var(--foreground)]">{averageRating.toFixed(1)} ({reviewCount} reviews)</span>
+            <span className="text-[var(--foreground)]">{averageRating.toFixed(1)} ({reviewCount} {t('product.reviews')})</span>
           </div>
         )}
       </div>
@@ -74,7 +78,7 @@ export function ProductReviews({ reviews, averageRating, reviewCount }: ProductR
               </div>
               {review.verifiedPurchase && (
                 <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                  Verified Purchase
+                  {t('review.verified')}
                 </span>
               )}
             </div>

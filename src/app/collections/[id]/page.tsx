@@ -6,8 +6,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingCart, ImageIcon, Sparkles } from 'lucide-react';
 import { Product } from '@/types/products';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function CollectionDetailPage() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const params = useParams();
   const router = useRouter();
   const collectionId = params.id as string;
@@ -26,16 +30,16 @@ export default function CollectionDetailPage() {
     return (
       <div className="min-h-screen bg-[var(--primary-background)] flex items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="serif-font text-2xl font-bold text-[var(--foreground)] mb-4">Colecție Negătită</h1>
+          <h1 className="serif-font text-2xl font-bold text-[var(--foreground)] mb-4">{t("collection.collectionNotFound")}</h1>
           <p className="serif-light text-[var(--muted-foreground)] mb-6">
-            Colecția pe care o căutai nu a fost găsită sau a fost eliminată.
+            {t("collection.collectionNotFoundText")}
           </p>
           <Link
             href="/collections"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)]"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Înapoi la Colecții
+            {t("collection.backToCollections")}
           </Link>
         </div>
       </div>
@@ -52,7 +56,7 @@ export default function CollectionDetailPage() {
             className="inline-flex items-center text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
-            Înapoi la Colecții
+            {t("collection.backToCollections")}
           </button>
         </div>
       </div>
@@ -80,7 +84,7 @@ export default function CollectionDetailPage() {
                 <div className="absolute top-4 right-4">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-yellow-400 text-yellow-900 shadow-lg">
                     <Sparkles className="h-4 w-4 mr-1" />
-                    Featured
+                    {t("collection.featured")}
                   </span>
                 </div>
               )}
@@ -97,7 +101,7 @@ export default function CollectionDetailPage() {
               <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
                 <span className="inline-flex items-center">
                   <ShoppingCart className="h-4 w-4 mr-1" />
-                  {collection.products?.length || 0} Products
+                  {collection.products?.length || 0} {t("collection.products")}
                 </span>
               </div>
             </div>
@@ -108,7 +112,7 @@ export default function CollectionDetailPage() {
       {/* Products Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h2 className="serif-font text-2xl font-bold text-[var(--foreground)] mb-8">
-          Products in this Collection
+          {t("collection.productsInCollection")}
         </h2>
 
         {collection.productsDetails && collection.productsDetails.length > 0 ? (
@@ -136,7 +140,7 @@ export default function CollectionDetailPage() {
                   {product.tags?.includes('new') && (
                     <div className="absolute top-2 right-2">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                        New
+                        {t("collection.new")}
                       </span>
                     </div>
                   )}
@@ -155,12 +159,12 @@ export default function CollectionDetailPage() {
                       ${(product.price / 100).toFixed(2)}
                     </span>
                     {product.available ? (
-                      <span className="text-xs text-green-600 font-medium">
-                        In Stock
+                      <span className="text-xs text-[var(--primary)] font-medium">
+                        {t("collection.inStock")}
                       </span>
                     ) : (
-                      <span className="text-xs text-red-600 font-medium">
-                        Out of Stock
+                      <span className="text-xs text-[var(--destructive)] font-medium">
+                        {t("collection.outOfStock")}
                       </span>
                     )}
                   </div>
@@ -172,16 +176,16 @@ export default function CollectionDetailPage() {
           <div className="bg-[var(--card)] rounded-lg shadow-sm p-12 text-center border border-[var(--border)]">
             <ImageIcon className="mx-auto h-16 w-16 text-[var(--muted-foreground)] mb-4" />
             <h3 className="serif-font text-xl font-medium text-[var(--foreground)] mb-2">
-              No Products Yet
+              {t("collection.noProductsYet")}
             </h3>
             <p className="serif-light text-[var(--muted-foreground)] mb-6">
-              This collection doesn&apos;t have any products at the moment.
+              {t("collection.noProductsText")}
             </p>
             <Link
               href="/shop"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)]"
             >
-              Browse All Products
+              {t("collection.browseAll")}
             </Link>
           </div>
         )}
@@ -192,16 +196,16 @@ export default function CollectionDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h2 className="serif-font text-2xl font-bold text-[var(--foreground)] mb-4">
-              Explore More Collections
+              {t("collection.exploreMore")}
             </h2>
             <p className="serif-light text-[var(--muted-foreground)] mb-6">
-              Discover other beautiful floral arrangements
+              {t("collection.exploreMoreText")}
             </p>
             <Link
               href="/collections"
               className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] shadow-sm transition-colors"
             >
-              View All Collections
+              {t("collection.viewAllCollections")}
             </Link>
           </div>
         </div>

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { MapPin, Mail, Phone, Clock } from 'lucide-react';
 import { Input } from '@/components/ui';
 import axios from 'axios';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 type FormData = {
   name: string;
@@ -20,6 +22,9 @@ type FormErrors = {
 };
 
 export default function ContactPage() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+  
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -35,23 +40,23 @@ export default function ContactPage() {
     const newErrors: FormErrors = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Numele este obligatoriu';
+      newErrors.name = t('contact.nameRequired');
     }
     
     if (!formData.email) {
-      newErrors.email = 'Email-ul este obligatoriu';
+      newErrors.email = t('contact.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Vă rugăm să introduceți o adresă de email validă';
+      newErrors.email = t('contact.emailInvalid');
     }
     
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Subiectul este obligatoriu';
+      newErrors.subject = t('contact.subjectRequired');
     }
     
     if (!formData.message.trim()) {
-      newErrors.message = 'Mesajul este obligatoriu';
+      newErrors.message = t('contact.messageRequired');
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Mesajul trebuie să aibă cel puțin 10 caractere';
+      newErrors.message = t('contact.messageMinLength');
     }
     
     setErrors(newErrors);
@@ -94,7 +99,7 @@ export default function ContactPage() {
       
       setSubmitStatus({
         success: true,
-        message: data.message || 'Mesajul dvs. a fost trimis cu succes! Vă vom contacta în curând.'
+        message: data.message || t('contact.successMessage')
       });
       
       // Reset form on success
@@ -108,7 +113,7 @@ export default function ContactPage() {
       console.error('Error submitting form:', error);
       setSubmitStatus({
         success: false,
-        message: 'A apărut o eroare. Vă rugăm să încercați din nou mai târziu.'
+        message: t('contact.errorMessage')
       });
     } finally {
       setIsSubmitting(false);
@@ -130,9 +135,9 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--primary)]/25 via-[var(--primary)]/15 to-[var(--primary)]/30" />
         
         <div className="relative z-10 container mx-auto px-4 text-center">
-          <h1 className="serif-font text-4xl md:text-5xl font-bold my-4 text-[var(--primary-foreground)] drop-shadow-lg">Contactează-ne</h1>
+          <h1 className="serif-font text-4xl md:text-5xl font-bold my-4 text-[var(--primary-foreground)] drop-shadow-lg">{t("contact.title")}</h1>
           <p className="serif-light text-xl text-[var(--primary-foreground)]/95 max-w-2xl mx-auto drop-shadow-md">
-            Ai întrebări sau dorești să comanzi un buchet personalizat? Suntem aici pentru tine!
+            {t("contact.subtitle")}
           </p>
         </div>
       </div>
@@ -142,7 +147,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <div className="bg-[var(--card)] rounded-lg shadow-lg p-8 border border-[var(--border)]">
-            <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">Trimite-ne un mesaj</h2>
+            <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">{t("contact.formTitle")}</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               {submitStatus && (
                   <div
@@ -158,7 +163,7 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                    Nume *
+                    {t("contact.nameLabel")} *
                   </label>
                   <Input
                     type="text"
@@ -177,7 +182,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                    Email *
+                    {t("contact.emailLabel")} *
                   </label>
                   <Input
                     type="email"
@@ -197,7 +202,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                  Subiect *
+                  {t("contact.subjectLabel")} *
                 </label>
                 <Input
                   type="text"
@@ -216,7 +221,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                  Mesaj *
+                  {t("contact.messageLabel")} *
                 </label>
                 <textarea
                   id="message"
@@ -240,7 +245,7 @@ export default function ContactPage() {
                     isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
                   }`}
                 >
-                  {isSubmitting ? 'Se trimite...' : 'Trimite mesaj'}
+                  {isSubmitting ? t("contact.sending") : t("contact.sendButton")}
                 </button>
               </div>
             </form>
@@ -249,14 +254,14 @@ export default function ContactPage() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div className="bg-[var(--card)] rounded-lg shadow-lg p-8 border border-[var(--border)]">
-              <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">Informații de contact</h2>
+              <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">{t("contact.contactInfo")}</h2>
               <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="shrink-0 bg-[var(--primary)]/10 p-3 rounded-full text-[var(--primary)]">
                     <MapPin className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-[var(--foreground)]">Locația Atelierului</h3>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">{t("contact.locationTitle")}</h3>
                     <p className="mt-1 text-[var(--muted-foreground)] serif-light">Str. Unirii 240</p>
                     <p className="text-[var(--muted-foreground)] serif-light">Târmșeni, Neamț, România</p>
                   </div>
@@ -267,7 +272,7 @@ export default function ContactPage() {
                     <Mail className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-[var(--foreground)]">Email</h3>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">{t("contact.emailTitle")}</h3>
                     <p className="mt-1 text-[var(--primary)] hover:underline">
                       <a href="mailto:laurasimona97@yahoo.com">laurasimona97@yahoo.com</a>
                     </p>
@@ -282,9 +287,9 @@ export default function ContactPage() {
                     <Phone className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-[var(--foreground)]">Telefon</h3>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">{t("contact.phoneTitle")}</h3>
                     <p className="mt-1 text-[var(--muted-foreground)] serif-light">0769141250</p>
-                    <p className="text-[var(--muted-foreground)] serif-light">Luni - Sâmbătă, 09:00 - 20:00</p>
+                    <p className="text-[var(--muted-foreground)] serif-light">{t("contact.phoneSchedule")}</p>
                   </div>
                 </div>
 
@@ -293,9 +298,9 @@ export default function ContactPage() {
                     <Clock className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-[var(--foreground)]">Program</h3>
-                    <p className="mt-1 text-[var(--muted-foreground)] serif-light">Luni - Sâmbătă: 09:00 - 20:00</p>
-                    <p className="text-[var(--muted-foreground)] serif-light">Duminică: Închis</p>
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">{t("contact.scheduleTitle")}</h3>
+                    <p className="mt-1 text-[var(--muted-foreground)] serif-light">{t("contact.scheduleMon")}</p>
+                    <p className="text-[var(--muted-foreground)] serif-light">{t("contact.scheduleSun")}</p>
                   </div>
                 </div>
               </div>

@@ -9,6 +9,7 @@ import { useToast } from '@/context/ToastContext';
 import { Spinner } from '@/components/ui/Spinner';
 import { Input } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 type ShippingData = {
   firstName: string;
@@ -32,7 +33,8 @@ export default function ShippingPage() {
   const [errors, setErrors] = useState<Partial<ShippingData>>({});
 
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -125,8 +127,8 @@ export default function ShippingPage() {
       setTimeout(() => {
         setIsLoading(false);
         toast({
-          title: "Shipping information saved",
-          description: "Your shipping details have been saved successfully.",
+          title: t('cart.checkout.shippingInfoSaved'),
+          description: t('cart.checkout.shippingInfoSavedDesc'),
         });
       }, 1500);
     }
@@ -137,8 +139,8 @@ export default function ShippingPage() {
       router.push('/checkout/payment');
     } else {
       toast({
-        title: "Please save shipping information first",
-        description: "You need to fill and save your shipping details before proceeding to payment.",
+        title: t('cart.checkout.pleaseSaveShippingInfoFirst'),
+        description: t('cart.checkout.youNeedToFillAndSaveYourShippingDetailsBeforeProceedingToPayment'),
         variant: "destructive",
       });
     }

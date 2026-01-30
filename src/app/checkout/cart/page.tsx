@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function CartPage() {
   const router = useRouter();
@@ -26,7 +27,8 @@ export default function CartPage() {
   const shipping = getPriceShipping();
   const total = subtotal + shipping;
 
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   useEffect(() => {
     const timer = setTimeout(() => {

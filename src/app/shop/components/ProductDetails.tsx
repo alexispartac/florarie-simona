@@ -1,4 +1,6 @@
 import { Tag, Award, Star } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 interface ProductDetailsProps {
   category: string;
@@ -17,6 +19,9 @@ export function ProductDetails({
   details,
   rating,
 }: ProductDetailsProps) {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+  
   return (
     <div className="space-y-6">
       {/* Category and Tags */}
@@ -45,19 +50,19 @@ export function ProductDetails({
         {isNew && (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
             <Award className="w-4 h-4 mr-1" />
-            New Arrival
+            {t('product.newArrival')}
           </span>
         )}
         {isFeatured && (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
             <Star className="w-4 h-4 mr-1" />
-            Featured
+            {t('product.featured')}
           </span>
         )}
         {rating !== undefined && rating >= 4.5 && (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
             <Star className="w-4 h-4 mr-1 fill-current" />
-            Top Rated
+            {t('product.topRated')}
           </span>
         )}
       </div>
@@ -65,7 +70,7 @@ export function ProductDetails({
       {/* Product Details */}
       {details.length > 0 && (
         <div className="space-y-2">
-          <h3 className="serif-font text-lg font-medium text-[var(--foreground)]">Product Details</h3>
+          <h3 className="serif-font text-lg font-medium text-[var(--foreground)]">{t('product.productDetails')}</h3>
           <ul className="space-y-2 text-[var(--foreground)]">
             {details.map((detail, index) => (
               <li key={index} className="flex items-start serif-light">

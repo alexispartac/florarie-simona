@@ -12,6 +12,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
 import { useProductSearch } from '@/hooks/useProducts';
 import ThemeSwitcher from './ThemeSwitcher';
+import LanguageSwitcher from './LanguageSwitcher';
 import { useTheme } from '@/context/ThemeContext';
 
 
@@ -184,13 +185,13 @@ export default function Navigation() {
             </button>
             
             <ThemeSwitcher />
-            {/* <LanguageSwitcher /> */}
+            <LanguageSwitcher />
             
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-md text-[var(--foreground)] hover:text-[var(--primary)] hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary)]"
+                className="p-2 rounded-md text-[var(--primary)] hover:text-[var(--foreground)] hover:bg-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary)]"
                 aria-expanded="false"
               >
                 <span className="sr-only">Open main menu</span>
@@ -274,7 +275,7 @@ export default function Navigation() {
       {/* Mobile menu */}
       <div
         className={`md:hidden transition-all bg-[var(--card)] duration-300 ease-in-out ${
-          isOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+          isOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">

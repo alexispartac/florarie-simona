@@ -14,6 +14,8 @@ import { ProductReviews } from '../components/ProductReviews';
 import { ProductDetails } from '../components/ProductDetails';
 import { AddReview } from '../components/AddReview';
 import { ProductReview } from '@/types/products';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 // Helper function to check if URL is a video
 const isVideoUrl = (url: string): boolean => {
@@ -29,6 +31,8 @@ export default function ProductPage() {
     const [isAddingToWishlist, setIsAddingToWishlist] = useState<boolean>(false);
     const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
     const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useShop();
+    const { language } = useLanguage();
+    const t = useTranslation(language);
     
     const params = useParams();
     const id = params.id as string;
@@ -46,7 +50,7 @@ export default function ProductPage() {
             <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="animate-pulse flex flex-col items-center space-y-4">
                     <Spinner className="w-12 h-12" />
-                    <p className="text-[var(--muted-foreground)]">Loading product...</p>
+                    <p className="text-[var(--muted-foreground)]">{t('product.loading')}</p>
                 </div>
             </div>
         );
@@ -56,7 +60,7 @@ export default function ProductPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="animate-pulse flex flex-col items-center space-y-4">
-                    <p className="text-[var(--muted-foreground)]">Error loading product...</p>
+                    <p className="text-[var(--muted-foreground)]">{t('product.error')}</p>
                 </div>
             </div>
         );
@@ -66,7 +70,7 @@ export default function ProductPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="animate-pulse flex flex-col items-center space-y-4">
-                    <p className="text-[var(--muted-foreground)]">Product not found</p>
+                    <p className="text-[var(--muted-foreground)]">{t('product.notFound')}</p>
                 </div>
             </div>
         )
@@ -263,7 +267,7 @@ export default function ProductPage() {
 
                             {product.flowerDetails.sameDayDelivery && (
                                 <p className="text-sm text-green-600 font-medium">
-                                    🚚 Same-day delivery available!
+                                    🚚 {t('product.sameDayDelivery')}
                                 </p>
                             )}
                         </div>
@@ -272,7 +276,7 @@ export default function ProductPage() {
                     {/* Quantity */}
                     {product.available && (
                         <div className="mb-6">
-                            <h3 className="text-sm font-medium text-[var(--foreground)] mb-2">Quantity</h3>
+                            <h3 className="text-sm font-medium text-[var(--foreground)] mb-2">{t('product.quantity')}</h3>
                             <div className="flex items-center">
                                 <button
                                     onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
@@ -310,14 +314,14 @@ export default function ProductPage() {
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                                 </svg>
-                                Remove from Wishlist
+                                {t('product.removeFromWishlist')}
                             </>
                         ) : (
                             <>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
-                                Add to Wishlist
+                                {t('product.addToWishlist')}
                             </>
                         )}
                     </button>
@@ -333,9 +337,9 @@ export default function ProductPage() {
                         {isAddingToCart ? (
                             'Adding to Cart...'
                         ) : !product.available ? (
-                            'Out of Stock'
+                            t('product.outOfStock')
                         ) : (
-                            `Add to Cart - ${((product.price * quantity) / 100).toFixed(2)} RON`
+                            `${t('product.addToCart')} - ${((product.price * quantity) / 100).toFixed(2)} RON`
                         )}
                     </Button>
                 </div>
@@ -346,7 +350,7 @@ export default function ProductPage() {
                 <Tabs defaultValue="details" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 max-w-md mb-8 bg-[var(--secondary)] border border-[var(--border)]">
                         <TabsTrigger value="details" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Details</TabsTrigger>
-                        <TabsTrigger value="reviews" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Reviews ({product.reviewCount})</TabsTrigger>
+                        <TabsTrigger value="reviews" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">{t('product.reviews')} ({product.reviewCount})</TabsTrigger>
                         <TabsTrigger value="care" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Flower Care</TabsTrigger>
                     </TabsList>
 
@@ -386,7 +390,7 @@ export default function ProductPage() {
 
                     <TabsContent value="care">
                         <div className="prose max-w-none">
-                            <h2 className="serif-font text-2xl font-bold mb-4 text-[var(--foreground)]">🌱 Flower Care Instructions</h2>
+                            <h2 className="serif-font text-2xl font-bold mb-4 text-[var(--foreground)]">🌱 {t('product.careInstructions')}</h2>
                             
                             {product.flowerDetails?.careInstructions ? (
                                 <div className="space-y-4">

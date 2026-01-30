@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useRef, useCallback, useMemo } from 'react';
 import { useToast } from '@/context/ToastContext';
 import { CartItem, WishlistItem } from '@/types/products';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 interface ShopContextType {
     cart: CartItem[];
@@ -64,13 +66,17 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     const [wishlist, setWishlist] = useState<WishlistItem[]>(initialState.wishlist);
     
     const { toast } = useToast();
+    const { language } = useLanguage();
+    const t = useTranslation(language);
     
     const toastRef = useRef(toast);
+    const tRef = useRef(t);
     
-    // Keep toast ref updated
+    // Keep toast and translation refs updated
     useEffect(() => {
         toastRef.current = toast;
-    }, [toast]);
+        tRef.current = t;
+    }, [toast, t]);
 
     // Save to localStorage when cart or wishlist changes
     useEffect(() => {
@@ -96,10 +102,10 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             // Show toast based on whether the item is new or existing
             setTimeout(() => {
                 toastRef.current?.({
-                    title: existingItem ? 'Information' : 'Added to Cart',
+                    title: existingItem ? tRef.current('cart.toast.information') : tRef.current('cart.toast.addedToCart'),
                     description: existingItem
-                        ? 'Item already in cart. Check your cart for updated quantity.'
-                        : 'Item added to cart. View your cart to manage items.'
+                        ? tRef.current('cart.toast.alreadyInCart')
+                        : tRef.current('cart.toast.addedToCartDesc')
                 });
             }, 0);
 
@@ -125,8 +131,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             if (product) {
                 setTimeout(() => {
                     toastRef.current?.({
-                        title: 'Removed from Cart',
-                        description: `Item has been removed from your cart.`,
+                        title: tRef.current('cart.toast.removedFromCart'),
+                        description: tRef.current('cart.toast.removedFromCartDesc'),
                         variant: 'destructive',
                     });
                 }, 0);
@@ -152,8 +158,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             if (product) {
                 setTimeout(() => {
                     toastRef.current?.({
-                        title: 'Cart Updated',
-                        description: `Updated quantity to ${quantity}`,
+                        title: tRef.current('cart.toast.cartUpdated'),
+                        description: `${tRef.current('cart.toast.quantityUpdated')} ${quantity}`,
                     });
                 }, 0);
             }
@@ -168,10 +174,10 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
             setTimeout(() => {
                 toastRef.current?.({
-                    title: existingItem ? 'Wishlist Updated' : 'Added to Wishlist',
+                    title: existingItem ? tRef.current('wishlist.toast.wishlistUpdated') : tRef.current('wishlist.toast.addedToWishlist'),
                     description: existingItem
-                        ? `This item is already in your wishlist`
-                        : `Item has been added to your wishlist.`,
+                        ? tRef.current('wishlist.toast.alreadyInWishlist')
+                        : tRef.current('wishlist.toast.addedToWishlistDesc'),
                 });
             }, 0);
             
@@ -191,8 +197,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             if (productId) {
                 setTimeout(() => {
                     toastRef.current({
-                        title: 'Removed from Wishlist',
-                        description: `Item has been removed from your wishlist.`,
+                        title: tRef.current('wishlist.toast.removedFromWishlist'),
+                        description: tRef.current('wishlist.toast.removedFromWishlistDesc'),
                         variant: 'destructive',
                     });
                 }, 0);
@@ -209,8 +215,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             if (hadItems) {
                 setTimeout(() => {
                     toastRef.current({
-                        title: 'Cart Cleared',
-                        description: 'All items have been removed from your cart.',
+                        title: tRef.current('cart.toast.cartCleared'),
+                        description: tRef.current('cart.toast.cartClearedDesc'),
                         variant: 'destructive',
                     });
                 }, 0);

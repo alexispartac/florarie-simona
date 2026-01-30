@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { ProductReview } from '@/types/products';
 import { v4 as uuidv4 } from 'uuid';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 
 interface AddReviewProps {
@@ -23,6 +25,8 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const { toast } = useToast();
+    const { language } = useLanguage();
+    const t = useTranslation(language);
 
     const toastRef = useRef(toast);
 
@@ -34,8 +38,8 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
         e.preventDefault();
         if (rating === 0) {
             toastRef.current?.({
-                title: 'Rating Required',
-                description: 'Please select a rating before submitting your review.',
+                title: t('review.ratingRequired'),
+                description: t('review.ratingRequiredDesc'),
             });
             return;
         }
@@ -67,8 +71,8 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                 
                 setTimeout(() => {
                     toastRef.current?.({
-                        title: 'Review Submitted',
-                        description: 'Thank you for your review!',
+                        title: t('review.submitted'),
+                        description: t('review.submittedDesc'),
                     });
                 }, 100);
                 
@@ -85,7 +89,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
             setTimeout(() => {
                 toastRef.current?.({
                     title: 'Review Submission Failed',
-                    description: 'There was an error submitting your review. Please try again.',
+                    description: t('review.errorDesc'),
                 });
             }, 100);
         } finally {
@@ -95,7 +99,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
 
     return (
         <div className="mt-8 border-t border-[var(--border)] pt-8">
-            <h3 className="serif-font text-lg font-medium text-[var(--foreground)] mb-4">Write a Review</h3>
+            <h3 className="serif-font text-lg font-medium text-[var(--foreground)] mb-4">{t('product.writeReview')}</h3>
             
             {showSuccess && (
                 <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-start">
@@ -103,8 +107,8 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <div>
-                        <p className="font-semibold">Review submitted successfully!</p>
-                        <p className="text-sm mt-1">Thank you for sharing your experience with us.</p>
+                        <p className="font-semibold">{t('review.submitted')}</p>
+                        <p className="text-sm mt-1">{t('review.submittedDesc')}</p>
                     </div>
                 </div>
             )}
@@ -112,7 +116,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                        Your Rating <span className="text-red-500">*</span>
+                        {t('review.title')} <span className="text-red-500">*</span>
                     </label>
                     <div className="flex">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -138,7 +142,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
 
                 <div>
                     <label htmlFor="userName" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                        Your Name</label>
+                        {t('review.name')}</label>
                     <Input
                         type="text"
                         id="userName"
@@ -168,7 +172,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
 
                 <div>
                     <label htmlFor="comment" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                        Your Review <span className="text-red-500">*</span>
+                        {t('review.comment')} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                         id="comment"
@@ -187,7 +191,7 @@ export function AddReview({ productId, onReviewSubmit }: AddReviewProps) {
                         disabled={isSubmitting || rating === 0}
                         variant="primary"
                     >
-                        {isSubmitting ? 'Submitting...' : 'Submit Review'}
+                        {isSubmitting ? t('review.submitting') : t('review.submitButton')}
                     </Button>
                 </div>
             </form>

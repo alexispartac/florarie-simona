@@ -1,8 +1,14 @@
 import React from 'react';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 import { ShopHeroProps } from './types';
 
-export const ShopHero: React.FC<ShopHeroProps> = ({ title, subtitle }) => (
-  <div className="relative py-26 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[var(--secondary)]"
+export const ShopHero: React.FC<ShopHeroProps> = ({ title, subtitle }) => {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+  
+  return (
+    <div className="relative py-26 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[var(--secondary)]"
     style={{
       backgroundImage: 'url(https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=1200&q=80)',
       backgroundSize: 'cover',
@@ -21,7 +27,7 @@ export const ShopHero: React.FC<ShopHeroProps> = ({ title, subtitle }) => (
       {/* Top decorative element */}
       <div className="flex items-center justify-center gap-3 mb-6">
         <div className="h-px w-12 bg-[var(--primary-foreground)]/40" />
-        <span className="text-[var(--primary-foreground)]/70 text-xs tracking-widest uppercase serif-light">Magazin</span>
+        <span className="text-[var(--primary-foreground)]/70 text-xs tracking-widest uppercase serif-light">{t('shop.title').split(' ')[0]}</span>
         <div className="h-px w-12 bg-[var(--primary-foreground)]/40" />
       </div>
       
@@ -36,4 +42,4 @@ export const ShopHero: React.FC<ShopHeroProps> = ({ title, subtitle }) => (
       <div className="mt-8 w-24 h-px bg-[var(--primary-foreground)]/40 mx-auto" />
     </div>
   </div>
-);
+)};

@@ -5,10 +5,14 @@ import { useEvents } from '@/hooks/useEvents';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, MapPin, Heart, Share2, Search, Sparkles, ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 export default function EventsListPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [eventTypeFilter, setEventTypeFilter] = useState<'all' | 'upcoming' | 'past'>('all');
+  const { language } = useLanguage();
+  const t = useTranslation(language);
 
   const { data, isLoading } = useEvents({
     page: 1,
@@ -46,9 +50,9 @@ export default function EventsListPage() {
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[var(--primary-foreground)] drop-shadow-lg">Evenimente</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[var(--primary-foreground)] drop-shadow-lg">{t('events.title')}</h1>
             <p className="text-lg md:text-xl text-[var(--primary-foreground)]/95 max-w-2xl mx-auto drop-shadow-md">
-              Descoperiți momentele noastre speciale și evenimentele viitoare
+              {t('events.subtitle')}
             </p>
           </div>
         </div>
@@ -65,7 +69,7 @@ export default function EventsListPage() {
               </div>
               <input
                 type="text"
-                placeholder="Caută evenimente..."
+                placeholder={t('events.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-3 py-2 w-full border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
@@ -79,9 +83,9 @@ export default function EventsListPage() {
                 onChange={(e) => setEventTypeFilter(e.target.value as 'all' | 'upcoming' | 'past')}
                 className="px-4 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)]"
               >
-                <option value="all">Toate Evenimentele</option>
-                <option value="upcoming">Viitoare</option>
-                <option value="past">Trecute</option>
+                <option value="all">{t('events.filterAll')}</option>
+                <option value="upcoming">{t('events.filterUpcoming')}</option>
+                <option value="past">{t('events.filterPast')}</option>
               </select>
             </div>
           </div>
@@ -122,7 +126,7 @@ export default function EventsListPage() {
                     {event.featured && (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-[var(--accent)] text-[var(--accent-foreground)] shadow-lg">
                         <Sparkles className="h-3 w-3 mr-1" />
-                        Featured
+                        {t('events.featured')}
                       </span>
                     )}
                     <span
@@ -132,7 +136,7 @@ export default function EventsListPage() {
                           : 'bg-[var(--secondary)] text-[var(--foreground)]'
                       }`}
                     >
-                      {event.eventType === 'upcoming' ? 'Viitor' : 'Trecut'}
+                      {event.eventType === 'upcoming' ? t('events.upcoming') : t('events.past')}
                     </span>
                   </div>
                 </div>
@@ -182,9 +186,9 @@ export default function EventsListPage() {
         ) : (
           <div className="bg-[var(--card)] rounded-lg shadow-sm p-12 text-center border border-[var(--border)]">
             <Calendar className="mx-auto h-16 w-16 text-[var(--muted-foreground)] mb-4" />
-            <h3 className="text-xl font-medium text-[var(--foreground)] mb-2">Nu există evenimente</h3>
+            <h3 className="text-xl font-medium text-[var(--foreground)] mb-2">{t('events.noEvents')}</h3>
             <p className="text-[var(--muted-foreground)]">
-              {searchQuery ? 'Încearcă să modifici filtrele' : 'Revino curând pentru evenimente noi'}
+              {searchQuery ? t('events.tryAdjusting') : t('events.noEventsText')}
             </p>
           </div>
         )}
