@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
+import { withRateLimit } from '@/lib/rateLimit';
 
 // POST - Increment share count
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  return withRateLimit(request, async (req) => {
   try {
     const params = await context.params;
     const client = await clientPromise;
@@ -37,4 +39,5 @@ export async function POST(
       { status: 500 }
     );
   }
+  });
 }

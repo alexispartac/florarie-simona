@@ -1,6 +1,7 @@
 // Create this file at /src/app/api/contact/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { sendContactFormEmail } from '@/lib/email';
+import { withRateLimit } from '@/lib/rateLimit';
 
 interface ContactFormData {
   name: string;
@@ -9,9 +10,11 @@ interface ContactFormData {
   message: string;
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Stricter rate limit for contact form: 5 requests per minute
+  return withRateLimit(request, async (req) => {
   try {
-    const formData: ContactFormData = await request.json();
+    const formData: ContactFormData = await req.json();
     
     // Validate required fields
     const requiredFields: Array<keyof ContactFormData> = ['name', 'email', 'subject', 'message'];
@@ -50,4 +53,5 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+  }, { limit: 5, windowMs: 60000 }); // 5 requests per minute
 }

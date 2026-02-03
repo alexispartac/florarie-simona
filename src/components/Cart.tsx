@@ -114,25 +114,37 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       </div>
                       
                       <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center">
-                          <button
-                            onClick={() => {
-                              updateCartItemQuantity(item, item.quantity - 1);
-                            }}
-                            className="px-2 py-1 text-[var(--muted-foreground)] hover:bg-[var(--accent)] transition-colors cursor-pointer"
-                            disabled={item.quantity <= 1}
-                          >
-                            <FiMinus className="w-3 h-3" />
-                          </button>
-                          <span className="w-8 text-center text-sm text-[var(--foreground)]">{item.quantity}</span>
-                          <button
-                            onClick={() => {
-                              updateCartItemQuantity(item, item.quantity + 1);
-                            }}
-                            className="px-2 py-1 text-[var(--muted-foreground)] hover:bg-[var(--accent)] transition-colors cursor-pointer"
-                          >
-                            <FiPlus className="w-3 h-3" />
-                          </button>
+                        <div>
+                          <div className="flex items-center">
+                            <button
+                              onClick={() => {
+                                updateCartItemQuantity(item, item.quantity - 1);
+                              }}
+                              className="px-2 py-1 text-[var(--muted-foreground)] hover:bg-[var(--accent)] transition-colors cursor-pointer"
+                              disabled={item.quantity <= 1}
+                            >
+                              <FiMinus className="w-3 h-3" />
+                            </button>
+                            <span className="w-8 text-center text-sm text-[var(--foreground)]">{item.quantity}</span>
+                            <button
+                              onClick={() => {
+                                updateCartItemQuantity(item, item.quantity + 1);
+                              }}
+                              disabled={item.stock !== undefined && item.quantity >= item.stock}
+                              className={`px-2 py-1 transition-colors ${
+                                item.stock !== undefined && item.quantity >= item.stock
+                                  ? 'text-[var(--muted-foreground)] cursor-not-allowed opacity-50'
+                                  : 'text-[var(--muted-foreground)] hover:bg-[var(--accent)] cursor-pointer'
+                              }`}
+                            >
+                              <FiPlus className="w-3 h-3" />
+                            </button>
+                          </div>
+                          {item.stock !== undefined && item.quantity >= item.stock && (
+                            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                              Max: {item.stock}
+                            </p>
+                          )}
                         </div>
                       <button
                           onClick={() => {

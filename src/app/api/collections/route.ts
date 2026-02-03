@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Collection as CollectionType } from '@/types/collections';
+import { withRateLimit } from '@/lib/rateLimit';
 
 interface CollectionQuery {
   page: number;
@@ -11,11 +12,12 @@ interface CollectionQuery {
 
 // GET - Fetch all collections
 export async function GET(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
     const client = await clientPromise;
     const db = client.db('buchetul-simonei');
     
-    const searchParams = request.nextUrl.searchParams;
+    const searchParams = req.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
@@ -65,15 +67,17 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  });
 }
 
 // POST - Create new collection
 export async function POST(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
     const client = await clientPromise;
     const db = client.db('buchetul-simonei');
     
-    const body = await request.json();
+    const body = await req.json();
     
     // Validate required fields
     if (!body.name || !body.description) {
@@ -114,4 +118,5 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  });
 }

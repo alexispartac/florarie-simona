@@ -5,9 +5,11 @@ import { useCollection } from '@/hooks/useCollections';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingCart, ImageIcon, Sparkles } from 'lucide-react';
-import { Product } from '@/types/products';
+import { Product, ProductInCatalog } from '@/types/products';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
+import { ProductCard } from '@/app/shop/components/ProductCard';
+import { useShop } from '@/context/ShopContext';
 
 export default function CollectionDetailPage() {
   const { language } = useLanguage();
@@ -15,8 +17,40 @@ export default function CollectionDetailPage() {
   const params = useParams();
   const router = useRouter();
   const collectionId = params.id as string;
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useShop();
 
   const { data: collection, isLoading, error } = useCollection(collectionId);
+
+  // Convert Product to ProductInCatalog for ProductCard
+  const convertToProductInCatalog = (product: Product): ProductInCatalog => ({
+    productId: product.productId,
+    name: product.name,
+    slug: product.slug,
+    price: product.price,
+    category: product.category,
+    tags: product.tags,
+    isFeatured: product.isFeatured,
+    isNew: product.isNew,
+    rating: product.rating || 0,
+    reviewCount: product.reviewCount,
+    available: product.available,
+    images: product.images,
+    flowerDetails: product.flowerDetails,
+    stock: product.stock,
+  });
+
+  const handleToggleWishlist = (productId: string, name: string, price: number, images: string[]) => {
+    if (isInWishlist(productId)) {
+      removeFromWishlist(productId);
+    } else {
+      addToWishlist({
+        productId,
+        name,
+        price,
+        images,
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -118,58 +152,11 @@ export default function CollectionDetailPage() {
         {collection.productsDetails && collection.productsDetails.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {collection.productsDetails.map((product: Product) => (
-              <Link
+              <ProductCard
                 key={product.productId}
-                href={`/shop/${product.productId}`}
-                className="group bg-[var(--card)] rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-[var(--border)]"
-              >
-                {/* Product Image */}
-                <div className="relative h-64 bg-[var(--muted)]">
-                  {product.images?.[0] ? (
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <ImageIcon className="h-16 w-16 text-[var(--muted-foreground)]" />
-                    </div>
-                  )}
-                  {product.tags?.includes('new') && (
-                    <div className="absolute top-2 right-2">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                        {t("collection.new")}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Product Info */}
-                <div className="p-4">
-                  <h3 className="serif-font text-lg font-semibold text-[var(--foreground)] mb-1 line-clamp-2 group-hover:text-[var(--primary)] transition-colors">
-                    {product.name}
-                  </h3>
-                  <p className="serif-light text-sm text-[var(--muted-foreground)] mb-2 line-clamp-2">
-                    {product.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-[var(--primary)]">
-                      ${(product.price / 100).toFixed(2)}
-                    </span>
-                    {product.available ? (
-                      <span className="text-xs text-[var(--primary)] font-medium">
-                        {t("collection.inStock")}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-[var(--destructive)] font-medium">
-                        {t("collection.outOfStock")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
+                product={convertToProductInCatalog(product)}
+                onToggleWishlist={handleToggleWishlist}
+              />
             ))}
           </div>
         ) : (

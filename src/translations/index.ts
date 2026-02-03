@@ -12,6 +12,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.contact': 'Contact',
     'nav.collections': 'Collections',
     'nav.events': 'Events',
+    'nav.help': 'Help',
     'nav.trackOrder': 'Track Order',
     
     // Homepage
@@ -106,6 +107,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.toast.quantityUpdated': 'Updated quantity to',
     'cart.toast.cartCleared': 'Cart Cleared',
     'cart.toast.cartClearedDesc': 'All items have been removed from your cart.',
+    'cart.toast.stockLimitReached': 'Stock Limit Reached',
+    'cart.toast.maxStockAvailable': 'Maximum available',
     
     // Wishlist Toast Messages
     'wishlist.toast.addedToWishlist': 'Added to Wishlist',
@@ -223,6 +226,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.buyNow': 'Buy Now',
     'product.inStock': 'In Stock',
     'product.outOfStock': 'Out of Stock',
+    'product.unavailableTitle': 'Product Currently Unavailable',
+    'product.unavailableMessage': 'This product is currently unavailable. If you really want it, please contact us and we might be able to help somehow.',
+    'product.contactUs': 'Contact Us',
     'product.sameDayDelivery': 'Same-day delivery available!',
     'product.careInstructions': 'Flower Care Instructions',
     'product.writeReview': 'Write a Review',
@@ -232,6 +238,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.topRated': 'Top Rated',
     'product.productDetails': 'Product Details',
     'product.youMayAlsoLike': 'You May Also Like',
+    'product.viewDetails': 'View Details',
     
     // Product Reviews
     'review.title': 'Review Title',
@@ -250,6 +257,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'review.helpful': 'Helpful',
     'review.notHelpful': 'Not Helpful',
     'review.noReviews': 'No reviews yet. Be the first to review this product!',
+    'review.noReviewsShort': 'No reviews',
 
     // Contact Page
     'contact.title': 'Contact Us',
@@ -275,8 +283,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.phoneTitle': 'Phone',
     'contact.scheduleTitle': 'Schedule',
     'contact.scheduleMon': 'Monday - Saturday: 09:00 - 20:00',
-    'contact.scheduleSun': 'Sunday: Closed',
-    'contact.phoneSchedule': 'Monday - Saturday, 09:00 - 20:00',
+    'contact.scheduleSun': 'Sunday: 10:00 - 18:00',
+    'contact.phoneSchedule': 'Monday - Sunday, 08:00 - 22:00',
 
     // Collections Page
     'collections.title': 'Floral Collections',
@@ -365,6 +373,97 @@ export const translations: Record<Language, Record<string, string>> = {
     'orders.notFound': 'Order Not Found',
     'orders.notFoundText': 'The order with this tracking number was not found.',
     'orders.enterTracking': 'Please enter a tracking number',
+
+    // Help Page
+    'help.title': 'Help Center',
+    'help.subtitle': 'Find answers to your questions about our flower shop',
+    'help.searchPlaceholder': 'Search for help...',
+    'help.noResults': 'No results found. Try different keywords.',
+    
+    // Cookie Consent
+    'cookie.title': 'We Value Your Privacy',
+    'cookie.description': 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.',
+    'cookie.accept': 'Accept All',
+    'cookie.decline': 'Decline',
+    'cookie.cookiePolicy': 'Cookie Policy',
+    'cookie.privacyPolicy': 'Privacy Policy',
+    
+    // Quick Links
+    'help.quickLinks.trackOrder': 'Track Order',
+    'help.quickLinks.trackOrderDesc': 'Check your order status',
+    'help.quickLinks.contactUs': 'Contact Us',
+    'help.quickLinks.contactUsDesc': 'Get in touch with our team',
+    'help.quickLinks.browseFlowers': 'Browse Flowers',
+    'help.quickLinks.browseFlowersDesc': 'Explore our collection',
+    
+    // FAQ Title
+    'help.faq.title': 'Frequently Asked Questions',
+    
+    // Ordering
+    'help.ordering.title': 'Ordering',
+    'help.ordering.howToOrder': 'How do I place an order?',
+    'help.ordering.howToOrderAnswer': 'To place an order:\n1. Browse our shop and select your desired flowers\n2. Click "Add to Cart"\n3. Review your cart and click "Proceed to Checkout"\n4. Fill in your shipping information\n5. Choose your payment method and complete the purchase',
+    'help.ordering.modifyOrder': 'Can I modify my order after placing it?',
+    'help.ordering.modifyOrderAnswer': 'You can modify your order within 2 hours of placing it. Please contact us immediately at 0769141250 or via email. After this time, orders are sent to our florists and cannot be changed.',
+    'help.ordering.cancelOrder': 'How do I cancel my order?',
+    'help.ordering.cancelOrderAnswer': 'Orders can be cancelled within 2 hours of placement. Contact us as soon as possible. Refunds are processed within 5-7 business days.',
+    'help.ordering.trackOrder': 'How can I track my order?',
+    'help.ordering.trackOrderAnswer': 'You will receive a tracking number via email after your order is confirmed. Visit our "Track Order" page and enter your tracking number to see real-time updates.',
+    
+    // Delivery
+    'help.delivery.title': 'Delivery',
+    'help.delivery.deliveryTime': 'What are your delivery times?',
+    'help.delivery.deliveryTimeAnswer': 'We offer three delivery time slots:\n- Morning: 9 AM - 12 PM\n- Afternoon: 12 PM - 5 PM\n- Evening: 5 PM - 8 PM\n\nYou can select your preferred time slot during checkout.',
+    'help.delivery.sameDayDelivery': 'Do you offer same-day delivery?',
+    'help.delivery.sameDayDeliveryAnswer': 'Yes! Orders placed before 2 PM can be delivered the same day in major cities. Same-day delivery is available for selected products marked with "Same-day delivery available!"',
+    'help.delivery.deliveryAreas': 'Where do you deliver?',
+    'help.delivery.deliveryAreasAnswer': 'We deliver throughout Romania. Delivery times may vary based on your location. Major cities receive faster delivery, while rural areas may take 1-2 additional days.',
+    'help.delivery.notHome': 'What if the recipient is not home?',
+    'help.delivery.notHomeAnswer': 'Our delivery team will contact the recipient to arrange a convenient delivery time. If unable to reach them, we will contact you (the sender) for further instructions.',
+    
+    // Payment
+    'help.payment.title': 'Payment',
+    'help.payment.paymentMethods': 'What payment methods do you accept?',
+    'help.payment.paymentMethodsAnswer': 'We accept:\n- Credit/Debit Cards (Visa, Mastercard)\n- Online payment via euPlatesc\n- Cash on Delivery\n- Bank Transfer',
+    'help.payment.securePayment': 'Is my payment information secure?',
+    'help.payment.securePaymentAnswer': 'Yes! All online payments are processed through secure, encrypted connections. We use euPlatesc for card payments, which is PCI DSS compliant. We never store your complete card details.',
+    'help.payment.cashOnDelivery': 'How does Cash on Delivery work?',
+    'help.payment.cashOnDeliveryAnswer': 'With Cash on Delivery, you pay the delivery person in cash when your order arrives. This option is available for all orders. Please have exact change ready if possible.',
+    
+    // Flowers
+    'help.flowers.title': 'Flower Care',
+    'help.flowers.flowerCare': 'How do I care for my flowers?',
+    'help.flowers.flowerCareAnswer': 'General care tips:\n- Change water daily\n- Trim stems at a 45° angle every 2-3 days\n- Remove dead leaves\n- Keep away from direct sunlight\n- Maintain cool room temperature\n\nEach bouquet comes with specific care instructions.',
+    'help.flowers.howLong': 'How long will my flowers last?',
+    'help.flowers.howLongAnswer': 'With proper care, most bouquets last 7-10 days. Some flowers like sunflowers can last up to 12 days, while tulips typically last 5-7 days. Each product page includes expected lifespan information.',
+    'help.flowers.customBouquet': 'Can I create a custom bouquet?',
+    'help.flowers.customBouquetAnswer': 'Yes! Contact us via phone (0769141250) or email (laurasimona97@yahoo.com) with your preferences for colors, flower types, and occasion. Our florists will create a personalized arrangement for you.',
+    'help.flowers.freshness': 'How do you ensure flower freshness?',
+    'help.flowers.freshnessAnswer': 'We source flowers daily from trusted local and international growers. Each bouquet is inspected for quality before delivery. We offer a freshness guarantee - contact us within 24 hours if you\'re not satisfied.',
+    
+    // Products
+    'help.products.title': 'Products',
+    'help.products.outOfStock': 'What if my desired flower is out of stock?',
+    'help.products.outOfStockAnswer': 'Flower availability varies by season. If a product is out of stock, we can suggest similar alternatives or notify you when it becomes available. Contact us for recommendations.',
+    'help.products.sizes': 'What do the different sizes mean?',
+    'help.products.sizesAnswer': 'Our bouquet sizes:\n- Small: 5-7 stems, perfect for small spaces\n- Medium: 12-15 stems, our most popular choice\n- Large: 20-25 stems, impressive display\n- Extra Large: 30+ stems, grand gesture\n\nSize availability varies by product.',
+    'help.products.addOns': 'Can I add extras to my order?',
+    'help.products.addOnsAnswer': 'Yes! You can add a personalized message card to any order. Some products also offer vase options and other add-ons. These options appear during checkout.',
+    
+    // Account
+    'help.account.title': 'Account & Wishlist',
+    'help.account.wishlist': 'How does the Wishlist work?',
+    'help.account.wishlistAnswer': 'Click the heart icon on any product to add it to your Wishlist. Your wishlist is saved in your browser, making it easy to find and order your favorite flowers later.',
+    'help.account.orderHistory': 'Can I reorder from previous purchases?',
+    'help.account.orderHistoryAnswer': 'You can track your orders using the tracking number sent to your email. To reorder, simply find the product in our shop and add it to your cart again.',
+    
+    // Still Need Help
+    'help.stillNeedHelp.title': 'Still Need Help?',
+    'help.stillNeedHelp.subtitle': 'Our customer service team is here to assist you',
+    'help.contact.phone': 'Phone',
+    'help.contact.email': 'Email',
+    'help.contact.message': 'Send Message',
+    'help.contact.sendMessage': 'Contact Us',
     
   },
   ro: {
@@ -378,6 +477,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.contact': 'Contact',
     'nav.collections': 'Colecții',
     'nav.events': 'Evenimente',
+    'nav.help': 'Ajutor',
     'nav.trackOrder': 'Urmărește Comanda',
     
     // Homepage
@@ -474,6 +574,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.toast.quantityUpdated': 'Cantitate actualizată la',
     'cart.toast.cartCleared': 'Coș Golit',
     'cart.toast.cartClearedDesc': 'Toate produsele au fost șterse din coș.',
+    'cart.toast.stockLimitReached': 'Limită Stoc Atinsă',
+    'cart.toast.maxStockAvailable': 'Maxim disponibil',
     
     // Wishlist Toast Messages
     'wishlist.toast.addedToWishlist': 'Adăugat la Favorite',
@@ -553,6 +655,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.email': 'Email',
     'checkout.deliveryInfo': 'Notă: Voi plăti livratorului când comanda este livrată.',
     'checkout.paymentReference': 'Confirmă că ai revizuit detaliile comenzii și că vei plăti livratorului când comanda este livrată.',
+    'checkout.paymentReferenceBankTransfer': 'Confirmă că ai revizuit detaliile comenzii și că vei plăti prin transfer bancar dupa plasarea comenzii pentru a putea fi procesata de noi.',
+    'checkout.paymentReferenceTextBankTransfer': 'Confirmă că înțelegi că vei plăti prin transfer bancar.',
     'checkout.paymentReferenceText': 'Confirmă că înțelegi că vei plăti în efect livratorului când comanda este livrată.',
     'checkout.processCashOnDelivery': 'Procesează Plata',
     'checkout.bankTransferDetails': 'Detalii Transfer Bancar',
@@ -591,6 +695,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.buyNow': 'Cumpără Acum',
     'product.inStock': 'În Stoc',
     'product.outOfStock': 'Stoc Epuizat',
+    'product.unavailableTitle': 'Produs Momentan Indisponibil',
+    'product.unavailableMessage': 'Momentan produsul este indisponibil. Dacă doriți neapărat, contactați-ne și poate rezolvăm cumva.',
+    'product.contactUs': 'Contactează-ne',
     'product.sameDayDelivery': 'Livrare în aceeași zi disponibilă!',
     'product.careInstructions': 'Instrucțiuni de Îngrijire',
     'product.writeReview': 'Scrie o Recenzie',
@@ -600,6 +707,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.topRated': 'Cel Mai Bine Cotat',
     'product.productDetails': 'Detalii Produs',
     'product.youMayAlsoLike': 'S-ar putea să-ți placă și',
+    'product.viewDetails': 'Vezi Detalii',
     
     // Product Reviews
     'review.title': 'Titlu Recenzie',
@@ -618,6 +726,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'review.helpful': 'Util',
     'review.notHelpful': 'Nu este util',
     'review.noReviews': 'Încă nu există recenzii. Fii primul care scrie o recenzie!',
+    'review.noReviewsShort': 'Fără recenzii',
 
     // Contact Page
     'contact.title': 'Contactează-ne',
@@ -643,8 +752,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.phoneTitle': 'Telefon',
     'contact.scheduleTitle': 'Program',
     'contact.scheduleMon': 'Luni - Sâmbătă: 09:00 - 20:00',
-    'contact.scheduleSun': 'Duminică: Închis',
-    'contact.phoneSchedule': 'Luni - Sâmbătă, 09:00 - 20:00',
+    'contact.scheduleSun': 'Duminică: 10:00 - 18:00',
+    'contact.phoneSchedule': 'Luni - Duminică, 08:00 - 22:00',
 
     // Collections Page
     'collections.title': 'Colecții Florale',
@@ -733,6 +842,97 @@ export const translations: Record<Language, Record<string, string>> = {
     'orders.notFound': 'Comandă Negăsită',
     'orders.notFoundText': 'Comanda cu acest număr de urmărire nu a fost găsită.',
     'orders.enterTracking': 'Vă rugăm să introduceți un număr de urmărire',
+
+    // Help Page
+    'help.title': 'Centru de Ajutor',
+    'help.subtitle': 'Găsește răspunsuri la întrebările tale despre florăria noastră',
+    'help.searchPlaceholder': 'Caută ajutor...',
+    'help.noResults': 'Nu s-au găsit rezultate. Încearcă alte cuvinte cheie.',
+    
+    // Cookie Consent
+    'cookie.title': 'Respectăm Confidențialitatea Ta',
+    'cookie.description': 'Folosim cookie-uri pentru a îmbunătăți experiența ta de navigare, pentru a oferi conținut personalizat și pentru a analiza traficul. Apăsând "Acceptă Toate", consimți la utilizarea cookie-urilor.',
+    'cookie.accept': 'Acceptă Toate',
+    'cookie.decline': 'Refuză',
+    'cookie.cookiePolicy': 'Politica Cookie-uri',
+    'cookie.privacyPolicy': 'Politica de Confidențialitate',
+    
+    // Quick Links
+    'help.quickLinks.trackOrder': 'Urmărește Comanda',
+    'help.quickLinks.trackOrderDesc': 'Verifică statusul comenzii tale',
+    'help.quickLinks.contactUs': 'Contactează-ne',
+    'help.quickLinks.contactUsDesc': 'Ia legătura cu echipa noastră',
+    'help.quickLinks.browseFlowers': 'Explorează Florile',
+    'help.quickLinks.browseFlowersDesc': 'Descoperă colecția noastră',
+    
+    // FAQ Title
+    'help.faq.title': 'Întrebări Frecvente',
+    
+    // Ordering
+    'help.ordering.title': 'Comenzi',
+    'help.ordering.howToOrder': 'Cum plasez o comandă?',
+    'help.ordering.howToOrderAnswer': 'Pentru a plasa o comandă:\n1. Navighează prin magazinul nostru și selectează florile dorite\n2. Apasă "Adaugă în Coș"\n3. Revizuiește coșul și apasă "Continuă la Checkout"\n4. Completează informațiile de livrare\n5. Alege metoda de plată și finalizează achiziția',
+    'help.ordering.modifyOrder': 'Pot modifica comanda după plasare?',
+    'help.ordering.modifyOrderAnswer': 'Poți modifica comanda în termen de 2 ore de la plasare. Te rugăm să ne contactezi imediat la 0769141250 sau prin email. După acest timp, comenzile sunt trimise la florarii și nu pot fi modificate.',
+    'help.ordering.cancelOrder': 'Cum anulez comanda?',
+    'help.ordering.cancelOrderAnswer': 'Comenzile pot fi anulate în termen de 2 ore de la plasare. Contactează-ne cât mai curând. Rambursările sunt procesate în 5-7 zile lucrătoare.',
+    'help.ordering.trackOrder': 'Cum pot urmări comanda?',
+    'help.ordering.trackOrderAnswer': 'Vei primi un număr de urmărire prin email după confirmarea comenzii. Vizitează pagina "Urmărește Comanda" și introdu numărul de urmărire pentru a vedea actualizări în timp real.',
+    
+    // Delivery
+    'help.delivery.title': 'Livrare',
+    'help.delivery.deliveryTime': 'Care sunt intervalele de livrare?',
+    'help.delivery.deliveryTimeAnswer': 'Oferim trei intervale de livrare:\n- Dimineață: 9:00 - 12:00\n- După-amiază: 12:00 - 17:00\n- Seară: 17:00 - 20:00\n\nPoți selecta intervalul preferat la checkout.',
+    'help.delivery.sameDayDelivery': 'Oferiți livrare în aceeași zi?',
+    'help.delivery.sameDayDeliveryAnswer': 'Da! Comenzile plasate înainte de 14:00 pot fi livrate în aceeași zi în orașele majore. Livrarea în aceeași zi este disponibilă pentru produsele marcate cu "Livrare în aceeași zi disponibilă!"',
+    'help.delivery.deliveryAreas': 'Unde livrați?',
+    'help.delivery.deliveryAreasAnswer': 'Livrăm în toată România. Timpul de livrare poate varia în funcție de locație. Orașele mari primesc livrare mai rapidă, în timp ce zonele rurale pot necesita 1-2 zile suplimentare.',
+    'help.delivery.notHome': 'Ce se întâmplă dacă destinatarul nu este acasă?',
+    'help.delivery.notHomeAnswer': 'Echipa noastră de livrare va contacta destinatarul pentru a stabili un moment convenabil. Dacă nu reușim să-l contactăm, te vom contacta pe tine (expeditorul) pentru instrucțiuni suplimentare.',
+    
+    // Payment
+    'help.payment.title': 'Plată',
+    'help.payment.paymentMethods': 'Ce metode de plată acceptați?',
+    'help.payment.paymentMethodsAnswer': 'Acceptăm:\n- Carduri de Credit/Debit (Visa, Mastercard)\n- Plată online prin euPlatesc\n- Plată la livrare\n- Transfer bancar',
+    'help.payment.securePayment': 'Este sigură informația mea de plată?',
+    'help.payment.securePaymentAnswer': 'Da! Toate plățile online sunt procesate prin conexiuni securizate și criptate. Folosim euPlatesc pentru plățile cu cardul, care este conform PCI DSS. Nu stocăm niciodată detaliile complete ale cardului tău.',
+    'help.payment.cashOnDelivery': 'Cum funcționează Plata la Livrare?',
+    'help.payment.cashOnDeliveryAnswer': 'Cu Plata la Livrare, plătești curierului în numerar când primești comanda. Această opțiune este disponibilă pentru toate comenzile. Te rugăm să ai suma exactă pregătită, dacă este posibil.',
+    
+    // Flowers
+    'help.flowers.title': 'Îngrijirea Florilor',
+    'help.flowers.flowerCare': 'Cum îmi îngrijesc florile?',
+    'help.flowers.flowerCareAnswer': 'Sfaturi generale de îngrijire:\n- Schimbă apa zilnic\n- Taie tulpinile la un unghi de 45° la fiecare 2-3 zile\n- Îndepărtează frunzele moarte\n- Ține departe de lumina directă a soarelui\n- Menține temperatura camerei răcoroasă\n\nFiecare buchet vine cu instrucțiuni specifice de îngrijire.',
+    'help.flowers.howLong': 'Cât timp țin florile mele?',
+    'help.flowers.howLongAnswer': 'Cu îngrijire corespunzătoare, majoritatea buchetelor țin 7-10 zile. Unele flori precum floarea-soarelui pot ține până la 12 zile, în timp ce lalelele de obicei țin 5-7 zile. Fiecare pagină de produs include informații despre durata de viață așteptată.',
+    'help.flowers.customBouquet': 'Pot crea un buchet personalizat?',
+    'help.flowers.customBouquetAnswer': 'Da! Contactează-ne prin telefon (0769141250) sau email (laurasimona97@yahoo.com) cu preferințele tale pentru culori, tipuri de flori și ocazie. Florarii noștri vor crea un aranjament personalizat pentru tine.',
+    'help.flowers.freshness': 'Cum asigurați prospețimea florilor?',
+    'help.flowers.freshnessAnswer': 'Ne aprovizionăm zilnic cu flori de la cultivatori locali și internaționali de încredere. Fiecare buchet este inspectat pentru calitate înainte de livrare. Oferim o garanție de prospețime - contactează-ne în termen de 24 de ore dacă nu ești mulțumit.',
+    
+    // Products
+    'help.products.title': 'Produse',
+    'help.products.outOfStock': 'Ce fac dacă floarea dorită este epuizată?',
+    'help.products.outOfStockAnswer': 'Disponibilitatea florilor variază în funcție de sezon. Dacă un produs este epuizat, putem sugera alternative similare sau te putem notifica când devine disponibil. Contactează-ne pentru recomandări.',
+    'help.products.sizes': 'Ce înseamnă diferitele dimensiuni?',
+    'help.products.sizesAnswer': 'Dimensiunile buchetelor noastre:\n- Mic: 5-7 tulpini, perfect pentru spații mici\n- Mediu: 12-15 tulpini, cea mai populară alegere\n- Mare: 20-25 tulpini, display impresionant\n- Extra Mare: 30+ tulpini, gest grandios\n\nDisponibilitatea dimensiunilor variază în funcție de produs.',
+    'help.products.addOns': 'Pot adăuga extra la comandă?',
+    'help.products.addOnsAnswer': 'Da! Poți adăuga un mesaj personalizat pe card la orice comandă. Unele produse oferă și opțiuni de vază și alte accesorii. Aceste opțiuni apar la checkout.',
+    
+    // Account
+    'help.account.title': 'Cont & Lista de Dorințe',
+    'help.account.wishlist': 'Cum funcționează Lista de Dorințe?',
+    'help.account.wishlistAnswer': 'Apasă iconița în formă de inimă de pe orice produs pentru a-l adăuga la Lista de Dorințe. Lista ta de dorințe este salvată în browser, facilitând găsirea și comandarea florilor tale favorite mai târziu.',
+    'help.account.orderHistory': 'Pot recomanda din achizițiile anterioare?',
+    'help.account.orderHistoryAnswer': 'Poți urmări comenzile folosind numărul de urmărire trimis prin email. Pentru a recomanda, pur și simplu găsește produsul în magazinul nostru și adaugă-l din nou în coș.',
+    
+    // Still Need Help
+    'help.stillNeedHelp.title': 'Mai Ai Nevoie de Ajutor?',
+    'help.stillNeedHelp.subtitle': 'Echipa noastră de servicii pentru clienți este aici să te asiste',
+    'help.contact.phone': 'Telefon',
+    'help.contact.email': 'Email',
+    'help.contact.message': 'Trimite Mesaj',
+    'help.contact.sendMessage': 'Contactează-ne',
   }
 };
 

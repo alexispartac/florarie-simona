@@ -1,15 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Product } from '@/types/products';
+import { withRateLimit } from '@/lib/rateLimit';
 
 const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'products';
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
 ) {
+  return withRateLimit(request, async (req) => {
   try {
-    const url = new URL(request.url);
+    const url = new URL(req.url);
     const productId = url.pathname.split('/').pop();
 
     const client = await clientPromise;
@@ -34,6 +36,7 @@ export async function GET(
       { status: 500 }
     );
   }
+  });
 }
 
 export async function PUT(

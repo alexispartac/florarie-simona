@@ -420,16 +420,16 @@ function PaymentPageContent() {
                   <div className="bg-[var(--secondary)] p-4 rounded-lg border border-[var(--border)]">
                     <h3 className="font-medium text-[var(--foreground)] mb-2">{t('checkout.bankTransferDetails')}</h3>
                     <div className="space-y-2 text-sm text-[var(--muted-foreground)]">
-                      <p><span className="font-medium">{t('checkout.accountName')}:</span> Buchetul Simonei SRL</p>
-                      <p><span className="font-medium">{t('checkout.bankName')}:</span> Example Bank</p>
-                      <p><span className="font-medium">{t('checkout.iban')}:</span> RO49 AAAA 1B31 0075 9384 0000</p>
-                      <p><span className="font-medium">{t('checkout.swiftBic')}:</span> EXAMPLEBANK</p>
+                      <p><span className="font-medium">{t('checkout.accountName')}:</span> ... </p>
+                      <p><span className="font-medium">{t('checkout.bankName')}:</span> ... </p>
+                      <p><span className="font-medium">{t('checkout.iban')}:</span> ... </p>
+                      <p><span className="font-medium">{t('checkout.swiftBic')}:</span> ... </p>
                     </div>
                     <p className="mt-4 text-sm text-[var(--muted-foreground)] font-bold">
-                      {t('checkout.paymentReference')}
+                      {t('checkout.paymentReferenceBankTransfer')}
                     </p>
                     <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                      {t('checkout.paymentReferenceText')}
+                      {t('checkout.paymentReferenceTextBankTransfer')}
                     </p>
                   </div>
 
@@ -442,12 +442,12 @@ function PaymentPageContent() {
                       onChange={handlePaymentReferenceChange}
                     />
                     <label htmlFor="payment-reference" className="text-sm text-[var(--foreground)]">
-                      {t('checkout.paymentReferenceText')}
+                      {t('checkout.paymentReferenceTextBankTransfer')}
                     </label>
                   </div>
                   {!paymentReferenceConfirmed && (
                     <p className="text-sm text-[var(--destructive)] my-2">
-                      {t('checkout.paymentReferenceText')}
+                      {t('checkout.paymentReferenceTextBankTransfer')}
                     </p>
                   )}
 

@@ -25,7 +25,6 @@ Cookie-urile ne ajută să îmbunătățim experiența dvs. pe site, să ne amin
 Aceste cookie-uri sunt absolut necesare pentru funcționarea site-ului. Fără ele, anumite funcționalități nu ar putea fi oferite.
 
 Exemple:
-- Cookie-uri de sesiune pentru autentificare
 - Cookie-uri pentru coșul de cumpărături
 - Cookie-uri pentru securitate
 
@@ -139,8 +138,8 @@ Vă recomandăm să revizuiți periodic această pagină pentru a fi la curent c
           title: '8. Contact',
           content: `Pentru întrebări despre cookie-uri sau această politică:
 
-Email: contact@buchetulsimonei.ro
-Telefon: +40 XXX XXX XXX
+Email: simonabuzau2@gmail.com
+Telefon: +40 769 141 250
 
 Suntem disponibili să vă oferim informații suplimentare despre utilizarea cookie-urilor pe site-ul nostru.`
         }
@@ -163,7 +162,6 @@ Cookies help us improve your experience on our site, remember your preferences, 
 These cookies are absolutely necessary for the website to function. Without them, certain functionalities could not be provided.
 
 Examples:
-- Session cookies for authentication
 - Shopping cart cookies
 - Security cookies
 
@@ -277,8 +275,8 @@ We recommend periodically reviewing this page to stay informed about how we use 
           title: '8. Contact',
           content: `For questions about cookies or this policy:
 
-Email: contact@buchetulsimonei.ro
-Phone: +40 XXX XXX XXX
+Email: simonabuzau2@gmail.com
+Phone: +40 769 141 250
 
 We are available to provide additional information about cookie usage on our site.`
         }

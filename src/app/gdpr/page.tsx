@@ -19,9 +19,9 @@ export default function GDPRPage() {
           icon: 'shield',
           title: '1. Operator de Date',
           content: `Operator de date: Buchetul Simonei
-Email: contact@buchetulsimonei.ro
-Telefon: +40 XXX XXX XXX
-Adresă: [Adresa completă]
+Email: simonabuzau2@gmail.com
+Telefon: +40 769 141 250
+Adresă: Str. Unirii 240, Târmșeni, Neamț, România
 
 Suntem responsabili pentru modul în care colectăm, procesăm și protejăm datele dumneavoastră personale.`
         },
@@ -61,7 +61,6 @@ e) Date de Marketing:
           content: `Colectăm date prin:
 
 a) Direct de la Dumneavoastră:
-- La crearea contului
 - La plasarea comenzilor
 - Prin formulare de contact
 - La abonarea la newsletter
@@ -201,7 +200,7 @@ g) Dreptul de a Retrage Consimțământul:
 h) Dreptul de a Depune Plângere:
 - La Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)
 
-Pentru exercitarea drepturilor, contactați-ne la: contact@buchetulsimonei.ro`
+Pentru exercitarea drepturilor, contactați-ne la: simonabuzau2@gmail.com`
         },
         {
           icon: 'globe',
@@ -250,9 +249,9 @@ Ultima actualizare: 30 Ianuarie 2026`
 
 Responsabil Protecția Datelor (DPO):
 Email: dpo@buchetulsimonei.ro
-Email general: contact@buchetulsimonei.ro
-Telefon: +40 XXX XXX XXX
-Adresă: [Adresa completă]
+Email general: simonabuzau2@gmail.com
+Telefon: +40 769 141 250
+Adresă: Str. Unirii 240, Târmșeni, Neamț, România
 
 Program răspuns: 1-3 zile lucrătoare
 
@@ -274,9 +273,9 @@ Email: anspdcp@dataprotection.ro`
           icon: 'shield',
           title: '1. Data Controller',
           content: `Data Controller: Buchetul Simonei
-Email: contact@buchetulsimonei.ro
-Phone: +40 XXX XXX XXX
-Address: [Complete address]
+Email: simonabuzau2@gmail.com
+Phone: +40 769 141 250
+Address: Str. Unirii 240, Târmșeni, Neamț, România
 
 We are responsible for how we collect, process, and protect your personal data.`
         },
@@ -316,7 +315,6 @@ e) Marketing Data:
           content: `We collect data through:
 
 a) Directly from You:
-- When creating an account
 - When placing orders
 - Through contact forms
 - When subscribing to newsletter
@@ -456,7 +454,7 @@ g) Right to Withdraw Consent:
 h) Right to Lodge a Complaint:
 - With the National Supervisory Authority for Personal Data Processing (ANSPDCP)
 
-To exercise your rights, contact us at: contact@buchetulsimonei.ro`
+To exercise your rights, contact us at: simonabuzau2@gmail.com`
         },
         {
           icon: 'globe',
@@ -505,9 +503,9 @@ Last update: January 30, 2026`
 
 Data Protection Officer (DPO):
 Email: dpo@buchetulsimonei.ro
-General email: contact@buchetulsimonei.ro
-Phone: +40 XXX XXX XXX
-Address: [Complete address]
+General email: simonabuzau2@gmail.com
+Phone: +40 769 141 250
+Address: Str. Unirii 240, Târmșeni, Neamț, România
 
 Response time: 1-3 business days
 

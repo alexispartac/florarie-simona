@@ -3,11 +3,12 @@
 
 import { useState, useCallback } from 'react';
 import { useProductsAdmin } from '@/hooks/useProducts';
-import { PlusIcon, PencilIcon, TrashIcon, SearchIcon } from 'lucide-react';
+import { PlusIcon, PencilIcon, TrashIcon, SearchIcon, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
+import ProductReviewsModal from './ProductReviewsModal';
 import axios from 'axios';
 
 const ITEMS_PER_PAGE = 10;
@@ -19,6 +20,9 @@ export default function ProductsTab() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isAddingStock, setIsAddingStock] = useState(false);
+  const [reviewsModalOpen, setReviewsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | null>(null);
 
   const { data, isLoading, error, refetch } = useProductsAdmin({
     page: currentPage,
@@ -69,6 +73,39 @@ export default function ProductsTab() {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleAddStockToAll = async () => {
+    if (!confirm('Are you sure you want to add stock: 1 to ALL products? This will overwrite existing stock values.')) {
+      return;
+    }
+
+    setIsAddingStock(true);
+    try {
+      const response = await axios.put('/api/products/add-stock');
+
+      if (response.data.success) {
+        alert(`Success! Updated ${response.data.modifiedCount} products with stock.`);
+        await refetch();
+      } else {
+        alert('Failed to add stock to products');
+      }
+    } catch (error) {
+      console.error('Error adding stock:', error);
+      alert('Error adding stock to products');
+    } finally {
+      setIsAddingStock(false);
+    }
+  };
+
+  const handleOpenReviews = (productId: string, productName: string) => {
+    setSelectedProduct({ id: productId, name: productName });
+    setReviewsModalOpen(true);
+  };
+
+  const handleCloseReviews = () => {
+    setReviewsModalOpen(false);
+    setSelectedProduct(null);
   };
 
   if (isLoading) {
@@ -132,6 +169,25 @@ export default function ProductsTab() {
             </div>
           </form>
           <button
+            onClick={handleAddStockToAll}
+            disabled={isAddingStock}
+            className="inline-flex items-center px-4 py-2 border border-orange-600 text-sm font-medium cursor-pointer rounded-md shadow-sm text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isAddingStock ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-orange-600 mr-2"></div>
+                Adding Stock...
+              </>
+            ) : (
+              <>
+                <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                Add Stock to All
+              </>
+            )}
+          </button>
+          <button
             onClick={() => router.push('/admin/products/new')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium cursor-pointer rounded-md shadow-sm text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
           >
@@ -154,6 +210,9 @@ export default function ProductsTab() {
                 </th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
                   Stock
+                </th>
+                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
+                  Reviews
                 </th>
                 <th scope="col" className="relative px-6 py-3">
                   <span className="sr-only">Actions</span>
@@ -193,6 +252,16 @@ export default function ProductsTab() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-[var(--muted-foreground)]">
                       {product.stock || 0} in stock
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <button
+                        onClick={() => handleOpenReviews(product.productId, product.name)}
+                        className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-[var(--primary)] hover:bg-[var(--secondary)] rounded-md transition-colors cursor-pointer"
+                        title="Manage reviews"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                        <span>{product.reviewCount || 0}</span>
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button 
@@ -305,6 +374,17 @@ export default function ProductsTab() {
           </div>
         </div>
       </div>
+
+      {/* Reviews Modal */}
+      {selectedProduct && (
+        <ProductReviewsModal
+          isOpen={reviewsModalOpen}
+          onClose={handleCloseReviews}
+          productId={selectedProduct.id}
+          productName={selectedProduct.name}
+          onReviewsChange={() => refetch()}
+        />
+      )}
     </div>
   );
 }

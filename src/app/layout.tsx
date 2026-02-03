@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Navigation from "@/components/Navigation";
+import CookieConsent from "@/components/CookieConsent";
 import { ShopProvider } from "@/context/ShopContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { QueryProvider } from "./providers/QueryProvider";
@@ -40,6 +41,7 @@ export default function RootLayout({
                 <ShopProvider>
                   <Navigation />
                   {children}
+                  <CookieConsent />
                 </ShopProvider>
               </QueryProvider>
             </ToastProvider>

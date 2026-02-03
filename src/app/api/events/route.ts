@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Event } from '@/types/events';
+import { withRateLimit } from '@/lib/rateLimit';
 
 interface EventQuery {
   page: number;
@@ -12,11 +13,12 @@ interface EventQuery {
 }
 // GET - Fetch all events
 export async function GET(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
     const client = await clientPromise;
     const db = client.db('buchetul-simonei');
     
-    const searchParams = request.nextUrl.searchParams;
+    const searchParams = req.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
@@ -79,15 +81,17 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  });
 }
 
 // POST - Create new event
 export async function POST(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
     const client = await clientPromise;
     const db = client.db('buchetul-simonei');
     
-    const body = await request.json();
+    const body = await req.json();
     
     // Validate required fields
     if (!body.title || !body.description || !body.eventDate) {
@@ -139,4 +143,5 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  });
 }

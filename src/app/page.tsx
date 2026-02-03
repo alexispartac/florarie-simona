@@ -150,10 +150,10 @@ function HeroSection({ t, router }: SectionProps) {
                 {/* Social Media Links */}
                 <div className="flex items-center gap-3 text-[var(--primary-foreground)]/90">
                   <span className="text-sm serif-light">Ne poți găsi pe:</span>
-                  <a 
-                    href="https://wa.me/40123456789" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                    <a 
+                      href="https://wa.me/40769141250" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
                     className="hover:text-[var(--primary)] transition-colors"
                     aria-label="WhatsApp"
                   >
@@ -162,7 +162,7 @@ function HeroSection({ t, router }: SectionProps) {
                     </svg>
                   </a>
                   <a 
-                    href="https://facebook.com" 
+                    href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="hover:text-[var(--primary)] transition-colors"
@@ -173,7 +173,7 @@ function HeroSection({ t, router }: SectionProps) {
                     </svg>
                   </a>
                   <a 
-                    href="https://instagram.com" 
+                    href="https://www.instagram.com/poeziaflorilor/" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="hover:text-[var(--primary)] transition-colors"
@@ -789,6 +789,12 @@ function FooterSection() {
               <a href="/contact" className="serif-light text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
                 Contact
               </a>
+              <Link href="/help" className="serif-light text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
+                Ajutor
+              </Link>
+              <Link href="/orders" className="serif-light text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors">
+                Urmărește Comanda
+              </Link>
             </nav>
           </div>
 
@@ -799,7 +805,7 @@ function FooterSection() {
             </h4>
             <div className="flex gap-4">
               <a 
-                href="https://facebook.com" 
+                href="https://www.facebook.com/people/Simona-Buz%C4%83u/100009279287640/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[var(--primary)] hover:bg-[var(--hover-primary)] flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
@@ -810,7 +816,7 @@ function FooterSection() {
                 </svg>
               </a>
               <a 
-                href="https://instagram.com" 
+                href="https://www.instagram.com/poeziaflorilor/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[var(--primary)] hover:bg-[var(--hover-primary)] flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
@@ -850,40 +856,15 @@ function FooterSection() {
           
           <div className="flex flex-wrap justify-center items-center gap-6 mb-8">
             {/* EuPlatesc */}
-            {/* <div className="bg-white p-3 rounded-lg shadow-sm">
+            <div className="flex items-center justify-center p-3 rounded-lg">
               <Image 
-                src="https://www.euplatesc.ro/img/euplatesc_logo_mic.jpg" 
+                src="/EuPlatescTransparent.png" 
                 alt="EuPlatesc" 
-                width={100} 
-                height={40}
-                className="h-10 w-auto"
+                width={200} 
+                height={50}
+                className="h-30 w-50"
               />
-            </div> */}
-            
-            {/* Visa */}
-            {/* <div className="bg-white p-3 rounded-lg shadow-sm">
-              <svg className="h-10 w-16" viewBox="0 0 48 32" fill="none">
-                <rect width="48" height="32" fill="white"/>
-                <path d="M19.5 10.5H16.5L14 21.5H17L19.5 10.5Z" fill="#00579F"/>
-                <path d="M27.5 10.5L24 21.5H27.5L31 10.5H27.5Z" fill="#00579F"/>
-              </svg>
-            </div> */}
-            
-            {/* Mastercard */}
-            {/* <div className="bg-white p-3 rounded-lg shadow-sm">
-              <svg className="h-10 w-16" viewBox="0 0 48 32" fill="none">
-                <circle cx="18" cy="16" r="8" fill="#EB001B"/>
-                <circle cx="30" cy="16" r="8" fill="#F79E1B"/>
-                <path d="M24 10C22 11.5 20.5 13.5 20.5 16C20.5 18.5 22 20.5 24 22C26 20.5 27.5 18.5 27.5 16C27.5 13.5 26 11.5 24 10Z" fill="#FF5F00"/>
-              </svg>
-            </div> */}
-            
-            {/* Apple Pay */}
-            {/* <div className="bg-white p-3 rounded-lg shadow-sm">
-              <svg className="h-10 w-16" viewBox="0 0 48 32" fill="none">
-                <path d="M15.5 10.5C14.5 11 14 12 14 13C14 14 15 15 16 15C17 15 18 14 18 13C18 12 17.5 11 16.5 10.5C16 10.5 15.5 10.5 15.5 10.5ZM16 16C14.5 16 13 17 13 18.5C13 20 14 21.5 15.5 21.5C16.5 21.5 17.5 21 18 20C18.5 21 19.5 21.5 20.5 21.5C22 21.5 23 20 23 18.5C23 17 21.5 16 20 16C19 16 18 16.5 17.5 17C17 16.5 16.5 16 16 16Z" fill="black"/>
-              </svg>
-            </div> */}
+            </div>
           </div>
 
           {/* Security Info */}
@@ -900,34 +881,34 @@ function FooterSection() {
           </div>
 
           {/* ANPC Badges */}
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex mx-auto justify-center gap-6">
             <a 
               href="https://anpc.ro/ce-este-sal/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover:opacity-80 transition-opacity"
             >
-              {/* <Image 
-                src="https://www.anpc.ro/galerie/5c89c00d52821_sol_alternativa_solutionarea_litigiilor.png" 
+              <Image 
+                src="/ANPC.png" 
                 alt="ANPC - Soluționarea Alternativă a Litigiilor" 
-                width={200} 
-                height={80}
-                className="h-16 w-auto"
-              /> */}
+                width={100} 
+                height={40}
+                className="h-10 w-auto"
+              />
             </a>
             <a 
-              href="https://ec.europa.eu/consumers/odr" 
+              href="https://anpc.ro/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover:opacity-80 transition-opacity"
             >
-              {/* <Image 
-                src="https://www.anpc.ro/galerie/5c89c4e1a3cea_solutionarea_online_litigiilor.png" 
-                alt="ANPC - Soluționarea Online a Litigiilor" 
-                width={200} 
-                height={80}
-                className="h-16 w-auto"
-              /> */}
+              <Image 
+                src="/ANPC-DETALII.png" 
+                alt="ANPC - Detalii" 
+                width={100} 
+                height={40}
+                className="h-10 w-auto"
+              />
             </a>
           </div>
         </div>

@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Collection } from '@/types/collections';
+import { withRateLimit } from '@/lib/rateLimit';
 
 // GET - Fetch single collection by ID
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  return withRateLimit(request, async (req) => {
   try {
     const params = await context.params;
     const client = await clientPromise;
@@ -41,6 +43,7 @@ export async function GET(
       { status: 500 }
     );
   }
+  });
 }
 
 // PUT - Update collection

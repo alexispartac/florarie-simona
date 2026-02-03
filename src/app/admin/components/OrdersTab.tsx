@@ -144,10 +144,12 @@ export default function OrdersTab() {
                         >
                             <option value="all">All Orders</option>
                             <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="shipped">Shipped</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="preparing">Preparing</option>
+                            <option value="out-for-delivery">Out for Delivery</option>
                             <option value="delivered">Delivered</option>
                             <option value="cancelled">Cancelled</option>
+                            <option value="failed-delivery">Failed Delivery</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[var(--foreground)]">
                             <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -169,17 +171,29 @@ export default function OrdersTab() {
 
     const getStatusBadge = (status: string) => {
         const statusClasses = {
-            pending: 'bg-[var(--accent)]/20 text-[var(--accent-foreground)]',
-            processing: 'bg-[var(--primary)]/20 text-[var(--primary)]',
-            shipped: 'bg-purple-100 text-purple-800',
-            delivered: 'bg-[var(--primary)]/20 text-[var(--primary)]',
-            cancelled: 'bg-[var(--destructive)]/20 text-[var(--destructive)]'
+            pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
+            confirmed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
+            preparing: 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400',
+            'out-for-delivery': 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400',
+            delivered: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
+            cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
+            'failed-delivery': 'bg-rose-100 text-rose-800 dark:bg-rose-900/20 dark:text-rose-400'
+        };
+
+        const statusLabels = {
+            pending: 'Pending',
+            confirmed: 'Confirmed',
+            preparing: 'Preparing',
+            'out-for-delivery': 'Out for Delivery',
+            delivered: 'Delivered',
+            cancelled: 'Cancelled',
+            'failed-delivery': 'Failed Delivery'
         };
 
         return (
             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClasses[status as keyof typeof statusClasses] || 'bg-[var(--muted)] text-[var(--foreground)]'
                 }`}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
+                {statusLabels[status as keyof typeof statusLabels] || status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
         );
     };
@@ -199,10 +213,12 @@ export default function OrdersTab() {
                     >
                         <option value="all">All Orders</option>
                         <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
-                        <option value="shipped">Shipped</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="out-for-delivery">Out for Delivery</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
+                        <option value="failed-delivery">Failed Delivery</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[var(--foreground)]">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

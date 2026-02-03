@@ -44,7 +44,7 @@ Confirmarea comenzii se face prin email. Contractul se consideră încheiat în 
           content: `Livrăm flori proaspete în zonele desemnate, în funcție de disponibilitate.
 
 Detalii importante despre livrare:
-- Livrare în aceeași zi pentru comenzile plasate înainte de ora 14:00
+- Livrare în aceeași zi pentru comenzile in functie de ora
 - Costurile de livrare variază în funcție de zonă și sunt afișate la finalizarea comenzii
 - Pentru evenimente speciale (nunți, botezuri), contactați-ne direct pentru programare
 - Nu suntem responsabili pentru întârzieri cauzate de evenimente în afara controlului nostru`
@@ -95,9 +95,9 @@ Continuarea utilizării site-ului după modificări înseamnă acceptarea noilor
           title: '10. Contact',
           content: `Pentru întrebări sau clarificări despre acești Termeni și Condiții, vă rugăm să ne contactați:
 
-Email: contact@buchetulsimonei.ro
-Telefon: +40 XXX XXX XXX
-Adresă: [Adresa completă]`
+Email: simonabuzau2@gmail.com
+Telefon: +40 769 141 250
+Adresă: Str. Unirii 240, Târmșeni, Neamț, România`
         }
       ]
     },
@@ -137,7 +137,7 @@ Order confirmation is sent via email. The contract is considered concluded when 
           content: `We deliver fresh flowers in designated areas, subject to availability.
 
 Important delivery details:
-- Same-day delivery for orders placed before 2:00 PM
+- Same-day delivery for orders in function of the time
 - Delivery costs vary by area and are displayed at checkout
 - For special events (weddings, baptisms), contact us directly for scheduling
 - We are not responsible for delays caused by events beyond our control`
@@ -188,9 +188,9 @@ Continued use of the site after changes means acceptance of the new terms.`
           title: '10. Contact',
           content: `For questions or clarifications about these Terms and Conditions, please contact us:
 
-Email: contact@buchetulsimonei.ro
-Phone: +40 XXX XXX XXX
-Address: [Complete address]`
+Email: simonabuzau2@gmail.com
+Phone: +40 769 141 250
+Address: Str. Unirii 240, Târmșeni, Neamț, România`
         }
       ]
     }

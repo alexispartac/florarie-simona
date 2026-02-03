@@ -2,13 +2,16 @@ import { Product, ProductReview } from "@/types/products";
 import clientPromise from "@/lib/mongodb";
 import { NextResponse, NextRequest } from "next/server";
 import { Document, UpdateFilter } from "mongodb";
+import { withRateLimit } from "@/lib/rateLimit";
 
 const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'products';
 
 export async function POST(request: NextRequest) {
+  // Rate limit product reviews to prevent spam: 5 per minute
+  return withRateLimit(request, async (req) => {
     try {
-      const review: ProductReview = await request.json();
+      const review: ProductReview = await req.json();
 
       if (!review.productId) {
         return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
@@ -52,4 +55,5 @@ export async function POST(request: NextRequest) {
       console.error('Error submitting review:', error);
       return NextResponse.json({ error: 'Failed to submit review' }, { status: 500 });
     }
-  }
+  }, { limit: 5, windowMs: 60000 }); // 5 reviews per minute
+}

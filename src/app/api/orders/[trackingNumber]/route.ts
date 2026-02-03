@@ -1,14 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
+import { withRateLimit } from '@/lib/rateLimit';
 
 const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'orders';
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
 ) {
+  return withRateLimit(request, async (req) => {
   try {
-    const url = new URL(request.url);
+    const url = new URL(req.url);
     const trackingNumber = url.pathname.split('/').pop();
 
     if (!trackingNumber) {
@@ -40,6 +42,7 @@ export async function GET(
       { status: 500 }
     );
   }
+  });
 }
 
 export async function PUT(

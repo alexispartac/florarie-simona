@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
+import { withRateLimit } from '@/lib/rateLimit';
 
 // POST - Toggle like on an event
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  return withRateLimit(request, async (req) => {
   try {
     const params = await context.params;
     const client = await clientPromise;
     const db = client.db('buchetul-simonei');
     
-    const body = await request.json();
+    const body = await req.json();
     const { userId } = body;
 
     if (!userId) {
@@ -66,4 +68,5 @@ export async function POST(
       { status: 500 }
     );
   }
+  });
 }

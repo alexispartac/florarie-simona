@@ -6,6 +6,7 @@ import { useShop } from '@/context/ShopContext';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useProduct, useSubmitReview } from '@/hooks/useProducts';
 import { useParams } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
@@ -89,6 +90,7 @@ export default function ProductPage() {
                 price: product.price,
                 quantity: quantity,
                 image: product.images[0],
+                stock: product.stock, // Add stock information to cart item
             });
         } catch (error) {
             console.error('Error adding to cart:', error);
@@ -208,13 +210,13 @@ export default function ProductPage() {
                     </p>
 
                     {/* Rating */}
-                    {product.rating && (
+                    {product.reviewCount && product.reviewCount > 0 ? (
                         <div className="flex items-center gap-2 mb-4">
                             <div className="flex">
                                 {[...Array(5)].map((_, i) => (
                                     <svg
                                         key={i}
-                                        className={`w-5 h-5 ${i < Math.floor(product.rating!) ? 'text-yellow-400' : 'text-[var(--muted-foreground)]'}`}
+                                        className={`w-5 h-5 ${i < Math.floor(product.rating || 0) ? 'text-yellow-400' : 'text-[var(--muted-foreground)]'}`}
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -222,7 +224,11 @@ export default function ProductPage() {
                                     </svg>
                                 ))}
                             </div>
-                            <span className="text-sm text-[var(--muted-foreground)]">({product.reviewCount} reviews)</span>
+                            <span className="text-sm text-[var(--muted-foreground)]">({product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'})</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="text-sm text-[var(--muted-foreground)]">{t('review.noReviews')}</span>
                         </div>
                     )}
 
@@ -277,23 +283,80 @@ export default function ProductPage() {
                     {product.available && (
                         <div className="mb-6">
                             <h3 className="text-sm font-medium text-[var(--foreground)] mb-2">{t('product.quantity')}</h3>
-                            <div className="flex items-center">
-                                <button
-                                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                                    disabled={quantity <= 1}
-                                    className={`px-3 py-1 border border-[var(--border)] rounded-l-md bg-[var(--card)] text-[var(--foreground)] ${quantity <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-[var(--accent)]'}`}
-                                >
-                                    -
-                                </button>
-                                <span className="px-4 py-1 border-t border-b border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]">
-                                    {quantity}
-                                </span>
-                                <button
-                                    onClick={() => setQuantity(prev => prev + 1)}
-                                    className="px-3 py-1 border border-[var(--border)] rounded-r-md cursor-pointer bg-[var(--card)] text-[var(--foreground)] hover:bg-[var(--accent)]"
-                                >
-                                    +
-                                </button>
+                            <div className="flex items-center gap-2">
+                                <div className="flex items-center">
+                                    <button
+                                        onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                                        disabled={quantity <= 1}
+                                        className={`px-3 py-1 border border-[var(--border)] rounded-l-md bg-[var(--card)] text-[var(--foreground)] ${quantity <= 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-[var(--accent)]'}`}
+                                    >
+                                        -
+                                    </button>
+                                    <span className="px-4 py-1 border-t border-b border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]">
+                                        {quantity}
+                                    </span>
+                                    <button
+                                        onClick={() => {
+                                            const maxStock = product.stock || 20;
+                                            setQuantity(prev => Math.min(maxStock, prev + 1));
+                                        }}
+                                        disabled={product.stock !== undefined && quantity >= product.stock}
+                                        className={`px-3 py-1 border border-[var(--border)] rounded-r-md bg-[var(--card)] text-[var(--foreground)] ${
+                                            product.stock !== undefined && quantity >= product.stock 
+                                                ? 'cursor-not-allowed opacity-50' 
+                                                : 'cursor-pointer hover:bg-[var(--accent)]'
+                                        }`}
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                                {product.stock !== undefined && (
+                                    <span className="text-xs text-[var(--muted-foreground)]">
+                                        Max: {product.stock}
+                                    </span>
+                                )}
+                            </div>
+                            {product.stock !== undefined && quantity >= product.stock && (
+                                <p className="text-xs text-orange-600 dark:text-orange-400 mt-2">
+                                    ⚠️ Ai atins cantitatea maximă disponibilă
+                                </p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Stock Availability */}
+                    {product.available && product.stock !== undefined && (
+                        <div className="mb-6">
+                            <div className="p-4 bg-[var(--secondary)] rounded-lg border border-[var(--border)]">
+                                {product.stock > 10 ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-3 w-3 rounded-full bg-green-600 dark:bg-green-400 animate-pulse"></div>
+                                        <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                                            ✓ În stoc - disponibil imediat
+                                        </span>
+                                    </div>
+                                ) : product.stock > 5 ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-3 w-3 rounded-full bg-green-600 dark:bg-green-400"></div>
+                                        <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                                            ✓ În stoc ({product.stock} bucăți disponibile)
+                                        </span>
+                                    </div>
+                                ) : product.stock > 0 ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-3 w-3 rounded-full bg-orange-600 dark:bg-orange-400 animate-pulse"></div>
+                                        <span className="text-sm font-medium text-orange-700 dark:text-orange-400">
+                                            ⚠️ Doar {product.stock} {product.stock === 1 ? 'bucată rămasă' : 'bucăți rămase'} - comandă rapid!
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-3 w-3 rounded-full bg-red-600 dark:bg-red-400"></div>
+                                        <span className="text-sm font-medium text-red-700 dark:text-red-400">
+                                            ✕ Stoc epuizat
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -342,6 +405,31 @@ export default function ProductPage() {
                             `${t('product.addToCart')} - ${((product.price * quantity) / 100).toFixed(2)} RON`
                         )}
                     </Button>
+
+                    {/* Unavailable Product Message */}
+                    {!product.available && (
+                        <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                            <div className="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                </svg>
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-orange-800 mb-1">
+                                        {t('product.unavailableTitle')}
+                                    </p>
+                                    <p className="text-sm text-orange-700">
+                                        {t('product.unavailableMessage')}
+                                    </p>
+                                    <Link 
+                                        href="/contact" 
+                                        className="inline-block mt-2 text-sm font-medium text-orange-600 hover:text-orange-800 dark:hover:text-orange-200 hover:underline"
+                                    >
+                                        {t('product.contactUs')} →
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

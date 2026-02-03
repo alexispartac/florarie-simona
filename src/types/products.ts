@@ -116,6 +116,7 @@ export interface ProductInCatalog {
   reviewCount: number,
   images: string[],
   available: boolean,
+  stock?: number,
   flowerDetails?: {
     colors?: FlowerColor[];
     occasions?: FlowerOccasion[];
@@ -130,6 +131,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   image?: string;
+  stock?: number; // Available stock for this product
   selectedSize?: FlowerSize; // For flower products
   customMessage?: string; // Custom message for card/greeting
   deliveryDate?: string; // ISO date string for scheduled delivery

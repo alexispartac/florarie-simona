@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { ProductInCatalog } from '@/types/products';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/Badge';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/translations';
 
 // Helper function to check if URL is a video
 const isVideoUrl = (url: string): boolean => {
@@ -27,6 +29,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onToggleWishlist,
 }) => {
   const router = useRouter(); 
+  const { language } = useLanguage();
+  const t = useTranslation(language); 
 
   return (
     <div 
@@ -142,22 +146,63 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           
           {/* Rating */}
-          {product.rating && (
+          {product.reviewCount && product.reviewCount > 0 ? (
             <div className="flex items-center gap-1">
               <span className="text-yellow-500">★</span>
-              <span className="text-sm font-medium text-[var(--foreground)]">{product.rating}</span>
-              <span className="text-xs text-[var(--muted-foreground)]">({product.reviewCount + 1})</span>
+              <span className="text-sm font-medium text-[var(--foreground)]">{product.rating?.toFixed(1) || '0.0'}</span>
+              <span className="text-xs text-[var(--muted-foreground)]">({product.reviewCount})</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-[var(--muted-foreground)]">{t('review.noReviewsShort')}</span>
             </div>
           )}
         </div>
         
-        {!product.available && (
+        {/* Stock indicator */}
+        {product.available ? (
+          <div className="mt-3">
+            {product.stock !== undefined ? (
+              // Stock is defined in database
+              product.stock > 5 ? (
+                <div className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
+                  <div className="h-2 w-2 rounded-full bg-green-600 dark:bg-green-400"></div>
+                  <span>În stoc {product.stock} bucăți</span>
+                </div>
+              ) : product.stock > 0 ? (
+                <div className="flex items-center gap-1 text-sm text-orange-600 dark:text-orange-400">
+                  <div className="h-2 w-2 rounded-full bg-orange-600 dark:bg-orange-400"></div>
+                  <span>Doar {product.stock} bucăți rămase</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
+                  <div className="h-2 w-2 rounded-full bg-red-600 dark:bg-red-400"></div>
+                  <span>Stoc epuizat</span>
+                </div>
+              )
+            ) : (
+              // Stock is undefined - not in database yet
+              <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                <div className="h-2 w-2 rounded-full bg-gray-600 dark:bg-gray-400"></div>
+                <span>Stoc indisponibil</span>
+              </div>
+            )}
+          </div>
+        ) : (
           <div className="mt-3">
             <Badge variant="destructive" className="w-full text-center">
               Indisponibil
             </Badge>
           </div>
         )}
+
+        {/* View Details Button */}
+        <button
+          onClick={() => router.push(`/shop/${product.productId}?slug=${product.slug}`)}
+          className="w-full mt-3 py-2 px-4 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-md hover:bg-[var(--hover-primary)] transition-colors font-medium text-sm cursor-pointer"
+        >
+          {t('product.viewDetails') || 'View Details'}
+        </button>
       </div>
     </div>
   );

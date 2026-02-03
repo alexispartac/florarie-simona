@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Order, OrderStatus } from '@/types/orders';
+import { withRateLimit } from '@/lib/rateLimit';
 
 interface OrderQuery {
   status?: OrderStatus;
@@ -23,9 +24,10 @@ function generateTrackingNumber(): string {
 }
 
 // Update the GET handler in /src/app/api/orders/route.ts
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '10');
     const status = searchParams.get('status') as OrderStatus | 'all' | null;
 
@@ -74,11 +76,14 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
+  });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Strict rate limit for order creation: 3 requests per minute
+  return withRateLimit(request, async (req) => {
   try {
-    const orderData: Order = await request.json();
+    const orderData: Order = await req.json();
     
     // Basic validation
     if (!orderData.items?.length) {
@@ -125,4 +130,5 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+  }, { limit: 3, windowMs: 60000 }); // 3 requests per minute
 }

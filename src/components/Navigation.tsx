@@ -57,6 +57,7 @@ export default function Navigation() {
     { name: t('nav.collections'), href: '/collections' },
     { name: t('nav.events'), href: '/events' },
     { name: t('nav.contact'), href: '/contact' },
+    { name: t('nav.help'), href: '/help' },
     { name: t('nav.trackOrder'), href: '/orders' }
   ];
 

@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { preparePaymentParams, formatAmount } from '@/utils/euplatesc';
+import { withRateLimit } from '@/lib/rateLimit';
 
 /**
  * Initialize euPlatesc payment
@@ -24,9 +25,11 @@ type PaymentInitRequest = {
   };
 };
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Stricter rate limit for payment initialization: 5 per minute
+  return withRateLimit(request, async (req) => {
   try {
-    const body: PaymentInitRequest = await request.json();
+    const body: PaymentInitRequest = await req.json();
     
     // Validate required environment variables
     const merchantId = process.env.EUPLATESC_MERCHANT_ID;
@@ -86,4 +89,5 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+  }, { limit: 5, windowMs: 60000 }); // 5 payment initializations per minute
 }

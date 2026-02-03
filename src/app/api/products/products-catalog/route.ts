@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { ProductInCatalog } from '@/types/products';
 import { SortDirection } from 'mongodb';
+import { withRateLimit } from '@/lib/rateLimit';
 
 interface FilterQuery {
   available?: boolean;
@@ -22,9 +23,10 @@ interface SortOrder {
 const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'products';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '12');
     const offset = parseInt(searchParams.get('offset') || '0');
     
@@ -39,7 +41,7 @@ export async function GET(request: Request) {
     const db = client.db(DB_NAME);
     
     // Build filter query
-    const filterQuery: FilterQuery = { available: true };
+    const filterQuery: FilterQuery = { };
     
     // Category filter
     if (categories.length > 0) {
@@ -98,6 +100,7 @@ export async function GET(request: Request) {
                 rating: 1,
                 reviewCount: 1,
                 available: 1,
+                stock: 1,
                 images: 1,
                 flowerDetails: 1
             }}
@@ -123,4 +126,5 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
+  });
 }

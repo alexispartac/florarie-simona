@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
+import { withRateLimit } from '@/lib/rateLimit';
 
 const COLLECTION = 'products';
 
 export async function GET(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const searchParams = req.nextUrl.searchParams;
     const query = searchParams.get('q') || '';
     const limit = parseInt(searchParams.get('limit') || '10', 10);
 
@@ -51,4 +53,5 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  });
 }

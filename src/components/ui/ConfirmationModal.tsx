@@ -8,8 +8,10 @@ interface ConfirmationModalProps {
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
-  onCancel: () => void;
+  onCancel?: () => void;
+  onClose?: () => void;
   isDeleting?: boolean;
+  variant?: 'default' | 'destructive' | 'outline' | 'primary';
 }
 
 export function ConfirmationModal({
@@ -20,9 +22,16 @@ export function ConfirmationModal({
   cancelText = 'Cancel',
   onConfirm,
   onCancel,
+  onClose,
   isDeleting = false,
+  variant = 'destructive',
 }: ConfirmationModalProps) {
   if (!isOpen) return null;
+
+  const handleCancel = () => {
+    if (onCancel) onCancel();
+    if (onClose) onClose();
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -32,14 +41,13 @@ export function ConfirmationModal({
         <div className="flex justify-end space-x-3">
           <Button
             variant="outline"
-            onClick={onCancel}
+            onClick={handleCancel}
             disabled={isDeleting}
           >
             {cancelText}
           </Button>
           <Button
             onClick={onConfirm}
-            variant='destructive'
             disabled={isDeleting}
           >
             {isDeleting ? 'Deleting...' : confirmText}

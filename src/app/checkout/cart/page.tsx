@@ -114,28 +114,45 @@ export default function CartPage() {
 
                       <div className="mt-4 flex items-center justify-between">
                         <div>
-                          <div className="flex items-center border border-[var(--border)] rounded-md">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                updateCartItemQuantity(item, item.quantity - 1);
-                              }}
-                              className={`p-2 focus:outline-none ${item.quantity <= 1 ? 'text-[var(--muted-foreground)] cursor-not-allowed' : 'text-[var(--foreground)] hover:text-[var(--primary)] cursor-pointer'}`}
-                              disabled={item.quantity <= 1}
-                            >
-                              <FiMinus className="h-4 w-4" />
-                            </button>
-                            <span className="px-4 text-[var(--foreground)]">{item.quantity}</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                  updateCartItemQuantity(item, item.quantity + 1);
-                              }}
-                              className="p-2 focus:outline-none text-[var(--foreground)] hover:text-[var(--primary)] cursor-pointer"
-                            >
-                              <FiPlus className="h-4 w-4" />
-                            </button>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center border border-[var(--border)] rounded-md">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  updateCartItemQuantity(item, item.quantity - 1);
+                                }}
+                                className={`p-2 focus:outline-none ${item.quantity <= 1 ? 'text-[var(--muted-foreground)] cursor-not-allowed' : 'text-[var(--foreground)] hover:text-[var(--primary)] cursor-pointer'}`}
+                                disabled={item.quantity <= 1}
+                              >
+                                <FiMinus className="h-4 w-4" />
+                              </button>
+                              <span className="px-4 text-[var(--foreground)]">{item.quantity}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                    updateCartItemQuantity(item, item.quantity + 1);
+                                }}
+                                disabled={item.stock !== undefined && item.quantity >= item.stock}
+                                className={`p-2 focus:outline-none ${
+                                  item.stock !== undefined && item.quantity >= item.stock
+                                    ? 'text-[var(--muted-foreground)] cursor-not-allowed'
+                                    : 'text-[var(--foreground)] hover:text-[var(--primary)] cursor-pointer'
+                                }`}
+                              >
+                                <FiPlus className="h-4 w-4" />
+                              </button>
+                            </div>
+                            {item.stock !== undefined && (
+                              <span className="text-xs text-[var(--muted-foreground)]">
+                                Max: {item.stock}
+                              </span>
+                            )}
                           </div>
+                          {item.stock !== undefined && item.quantity >= item.stock && (
+                            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                              ⚠️ Cantitate maximă
+                            </p>
+                          )}
                         </div>
 
                         <button

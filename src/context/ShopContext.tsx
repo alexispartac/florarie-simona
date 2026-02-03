@@ -99,24 +99,56 @@ export function ShopProvider({ children }: { children: ReactNode }) {
                 item.productId === product.productId
             );
             
-            // Show toast based on whether the item is new or existing
-            setTimeout(() => {
-                toastRef.current?.({
-                    title: existingItem ? tRef.current('cart.toast.information') : tRef.current('cart.toast.addedToCart'),
-                    description: existingItem
-                        ? tRef.current('cart.toast.alreadyInCart')
-                        : tRef.current('cart.toast.addedToCartDesc')
-                });
-            }, 0);
-
             if (existingItem) {
+                const newQuantity = existingItem.quantity + product.quantity;
+                
+                // Check if adding more would exceed stock limit
+                if (product.stock !== undefined && newQuantity > product.stock) {
+                    setTimeout(() => {
+                        toastRef.current?.({
+                            title: tRef.current('cart.toast.stockLimitReached') || 'Stock limit reached',
+                            description: `${tRef.current('cart.toast.maxStockAvailable') || 'Maximum available'}: ${product.stock}`,
+                            variant: 'destructive',
+                        });
+                    }, 0);
+                    return prevCart; // Don't add if it exceeds stock
+                }
+                
+                // Show toast for existing item
+                setTimeout(() => {
+                    toastRef.current?.({
+                        title: tRef.current('cart.toast.information'),
+                        description: tRef.current('cart.toast.alreadyInCart')
+                    });
+                }, 0);
+
                 // Update quantity of existing item
                 return prevCart.map(item =>
                     item.productId === product.productId
-                        ? { ...item, quantity: item.quantity + product.quantity }
+                        ? { ...item, quantity: newQuantity, stock: product.stock } // Update stock info too
                         : item
                 );
             }
+
+            // Check stock limit for new item
+            if (product.stock !== undefined && product.quantity > product.stock) {
+                setTimeout(() => {
+                    toastRef.current?.({
+                        title: tRef.current('cart.toast.stockLimitReached') || 'Stock limit reached',
+                        description: `${tRef.current('cart.toast.maxStockAvailable') || 'Maximum available'}: ${product.stock}`,
+                        variant: 'destructive',
+                    });
+                }, 0);
+                return prevCart; // Don't add if it exceeds stock
+            }
+
+            // Show toast for new item
+            setTimeout(() => {
+                toastRef.current?.({
+                    title: tRef.current('cart.toast.addedToCart'),
+                    description: tRef.current('cart.toast.addedToCartDesc')
+                });
+            }, 0);
 
             return [...prevCart, product];
         });
@@ -145,6 +177,18 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     const updateCartItemQuantity = useCallback((product: CartItem, quantity: number) => {
         if (quantity < 1) {
             removeFromCart(product);
+            return;
+        }
+        
+        // Check if quantity exceeds stock limit
+        if (product.stock !== undefined && quantity > product.stock) {
+            setTimeout(() => {
+                toastRef.current?.({
+                    title: tRef.current('cart.toast.stockLimitReached') || 'Stock limit reached',
+                    description: `${tRef.current('cart.toast.maxStockAvailable') || 'Maximum available'}: ${product.stock}`,
+                    variant: 'destructive',
+                });
+            }, 0);
             return;
         }
         

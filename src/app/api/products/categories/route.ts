@@ -1,10 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
+import { withRateLimit } from '@/lib/rateLimit';
 
 const DB_NAME = 'buchetul-simonei';
 const COLLECTION = 'products';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  return withRateLimit(request, async (req) => {
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
@@ -22,4 +24,5 @@ export async function GET() {
       { status: 500 }
     );
   }
+  });
 }
