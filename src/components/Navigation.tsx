@@ -54,6 +54,7 @@ export default function Navigation() {
   const navLinks = [
     { name: t('nav.home'), href: '/' },
     { name: t('nav.shop'), href: '/shop' },
+    { name: t('nav.extras'), href: '/extras' },
     { name: t('nav.collections'), href: '/collections' },
     { name: t('nav.events'), href: '/events' },
     { name: t('nav.contact'), href: '/contact' },
@@ -233,34 +234,84 @@ export default function Navigation() {
                   <div className="flex justify-center py-8">
                     <Spinner className="w-6 h-6" />
                   </div>
-                ) : searchResults?.products?.length > 0 ? (
-                  <div className="space-y-2">
-                    {searchResults.products.map((product: { productId: string; slug: string; name: string; category: string; images: string[]; price: number }) => (
-                      <button
-                        key={product.productId}
-                        onClick={() => handleSearchResultClick(product.productId, product.slug)}
-                        className="w-full flex items-center space-x-4 p-3 hover:bg-[var(--accent)] rounded-lg transition-colors text-left"
-                      >
-                        <Image
-                          src={product.images[0]}
-                          alt={product.name}
-                          width={60}
-                          height={60}
-                          className="rounded-md object-cover shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-[var(--foreground)] truncate">
-                            {product.name}
-                          </h4>
-                          <p className="text-sm text-[var(--muted-foreground)]">{product.category}</p>
+                ) : (searchResults?.products?.length > 0 || searchResults?.extras?.length > 0) ? (
+                  <div className="space-y-4">
+                    {/* Products Section */}
+                    {searchResults.products?.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide px-3 mb-2">
+                          {t('nav.shop') || 'Products'}
+                        </h3>
+                        <div className="space-y-2">
+                          {searchResults.products.map((product: { productId: string; slug: string; name: string; category: string; images: string[]; price: number }) => (
+                            <button
+                              key={product.productId}
+                              onClick={() => handleSearchResultClick(product.productId, product.slug)}
+                              className="w-full flex items-center space-x-4 p-3 hover:bg-[var(--accent)] rounded-lg transition-colors text-left"
+                            >
+                              <Image
+                                src={product.images[0]}
+                                alt={product.name}
+                                width={60}
+                                height={60}
+                                className="rounded-md object-cover shrink-0"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-medium text-[var(--foreground)] truncate">
+                                  {product.name}
+                                </h4>
+                                <p className="text-sm text-[var(--muted-foreground)]">{product.category}</p>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <p className="text-sm font-medium text-[var(--primary)]">
+                                  {(product.price / 100).toFixed(2)} RON
+                                </p>
+                              </div>
+                            </button>
+                          ))}
                         </div>
-                        <div className="text-right shrink-0">
-                          <p className="text-sm font-medium text-[var(--primary)]">
-                            {(product.price / 100).toFixed(2)} RON
-                          </p>
+                      </div>
+                    )}
+
+                    {/* Extras Section */}
+                    {searchResults.extras?.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide px-3 mb-2">
+                          {t('nav.extras') || 'Extras'}
+                        </h3>
+                        <div className="space-y-2">
+                          {searchResults.extras.map((extra: { extraId: string; slug: string; name: string; category: string; images: string[]; price: number }) => (
+                            <div
+                              key={extra.extraId}
+                              className="w-full flex items-center space-x-4 p-3 hover:bg-[var(--accent)] rounded-lg transition-colors"
+                            >
+                              <div className="relative w-[60px] h-[60px] shrink-0">
+                                <Image
+                                  src={extra.images[0] || '/placeholder.jpg'}
+                                  alt={extra.name}
+                                  fill
+                                  className="rounded-md object-cover"
+                                />
+                                <div className="absolute -top-1 -right-1 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-1.5 py-0.5 rounded-full">
+                                  🎁
+                                </div>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-medium text-[var(--foreground)] truncate">
+                                  {extra.name}
+                                </h4>
+                                <p className="text-sm text-[var(--muted-foreground)] capitalize">{extra.category}</p>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <p className="text-sm font-medium text-[var(--primary)]">
+                                  {(extra.price / 100).toFixed(2)} RON
+                                </p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </button>
-                    ))}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-[var(--muted-foreground)]">

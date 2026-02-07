@@ -43,16 +43,16 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // Helper function to safely get theme from localStorage
 const getInitialTheme = (): Theme => {
-  if (typeof window === 'undefined') return 'rose'; // Default for server-side
+  if (typeof window === 'undefined') return 'white'; // Default for server-side
   const savedTheme = localStorage.getItem('theme') as Theme | null;
-  return savedTheme || 'rose';
+  return savedTheme || 'white';
 };
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
 
   // Get current theme configuration
-  const currentThemeConfig = themes.find(t => t.id === theme) || themes[2];
+  const currentThemeConfig = themes.find((t: ThemeConfig) => t.id === theme) || themes[0];
 
   // Update the theme class on the html element when theme changes
   useEffect(() => {

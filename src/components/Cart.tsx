@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { FiX, FiShoppingBag, FiPlus, FiMinus } from 'react-icons/fi';
+import { useEffect, useRef, useState } from 'react';
+import { FiX, FiShoppingBag, FiPlus, FiMinus, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useShop } from '@/context/ShopContext';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from './ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
+import { useRandomExtras } from '@/hooks/useExtras';
 
 type CartProps = {
   isOpen: boolean;
@@ -14,10 +15,12 @@ type CartProps = {
 };
 
 export default function Cart({ isOpen, onClose }: CartProps) {
-  const { cart, removeFromCart, updateCartItemQuantity, getCartTotal, getPriceShipping } = useShop();
+  const { cart, removeFromCart, updateCartItemQuantity, getCartTotal, getPriceShipping, addToCart } = useShop();
   const cartRef = useRef<HTMLDivElement>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const { t } = useLanguage();
+  const { data: randomExtras = [], isLoading: isLoadingExtras } = useRandomExtras(10);
 
   // Close when clicking outside
   useEffect(() => {
@@ -45,6 +48,32 @@ export default function Cart({ isOpen, onClose }: CartProps) {
   const shipping = getPriceShipping();
   const total = subtotal + shipping;
 
+  // Carousel navigation
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % Math.max(1, randomExtras.length));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + randomExtras.length) % Math.max(1, randomExtras.length));
+  };
+
+  const handleAddExtraToCart = (extra: typeof randomExtras[0]) => {
+    addToCart({
+      productId: extra.extraId,
+      name: extra.name,
+      price: extra.price,
+      quantity: 1,
+      image: extra.images[0],
+      stock: extra.stock,
+      isExtra: true,
+      category: extra.category,
+    });
+  };
+
+  if (isLoadingExtras) {
+    return <div>Loading...</div>;
+  }
+  
   if (!isOpen) return null;
 
   return (
@@ -83,7 +112,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
             ) : (
               <div className="space-y-6">
                 {cart.map((item, index) => (
-                  <div key={`${item.productId}-${index}`} className="flex items-start gap-4 p-3 border-b border-[var(--border)]">
+                  <div key={`${item.productId}-${index}`} className={`flex items-start gap-4 p-3 border-b border-[var(--border)] ${item.isExtra ? 'bg-[var(--accent)]' : ''}`}>
                     <div className="relative w-20 h-20 shrink-0">
                       {item.image ? (
                       <Image
@@ -94,19 +123,31 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       />
                       ) : (
                         <div className="w-full h-full bg-[var(--muted)] rounded flex items-center justify-center">
-                          🌸
+                          {item.isExtra ? 'Extra' : ''}
                         </div>
                       )}
                     </div>
                     <div className="flex-1">
-                      <Link 
-                        href={`/shop/${item.productId}`}
-                        className="font-medium text-[var(--foreground)] hover:underline line-clamp-1 cursor-pointer"
-                        onClick={onClose}
-                      >
-                        {item.name}
-                      </Link>
+                      {item.isExtra ? (
+                        <div className="font-medium text-[var(--foreground)] line-clamp-1">
+                          {item.name}
+                        </div>
+                      ) : (
+                        <Link 
+                          href={`/shop/${item.productId}`}
+                          className="font-medium text-[var(--foreground)] hover:underline line-clamp-1 cursor-pointer"
+                          onClick={onClose}
+                        >
+                          {item.name}
+                        </Link>
+                      )}
                       <div className="text-sm text-[var(--muted-foreground)] space-y-0.5">
+                        {item.isExtra && item.category && (
+                          <p className="text-xs capitalize inline-flex items-center gap-1">
+                            <span className="inline-block w-2 h-2 rounded-full bg-[var(--primary)]"></span>
+                            {item.category} Extra
+                          </p>
+                        )}
                         <p>{(item.price / 100).toFixed(2)} RON</p>
                         {item.customMessage && (
                           <p className="italic text-xs truncate">💌 {item.customMessage}</p>
@@ -178,6 +219,101 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       <span className="text-[var(--foreground)]">{(total / 100).toFixed(2)} RON</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Extras Suggestions Carousel */}
+            {cart.length > 0 && randomExtras.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-[var(--border)]">
+                <h3 className="text-sm font-semibold text-[var(--foreground)] mb-4 flex items-center gap-2">
+                  <span>🎁</span>
+                  {t('cart.addExtras') || 'Complete Your Order'}
+                </h3>
+                
+                <div className="relative">
+                  {/* Carousel Container */}
+                  <div className="overflow-hidden">
+                    <div 
+                      className="flex transition-transform duration-300 ease-in-out"
+                      style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                    >
+                      {randomExtras.map((extra) => (
+                        <div key={extra.extraId} className="w-full flex-shrink-0 px-2">
+                          <div className="bg-[var(--accent)] rounded-lg p-3 border border-[var(--border)]">
+                            <div className="flex gap-3">
+                              <div className="relative w-16 h-16 shrink-0">
+                                <Image
+                                  src={extra.images[0] || '/placeholder.jpg'}
+                                  alt={extra.name}
+                                  fill
+                                  className="object-cover rounded"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-medium text-[var(--foreground)] line-clamp-1">
+                                  {extra.name}
+                                </h4>
+                                <p className="text-xs text-[var(--muted-foreground)] capitalize">
+                                  {extra.category}
+                                </p>
+                                <div className="flex items-center justify-between mt-2">
+                                  <span className="text-sm font-bold text-[var(--primary)]">
+                                    {(extra.price / 100).toFixed(2)} RON
+                                  </span>
+                                  <button
+                                    onClick={() => handleAddExtraToCart(extra)}
+                                    disabled={!extra.available || (extra.stock !== undefined && extra.stock <= 0)}
+                                    className="px-2 py-1 text-xs bg-[var(--primary)] text-[var(--primary-foreground)] rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                                  >
+                                    <FiPlus className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Navigation Arrows */}
+                  {randomExtras.length > 1 && (
+                    <>
+                      <button
+                        onClick={prevSlide}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 p-1 bg-[var(--card)] border border-[var(--border)] rounded-full shadow-md hover:bg-[var(--accent)] transition-colors"
+                        aria-label="Previous extra"
+                      >
+                        <FiChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={nextSlide}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 p-1 bg-[var(--card)] border border-[var(--border)] rounded-full shadow-md hover:bg-[var(--accent)] transition-colors"
+                        aria-label="Next extra"
+                      >
+                        <FiChevronRight className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+
+                  {/* Dots Indicator */}
+                  {randomExtras.length > 1 && (
+                    <div className="flex justify-center gap-1 mt-3">
+                      {randomExtras.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentSlide(index)}
+                          className={`w-1.5 h-1.5 rounded-full transition-all ${
+                            index === currentSlide
+                              ? 'bg-[var(--primary)] w-3'
+                              : 'bg-[var(--muted-foreground)]/30'
+                          }`}
+                          aria-label={`Go to extra ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

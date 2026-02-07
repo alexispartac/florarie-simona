@@ -77,9 +77,9 @@ export default function CartPage() {
           <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg border border-[var(--border)]">
             <ul className="divide-y divide-[var(--border)]">
               {cart.map((item, index) => (
-                <li key={`${item.productId}-${index}`} className="p-4 sm:p-6">
+                <li key={`${item.productId}-${index}`} className={`p-4 sm:p-6 ${item.isExtra ? 'bg-gradient-to-r from-purple-50/30 to-pink-50/30 dark:from-purple-950/10 dark:to-pink-950/10' : ''}`}>
                   <div className="flex flex-col sm:flex-row">
-                    <div className="shrink-0 w-full sm:w-32 h-32 bg-[var(--muted)] rounded-md overflow-hidden">
+                    <div className="relative shrink-0 w-full sm:w-32 h-32 bg-[var(--muted)] rounded-md overflow-hidden">
                       {item.image && (
                         <Image
                           src={item.image}
@@ -89,15 +89,34 @@ export default function CartPage() {
                           className="w-full h-full object-cover object-center"
                         />
                       )}
+                      {item.isExtra && (
+                        <div className="absolute top-2 right-2 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-2 py-1 rounded-full shadow-lg font-semibold">
+                          Extra
+                        </div>
+                      )}
                     </div>
 
                     <div className="mt-4 sm:mt-0 sm:ml-6 flex-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-medium text-[var(--foreground)]">
-                          <Link href={`/shop/${item.productId}`} className="hover:text-[var(--primary)] hover:underline">
-                            {item.name}
-                          </Link>
-                        </h3>
+                        <div>
+                          {item.isExtra ? (
+                            <h3 className="text-lg font-medium text-[var(--foreground)]">
+                              {item.name}
+                            </h3>
+                          ) : (
+                            <h3 className="text-lg font-medium text-[var(--foreground)]">
+                              <Link href={`/shop/${item.productId}`} className="hover:text-[var(--primary)] hover:underline">
+                                {item.name}
+                              </Link>
+                            </h3>
+                          )}
+                          {item.isExtra && item.category && (
+                            <p className="text-sm text-[var(--muted-foreground)] capitalize mt-1 inline-flex items-center gap-1">
+                              <span className="inline-block w-2 h-2 rounded-full bg-[var(--primary)]"></span>
+                              {item.category}
+                            </p>
+                          )}
+                        </div>
                         <p className="ml-4 text-lg font-medium text-[var(--foreground)]">
                           {(item.price / 100).toFixed(2)} RON
                         </p>
@@ -105,10 +124,10 @@ export default function CartPage() {
 
                       <div className="mt-2 text-sm text-[var(--muted-foreground)]">
                         {item.customMessage && (
-                          <p className="mt-1">💌 Mesaj: <span className="italic">{item.customMessage}</span></p>
+                          <p className="mt-1">Mesaj: <span className="italic">{item.customMessage}</span></p>
                         )}
                         {item.deliveryDate && (
-                          <p className="mt-1">📅 Livrare: {new Date(item.deliveryDate).toLocaleDateString('ro-RO')}</p>
+                          <p className="mt-1">Livrare: {new Date(item.deliveryDate).toLocaleDateString('ro-RO')}</p>
                         )}
                       </div>
 

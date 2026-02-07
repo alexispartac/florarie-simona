@@ -135,6 +135,8 @@ export interface CartItem {
   selectedSize?: FlowerSize; // For flower products
   customMessage?: string; // Custom message for card/greeting
   deliveryDate?: string; // ISO date string for scheduled delivery
+  isExtra?: boolean; // Flag to identify if this is an extra item
+  category?: string; // Category for display purposes
 }
 
 // Type for wishlist item

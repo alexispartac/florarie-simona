@@ -136,10 +136,6 @@ export default function HelpPage() {
           answer: t('help.products.outOfStockAnswer')
         },
         {
-          question: t('help.products.sizes'),
-          answer: t('help.products.sizesAnswer')
-        },
-        {
           question: t('help.products.addOns'),
           answer: t('help.products.addOnsAnswer')
         }
@@ -304,7 +300,7 @@ export default function HelpPage() {
                       </button>
                       
                       {isExpanded && (
-                        <div className="px-6 pb-4 text-[var(--muted-foreground)] bg-[var(--primary)]/5">
+                        <div className="px-6 py-4 text-[var(--muted-foreground)] bg-[var(--card)]">
                           <p className="whitespace-pre-line">{item.answer}</p>
                         </div>
                       )}
