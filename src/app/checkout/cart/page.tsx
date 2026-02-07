@@ -20,12 +20,10 @@ export default function CartPage() {
     updateCartItemQuantity, 
     getCartTotal, 
     getCartItemCount,
-    getPriceShipping
   } = useShop();
   const itemCount = getCartItemCount();
   const subtotal = getCartTotal();
-  const shipping = getPriceShipping();
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   const { language } = useLanguage();
   const t = useTranslation(language);
@@ -206,7 +204,7 @@ export default function CartPage() {
               
               <div className="flex items-center justify-between border-t border-[var(--border)] pt-4">
                 <span className="text-[var(--muted-foreground)]">{t('cart.checkout.shipping')}</span>
-                <span className="font-medium text-[var(--foreground)]">{(shipping / 100).toFixed(2)} RON</span>
+                <span className="font-medium text-[var(--foreground)]">?</span>
               </div>
               
               <div className="flex items-center justify-between border-t border-[var(--border)] pt-4">

@@ -8,22 +8,27 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 
 export default function CheckoutSuccessPage() {
-  const { clearCart, cart } = useShop();
+  const { clearCart } = useShop();
   const { language } = useLanguage();
   const t = useTranslation(language);
 
   useEffect(() => {
-    clearCart();
-    localStorage.removeItem('shippingData');
-    localStorage.removeItem('shop_cart');
+    const clearData = () => {
+      clearCart();
+      localStorage.removeItem('shippingData');
+      localStorage.removeItem('billingData');
+      // Force clear the cart storage as a backup
+      localStorage.setItem('shop_cart', JSON.stringify([]));
+    };
+
+    clearData();
     // Here you can send the session ID to your server to confirm the payment
     // and update the order status in your database if needed
 
   }, [clearCart]);
 
-  console.log('Cart after success:', cart);
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="min-h-screen bg-[var(--card)]">
       <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg border border-[var(--border)]">
@@ -46,30 +51,42 @@ export default function CheckoutSuccessPage() {
                     {t('checkout.success.continueShopping')}
                   </Link>
                 </div>
+
+                <div className="mt-10 bg-[var(--secondary)] p-4 rounded-lg border border-[var(--border)]">
+                    <h4 className="font-medium text-[var(--foreground)]">Daca ai plasat o comanda prin transfer bancar, te rugam sa ne contactezi pentru a confirma plata.</h4>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                      Trimete-ne dovada de plata printr-un mesaj pe WhatsApp.
+                    </p>
+                    <div className="mt-4">
+                      <Link href="https://wa.me/40769141250" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-[var(--primary)] hover:text-[var(--hover-primary)]">
+                        Trimite-ne dovada de plata <span aria-hidden="true">&rarr;</span>
+                      </Link>
+                    </div>
+                  </div>
               </div>
               
               <div className="mt-12 border-t border-[var(--border)] pt-8">
                 <h3 className="text-lg font-medium text-[var(--foreground)]">{t('checkout.success.nextStep')}</h3>
                 <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div className="bg-[var(--secondary)] p-4 rounded-lg border border-[var(--border)]">
-                    <h4 className="font-medium text-[var(--foreground)]">Order Status</h4>
+                    <h4 className="font-medium text-[var(--foreground)]">Statusul comenzii</h4>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                      Check your order status and track your delivery here.
+                      Vezi statusul comenzii si urmărește livrarea aici.
                     </p>
                     <div className="mt-4">
                       <Link href="/orders" className="text-sm font-medium text-[var(--primary)] hover:text-[var(--hover-primary)]">
-                        View order status <span aria-hidden="true">&rarr;</span>
+                        Vezi statusul comenzii <span aria-hidden="true">&rarr;</span>
                       </Link>
                     </div>
                   </div>
                   <div className="bg-[var(--secondary)] p-4 rounded-lg border border-[var(--border)]">
-                    <h4 className="font-medium text-[var(--foreground)]">Need help?</h4>
+                    <h4 className="font-medium text-[var(--foreground)]">Ai nevoie de ajutor?</h4>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                      Have questions about your order? Contact our customer service.
+                      Ai întrebări despre comanda ta? Contactează-ne pe email.
                     </p>
                     <div className="mt-4">
                       <Link href="/contact" className="text-sm font-medium text-[var(--primary)] hover:text-[var(--hover-primary)]">
-                        Contact us <span aria-hidden="true">&rarr;</span>
+                        Contactează-ne <span aria-hidden="true">&rarr;</span>
                       </Link>
                     </div>
                   </div>

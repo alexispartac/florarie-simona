@@ -70,6 +70,8 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
     'cash-on-delivery': <DollarSign className="h-4 w-4 mr-2" />,
   };
 
+  console.log(order.billing);
+
   return (
     <InfoModal
       isOpen={isOpen}
@@ -180,19 +182,62 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                 <p className="text-muted-foreground">
                   <span className="font-medium">Email:</span> {order.shipping.email}
                 </p>
+                {order.shipping.deliveryInstructions && (
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="font-medium text-foreground">Informații suplimentare:</p>
+                    <p className="text-muted-foreground mt-1">{order.shipping.deliveryInstructions}</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Payment Information */}
+          {/* Billing Information */}
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-2">
                 <CreditCard className="h-5 w-5 text-muted-foreground" />
-                <CardTitle className="text-lg">Payment Information</CardTitle>
+                <CardTitle className="text-lg">Billing Information</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
+              <div className="space-y-2">
+                <p className="font-medium">{order.billing?.name || 'N/A'}</p>
+                {order.billing?.company && (
+                  <p className="text-muted-foreground">
+                    <span className="font-medium">Company:</span> {order.billing.company}
+                  </p>
+                )}
+                {order.billing?.taxId && (
+                  <p className="text-muted-foreground">
+                    <span className="font-medium">Tax ID:</span> {order.billing.taxId}
+                  </p>
+                )}
+                <p className="text-muted-foreground">{order.billing?.address || 'N/A'}</p>
+                <p className="text-muted-foreground">
+                  {order.billing?.city}, {order.billing?.state} {order.billing?.postalCode}
+                </p>
+                <p className="text-muted-foreground">{order.billing?.country}</p>
+                <p className="text-muted-foreground mt-2">
+                  <span className="font-medium">Phone:</span> {order.billing?.phone || 'N/A'}
+                </p>
+                <p className="text-muted-foreground">
+                  <span className="font-medium">Email:</span> {order.billing?.email || 'N/A'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Payment Information */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center space-x-2">
+              <DollarSign className="h-5 w-5 text-muted-foreground" />
+              <CardTitle className="text-lg">Payment Information</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center">
                   {paymentMethodIcons[order.payment.method]}
@@ -257,7 +302,6 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               setSelectedStatus(null);
             }}
           />
-        </div>
       </div>
     </InfoModal>
   );

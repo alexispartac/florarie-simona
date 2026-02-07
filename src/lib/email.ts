@@ -12,10 +12,9 @@ const transporter = nodemailer.createTransport({
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const ORDER_URL = `${BASE_URL}/orders`;
 const HELP_URL = `${BASE_URL}/help`;
-const PRIVACY_URL = `${BASE_URL}/privacy`;
+const PRIVACY_URL = `${BASE_URL}/termeni-conditii`;
 const CONTACT_URL = `${BASE_URL}/contact`;
-const REVIEW_URL = `${BASE_URL}/reviews`;
-const ORDER_DETAILS_URL = `${BASE_URL}/shop/`;
+const SHOP_URL = `${BASE_URL}/shop`;
 
 
 function formatPrice(price: number): string {
@@ -26,7 +25,31 @@ function formatPrice(price: number): string {
 }
 
 function formatShippingAddress(shipping: Order['shipping']): string {
-  return `${shipping.name}\n${shipping.address}\n${shipping.city}, ${shipping.state} ${shipping.postalCode}\n${shipping.country}`;
+  let address = `${shipping.name}\n${shipping.address}\n${shipping.city}, ${shipping.state} ${shipping.postalCode}\n${shipping.country}`;
+  
+  if (shipping.deliveryInstructions) {
+    address += `\n\nInformații suplimentare:\n${shipping.deliveryInstructions}`;
+  }
+  
+  return address;
+}
+
+function formatBillingAddress(billing: Order['billing']): string {
+  if (!billing) return 'N/A';
+  
+  let address = `${billing.name}`;
+  
+  if (billing.company) {
+    address += `\n${billing.company}`;
+  }
+  
+  if (billing.taxId) {
+    address += `\nCUI: ${billing.taxId}`;
+  }
+  
+  address += `\n${billing.address}\n${billing.city}, ${billing.state} ${billing.postalCode}\n${billing.country}`;
+  
+  return address;
 }
 
 export async function sendContactFormEmail(formData: {
@@ -105,7 +128,7 @@ export async function sendOrderConfirmationEmail(order: Order) {
           
           <p style="margin: 15px 0;">Poti urmari statutul comenzii si sa vezi detaliile prin a vizita pagina ta de cont.</p>
           
-          <a href="https://vintageclothes.com/orders" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+          <a href="${ORDER_URL}" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
             Vezi Comanda Ta
           </a>
         </div>
@@ -143,11 +166,17 @@ export async function sendOrderConfirmationEmail(order: Order) {
             <p><strong>Telefon:</strong> ${order.shipping.phone}</p>
           </div>
           <div style="flex: 1;">
-            <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 8px;">Metoda de Plata</h3>
-            <p>${order.payment.method === 'credit-card' ? 'Credit Card' : 
-                order.payment.method === 'bank-transfer' ? 'Transfer Bancar' : 'Plata la Livrare'}</p>
-            <p><strong>Status:</strong> ${order.payment.status.charAt(0).toUpperCase() + order.payment.status.slice(1)}</p>
+            <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 8px;">Adresa de Facturare</h3>
+            <p>${formatBillingAddress(order.billing).replace(/\n/g, '<br>')}</p>
+            ${order.billing?.phone ? `<p><strong>Telefon:</strong> ${order.billing.phone}</p>` : ''}
           </div>
+        </div>
+        
+        <div style="margin: 25px 0;">
+          <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 8px;">Metoda de Plata</h3>
+          <p>${order.payment.method === 'credit-card' ? 'Credit Card' : 
+              order.payment.method === 'bank-transfer' ? 'Transfer Bancar' : 'Plata la Livrare'}</p>
+          <p><strong>Status:</strong> ${order.payment.status.charAt(0).toUpperCase() + order.payment.status.slice(1)}</p>
         </div>
         
         <div style="margin: 30px 0; padding: 15px; background-color: #e8f4fd; border-radius: 5px; border-left: 4px solid #3498db;">
@@ -156,10 +185,10 @@ export async function sendOrderConfirmationEmail(order: Order) {
           </p>
         </div>
         
-        <p style="margin: 25px 0 15px;">Daca ai intrebari despre comanda ta, te rugam sa raspunzi la acest email sau sa contactezi serviciul nostru de asistenta la support@buchetulsimonei.com.</p>
+        <p style="margin: 25px 0 15px;">Daca ai intrebari despre comanda ta, te rugam sa raspunzi la acest email sau sa contactezi serviciul nostru de asistenta la simonabuzau2@gmail.com.</p>
         
         <p style="margin: 30px 0 15px; text-align: center;">
-          <a href="https://vintageclothes.com/orders" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+          <a href="${ORDER_URL}" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
             Vezi Comanda Ta
           </a>
         </p>
@@ -209,7 +238,7 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
           <p>${formatShippingAddress(order.shipping).replace(/\n/g, '<br>')}</p>
           
           <p style="margin: 15px 0 0;">
-            <a href="https://vintageclothes.com/orders" style="display: inline-block; padding: 10px 20px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 10px;">
+            <a href="${ORDER_URL}" style="display: inline-block; padding: 10px 20px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 10px;">
               Vezi Detalii Comanda
             </a>
           </p>
@@ -246,7 +275,7 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
           <h3 style="margin-top: 0; color: #2c3e50;">Vrem sa audem parerea ta</h3>
           <p>Speram ca iti va placem produsele noi. Parerea ta ne ajuta sa imbunatatim produsele si serviciile noastre.</p>
           <p style="margin: 15px 0 0;">
-            <a href="https://vintageclothes.com/orders/${order.orderId}/review" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+            <a href="${ORDER_URL}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
               Lasă un Review
             </a>
           </p>
@@ -254,7 +283,7 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
         
         <div style="margin: 30px 0; padding: 15px; background-color: #e8f4fd; border-radius: 5px;">
           <h3 style="margin-top: 0; color: #2c3e50;">Ai nevoie de ajutor?</h3>
-          <p>Daca ai intrebari despre comanda ta sau ai nevoie de a incepe un return, te rugam sa vizitezi <a href="https://vintageclothes.com/help" style="color: #3498db; text-decoration: none;">Centrul nostru de ajutor</a> sau sa raspunzi la acest email.</p>
+          <p>Daca ai intrebari despre comanda ta sau ai nevoie de a incepe un return, te rugam sa vizitezi <a href="${ORDER_URL}" style="color: #3498db; text-decoration: none;">Centrul nostru de ajutor</a> sau sa raspunzi la acest email.</p>
         </div>
         
         <p style="margin: 30px 0 15px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
@@ -264,9 +293,9 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
         <div style="text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; color: #95a5a6; font-size: 0.8em;">
           <p>© ${new Date().getFullYear()} Buchetul Simonei. Toate drepturile rezervate.</p>
           <p>
-            <a href="https://buchetulsimonei.com" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Website-ul nostru</a> | 
-            <a href="https://buchetulsimonei.com/contact" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Contacteaza-ne</a> | 
-            <a href="https://vintageclothes.com/privacy" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Politica de Confidentialitate</a>
+            <a href="${BASE_URL}" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Website-ul nostru</a> | 
+            <a href="${CONTACT_URL}" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Contacteaza-ne</a> | 
+            <a href="${PRIVACY_URL}" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Politica de Confidentialitate</a>
           </p>
         </div>
       </div>
@@ -350,11 +379,11 @@ export async function sendOrderProcessedEmail(order: Order) {
         <div style="margin: 30px 0; padding: 15px; background-color: #e8f4fd; border-radius: 5px; border-left: 4px solid #3498db;">
           <h3 style="margin-top: 0; color: #2c3e50;">Ce urmeaza?</h3>  
           <p>Vom trimite un email de confirmare de livrare cu informatiile comenzii cat mai curand.</p>
-          <p>In the meantime, you can check the status of your order anytime by visiting <a href="https://vintageclothes.com/orders" style="color: #3498db; text-decoration: none;">contul tau</a>.</p>
+          <p>Poti verifica statusul comenzii oricand prin vizitarea <a href="${ORDER_URL}" style="color: #3498db; text-decoration: none;">contul tau</a>.</p>
         </div>
         
         <p style="margin: 30px 0 15px; text-align: center;">
-          <a href="https://vintageclothes.com/orders" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+          <a href="${ORDER_URL}" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
             Vezi Comanda Ta
           </a>
         </p>
@@ -557,7 +586,7 @@ export async function sendOrderCancelledEmail(order: Order, cancellationReason?:
           <h3 style="margin-top: 0; color: #155724;">🌸 Comandă Din Nou?</h3>
           <p>Ne pare rău pentru neplăcere! Dacă dorești să plasezi o nouă comandă, suntem aici pentru tine cu flori proaspete și buchete minunate.</p>
           <p style="margin: 15px 0 0;">
-            <a href="${BASE_URL}/shop" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+            <a href="${SHOP_URL}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
               Explorează Magazinul
             </a>
           </p>
@@ -568,7 +597,7 @@ export async function sendOrderCancelledEmail(order: Order, cancellationReason?:
           <p>Dacă ai întrebări despre anularea comenzii sau procesul de rambursare, te rugăm să ne contactezi:</p>
           <ul style="list-style: none; padding: 0;">
             <li>📞 Telefon: <a href="tel:0769141250" style="color: #3498db; text-decoration: none;">0769141250</a></li>
-            <li>✉️ Email: <a href="mailto:laurasimona97@yahoo.com" style="color: #3498db; text-decoration: none;">laurasimona97@yahoo.com</a></li>
+            <li>✉️ Email: <a href="mailto:simonabuzau2@gmail.com" style="color: #3498db; text-decoration: none;">simonabuzau2@gmail.com</a></li>
             <li>🌐 <a href="${HELP_URL}" style="color: #3498db; text-decoration: none;">Centrul de Ajutor</a></li>
           </ul>
         </div>
@@ -663,7 +692,7 @@ export async function sendOrderFailedDeliveryEmail(order: Order, failureReason?:
           <p><strong>Contactează-ne urgent</strong> pentru a reprograma livrarea sau pentru a actualiza adresa de livrare:</p>
           <ul style="list-style: none; padding: 0; margin: 15px 0;">
             <li style="margin: 8px 0;">📞 <strong>Telefon:</strong> <a href="tel:0769141250" style="color: #28a745; text-decoration: none; font-weight: bold;">0769141250</a></li>
-            <li style="margin: 8px 0;">✉️ <strong>Email:</strong> <a href="mailto:laurasimona97@yahoo.com" style="color: #28a745; text-decoration: none; font-weight: bold;">laurasimona97@yahoo.com</a></li>
+            <li style="margin: 8px 0;">✉️ <strong>Email:</strong> <a href="mailto:simonabuzau2@gmail.com" style="color: #28a745; text-decoration: none; font-weight: bold;">simonabuzau2@gmail.com</a></li>
           </ul>
           <p style="margin-top: 15px;">
             <a href="${CONTACT_URL}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">

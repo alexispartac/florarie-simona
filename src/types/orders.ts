@@ -28,6 +28,21 @@ export type ShippingInfo = {
     updatedAt?: Date;
 };
 
+export type BillingInfo = {
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    phone: string;
+    email: string;
+    company?: string; // Optional company name for businesses
+    taxId?: string; // Optional tax ID / VAT number for businesses
+    createdAt?: Date;
+    updatedAt?: Date;
+};
+
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
 
 export type PaymentInfo = {
@@ -45,6 +60,7 @@ export type Order = {
     shippingCost: number;
     items: OrderItem[];
     shipping: ShippingInfo;
+    billing: BillingInfo;
     payment: PaymentInfo;
     trackingNumber: string;
     deliveryDate?: string; // Scheduled delivery date (ISO string)

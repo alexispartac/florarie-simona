@@ -12,8 +12,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { Order, ShippingInfo } from '@/types/orders';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
+import Image from 'next/image';
 
 type PaymentMethod = 'credit-card' | 'cash-on-delivery' | 'bank-transfer';
+
+const infoTransferBank = {
+  name: 'BUCHETUL SIMONEI SRL',
+  bankName: 'Banca Transilvania',
+  ibanRon: 'RO76 BTRL RONCRT 0CK0 3296 01',
+  ibanEuro: 'RO23 BTRL EURCRT 0CK0 3296 01',
+  swiftBic: 'BTRLRO22',
+};
 
 // euPlatesc Form Component
 const EuPlatescForm = ({ onInitiate }: { onInitiate: () => void }) => {
@@ -118,8 +127,14 @@ function PaymentPageContent() {
   // Create order and get tracking number
   const createOrder = async (paymentMethod: PaymentMethod): Promise<string> => {
     const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
+    const billingData = JSON.parse(localStorage.getItem('billingData') || '{}');
+    
     if (!shippingData || Object.keys(shippingData).length === 0) {
       throw new Error('Shipping information not found');
+    }
+
+    if (!billingData || Object.keys(billingData).length === 0) {
+      throw new Error('Billing information not found');
     }
 
     const shippingInfo: ShippingInfo = {
@@ -130,7 +145,21 @@ function PaymentPageContent() {
       postalCode: shippingData.postalCode || '',
       country: shippingData.country || '',
       phone: shippingData.phone || '',
-      email: shippingData.email || ''
+      email: shippingData.email || '',
+      deliveryInstructions: shippingData.additionalInfo || '',
+    };
+
+    const billingInfo = {
+      name: (billingData.firstName || '') + ' ' + (billingData.lastName || ''),
+      address: billingData.address || '',
+      city: billingData.city || '',
+      state: billingData.state || '',
+      postalCode: billingData.postalCode || '',
+      country: billingData.country || '',
+      phone: billingData.phone || '',
+      email: billingData.email || '',
+      company: billingData.company || '',
+      taxId: billingData.taxId || '',
     };
 
     const items = cart.map(item => ({
@@ -149,6 +178,7 @@ function PaymentPageContent() {
       shippingCost: getPriceShipping(),
       items: items,
       shipping: shippingInfo,
+      billing: billingInfo,
       payment: {
         method: paymentMethod,
         status: 'pending'
@@ -307,7 +337,7 @@ function PaymentPageContent() {
                     <svg className="h-8 w-8 mb-2 text-[var(--foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
-                    <span className="text-sm font-medium text-[var(--foreground)]">Credit Card</span>
+                    <span className="text-sm font-medium text-[var(--foreground)]">Card de credit</span>
                   </div>
                 </button>
 
@@ -323,7 +353,7 @@ function PaymentPageContent() {
                     <svg className="h-8 w-8 mb-2 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    <span className="text-sm font-medium text-[var(--foreground)]">Cash On Delivery</span>
+                    <span className="text-sm font-medium text-[var(--foreground)]">Plata la livrare</span>
                   </div>
                 </button>
 
@@ -340,7 +370,7 @@ function PaymentPageContent() {
                     <svg className="h-8 w-8 mb-2 text-[var(--foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
                     </svg>
-                    <span className="text-sm font-medium text-[var(--foreground)]">Bank Transfer</span>
+                    <span className="text-sm font-medium text-[var(--foreground)]">Transfer bancar</span>
                   </div>
                 </button>
               </div>
@@ -349,23 +379,44 @@ function PaymentPageContent() {
                 <div className="text-center py-8">
                   <p className="mb-6 text-[var(--muted-foreground)]">{t('checkout.cashOnDelivery')}</p>
 
-                  {localStorage.getItem('shippingData') && (
-                    <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mt-8">
-                      <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('checkout.yourDeliveryInformation')}</h3>
-                      <div className="mt-4 space-y-2">
-                        <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').firstName} {JSON.parse(localStorage.getItem('shippingData') || '{}').lastName}</p>
-                        <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {' '}
-                          {JSON.parse(localStorage.getItem('shippingData') || '{}').address}, {' '}
-                          {JSON.parse(localStorage.getItem('shippingData') || '{}').city}, {' '}
-                          {JSON.parse(localStorage.getItem('shippingData') || '{}').state},  {' '}
-                          {JSON.parse(localStorage.getItem('shippingData') || '{}').country} {' '}
-                        </p>
-                        <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.postalCode')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').postalCode}</p>
-                        <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').phone}</p>
-                        <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {JSON.parse(localStorage.getItem('shippingData') || '{}').email || ''}</p>
-                      </div>
-                    </div>
-                  )}
+                  {localStorage.getItem('shippingData') && (() => {
+                    const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
+                    const billingData = JSON.parse(localStorage.getItem('billingData') || '{}');
+                    return (
+                      <>
+                        <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mt-8">
+                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">📦 {t('checkout.yourDeliveryInformation')}</h3>
+                          <div className="mt-4 space-y-2 text-left">
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {shippingData.firstName} {shippingData.lastName}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {shippingData.address}{shippingData.apartment ? `, ${shippingData.apartment}` : ''}, {shippingData.city}, {shippingData.state}, {shippingData.country}{shippingData.postalCode ? ` ${shippingData.postalCode}` : ''}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {shippingData.phone}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {shippingData.email || ''}</p>
+                            {shippingData.additionalInfo && (
+                              <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
+                                <strong>Informații suplimentare:</strong> {shippingData.additionalInfo}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mt-4">
+                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Billing Information</h3>
+                          <div className="mt-4 space-y-2 text-left">
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {billingData.firstName} {billingData.lastName}</p>
+                            {billingData.company && (
+                              <p className="text-sm text-[var(--muted-foreground)]">Company: {billingData.company}</p>
+                            )}
+                            {billingData.taxId && (
+                              <p className="text-sm text-[var(--muted-foreground)]">Tax ID: {billingData.taxId}</p>
+                            )}
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {billingData.address}{billingData.apartment ? `, ${billingData.apartment}` : ''}, {billingData.city}, {billingData.state}, {billingData.country}{billingData.postalCode ? ` ${billingData.postalCode}` : ''}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {billingData.phone}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {billingData.email || ''}</p>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   <p className="text-sm text-[var(--muted-foreground)] my-2">
                     {t('checkout.deliveryInfo')}
@@ -408,7 +459,7 @@ function PaymentPageContent() {
                         <svg className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
-                        Process Cash on Delivery
+                        {t('checkout.processCashOnDelivery')}
                       </>
                     )}
                   </Button>
@@ -419,11 +470,17 @@ function PaymentPageContent() {
                 <div className="space-y-6">
                   <div className="bg-[var(--secondary)] p-4 rounded-lg border border-[var(--border)]">
                     <h3 className="font-medium text-[var(--foreground)] mb-2">{t('checkout.bankTransferDetails')}</h3>
+                    <Image src="https://res.cloudinary.com/dm7ttgpta/image/upload/v1770461503/bt_mjntrl.png" alt="Bank Transfer" width={100} height={100} className="mb-4" />
                     <div className="space-y-2 text-sm text-[var(--muted-foreground)]">
-                      <p><span className="font-medium">{t('checkout.accountName')}:</span> ... </p>
-                      <p><span className="font-medium">{t('checkout.bankName')}:</span> ... </p>
-                      <p><span className="font-medium">{t('checkout.iban')}:</span> ... </p>
-                      <p><span className="font-medium">{t('checkout.swiftBic')}:</span> ... </p>
+                      <p><span className="font-medium">{t('checkout.accountName')}:</span> {infoTransferBank.name} </p>
+                      <p><span className="font-medium">{t('checkout.bankName')}:</span> {infoTransferBank.bankName} </p>
+                      <div className="flex items-center">
+                        <div className="flex items-center"> RON : {infoTransferBank.ibanRon} </div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="flex items-center"> EURO : {infoTransferBank.ibanEuro} </div>
+                      </div>
+                      <p><span className="font-medium">{t('checkout.swiftBic')}:</span> {infoTransferBank.swiftBic} </p>
                     </div>
                     <p className="mt-4 text-sm text-[var(--muted-foreground)] font-bold">
                       {t('checkout.paymentReferenceBankTransfer')}
@@ -432,6 +489,45 @@ function PaymentPageContent() {
                       {t('checkout.paymentReferenceTextBankTransfer')}
                     </p>
                   </div>
+
+                  {localStorage.getItem('shippingData') && (() => {
+                    const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
+                    const billingData = JSON.parse(localStorage.getItem('billingData') || '{}');
+                    return (
+                      <>
+                        <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6">
+                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">📦 {t('checkout.yourDeliveryInformation')}</h3>
+                          <div className="mt-4 space-y-2 text-left">
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {shippingData.firstName} {shippingData.lastName}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {shippingData.address}{shippingData.apartment ? `, ${shippingData.apartment}` : ''}, {shippingData.city}, {shippingData.state}, {shippingData.country}{shippingData.postalCode ? ` ${shippingData.postalCode}` : ''}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {shippingData.phone}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {shippingData.email || ''}</p>
+                            {shippingData.additionalInfo && (
+                              <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
+                                <strong>Informații suplimentare:</strong> {shippingData.additionalInfo}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6">
+                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Billing Information</h3>
+                          <div className="mt-4 space-y-2 text-left">
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {billingData.firstName} {billingData.lastName}</p>
+                            {billingData.company && (
+                              <p className="text-sm text-[var(--muted-foreground)]">Company: {billingData.company}</p>
+                            )}
+                            {billingData.taxId && (
+                              <p className="text-sm text-[var(--muted-foreground)]">Tax ID: {billingData.taxId}</p>
+                            )}
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {billingData.address}{billingData.apartment ? `, ${billingData.apartment}` : ''}, {billingData.city}, {billingData.state}, {billingData.country}{billingData.postalCode ? ` ${billingData.postalCode}` : ''}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {billingData.phone}</p>
+                            <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {billingData.email || ''}</p>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   <div className="flex items-center">
                     <input
@@ -479,6 +575,45 @@ function PaymentPageContent() {
 
             {paymentMethod === 'credit-card' && (
               <div className="border-t border-[var(--border)] pt-6 mt-8">
+                {localStorage.getItem('shippingData') && (() => {
+                  const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
+                  const billingData = JSON.parse(localStorage.getItem('billingData') || '{}');
+                  return (
+                    <>
+                      <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mb-4">
+                        <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">📦 {t('checkout.yourDeliveryInformation')}</h3>
+                        <div className="mt-4 space-y-2 text-left">
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {shippingData.firstName} {shippingData.lastName}</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {shippingData.address}{shippingData.apartment ? `, ${shippingData.apartment}` : ''}, {shippingData.city}, {shippingData.state}, {shippingData.country}{shippingData.postalCode ? ` ${shippingData.postalCode}` : ''}</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {shippingData.phone}</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {shippingData.email || ''}</p>
+                          {shippingData.additionalInfo && (
+                            <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
+                              <strong>Informații suplimentare:</strong> {shippingData.additionalInfo}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mb-6">
+                        <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Billing Information</h3>
+                        <div className="mt-4 space-y-2 text-left">
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {billingData.firstName} {billingData.lastName}</p>
+                          {billingData.company && (
+                            <p className="text-sm text-[var(--muted-foreground)]">Company: {billingData.company}</p>
+                          )}
+                          {billingData.taxId && (
+                            <p className="text-sm text-[var(--muted-foreground)]">Tax ID: {billingData.taxId}</p>
+                          )}
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {billingData.address}{billingData.apartment ? `, ${billingData.apartment}` : ''}, {billingData.city}, {billingData.state}, {billingData.country}{billingData.postalCode ? ` ${billingData.postalCode}` : ''}</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {billingData.phone}</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {billingData.email || ''}</p>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+
                 <h3 className="text-sm font-medium text-[var(--foreground)] mb-4">{t('checkout.securePayment')}</h3>
                 <div className="flex flex-wrap gap-4 mb-6">
                   <div className="flex items-center">
@@ -532,8 +667,8 @@ function PaymentPageContent() {
               <h3 className="text-sm font-medium text-[var(--foreground)] mb-2">{t('checkout.needHelp')}</h3>
               <p className="text-sm text-[var(--muted-foreground)]">
                 {t('checkout.contactUs')}{' '}
-                <a href="mailto:contact@buchetulsimonei.com" className="text-[var(--primary)] hover:underline">
-                  contact@buchetulsimonei.com
+                <a href="mailto:simonabuzau2@gmail.com" className="text-[var(--primary)] hover:underline">
+                  simonabuzau2@gmail.com
                 </a>
               </p>
             </div>

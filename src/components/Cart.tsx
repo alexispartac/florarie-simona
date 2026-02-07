@@ -45,8 +45,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
 
   // Calculate total price
   const subtotal = getCartTotal();
-  const shipping = getPriceShipping();
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   // Carousel navigation
   const nextSlide = () => {
@@ -212,7 +211,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[var(--muted-foreground)]">Shipping</span>
-                      <span className="text-[var(--foreground)]">{shipping > 0 ? `${(shipping / 100).toFixed(2)} RON` : 'Free'}</span>
+                      <span className="text-[var(--foreground)]"> ? </span>
                     </div>
                     <div className="flex justify-between font-medium text-base pt-2 border-t border-[var(--border)] mt-2">
                       <span className="text-[var(--foreground)]">Total</span>

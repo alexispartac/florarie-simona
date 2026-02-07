@@ -186,6 +186,12 @@ export default function OrderLookupPage() {
                                             <p>{order.shipping.country}</p>
                                             <p className="mt-2">{order.shipping.phone}</p>
                                             <p>{order.shipping.email}</p>
+                                            {order.shipping.deliveryInstructions && (
+                                                <div className="mt-3 pt-3 border-t border-[var(--border)]">
+                                                    <p className="font-medium text-[var(--foreground)]">Informații suplimentare:</p>
+                                                    <p className="mt-1">{order.shipping.deliveryInstructions}</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div>

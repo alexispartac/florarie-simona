@@ -285,9 +285,27 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     , [cart]);
 
     const getPriceShipping = useCallback(() => {
-        const total = getCartTotal();
-        return total > 15000 ? 0 : 500;
-    }, [getCartTotal]);
+        // Check if shipping data exists and get the city
+        if (typeof window !== 'undefined') {
+            const shippingDataStr = localStorage.getItem('shippingData');
+            if (shippingDataStr) {
+                try {
+                    const shippingData = JSON.parse(shippingDataStr);
+                    const city = shippingData.city?.toLowerCase() || '';
+                    
+                    // Free shipping for Tămășeni and Adjudeni
+                    if (city === 'tămășeni' || city === 'adjudeni') {
+                        return 0;
+                    }
+                } catch (e) {
+                    console.error('Error parsing shipping data:', e);
+                }
+            }
+        }
+        
+        // Default shipping cost: 20 RON (2000 bani)
+        return 2000;
+    }, []);
     
     const getCartItemCount = useCallback(() => 
         cart.reduce((count, item) => count + item.quantity, 0)
