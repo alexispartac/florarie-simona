@@ -5,7 +5,7 @@ import axios from 'axios';
 import { SeasonalCollection } from '@/types/seasonalCollections';
 
 const STORAGE_KEY = 'seasonal-popup-shown';
-const POPUP_COOLDOWN = 5 * 1000; // 24 hours in milliseconds
+const POPUP_COOLDOWN = 5 * 60 * 1000; // 1 minute in milliseconds
 
 export function useSeasonalCollectionPopup() {
   const [collection, setCollection] = useState<SeasonalCollection | null>(null);
