@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://buchetul-simonei.com/sitemap.xml
