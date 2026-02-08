@@ -391,7 +391,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Orders Page
     'orders.title': 'Track Your Order',
     'orders.subtitle': 'Enter your tracking number to see order status',
-    'orders.trackingNumber': 'Tracking Number',
+    'orders.trackingNumber': 'Tracking Number -> The tracking number is sent to your email after the order is placed.',
     'orders.trackOrder': 'Track Order',
     'orders.orderDetails': 'Order Details',
     'orders.orderNumber': 'Order Number',
@@ -895,7 +895,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Orders Page
     'orders.title': 'Urmărește Comanda',
     'orders.subtitle': 'Introdu numărul de urmărire pentru a vedea statusul comenzii',
-    'orders.trackingNumber': 'Număr de Urmărire',
+    'orders.trackingNumber': 'Număr de Urmărire -> Numărul de urmărire este trimis pe emailul tău după plasarea comenzii.',
     'orders.trackOrder': 'Urmărește Comanda',
     'orders.orderDetails': 'Detalii Comandă',
     'orders.orderNumber': 'Număr Comandă',

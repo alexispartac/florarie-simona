@@ -1,5 +1,4 @@
 // Flower-specific enums and types
-export type FlowerSize = 'small' | 'medium' | 'large' | 'extra-large';
 export type FlowerColor = 'rosu' | 'roz' | 'alb' | 'galben' | 'mov' | 'portocaliu' | 'albastru' | 'mixt' | 'pastel' | 'negru';
 export type FlowerOccasion = 'birthday' | 'anniversary' | 'wedding' | 'funeral' | 'romantic' | 'congratulations' | 'get-well' | 'thank-you' | 'just-because' | 'mothers-day' | 'valentines-day';
 export type FlowerType = 'roses' | 'tulips' | 'lilies' | 'carnations' | 'sunflowers' | 'orchids' | 'peonies' | 'hydrangeas' | 'daisies' | 'mixed';
@@ -16,7 +15,6 @@ export interface CareInstructions {
 
 // Flower-specific details
 export interface FlowerDetails {
-  size?: FlowerSize[];
   colors?: FlowerColor[];
   flowerTypes?: FlowerType[];
   occasions?: FlowerOccasion[];
@@ -68,7 +66,6 @@ export interface Product {
   available: boolean;
   stock?: number; // Inventory stock count
   sku?: string; // Stock Keeping Unit (product code)
-  weight?: number; // Weight in kg
   images: string[];
   relatedProducts: RelatedProduct[];
   reviews: ProductReview[];
@@ -94,7 +91,6 @@ export interface ProductFilters {
   colors?: FlowerColor[];
   occasions?: FlowerOccasion[];
   flowerTypes?: FlowerType[];
-  sizes?: FlowerSize[];
   sortBy?: 'price-asc' | 'price-desc' | 'newest' | 'popular' | 'rating';
   searchQuery?: string;
   inStock?: boolean;
@@ -132,7 +128,6 @@ export interface CartItem {
   quantity: number;
   image?: string;
   stock?: number; // Available stock for this product
-  selectedSize?: FlowerSize; // For flower products
   customMessage?: string; // Custom message for card/greeting
   deliveryDate?: string; // ISO date string for scheduled delivery
   isExtra?: boolean; // Flag to identify if this is an extra item

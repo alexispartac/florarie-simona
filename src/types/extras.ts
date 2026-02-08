@@ -16,7 +16,6 @@ export interface Extra {
   available: boolean;
   stock?: number; // Inventory stock count
   sku?: string; // Stock Keeping Unit (product code)
-  weight?: number; // Weight in kg
   images: string[];
   size?: ExtraSize; // Size of the item (optional)
   createdAt?: string; // ISO date string

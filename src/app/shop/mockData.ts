@@ -353,7 +353,6 @@ export const mockProductDetails: Product = {
     },
   ],
   flowerDetails: {
-    size: ['medium', 'large'],
     colors: ['rosu'],
     flowerTypes: ['roses'],
     occasions: ['romantic', 'valentines-day', 'anniversary'],

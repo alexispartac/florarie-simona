@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useScrollProgress } from '@/components/hooks/useScrollProgress';
+import { useSeasonalCollectionPopup } from '@/hooks/useSeasonalCollectionPopup';
+import { SeasonalCollectionPopup } from '@/components/SeasonalCollectionPopup';
 import Button from "../components/ui/Button";
 import ServiceCard from "../components/ui/ServiceCard";
 import Image from 'next/image';
@@ -22,6 +24,7 @@ interface TextOnlyProps {
 export default function Home() {
   const router = useRouter();
   const { t } = useLanguage();
+  const { collection, showPopup, closePopup } = useSeasonalCollectionPopup();
   
   return (
     <div className="relative w-full overflow-x-hidden bg-[var(--primary-background)]">
@@ -36,6 +39,11 @@ export default function Home() {
           font-family: 'Cormorant Garamond', serif;
         }
       `}</style>
+
+      {/* Seasonal Collection Popup */}
+      {showPopup && collection && (
+        <SeasonalCollectionPopup collection={collection} onClose={closePopup} />
+      )}
       
       {/* Hero Section with Parallax Zoom */}
       <HeroSection t={t} router={router} />

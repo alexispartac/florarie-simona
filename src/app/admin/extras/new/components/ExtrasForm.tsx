@@ -27,7 +27,6 @@ export function ExtrasForm({ initialData, onSubmit, isSubmitting }: ExtrasFormPr
     available: initialData?.available !== undefined ? initialData.available : true,
     stock: initialData?.stock || 0,
     sku: initialData?.sku || '',
-    weight: initialData?.weight || 0,
     images: initialData?.images?.join('\n') || '',
     size: initialData?.size || 'medium' as ExtraSize,
   });
@@ -55,7 +54,6 @@ export function ExtrasForm({ initialData, onSubmit, isSubmitting }: ExtrasFormPr
       available: formData.available && Number(formData.stock) > 0,
       stock: Number(formData.stock) || 0,
       sku: formData.sku || `EXTRA-${formData.extraId.slice(0, 8).toUpperCase()}`,
-      weight: Number(formData.weight) || 0,
     } as Extra);
   };
 
@@ -162,7 +160,7 @@ export function ExtrasForm({ initialData, onSubmit, isSubmitting }: ExtrasFormPr
           💰 Prețuri și Stoc
         </h2>
         
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-[var(--foreground)] mb-1">
               Preț (în bani - ex: 8500 = 85 RON) <span className="text-[var(--destructive)]">*</span>
@@ -210,23 +208,6 @@ export function ExtrasForm({ initialData, onSubmit, isSubmitting }: ExtrasFormPr
               min="0"
               className="w-full"
               placeholder="50"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="weight" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-              Greutate (kg)
-            </label>
-            <Input
-              id="weight"
-              name="weight"
-              type="number"
-              step="0.01"
-              value={formData.weight}
-              onChange={handleChange}
-              min="0"
-              className="w-full"
-              placeholder="0.2"
             />
           </div>
         </div>

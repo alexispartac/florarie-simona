@@ -2,12 +2,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Package, ShoppingCart, Users, Settings, Folder, Calendar, Gift } from 'lucide-react';
+import { Package, ShoppingCart, Users, Settings, Folder, Calendar, Gift, Sparkles } from 'lucide-react';
 import OrdersTab from './OrdersTab';
 import ProductsTab from './ProductsTab';
 import CollectionsTab from './CollectionsTab';
 import EventsTab from './EventsTab';
 import ExtrasTab from './ExtrasTab';
+import { SeasonalCollectionsTab } from './SeasonalCollectionsTab';
 // import Link from 'next/link';
 // import { usePathname } from 'next/navigation';
 
@@ -46,6 +47,12 @@ export function AdminTabs() {
       name: 'Collections',
       icon: <Folder className="h-4 w-4 mr-2" />,
       component: <CollectionsTab />,
+    },
+    {
+      id: 'seasonal-collections',
+      name: 'Colecții Sezon',
+      icon: <Sparkles className="h-4 w-4 mr-2" />,
+      component: <SeasonalCollectionsTab />,
     },
     {
       id: 'events',

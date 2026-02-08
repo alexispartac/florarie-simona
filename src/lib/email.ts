@@ -227,7 +227,7 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
         <h2 style="color: #2c3e50;">Comanda ta a sosit, ${order.shipping.name.split(' ')[0]}! 🎉</h2>
-        <p>Suntem fericiti sa iti anuntam ca comanda ta a fost livrata cu succes. Speram ca iti va placem produsele noi!</p>
+        <p>Suntem fericiti sa iti anuntam ca comanda ta a fost livrata cu succes. Speram ca esti multumit de produsele noastre!</p>
         
         <div style="margin: 20px 0; padding: 15px; background-color: #f0f8ff; border-radius: 5px; border-left: 4px solid #3498db;">
           <h3 style="margin-top: 0; color: #2c3e50;">Comanda #${order.orderId}</h3>
@@ -272,11 +272,11 @@ export async function sendDeliveryConfirmationEmail(order: Order) {
         </div>
         
         <div style="margin: 30px 0; padding: 15px; background-color: #f9f9f9; border-radius: 5px; border-left: 4px solid #4CAF50;">
-          <h3 style="margin-top: 0; color: #2c3e50;">Vrem sa audem parerea ta</h3>
-          <p>Speram ca iti va placem produsele noi. Parerea ta ne ajuta sa imbunatatim produsele si serviciile noastre.</p>
+          <h3 style="margin-top: 0; color: #2c3e50;">Vrem sa auzim parerea ta</h3>
+          <p>Speram ca esti multumit de produsele noastre. Parerea ta ne ajuta sa imbunatatim produsele si serviciile noastre.</p>
           <p style="margin: 15px 0 0;">
-            <a href="${ORDER_URL}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
-              Lasă un Review
+            <a href="${BASE_URL}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+              Lasă un Recenzie
             </a>
           </p>
         </div>

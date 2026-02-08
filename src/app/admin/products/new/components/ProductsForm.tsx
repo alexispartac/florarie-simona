@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Product, RelatedProduct, FlowerColor, FlowerOccasion, FlowerType, FlowerSize, SeasonalAvailability } from '@/types/products';
+import { Product, RelatedProduct, FlowerColor, FlowerOccasion, FlowerType, SeasonalAvailability } from '@/types/products';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ProductFormProps {
@@ -29,7 +29,6 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
     available: initialData?.available !== undefined ? initialData.available : true,
     stock: initialData?.stock || 0,
     sku: initialData?.sku || '',
-    weight: initialData?.weight || 0,
     salePrice: initialData?.salePrice || 0,
     relatedProducts: initialData?.relatedProducts?.map(prod => ({
       productId: prod.productId,
@@ -53,7 +52,6 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
     flowerColors: initialData?.flowerDetails?.colors?.join(', ') || '',
     flowerOccasions: initialData?.flowerDetails?.occasions?.join(', ') || '',
     flowerTypes: initialData?.flowerDetails?.flowerTypes?.join(', ') || '',
-    flowerSizes: initialData?.flowerDetails?.size?.join(', ') || '',
     stemCount: initialData?.flowerDetails?.stemCount || 0,
     includesVase: initialData?.flowerDetails?.includesVase || false,
     sameDayDelivery: initialData?.flowerDetails?.sameDayDelivery || false,
@@ -93,13 +91,11 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
       available: formData.available && Number(formData.stock) > 0,
       stock: Number(formData.stock) || 0,
       sku: formData.sku || `SKU-${formData.productId.slice(0, 8).toUpperCase()}`,
-      weight: Number(formData.weight) || 0,
       salePrice: Number(formData.salePrice) || 0,
       flowerDetails: {
         colors: formData.flowerColors.split(',').map(c => c.trim()).filter(Boolean) as FlowerColor[],
         occasions: formData.flowerOccasions.split(',').map(o => o.trim()).filter(Boolean) as FlowerOccasion[],
         flowerTypes: formData.flowerTypes.split(',').map(t => t.trim()).filter(Boolean) as FlowerType[],
-        size: formData.flowerSizes.split(',').map(s => s.trim()).filter(Boolean) as FlowerSize[],
         stemCount: Number(formData.stemCount) || 0,
         includesVase: formData.includesVase,
         sameDayDelivery: formData.sameDayDelivery,
@@ -263,7 +259,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
           💰 Preț & Stoc
         </h2>
         
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-[var(--foreground)] mb-1">
               Preț (RON) <span className="text-[var(--destructive)]">*</span>
@@ -317,24 +313,6 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
               placeholder="50"
             />
             <p className="mt-1 text-xs text-[var(--muted-foreground)]">Cantitate în stoc</p>
-          </div>
-
-          <div>
-            <label htmlFor="weight" className="block text-sm font-medium text-[var(--foreground)] mb-1">
-              Greutate (kg)
-            </label>
-            <Input
-              id="weight"
-              name="weight"
-              type="number"
-              step="0.01"
-              min="0"
-              value={formData.weight}
-              onChange={handleChange}
-              className="w-full"
-              placeholder="0.5"
-            />
-            <p className="mt-1 text-xs text-[var(--muted-foreground)]">Pentru calculul transportului</p>
           </div>
 
           <div className="flex items-center space-x-2 pt-6">
@@ -441,19 +419,6 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
                 value={formData.flowerTypes}
                 onChange={handleChange}
                 placeholder="e.g., roses, tulips, lilies"
-                    />
-              <p className="mt-1 text-sm text-[var(--muted-foreground)]">Separate with commas</p>
-                  </div>
-
-                  <div>
-              <label htmlFor="flowerSizes" className="block text-sm font-medium text-[var(--foreground)]">Available Sizes</label>
-                    <Input
-                id="flowerSizes"
-                name="flowerSizes"
-                type="text"
-                value={formData.flowerSizes}
-                onChange={handleChange}
-                placeholder="e.g., small, medium, large"
                     />
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">Separate with commas</p>
                   </div>

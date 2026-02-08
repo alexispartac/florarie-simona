@@ -241,7 +241,7 @@ export default function ProductPage() {
                         <div className="mb-6 p-4 bg-[var(--secondary)] rounded-lg space-y-3 border border-[var(--border)]">
                             {product.flowerDetails.colors && product.flowerDetails.colors.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">🎨 Colors:</h3>
+                                    <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">🎨 Culoare:</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {product.flowerDetails.colors.map((color) => (
                                             <span key={color} className="px-3 py-1 bg-[var(--card)] border border-[var(--border)] rounded-full text-sm capitalize text-[var(--foreground)]">
@@ -254,7 +254,7 @@ export default function ProductPage() {
 
                             {product.flowerDetails.occasions && product.flowerDetails.occasions.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">🎉 Perfect for:</h3>
+                                    <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">🎉 Perfect pentru:</h3>
                             <div className="flex flex-wrap gap-2">
                                         {product.flowerDetails.occasions.map((occasion) => (
                                             <span key={occasion} className="px-3 py-1 bg-[var(--card)] border border-[var(--border)] rounded-full text-sm capitalize text-[var(--foreground)]">
@@ -267,7 +267,7 @@ export default function ProductPage() {
 
                             {product.flowerDetails.stemCount && (
                                 <p className="text-sm text-[var(--foreground)]">
-                                    <span className="font-medium">🌹 Stem Count:</span> {product.flowerDetails.stemCount} stems
+                                    <span className="font-medium">🌹 Numar fire:</span> {product.flowerDetails.stemCount}
                                 </p>
                             )}
 

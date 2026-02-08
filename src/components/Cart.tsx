@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Button from './ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRandomExtras } from '@/hooks/useExtras';
+import { Spinner } from './ui/Spinner';
 
 type CartProps = {
   isOpen: boolean;
@@ -70,7 +71,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
   };
 
   if (isLoadingExtras) {
-    return <div>Loading...</div>;
+    return;
   }
   
   if (!isOpen) return null;

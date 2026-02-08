@@ -80,7 +80,7 @@ const EuPlatescForm = ({ onInitiate }: { onInitiate: () => void }) => {
 };
 
 function PaymentPageContent() {
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit-card');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash-on-delivery');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentReferenceConfirmed, setPaymentReferenceConfirmed] = useState(false);
   const [paymentReferenceCashOnDelivery, setPaymentReferenceCashOnDelivery] = useState(false);
@@ -325,19 +325,17 @@ function PaymentPageContent() {
             <div className="mb-8">
               <p className="text-sm text-[var(--muted-foreground)] mb-4">{t('checkout.allTransactionsSecure')}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <button
+              <button
                   type="button"
-                  onClick={() => handlePaymentMethodChange('credit-card')}
-                  className={`p-4 border rounded-lg text-center cursor-pointer transition-colors ${paymentMethod === 'credit-card'
-                    ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-2 ring-[var(--primary)]/20'
-                    : 'border-[var(--border)] hover:border-[var(--primary)]/50'
-                    }`}
+                  disabled
+                  className="p-4 border rounded-lg text-center cursor-not-allowed transition-colors opacity-50 border-[var(--border)] bg-[var(--secondary)]"
                 >
                   <div className="flex flex-col items-center">
                     <svg className="h-8 w-8 mb-2 text-[var(--foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
                     <span className="text-sm font-medium text-[var(--foreground)]">Card de credit</span>
+                    <span className="text-xs text-[var(--muted-foreground)] mt-1">(Temporar indisponibil)</span>
                   </div>
                 </button>
 

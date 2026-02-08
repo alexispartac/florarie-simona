@@ -1,12 +1,9 @@
-import { FlowerSize } from './products';
-
 export type OrderItem = {
     itemId: string;
     name: string;
     price: number;
     quantity: number;
     image?: string;
-    selectedSize?: FlowerSize; // For flower products
     customMessage?: string; // Custom message for greeting card
 };
 

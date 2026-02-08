@@ -1,5 +1,3 @@
-import { FlowerSize } from './products';
-
 export interface ShippingAddress {
   street: string;
   city: string;
@@ -21,7 +19,6 @@ export interface CreateOrderRequest {
     name: string;
     image?: string;
     customizations?: {
-      size?: FlowerSize;
       customMessage?: string; // Message for greeting card
       [key: string]: unknown;
     };
