@@ -5,6 +5,7 @@ import { useEvents, useCreateEvent, useUpdateEvent, useDeleteEvent } from '@/hoo
 import { PlusIcon, PencilIcon, TrashIcon, SearchIcon, Calendar, MapPin, Heart, Share2, Eye, EyeOff } from 'lucide-react';
 import { Event } from '@/types/events';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
+import { toast } from '@/components/hooks/use-toast';
 import EventModal from './EventModal';
 
 const ITEMS_PER_PAGE = 10;
@@ -65,13 +66,26 @@ export default function EventsTab() {
           eventId: selectedEvent.eventId,
           data,
         });
+        toast({
+          title: '✓ Event updated!',
+          description: 'Event has been successfully updated',
+        });
       } else {
         await createMutation.mutateAsync(data);
+        toast({
+          title: '✓ Event created!',
+          description: 'Event has been successfully created',
+        });
       }
       setIsEventModalOpen(false);
       setSelectedEvent(null);
     } catch (error) {
       console.error('Error saving event:', error);
+      toast({
+        title: '✗ Save failed',
+        description: 'Failed to save event. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -82,8 +96,17 @@ export default function EventsTab() {
       await deleteMutation.mutateAsync(eventToDelete);
       setIsDeleteModalOpen(false);
       setEventToDelete(null);
+      toast({
+        title: '✓ Event deleted!',
+        description: 'Event has been successfully deleted',
+      });
     } catch (error) {
       console.error('Error deleting event:', error);
+      toast({
+        title: '✗ Delete failed',
+        description: 'Failed to delete event. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 

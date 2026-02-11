@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ExtrasForm } from './components/ExtrasForm';
 import { Extra } from '@/types/extras';
+import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -21,12 +22,21 @@ export default function NewExtraPage() {
       const response = await axios.post('/api/extras', data);
       
       if (response.status === 201) {
+        toast({
+          title: '✓ Extra created!',
+          description: 'Extra item has been successfully created',
+        });
         // Success! Redirect to admin dashboard
         router.push('/admin/dashboard');
       }
     } catch (err) {
       console.error('Error creating extra:', err);
       setError('Failed to create extra. Please try again.');
+      toast({
+        title: '✗ Creation failed',
+        description: 'Failed to create extra. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }

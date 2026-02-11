@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { ExtrasForm } from '../new/components/ExtrasForm';
 import { Extra } from '@/types/extras';
 import { useExtra } from '@/hooks/useExtras';
+import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -28,12 +29,21 @@ export default function EditExtraPage() {
       const response = await axios.put(`/api/extras/${extraId}`, data);
       
       if (response.status === 200) {
+        toast({
+          title: '✓ Extra updated!',
+          description: 'Extra item has been successfully updated',
+        });
         // Success! Redirect to admin dashboard
         router.push('/admin/dashboard');
       }
     } catch (err) {
       console.error('Error updating extra:', err);
       setError('Failed to update extra. Please try again.');
+      toast({
+        title: '✗ Update failed',
+        description: 'Failed to update extra. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }

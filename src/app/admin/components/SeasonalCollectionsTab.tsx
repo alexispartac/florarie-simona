@@ -5,6 +5,7 @@ import axios from 'axios';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { SeasonalCollection } from '@/types/seasonalCollections';
+import { toast } from '@/components/hooks/use-toast';
 
 export function SeasonalCollectionsTab() {
   const [collections, setCollections] = useState<SeasonalCollection[]>([]);
@@ -31,11 +32,18 @@ export function SeasonalCollectionsTab() {
 
     try {
       await axios.delete(`/api/seasonal-collections/${collectionId}`);
-      alert('Colecția a fost ștearsă cu succes!');
       fetchCollections();
+      toast({
+        title: '✓ Colecția ștearsă!',
+        description: 'Colecția de sezon a fost ștearsă cu succes',
+      });
     } catch (error) {
       console.error('Error deleting collection:', error);
-      alert('Eroare la ștergerea colecției');
+      toast({
+        title: '✗ Ștergere eșuată',
+        description: 'Eroare la ștergerea colecției. Încearcă din nou.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -46,9 +54,17 @@ export function SeasonalCollectionsTab() {
         isActive: !collection.isActive,
       });
       fetchCollections();
+      toast({
+        title: '✓ Status actualizat!',
+        description: `Colecția a fost ${!collection.isActive ? 'activată' : 'dezactivată'} cu succes`,
+      });
     } catch (error) {
       console.error('Error toggling collection status:', error);
-      alert('Eroare la actualizarea statusului');
+      toast({
+        title: '✗ Actualizare eșuată',
+        description: 'Eroare la actualizarea statusului. Încearcă din nou.',
+        variant: 'destructive',
+      });
     }
   };
 

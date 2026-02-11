@@ -3,6 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Toaster } from '@/components/ui/Toaster';
 
 export default function AdminLayout({
   children,
@@ -37,6 +38,7 @@ export default function AdminLayout({
       <div className="max-w-8xl lg:px-8 py-20 sm:py-22 md:py-24">
         {children}
       </div>
+      <Toaster />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ProductForm } from '../new/components/ProductsForm';
 import { Product } from '@/types/products';
 import { useProduct } from '@/hooks/useProducts';
+import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
 import { Spinner } from '@/components/ui/Spinner';
 
@@ -61,10 +62,19 @@ export default function ProductDetailPage() {
 
       const data = response.data;
       console.log('Product updated:', data);
-      // Optionally show a success message
+      
+      toast({
+        title: '✓ Product updated!',
+        description: 'Product has been successfully updated',
+      });
     } catch (error) {
       console.error('Error updating product:', error);
       setError('Failed to update product');
+      toast({
+        title: '✗ Update failed',
+        description: 'Failed to update product. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }

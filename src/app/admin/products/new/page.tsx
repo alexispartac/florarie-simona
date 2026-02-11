@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProductForm } from './components/ProductsForm';
 import { Product } from '@/types/products';
+import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
 
 export default function NewProductPage() {
@@ -20,9 +21,20 @@ export default function NewProductPage() {
 
       const data = response.data;
       console.log('Product created:', data);
+      
+      toast({
+        title: '✓ Product created!',
+        description: 'Product has been successfully created',
+      });
+      
       router.push(`/admin/products/${data.productId}`);
     } catch (error) {
       console.error('Error creating product:', error);
+      toast({
+        title: '✗ Creation failed',
+        description: 'Failed to create product. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }

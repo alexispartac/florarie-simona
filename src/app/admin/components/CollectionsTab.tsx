@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Collection } from '@/types/collections';
 import { Input } from '@/components/ui';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
+import { toast } from '@/components/hooks/use-toast';
 import CollectionModal from './CollectionModal';
 
 const ITEMS_PER_PAGE = 10;
@@ -66,14 +67,27 @@ export default function CollectionsTab() {
           collectionId: selectedCollection.collectionId,
           data,
         });
+        toast({
+          title: '✓ Collection updated!',
+          description: 'Collection has been successfully updated',
+        });
       } else {
         // Create new collection
         await createMutation.mutateAsync(data);
+        toast({
+          title: '✓ Collection created!',
+          description: 'Collection has been successfully created',
+        });
       }
       setIsCollectionModalOpen(false);
       setSelectedCollection(null);
     } catch (error) {
       console.error('Error saving collection:', error);
+      toast({
+        title: '✗ Save failed',
+        description: 'Failed to save collection. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -84,8 +98,17 @@ export default function CollectionsTab() {
       await deleteMutation.mutateAsync(collectionToDelete);
       setIsDeleteModalOpen(false);
       setCollectionToDelete(null);
+      toast({
+        title: '✓ Collection deleted!',
+        description: 'Collection has been successfully deleted',
+      });
     } catch (error) {
       console.error('Error deleting collection:', error);
+      toast({
+        title: '✗ Delete failed',
+        description: 'Failed to delete collection. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 

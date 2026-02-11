@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
+import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
 
 const ITEMS_PER_PAGE = 10;
@@ -63,9 +64,18 @@ export default function ExtrasTab() {
       // Refresh the extras list
       await refetch();
       setIsDeleteModalOpen(false);
+      
+      toast({
+        title: '✓ Extra deleted!',
+        description: 'Extra item has been successfully deleted',
+      });
     } catch (error) {
       console.error('Error deleting extra:', error);
-      alert('Error deleting extra. Please try again.');
+      toast({
+        title: '✗ Delete failed',
+        description: 'Failed to delete extra. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsDeleting(false);
     }
