@@ -19,6 +19,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
       <h2 className="serif-font text-2xl font-bold mb-6 text-[var(--foreground)]">{t('product.youMayAlsoLike')}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product, index) => (
+          product.image ? (
           <Link 
             key={`${product.productId}-${index}`} 
             href={`/shop/${product.productId}?slug=${product.slug}`}
@@ -40,6 +41,15 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
               <p className="text-[var(--muted-foreground)]">{(product.price / 100).toFixed(2)} RON</p>
             </div>
           </Link>
+          ) : (
+            <div key={`${product.productId}-${index}`} className="col-span-1 bg-gray-200 animate-pulse rounded-lg">
+              <div className="h-64 w-full"> <div className="h-full w-full bg-gray-200" /></div>
+              <div className="p-4">
+                <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded-full mb-2"></div>
+                <div className="h-3 w-1/2 bg-gray-200 animate-pulse rounded-full"></div>
+              </div>
+            </div>
+          )
         ))}
       </div>
     </section>

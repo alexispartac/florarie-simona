@@ -218,6 +218,25 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       <span className="text-[var(--foreground)]">Total</span>
                       <span className="text-[var(--foreground)]">{(total / 100).toFixed(2)} RON</span>
                     </div>
+                    
+                    {/* View Cart Link */}
+                    <div className="pt-2">
+                      <Link
+                        href="/checkout/cart"
+                        onClick={onClose}
+                        className="text-xs text-[var(--primary)] hover:underline cursor-pointer flex items-center justify-center gap-1"
+                      >
+                        {t('cart.viewCart') || 'Vezi detalii coș'}
+                        <svg 
+                          className="w-3 h-3" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

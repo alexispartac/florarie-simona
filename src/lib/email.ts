@@ -200,8 +200,60 @@ export async function sendOrderConfirmationEmail(order: Order) {
     `,
   };
 
+  const mailOptionsAdmin = {
+    from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
+    to: process.env.EMAIL_USER || 'simonabuzau2@gmail.com',
+    subject: `Noua comanda - #${order.orderId}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        <h2 style="color: #2c3e50;">Noua comanda - #${order.orderId}</h2>
+        <p>Aici sunt detaliile comenzii:</p>
+        
+        <div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+          <h3 style="margin-top: 0; color: #2c3e50;">Comanda #${order.orderId}</h3>
+          <p><strong>Data Comenzii:</strong> ${new Date(order.date).toLocaleDateString()}</p>
+          <p><strong>Nume:</strong> ${order.shipping.name}</p>
+          <p><strong>Email:</strong> ${order.shipping.email}</p>
+          <p><strong>Telefon:</strong> ${order.shipping.phone}</p>
+          <p><strong>Adresa de livrare:</strong> ${formatShippingAddress(order.shipping).replace(/\n/g, '<br>')}</p>
+          <p><strong>Adresa de facturare:</strong> ${formatBillingAddress(order.billing).replace(/\n/g, '<br>')}</p>
+          <p><strong>Metoda de plata:</strong> ${order.payment.method === 'credit-card' ? 'Credit Card' : 
+              order.payment.method === 'bank-transfer' ? 'Transfer Bancar' : 'Plata la Livrare'}</p>
+          <p><strong>Status:</strong> ${order.payment.status.charAt(0).toUpperCase() + order.payment.status.slice(1)}</p>
+        </div>
+        
+        <h3 style="margin-top: 24px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 8px;">Sumarul comenzii</h3>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0 20px;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 10px; border-bottom: 2px solid #2c3e50;">Articol</th>
+              <th style="text-align: center; padding: 10px; border-bottom: 2px solid #2c3e50;">Cantitate</th>
+              <th style="text-align: right; padding: 10px; border-bottom: 2px solid #2c3e50;">Preț</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 2px solid #eee;">Subtotal</td>
+              <td style="text-align: right; padding: 12px 10px; border-top: 2px solid #eee;">${formatPrice(subtotal / 100)}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold;">Livrare</td>
+              <td style="text-align: right; padding: 5px 10px;">${formatPrice(order.shippingCost / 100)}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">Total</td>
+              <td style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">${formatPrice(total / 100)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `,
+  };
+
   try {
     await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptionsAdmin);
     return { success: true };
   } catch (error) {
     console.error('Error sending email:', error);

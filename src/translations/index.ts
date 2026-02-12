@@ -122,6 +122,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.removeItem': 'Remove Item',
     'cart.clearCart': 'Clear Cart',
     'cart.checkout': 'Checkout',
+    'cart.viewCart': 'View Cart Details',
     
     // Cart Toast Messages
     'cart.toast.addedToCart': 'Added to Cart',
@@ -624,6 +625,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.clearCart': 'Șterge coșul',
     'cart.checkout': 'Checkout',
     'cart.extra': 'Extra',
+    'cart.viewCart': 'Vezi detalii coș',
     
     // Cart Toast Messages
     'cart.toast.addedToCart': 'Adăugat în Coș',

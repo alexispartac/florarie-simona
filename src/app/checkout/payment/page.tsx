@@ -398,7 +398,7 @@ function PaymentPageContent() {
                         </div>
 
                         <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mt-4">
-                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Billing Information</h3>
+                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Informații de facturare</h3>
                           <div className="mt-4 space-y-2 text-left">
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {billingData.firstName} {billingData.lastName}</p>
                             {billingData.company && (
