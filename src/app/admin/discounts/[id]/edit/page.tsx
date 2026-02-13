@@ -197,7 +197,7 @@ export default function EditDiscountPage() {
         </div>
 
         <div className="flex items-center gap-3 pt-4 border-t border-[var(--border)]">
-          <Button type="submit" disabled={isSubmitting} className="flex items-center gap-2">
+          <Button type="submit" disabled={isSubmitting} >
             {isSubmitting ? (
               <>
                 <Spinner className="h-4 w-4" />
