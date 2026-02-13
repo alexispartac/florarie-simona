@@ -146,6 +146,12 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                   <span className="text-muted-foreground">Subtotal</span>
                   <span>{(order.total / 100).toFixed(2)} RON</span>
                 </div>
+                {order.discount && (
+                  <div className="flex justify-between py-1 text-green-600">
+                    <span>Discount ({order.discount.code})</span>
+                    <span>-{(order.discount.amount / 100).toFixed(2)} RON</span>
+                  </div>
+                )}
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Shipping</span>
                   <span>{(order.shippingCost / 100).toFixed(2)} RON</span>

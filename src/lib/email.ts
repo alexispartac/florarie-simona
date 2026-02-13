@@ -109,7 +109,8 @@ export async function sendOrderConfirmationEmail(order: Order) {
     `).join('');
 
   const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal + order.shippingCost;
+  const discountAmount = order.discount?.amount || 0;
+  const total = subtotal + order.shippingCost - discountAmount;
 
   const mailOptions = {
     from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
@@ -152,6 +153,12 @@ export async function sendOrderConfirmationEmail(order: Order) {
               <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold;">Livrare:</td>
               <td style="text-align: right; padding: 5px 10px;">${formatPrice(order.shippingCost / 100)}</td>
             </tr>
+            ${order.discount ? `
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold; color: #28a745;">Reducere (${order.discount.code}):</td>
+              <td style="text-align: right; padding: 5px 10px; color: #28a745;">-${formatPrice(order.discount.amount / 100)}</td>
+            </tr>
+            ` : ''}
             <tr>
               <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">Total:</td>
               <td style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">${formatPrice(total / 100)}</td>
@@ -241,6 +248,12 @@ export async function sendOrderConfirmationEmail(order: Order) {
               <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold;">Livrare</td>
               <td style="text-align: right; padding: 5px 10px;">${formatPrice(order.shippingCost / 100)}</td>
             </tr>
+            ${order.discount ? `
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold; color: #28a745;">Reducere (${order.discount.code})</td>
+              <td style="text-align: right; padding: 5px 10px; color: #28a745;">-${formatPrice(order.discount.amount / 100)}</td>
+            </tr>
+            ` : ''}
             <tr>
               <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">Total</td>
               <td style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #2c3e50;">${formatPrice(total / 100)}</td>
@@ -376,7 +389,8 @@ export async function sendOrderProcessedEmail(order: Order) {
     `).join('');
 
   const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal + order.shippingCost;
+  const discountAmount = order.discount?.amount || 0;
+  const total = subtotal + order.shippingCost - discountAmount;
 
   const mailOptions = {
     from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
@@ -411,6 +425,7 @@ export async function sendOrderProcessedEmail(order: Order) {
           <h3 style="margin-top: 0; color: #2c3e50;">Total Comanda</h3>
           <p><strong>Subtotal:</strong> ${formatPrice(subtotal / 100)}</p>
           <p><strong>Livrare:</strong> ${formatPrice(order.shippingCost / 100)}</p>
+          ${order.discount ? `<p style="color: #28a745;"><strong>Reducere (${order.discount.code}):</strong> -${formatPrice(order.discount.amount / 100)}</p>` : ''}
           <p><strong>Total:</strong> ${formatPrice(total / 100)}</p>
         </div>
 
@@ -556,7 +571,6 @@ export async function sendOrderOutForDeliveryEmail(order: Order) {
   }
 }
 
-// Email pentru comanda anulată (cancelled)
 export async function sendOrderCancelledEmail(order: Order, cancellationReason?: string) {
   const itemsHtml = order.items
     .map((item) => `
@@ -568,6 +582,11 @@ export async function sendOrderCancelledEmail(order: Order, cancellationReason?:
         <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price / 100)}</td>
       </tr>
     `).join('');
+  
+  const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const discountAmount = order.discount?.amount || 0;
+  const totalBeforeShipping = subtotal - discountAmount;
+  const total = totalBeforeShipping + order.shippingCost;
 
   const mailOptions = {
     from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
@@ -612,15 +631,21 @@ export async function sendOrderCancelledEmail(order: Order, cancellationReason?:
           <table style="width: 100%;">
             <tr>
               <td style="padding: 5px;"><strong>Subtotal:</strong></td>
-              <td style="text-align: right; padding: 5px;">${formatPrice((order.total - order.shippingCost) / 100)}</td>
+              <td style="text-align: right; padding: 5px;">${formatPrice(totalBeforeShipping / 100)}</td>
             </tr>
             <tr>
               <td style="padding: 5px;"><strong>Transport:</strong></td>
               <td style="text-align: right; padding: 5px;">${formatPrice(order.shippingCost / 100)}</td>
             </tr>
+            ${order.discount ? `
+            <tr>
+              <td style="padding: 5px; color: #28a745;"><strong>Reducere (${order.discount.code}):</strong></td>
+              <td style="text-align: right; padding: 5px; color: #28a745;">-${formatPrice(order.discount.amount / 100)}</td>
+            </tr>
+            ` : ''}
             <tr style="border-top: 2px solid #2c3e50;">
               <td style="padding: 10px 5px 5px;"><strong>Total:</strong></td>
-              <td style="text-align: right; padding: 10px 5px 5px;"><strong>${formatPrice(order.total / 100)}</strong></td>
+              <td style="text-align: right; padding: 10px 5px 5px;"><strong>${formatPrice(total / 100)}</strong></td>
             </tr>
           </table>
         </div>
@@ -628,7 +653,7 @@ export async function sendOrderCancelledEmail(order: Order, cancellationReason?:
         ${order.payment.status === 'paid' ? `
           <div style="margin: 30px 0; padding: 15px; background-color: #d1ecf1; border-radius: 5px; border-left: 4px solid #17a2b8;">
             <h3 style="margin-top: 0; color: #0c5460;">💰 Rambursare</h3>
-            <p>Deoarece comanda ta a fost plătită, vom procesa o rambursare completă. Suma de <strong>${formatPrice(order.total / 100)}</strong> va fi returnată în contul tău în <strong>5-10 zile lucrătoare</strong>, în funcție de banca ta.</p>
+            <p>Deoarece comanda ta a fost plătită, vom procesa o rambursare completă. Suma de <strong>${formatPrice(total / 100)}</strong> va fi returnată în contul tău în <strong>5-10 zile lucrătoare</strong>, în funcție de banca ta.</p>
             ${order.payment.method === 'credit-card' ? '<p><em>Rambursarea va fi procesată pe cardul folosit la achiziție.</em></p>' : ''}
             ${order.payment.method === 'bank-transfer' ? '<p><em>Te vom contacta pentru detaliile contului bancar pentru rambursare.</em></p>' : ''}
           </div>

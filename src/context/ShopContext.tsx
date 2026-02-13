@@ -3,12 +3,14 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useRef, useCallback, useMemo } from 'react';
 import { useToast } from '@/context/ToastContext';
 import { CartItem, WishlistItem } from '@/types/products';
+import { AppliedDiscount } from '@/types/discounts';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 
 interface ShopContextType {
     cart: CartItem[];
     wishlist: WishlistItem[];
+    appliedDiscount: AppliedDiscount | null;
     addToCart: (product: CartItem) => void;
     removeFromCart: (product: CartItem) => void;
     updateCartItemQuantity: (product: CartItem, quantity: number) => void;
@@ -20,11 +22,15 @@ interface ShopContextType {
     getCartTotal: () => number;
     getCartItemCount: () => number;
     getPriceShipping: () => number;
+    applyDiscount: (code: string, amount: number) => void;
+    removeDiscount: () => void;
+    getDiscountedTotal: () => number;
 };
 
 const STORAGE_KEYS = {
     CART: 'shop_cart',
     WISHLIST: 'shop_wishlist',
+    DISCOUNT: 'shop_discount',
     TIMESTAMP: 'shop_timestamp'
 };
 
@@ -34,18 +40,19 @@ const ONE_WEEK = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const useInitialState = () => { 
     if (typeof window === 'undefined') {
-        return { cart: [], wishlist: [], shouldClearStorage: false };
+        return { cart: [], wishlist: [], appliedDiscount: null, shouldClearStorage: false };
     }
 
     const lastUpdated = localStorage.getItem(STORAGE_KEYS.TIMESTAMP);
     const shouldClearStorage = lastUpdated && Date.now() - Number(lastUpdated) > ONE_WEEK;
 
     if (shouldClearStorage) {
-        return { cart: [], wishlist: [], shouldClearStorage: true };
+        return { cart: [], wishlist: [], appliedDiscount: null, shouldClearStorage: true };
     }
 
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     const savedWishlist = localStorage.getItem(STORAGE_KEYS.WISHLIST);
+    const savedDiscount = localStorage.getItem(STORAGE_KEYS.DISCOUNT);
 
     // Ensure cart items have quantity
     const cart = savedCart ? (JSON.parse(savedCart) as Array<Omit<CartItem, 'quantity'> & { quantity?: number }>).map(item => ({
@@ -56,6 +63,7 @@ const useInitialState = () => {
     return {
         cart,
         wishlist: savedWishlist ? JSON.parse(savedWishlist) : [],
+        appliedDiscount: savedDiscount ? JSON.parse(savedDiscount) : null,
         shouldClearStorage: false
     };
 };
@@ -64,6 +72,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     const initialState = useInitialState();
     const [cart, setCart] = useState<CartItem[]>(initialState.cart);
     const [wishlist, setWishlist] = useState<WishlistItem[]>(initialState.wishlist);
+    const [appliedDiscount, setAppliedDiscount] = useState<AppliedDiscount | null>(initialState.appliedDiscount);
     
     const { toast } = useToast();
     const { language } = useLanguage();
@@ -78,12 +87,13 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         tRef.current = t;
     }, [toast, t]);
 
-    // Save to localStorage when cart or wishlist changes
+    // Save to localStorage when cart, wishlist, or discount changes
     useEffect(() => {
         localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
         localStorage.setItem(STORAGE_KEYS.WISHLIST, JSON.stringify(wishlist));
+        localStorage.setItem(STORAGE_KEYS.DISCOUNT, JSON.stringify(appliedDiscount));
         localStorage.setItem(STORAGE_KEYS.TIMESTAMP, Date.now().toString());
-    }, [cart, wishlist]);
+    }, [cart, wishlist, appliedDiscount]);
 
     // Clear storage if needed
     useEffect(() => {
@@ -270,6 +280,26 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         });
     }, []);
 
+    const applyDiscount = useCallback((code: string, amount: number) => {
+        setAppliedDiscount({ code, amount });
+        setTimeout(() => {
+            toastRef.current({
+                title: tRef.current('discount.applied') || 'Discount applied!',
+                description: `${tRef.current('discount.saved') || 'You saved'} ${(amount / 100).toFixed(2)} RON`,
+            });
+        }, 0);
+    }, []);
+
+    const removeDiscount = useCallback(() => {
+        setAppliedDiscount(null);
+        setTimeout(() => {
+            toastRef.current({
+                title: tRef.current('discount.removed') || 'Discount removed',
+                description: tRef.current('discount.removedDesc') || 'Discount code has been removed',
+            });
+        }, 0);
+    }, []);
+
     const isInCart = useCallback((productId: string) => {
         if (!productId) return false;
         return cart.some(item => item.productId === productId);
@@ -283,6 +313,13 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     const getCartTotal = useCallback(() => 
         cart.reduce((total, item) => total + (item.price * item.quantity), 0)
     , [cart]);
+
+    const getDiscountedTotal = useCallback(() => {
+        const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const discountAmount = appliedDiscount?.amount || 0;
+        // Ensure total doesn't go below 0
+        return Math.max(0, cartTotal - discountAmount);
+    }, [cart, appliedDiscount]);
 
     const getPriceShipping = useCallback(() => {
         // Check if shipping data exists and get the city
@@ -315,6 +352,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     const contextValue = useMemo(() => ({
         cart,
         wishlist,
+        appliedDiscount,
         addToCart,
         removeFromCart,
         updateCartItemQuantity,
@@ -326,9 +364,13 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         getCartTotal,
         getPriceShipping,
         getCartItemCount,
+        applyDiscount,
+        removeDiscount,
+        getDiscountedTotal,
     }), [
         cart,
         wishlist,
+        appliedDiscount,
         addToCart,
         removeFromCart,
         updateCartItemQuantity,
@@ -340,6 +382,9 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         getCartTotal,
         getPriceShipping,
         getCartItemCount,
+        applyDiscount,
+        removeDiscount,
+        getDiscountedTotal,
     ]);
 
     return (

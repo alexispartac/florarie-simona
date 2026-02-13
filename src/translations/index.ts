@@ -138,6 +138,21 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.toast.stockLimitReached': 'Stock Limit Reached',
     'cart.toast.maxStockAvailable': 'Maximum available',
     
+    // Discount codes
+    'discount.label': 'Discount Code',
+    'discount.placeholder': 'Enter code',
+    'discount.apply': 'Apply',
+    'discount.remove': 'Remove',
+    'discount.applied': 'Discount applied!',
+    'discount.saved': 'You saved',
+    'discount.invalid': 'Invalid discount code',
+    'discount.expired': 'Discount code expired',
+    'discount.removed': 'Discount removed',
+    'discount.removedDesc': 'Discount code has been removed',
+    'discount.validating': 'Validating...',
+    'discount.error': 'Failed to validate discount code',
+    'discount.discount': 'Discount',
+    
     // Wishlist Toast Messages
     'wishlist.toast.addedToWishlist': 'Added to Wishlist',
     'wishlist.toast.addedToWishlistDesc': 'Item has been added to your wishlist.',
@@ -640,6 +655,21 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.toast.cartClearedDesc': 'Toate produsele au fost șterse din coș.',
     'cart.toast.stockLimitReached': 'Limită Stoc Atinsă',
     'cart.toast.maxStockAvailable': 'Maxim disponibil',
+    
+    // Discount codes
+    'discount.label': 'Cod de reducere',
+    'discount.placeholder': 'Introdu codul',
+    'discount.apply': 'Aplică',
+    'discount.remove': 'Elimină',
+    'discount.applied': 'Reducere aplicată!',
+    'discount.saved': 'Ai economisit',
+    'discount.invalid': 'Cod invalid',
+    'discount.expired': 'Cod expirat',
+    'discount.removed': 'Reducere eliminată',
+    'discount.removedDesc': 'Codul de reducere a fost eliminat',
+    'discount.validating': 'Validare...',
+    'discount.error': 'Eroare la validarea codului',
+    'discount.discount': 'Reducere',
     
     // Wishlist Toast Messages
     'wishlist.toast.addedToWishlist': 'Adăugat la Favorite',

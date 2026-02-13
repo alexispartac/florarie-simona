@@ -82,15 +82,18 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
 
     await onSubmit({
       ...formData,
-      slug: formData.name.toLowerCase().replace(/\s+/g, '-'),
+      name: formData.name.trim(),
+      slug: formData.name.trim().toLowerCase().replace(/\s+/g, '-'),
+      description: formData.description.trim(),
+      category: formData.category.trim(),
       price: Number(formData.price) || 0,
       tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
-      details: formData.details.split('\n').filter(Boolean),
-      images: formData.images.split('\n').filter(url => url.trim() !== ''),
+      details: formData.details.split('\n').map(d => d.trim()).filter(Boolean),
+      images: formData.images.split('\n').map(url => url.trim()).filter(Boolean),
       relatedProducts: processedRelatedProducts,
       available: formData.available && Number(formData.stock) > 0,
       stock: Number(formData.stock) || 0,
-      sku: formData.sku || `SKU-${formData.productId.slice(0, 8).toUpperCase()}`,
+      sku: formData.sku.trim() || `SKU-${formData.productId.slice(0, 8).toUpperCase()}`,
       salePrice: Number(formData.salePrice) || 0,
       flowerDetails: {
         colors: formData.flowerColors.split(',').map(c => c.trim()).filter(Boolean) as FlowerColor[],
@@ -102,11 +105,11 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
         customMessageAvailable: formData.customMessageAvailable,
         seasonalAvailability: formData.seasonalAvailability as SeasonalAvailability,
         careInstructions: {
-          wateringFrequency: formData.wateringFrequency,
-          sunlightRequirement: formData.sunlightRequirement,
-          temperature: formData.temperature,
-          expectedLifespan: formData.expectedLifespan,
-          specialNotes: formData.specialNotes,
+          wateringFrequency: formData.wateringFrequency.trim(),
+          sunlightRequirement: formData.sunlightRequirement.trim(),
+          temperature: formData.temperature.trim(),
+          expectedLifespan: formData.expectedLifespan.trim(),
+          specialNotes: formData.specialNotes.trim(),
         }
       }
     } as Product);

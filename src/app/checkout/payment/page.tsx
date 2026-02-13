@@ -13,6 +13,7 @@ import { Order, ShippingInfo } from '@/types/orders';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 import Image from 'next/image';
+import DiscountCodeInput from '@/components/ui/DiscountCodeInput';
 
 type PaymentMethod = 'credit-card' | 'cash-on-delivery' | 'bank-transfer';
 
@@ -85,7 +86,7 @@ function PaymentPageContent() {
   const [paymentReferenceConfirmed, setPaymentReferenceConfirmed] = useState(false);
   const [paymentReferenceCashOnDelivery, setPaymentReferenceCashOnDelivery] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const { getCartTotal, getPriceShipping, cart } = useShop();
+  const { getCartTotal, getPriceShipping, cart, appliedDiscount, getDiscountedTotal } = useShop();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
@@ -174,7 +175,7 @@ function PaymentPageContent() {
       orderId: uuidv4(),
       date: '',
       status: 'processing' as OrderStatus,
-      total: getCartTotal(),
+      total: getDiscountedTotal(),
       shippingCost: getPriceShipping(),
       items: items,
       shipping: shippingInfo,
@@ -184,6 +185,10 @@ function PaymentPageContent() {
         status: 'pending'
       },
       trackingNumber: '',
+      discount: appliedDiscount ? {
+        code: appliedDiscount.code,
+        amount: appliedDiscount.amount
+      } : undefined,
     };
 
     const responseOrder = await axios.post('/api/orders', orderData);
@@ -211,7 +216,7 @@ function PaymentPageContent() {
 
       // Initialize payment with euPlatesc
       const response = await axios.post('/api/euplatesc/init-payment', {
-        // amount: getCartTotal() + getPriceShipping(), // Amount in cents
+        // amount: getDiscountedTotal() + getPriceShipping(), // Amount in cents with discount applied
         amount: 100,
         curr: 'RON',
         invoice_id: trackingNumber,
@@ -649,9 +654,23 @@ function PaymentPageContent() {
                 <span className="text-[var(--muted-foreground)]">{t('checkout.shipping')}</span>
                 <span className="font-medium text-[var(--foreground)]">{(getPriceShipping() / 100).toFixed(2)} RON</span>
               </div>
+              
+              {/* Discount Code Input */}
+              <div className="border-t border-[var(--border)] pt-4">
+                <DiscountCodeInput />
+              </div>
+              
+              {/* Show discount amount if applied */}
+              {appliedDiscount && (
+                <div className="flex justify-between text-[var(--primary)]">
+                  <span className="font-medium">{t('discount.discount')}</span>
+                  <span className="font-medium">-{(appliedDiscount.amount / 100).toFixed(2)} RON</span>
+                </div>
+              )}
+              
               <div className="flex justify-between border-t border-[var(--border)] pt-4">
                 <span className="text-lg font-bold text-[var(--foreground)]">{t('checkout.total')}</span>
-                <span className="text-lg font-bold text-[var(--foreground)]">{((getCartTotal() + getPriceShipping()) / 100).toFixed(2)} RON</span>
+                <span className="text-lg font-bold text-[var(--foreground)]">{((getDiscountedTotal() + getPriceShipping()) / 100).toFixed(2)} RON</span>
               </div>
               {paymentMethod === 'credit-card' && (
                 <div className="mt-6">

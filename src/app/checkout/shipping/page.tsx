@@ -63,7 +63,7 @@ export default function ShippingPage() {
   
   const [isLoadingShipping, setIsLoadingShipping] = useState<boolean>(false);
   const [isLoadingBilling, setIsLoadingBilling] = useState<boolean>(false);
-  const { cart, getCartItemCount, getCartTotal, getPriceShipping } = useShop();
+  const { cart, getCartItemCount, getCartTotal, getPriceShipping, appliedDiscount, getDiscountedTotal } = useShop();
   const [errors, setErrors] = useState<Partial<ShippingData>>({});
   const [billingErrors, setBillingErrors] = useState<Partial<BillingData>>({});
   
@@ -984,7 +984,10 @@ export default function ShippingPage() {
             <div className="mt-4 p-4 bg-[var(--secondary)] rounded-md border border-[var(--border)]">
               <p className="text-sm text-[var(--muted-foreground)]">{t('cart.checkout.totalItems')}: {getCartItemCount()}</p>
               <p className="text-sm text-[var(--muted-foreground)]">{t('cart.checkout.shipping')}: {(getPriceShipping() / 100).toFixed(2)} RON</p>
-              <p className="text-sm font-semibold text-[var(--foreground)] mt-2">{t('cart.checkout.total')}: {((getCartTotal() + getPriceShipping()) / 100).toFixed(2)} RON</p>
+              {appliedDiscount && (
+                <p className="text-sm text-[var(--primary)] font-medium">{t('discount.discount')} ({appliedDiscount.code}): -{(appliedDiscount.amount / 100).toFixed(2)} RON</p>
+              )}
+              <p className="text-sm font-semibold text-[var(--foreground)] mt-2">{t('cart.checkout.total')}: {((getDiscountedTotal() + getPriceShipping()) / 100).toFixed(2)} RON</p>
             </div>
             
             <div className="mt-4">

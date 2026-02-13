@@ -66,6 +66,10 @@ export type Order = {
     deliveredBy?: string; // Delivery person name
     deliveryNotes?: string; // Notes from delivery person
     customerNotes?: string; // Special requests from customer
+    discount?: {
+        code: string;
+        amount: number;
+    };
     createdAt?: Date;
     updatedAt?: Date;
 };

@@ -16,7 +16,7 @@ type CartProps = {
 };
 
 export default function Cart({ isOpen, onClose }: CartProps) {
-  const { cart, removeFromCart, updateCartItemQuantity, getCartTotal, getPriceShipping, addToCart } = useShop();
+  const { cart, removeFromCart, updateCartItemQuantity, getCartTotal, addToCart, appliedDiscount, getDiscountedTotal } = useShop();
   const cartRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -46,7 +46,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
 
   // Calculate total price
   const subtotal = getCartTotal();
-  const total = subtotal;
+  const total = getDiscountedTotal();
 
   // Carousel navigation
   const nextSlide = () => {
@@ -236,6 +236,12 @@ export default function Cart({ isOpen, onClose }: CartProps) {
                       <span className="text-[var(--muted-foreground)]">Subtotal</span>
                       <span className="text-[var(--foreground)]">{(subtotal / 100).toFixed(2)} RON</span>
                     </div>
+                    {appliedDiscount && (
+                      <div className="flex justify-between text-[var(--primary)]">
+                        <span className="font-medium">{t('discount.discount')} ({appliedDiscount.code})</span>
+                        <span className="font-medium">-{(appliedDiscount.amount / 100).toFixed(2)} RON</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-[var(--muted-foreground)]">Shipping</span>
                       <span className="text-[var(--foreground)]"> ? </span>

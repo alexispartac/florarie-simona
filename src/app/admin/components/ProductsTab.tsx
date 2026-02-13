@@ -1,7 +1,7 @@
 // Create /src/app/admin/components/ProductsTab.tsx
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useProductsAdmin } from '@/hooks/useProducts';
 import { PlusIcon, PencilIcon, TrashIcon, SearchIcon, MessageSquare, Link2, Share2 } from 'lucide-react';
 import Image from 'next/image';
@@ -19,18 +19,28 @@ export default function ProductsTab() {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isAddingStock, setIsAddingStock] = useState(false);
   const [reviewsModalOpen, setReviewsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | null>(null);
   const [shareMenuOpen, setShareMenuOpen] = useState<string | null>(null);
 
+  // Debounce search query - wait 500ms after user stops typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setCurrentPage(1); // Reset to first page on new search
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const { data, isLoading, error, refetch } = useProductsAdmin({
     page: currentPage,
     limit: ITEMS_PER_PAGE,
-    search: searchQuery,
+    search: debouncedSearchQuery,
   });
 
   const products = data?.data || [];
@@ -40,11 +50,6 @@ export default function ProductsTab() {
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
   }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setCurrentPage(1);
-  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -84,36 +89,6 @@ export default function ProductsTab() {
       });
     } finally {
       setIsDeleting(false);
-    }
-  };
-
-  const handleAddStockToAll = async () => {
-    if (!confirm('Are you sure you want to add stock: 1 to ALL products? This will overwrite existing stock values.')) {
-      return;
-    }
-
-    setIsAddingStock(true);
-    try {
-      const response = await axios.put('/api/products/add-stock');
-
-      if (response.data.success) {
-        await refetch();
-        toast({
-          title: '✓ Stock updated!',
-          description: `Successfully updated ${response.data.modifiedCount} products with stock`,
-        });
-      } else {
-        throw new Error('Failed to add stock');
-      }
-    } catch (error) {
-      console.error('Error adding stock:', error);
-      toast({
-        title: '✗ Stock update failed',
-        description: 'Failed to add stock to products. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsAddingStock(false);
     }
   };
 
@@ -238,7 +213,6 @@ export default function ProductsTab() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-lg font-medium text-[var(--foreground)]">Products</h2>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <form onSubmit={handleSubmit} className="relative">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <SearchIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
@@ -252,8 +226,7 @@ export default function ProductsTab() {
                 className="block w-full pl-4 pr-3 py-2 border border-[var(--border)] rounded-md leading-5 bg-[var(--card)] placeholder-[var(--muted-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] sm:text-sm"
               />
             </div>
-          </form>
-          <button
+          {/* <button
             onClick={handleAddStockToAll}
             disabled={isAddingStock}
             className="inline-flex items-center px-4 py-2 border border-orange-600 text-sm font-medium cursor-pointer rounded-md shadow-sm text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -271,7 +244,7 @@ export default function ProductsTab() {
                 Add Stock to All
               </>
             )}
-          </button>
+          </button> */}
           <button
             onClick={() => router.push('/admin/products/new')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium cursor-pointer rounded-md shadow-sm text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"

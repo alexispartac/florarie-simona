@@ -2,14 +2,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Package, ShoppingCart, Users, Settings, Folder, Calendar, Gift, Sparkles } from 'lucide-react';
+import { Package, ShoppingCart, Users, Settings, Folder, Calendar, Gift, Sparkles, Tag } from 'lucide-react';
 import OrdersTab from './OrdersTab';
 import ProductsTab from './ProductsTab';
 import CollectionsTab from './CollectionsTab';
 import EventsTab from './EventsTab';
 import ExtrasTab from './ExtrasTab';
 import { SeasonalCollectionsTab } from './SeasonalCollectionsTab';
-// import Link from 'next/link';
+import Link from 'next/link';
 // import { usePathname } from 'next/navigation';
 
 type Tab = {
@@ -59,6 +59,22 @@ export function AdminTabs() {
       name: 'Evenimente',
       icon: <Calendar className="h-4 w-4 mr-2" />,
       component: <EventsTab />,
+    },
+    {
+      id: 'discounts',
+      name: 'Discounts',
+      icon: <Tag className="h-4 w-4 mr-2" />,
+      component: (
+        <div className="p-6">
+          <Link
+            href="/admin/discounts"
+            className="inline-flex items-center px-6 py-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-md hover:bg-[var(--hover-primary)] transition-colors"
+          >
+            <Tag className="h-5 w-5 mr-2" />
+            Manage Discount Codes
+          </Link>
+        </div>
+      ),
     },
     {
       id: 'users',

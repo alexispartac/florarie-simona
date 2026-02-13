@@ -167,6 +167,12 @@ export default function OrderLookupPage() {
                                         <span className="text-sm text-[var(--muted-foreground)]">{t('checkout.shipping')}</span>
                                         <span className="text-sm font-medium text-[var(--foreground)]">{ (order.shippingCost / 100).toFixed(2)} RON</span>
                                     </div>
+                                    {order.discount && (
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-[var(--primary)]">{t('discount.discount')} ({order.discount.code})</span>
+                                            <span className="text-sm font-medium text-[var(--primary)]">-{(order.discount.amount / 100).toFixed(2)} RON</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between pt-3 border-t border-[var(--border)]">
                                         <span className="text-base font-medium text-[var(--foreground)]">{t('checkout.total')}</span>
                                         <span className="text-base font-bold text-[var(--foreground)]">{((order.total + order.shippingCost) / 100).toFixed(2)} RON</span>

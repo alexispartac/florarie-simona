@@ -20,10 +20,12 @@ export default function CartPage() {
     updateCartItemQuantity, 
     getCartTotal, 
     getCartItemCount,
+    appliedDiscount,
+    getDiscountedTotal,
   } = useShop();
   const itemCount = getCartItemCount();
   const subtotal = getCartTotal();
-  const total = subtotal;
+  const total = getDiscountedTotal();
 
   const { language } = useLanguage();
   const t = useTranslation(language);
@@ -201,6 +203,13 @@ export default function CartPage() {
                 <span className="text-[var(--muted-foreground)]">{t('cart.checkout.subtotal')}</span>
                 <span className="font-medium text-[var(--foreground)]">{(subtotal / 100).toFixed(2)} RON</span>
               </div>
+              
+              {appliedDiscount && (
+                <div className="flex items-center justify-between text-[var(--primary)]">
+                  <span className="font-medium">{t('discount.discount')} ({appliedDiscount.code})</span>
+                  <span className="font-medium">-{(appliedDiscount.amount / 100).toFixed(2)} RON</span>
+                </div>
+              )}
               
               <div className="flex items-center justify-between border-t border-[var(--border)] pt-4">
                 <span className="text-[var(--muted-foreground)]">{t('cart.checkout.shipping')}</span>
