@@ -4,6 +4,7 @@ import { memo, useState, useEffect, useRef } from 'react';
 import Button from '@/components/ui/Button';
 import { ProductCard } from './components/ProductCard';
 import { ProductFilters } from './components/ProductFilters';
+import { ProductFiltersSkeleton } from './components/ProductFiltersSkeleton';
 import { ShopHero } from './components/ShopHero';
 import { useShop } from '@/context/ShopContext';
 import { ProductInCatalog, WishlistItem, FlowerColor, FlowerOccasion } from '@/types/products';
@@ -11,6 +12,7 @@ import { useProductsCatalogInfinite, useProductCategories } from '@/hooks/usePro
 import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
+import { ProductCardSkeleton } from './components/ProductCardSkeleton';
 
 const ProductList = memo(({
   products,
@@ -142,10 +144,18 @@ export default function Shop() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-        <div className="animate-pulse flex flex-col items-center space-y-4">
-          <Spinner className="w-12 h-12" />
-          <p className="text-[var(--muted-foreground)]">{t('shop.loading')}</p>
+      <div className="min-h-screen bg-[var(--primary-background)]">
+        <ShopHero
+          title="Intra in lumea florilor"
+          subtitle="Descopera buchete proaspete și aranjamente florale superbe pentru orice ocazie. Nu ezita sa ne contactezi pentru orice intrebare."
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <ProductFiltersSkeleton />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       </div>
     );

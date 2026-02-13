@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { RelatedProduct } from '@/types/products';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
+import { RelatedProductsSkeleton } from './RelatedProductsSkeleton';
 
 interface RelatedProductsProps {
   products: RelatedProduct[];
@@ -42,13 +43,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
             </div>
           </Link>
           ) : (
-            <div key={`${product.productId}-${index}`} className="col-span-1 bg-gray-200 animate-pulse rounded-lg">
-              <div className="h-64 w-full"> <div className="h-full w-full bg-gray-200" /></div>
-              <div className="p-4">
-                <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded-full mb-2"></div>
-                <div className="h-3 w-1/2 bg-gray-200 animate-pulse rounded-full"></div>
-              </div>
-            </div>
+            <RelatedProductsSkeleton key={`skeleton-${product.productId}-${index}`} />
           )
         ))}
       </div>

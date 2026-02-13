@@ -11,6 +11,7 @@ import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import ProductReviewsModal from './ProductReviewsModal';
 import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
+import { AdminTableSkeleton } from './AdminTableSkeleton';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -199,13 +200,7 @@ export default function ProductsTab() {
   };
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
-        </div>
-      </div>
-    );
+    return <AdminTableSkeleton rows={10} withImage={true} withSearch={true} withAddButton={true} columns={5} />;
   }
 
   if (error) {

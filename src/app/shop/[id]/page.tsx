@@ -17,6 +17,7 @@ import { AddReview } from '../components/AddReview';
 import { ProductReview } from '@/types/products';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
+import { ProductDetailSkeleton } from './components/ProductDetailSkeleton';
 
 // Helper function to check if URL is a video
 const isVideoUrl = (url: string): boolean => {
@@ -47,14 +48,7 @@ export default function ProductPage() {
     const router = useRouter();
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-                <div className="animate-pulse flex flex-col items-center space-y-4">
-                    <Spinner className="w-12 h-12" />
-                    <p className="text-[var(--muted-foreground)]">{t('product.loading')}</p>
-                </div>
-            </div>
-        );
+        return <ProductDetailSkeleton />;
     }
 
     if (isError) {

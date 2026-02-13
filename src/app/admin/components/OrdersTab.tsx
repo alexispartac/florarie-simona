@@ -9,6 +9,7 @@ import { OrderInfoModal } from './OrderInfoModal';
 import { OrderStatusModal } from './OrderStatusModal';
 import { useToast } from '@/components/hooks/use-toast';
 import axios from 'axios';
+import { AdminTableSkeleton } from './AdminTableSkeleton';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -107,13 +108,7 @@ export default function OrdersTab() {
     const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
     if (isLoading) {
-        return (
-            <div className="p-6">
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
-                </div>
-            </div>
-        );
+        return <AdminTableSkeleton rows={10} withImage={false} withSearch={false} withAddButton={false} columns={6} />;
     }
 
     if (error) {

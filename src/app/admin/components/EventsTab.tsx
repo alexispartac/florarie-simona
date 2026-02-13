@@ -7,6 +7,7 @@ import { Event } from '@/types/events';
 import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { toast } from '@/components/hooks/use-toast';
 import EventModal from './EventModal';
+import { AdminTableSkeleton } from './AdminTableSkeleton';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -121,13 +122,7 @@ export default function EventsTab() {
   };
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
-        </div>
-      </div>
-    );
+    return <AdminTableSkeleton rows={10} withImage={true} withSearch={false} withAddButton={true} columns={5} />;
   }
 
   if (error) {

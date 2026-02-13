@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { SeasonalCollection } from '@/types/seasonalCollections';
 import { toast } from '@/components/hooks/use-toast';
+import { SeasonalCollectionsSkeleton } from './SeasonalCollectionsSkeleton';
 
 export function SeasonalCollectionsTab() {
   const [collections, setCollections] = useState<SeasonalCollection[]>([]);
@@ -84,7 +85,11 @@ export function SeasonalCollectionsTab() {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Se încarcă...</div>;
+    return (
+      <div className="p-6">
+        <SeasonalCollectionsSkeleton count={3} />
+      </div>
+    );
   }
 
   return (

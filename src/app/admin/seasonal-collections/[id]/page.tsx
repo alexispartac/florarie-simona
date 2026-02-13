@@ -6,6 +6,7 @@ import axios from 'axios';
 import { SeasonalCollectionForm } from '../components/SeasonalCollectionForm';
 import { SeasonalCollection } from '@/types/seasonalCollections';
 import { Spinner } from '@/components/ui/Spinner';
+import { AdminFormSkeleton } from '../../components/AdminFormSkeleton';
 
 export default function EditSeasonalCollectionPage() {
   const router = useRouter();
@@ -49,11 +50,7 @@ export default function EditSeasonalCollectionPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner className="w-12 h-12" />
-      </div>
-    );
+    return <AdminFormSkeleton title="Loading Collection..." fields={10} withImageUpload={true} withRichText={false} />;
   }
 
   if (!collection) {

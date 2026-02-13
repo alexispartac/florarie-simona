@@ -63,9 +63,9 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 
   // Helper function to get occasion label
   const getOccasionLabel = (occasion: FlowerOccasion) => {
-    const key = occasion.replace(/-/g, '');
-    const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-    return t(`shop.occasion.${capitalizedKey}` as keyof typeof t);
+    // Convert kebab-case to camelCase (e.g., 'get-well' -> 'getWell', 'mothers-day' -> 'mothersDay')
+    const camelCaseKey = occasion.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+    return t(`shop.occasion.${camelCaseKey}` as keyof typeof t);
   };
 
   return (

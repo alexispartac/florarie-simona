@@ -11,6 +11,7 @@ import { ArrowBigDown, Calendar, MapPin, Heart, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useEvents } from '@/hooks/useEvents';
+import { EventCardSkeleton } from './events/components/EventCardSkeleton';
 
 interface SectionProps {
   t: (key: string) => string;
@@ -525,8 +526,10 @@ function EventsSection({ router }: Omit<SectionProps, 't'>) {
 
         {/* Events Grid */}
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--primary)]"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <EventCardSkeleton key={i} />
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-20">

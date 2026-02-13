@@ -7,7 +7,9 @@ import { ShopProvider } from "@/context/ShopContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { QueryProvider } from "./providers/QueryProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SkeletonProvider } from "@/components/providers/SkeletonProvider";
 import "./globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,20 +33,36 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme') || 'white';
+                  document.documentElement.classList.add('theme-' + theme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LanguageProvider>
           <ThemeProvider>
-            <ToastProvider>
-              <QueryProvider>
-                <ShopProvider>
-                  <Navigation />
-                  {children}
-                  <CookieConsent />
-                </ShopProvider>
-              </QueryProvider>
-            </ToastProvider>
+            <SkeletonProvider>
+              <ToastProvider>
+                <QueryProvider>
+                  <ShopProvider>
+                    <Navigation />
+                    {children}
+                    <CookieConsent />
+                  </ShopProvider>
+                </QueryProvider>
+              </ToastProvider>
+            </SkeletonProvider>
           </ThemeProvider>
         </LanguageProvider>
       </body>

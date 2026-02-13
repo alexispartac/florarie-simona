@@ -41,15 +41,22 @@ const themes: ThemeConfig[] = [
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Helper function to safely get theme from localStorage
-const getInitialTheme = (): Theme => {
-  if (typeof window === 'undefined') return 'white'; // Default for server-side
-  const savedTheme = localStorage.getItem('theme') as Theme | null;
-  return savedTheme || 'white';
-};
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
+  // Use lazy initializer to get theme from localStorage
+  // This runs only once and prevents cascading renders
+  const [theme, setTheme] = useState<Theme>(() => {
+    // During SSR, return default
+    if (typeof window === 'undefined') return 'white';
+    
+    // During client hydration, read from localStorage
+    // The blocking script in layout.tsx ensures the DOM already has the correct class
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme | null;
+      return savedTheme || 'white';
+    } catch {
+      return 'white';
+    }
+  });
 
   // Get current theme configuration
   const currentThemeConfig = themes.find((t: ThemeConfig) => t.id === theme) || themes[0];

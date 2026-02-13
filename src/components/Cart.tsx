@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Button from './ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRandomExtras } from '@/hooks/useExtras';
-import { Spinner } from './ui/Spinner';
+import { CartItemSkeleton } from './CartItemSkeleton';
 
 type CartProps = {
   isOpen: boolean;
@@ -70,11 +70,37 @@ export default function Cart({ isOpen, onClose }: CartProps) {
     });
   };
 
-  if (isLoadingExtras) {
-    return;
-  }
-  
+  // Don't show anything if cart is not open
   if (!isOpen) return null;
+
+  // Show skeleton while extras are loading
+  if (isLoadingExtras) {
+    return (
+      <div className="fixed inset-0 z-50">
+        <div className="absolute inset-0 bg-[var(--primary)]/50 backdrop-blur-sm h-screen" onClick={onClose} />
+        <div 
+          ref={cartRef}
+          className="fixed inset-y-0 right-0 w-full max-w-md bg-[var(--card)] shadow-lg h-screen"
+        >
+          <div className="flex flex-col h-screen">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+              <h2 className="text-xl font-semibold text-[var(--foreground)]">{t('cart.title')}</h2>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-[var(--accent)] transition-colors cursor-pointer"
+                aria-label="Close cart"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <CartItemSkeleton count={3} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50">

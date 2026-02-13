@@ -10,6 +10,7 @@ import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Spinner } from '@/components/ui/Spinner';
+import { AdminFormSkeleton } from '../../components/AdminFormSkeleton';
 
 export default function EditExtraPage() {
   const router = useRouter();
@@ -50,14 +51,7 @@ export default function EditExtraPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[var(--primary-background)] flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <Spinner className="w-12 h-12" />
-          <p className="text-[var(--muted-foreground)]">Se încarcă...</p>
-        </div>
-      </div>
-    );
+    return <AdminFormSkeleton title="Loading Extra..." fields={8} withImageUpload={true} withRichText={true} />;
   }
 
   if (fetchError || !extra) {

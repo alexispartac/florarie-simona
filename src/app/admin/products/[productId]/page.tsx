@@ -8,6 +8,7 @@ import { useProduct } from '@/hooks/useProducts';
 import { toast } from '@/components/hooks/use-toast';
 import axios from 'axios';
 import { Spinner } from '@/components/ui/Spinner';
+import { AdminFormSkeleton } from '../../components/AdminFormSkeleton';
 
 
 export default function ProductDetailPage() {
@@ -21,14 +22,7 @@ export default function ProductDetailPage() {
   const { data: product, isLoading, isError } = useProduct(id as string);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center space-y-4">
-          <Spinner className="w-12 h-12" />
-          <p className="text-[var(--muted-foreground)]">Loading product...</p>
-        </div>
-      </div>
-    );
+    return <AdminFormSkeleton title="Loading Product..." fields={12} withImageUpload={true} withRichText={true} />;
   }
 
   if (isError) {
