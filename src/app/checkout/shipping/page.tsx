@@ -12,6 +12,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 import { neamtLocalities } from '@/data/neamt-localities';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useStoreStatus } from '@/hooks/useStoreStatus';
+import { AlertCircle } from 'lucide-react';
 
 type ShippingData = {
   firstName: string;
@@ -45,6 +47,9 @@ type BillingData = {
 export default function ShippingPage() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  
+  // Check store status
+  const { status: storeStatus, loading: storeLoading } = useStoreStatus();
   
   // Initialize saved flags from localStorage
   const [savedShippingData, setSavedShippingData] = useState<boolean>(() => {
@@ -421,6 +426,25 @@ export default function ShippingPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
+      {/* Store Closed Warning Banner */}
+      {!storeLoading && storeStatus && !storeStatus.isOpen && (
+        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
+                {language === 'ro' ? 'Atenție: Magazinul este închis temporar' : 'Warning: Store is Temporarily Closed'}
+              </p>
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {language === 'ro' 
+                  ? 'Poți completa informațiile, dar nu vei putea finaliza comanda până când magazinul nu se redeschide.'
+                  : 'You can fill in the information, but you will not be able to complete the order until the store reopens.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="lg:grid lg:grid-cols-12 lg:gap-12">
         {/* Shipping Form */}
         <div className="lg:col-span-8">

@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
+import { useStoreStatus } from '@/hooks/useStoreStatus';
+import { AlertCircle, Store } from 'lucide-react';
 
 export default function CartPage() {
   const router = useRouter();
@@ -29,6 +31,9 @@ export default function CartPage() {
 
   const { language } = useLanguage();
   const t = useTranslation(language);
+  
+  // Check store status
+  const { status: storeStatus, loading: storeLoading } = useStoreStatus();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -198,6 +203,25 @@ export default function CartPage() {
           <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg p-6 border border-[var(--border)]">
             <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('cart.checkout.orderSummary')}</h2>
             
+            {/* Store Closed Warning */}
+            {!storeLoading && storeStatus && !storeStatus.isOpen && (
+              <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
+                      {language === 'ro' ? 'Magazinul este închis' : 'Store is Closed'}
+                    </p>
+                    <p className="text-amber-700 dark:text-amber-300 text-xs">
+                      {language === 'ro' 
+                        ? 'Nu puteți plasa comenzi în acest moment.'
+                        : 'You cannot place orders at this time.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[var(--muted-foreground)]">{t('cart.checkout.subtotal')}</span>
@@ -224,6 +248,7 @@ export default function CartPage() {
               <div className="pt-4">
                 <Button
                   onClick={() => router.push('/checkout/shipping')}
+                  disabled={!storeLoading && storeStatus && !storeStatus.isOpen ? false : true}
                 >
                   {t('cart.checkout.proceedToPayment')}
                 </Button>

@@ -306,7 +306,7 @@ export default function ProductsTab() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      ${product.price ? (product.price / 100).toFixed(2) : '0.00'} USD
+                      {product.price ? (product.price / 100).toFixed(2) : '0.00'} RON
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-[var(--muted-foreground)]">
                       {product.stock || 0} in stock

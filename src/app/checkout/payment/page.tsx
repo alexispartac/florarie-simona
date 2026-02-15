@@ -14,6 +14,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 import Image from 'next/image';
 import DiscountCodeInput from '@/components/ui/DiscountCodeInput';
+import { useStoreStatus } from '@/hooks/useStoreStatus';
+import { AlertCircle, Store } from 'lucide-react';
 
 type PaymentMethod = 'credit-card' | 'cash-on-delivery' | 'bank-transfer';
 
@@ -92,6 +94,9 @@ function PaymentPageContent() {
   const { language } = useLanguage();
   const t = useTranslation(language);
   const formRef = useRef<HTMLFormElement>(null);
+  
+  // Check store status
+  const { status: storeStatus, loading: storeLoading } = useStoreStatus();
 
   // Derive isCartReady from cart state
   const isCartReady = cart.length > 0 && getCartTotal() > 0;
@@ -303,6 +308,67 @@ function PaymentPageContent() {
         <div className="animate-pulse flex flex-col items-center space-y-4">
           <Spinner className="w-12 h-12" />
           <p className="text-[var(--muted-foreground)]">Loading your order...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show store closed message
+  if (!storeLoading && storeStatus && !storeStatus.isOpen) {
+    return (
+      <div className="max-w-3xl mx-auto py-12">
+        <div className="bg-[var(--card)] shadow-lg overflow-hidden sm:rounded-lg p-8 border border-[var(--border)]">
+          <div className="text-center">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
+              <Store className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-[var(--foreground)] mb-4">
+              {language === 'ro' ? 'Magazinul este închis temporar' : 'Store is Temporarily Closed'}
+            </h2>
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="text-left">
+                  {storeStatus.closureMessage ? (
+                    <p className="text-[var(--foreground)]">{storeStatus.closureMessage}</p>
+                  ) : (
+                    <p className="text-[var(--foreground)]">
+                      {language === 'ro' 
+                        ? 'Ne pare rău, dar nu acceptăm comenzi în acest moment. Vă rugăm să reveniți mai târziu.'
+                        : 'Sorry, we are not accepting orders at this time. Please check back later.'}
+                    </p>
+                  )}
+                  {storeStatus.scheduledOpenTime && (
+                    <p className="text-sm text-[var(--muted-foreground)] mt-2">
+                      {language === 'ro' ? 'Redeschidere programată pentru: ' : 'Scheduled to reopen: '}
+                      <span className="font-semibold">
+                        {new Date(storeStatus.scheduledOpenTime).toLocaleString(language === 'ro' ? 'ro-RO' : 'en-US')}
+                      </span>
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <p className="text-[var(--muted-foreground)] mb-6">
+              {language === 'ro' 
+                ? 'Puteți în continuare să răsfoiți produsele și să le adăugați la favorite, dar nu puteți finaliza comenzi în acest moment.'
+                : 'You can still browse products and add them to your wishlist, but you cannot place orders at this time.'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/shop"
+                className="inline-flex items-center justify-center px-6 py-3 border border-[var(--border)] text-base font-medium rounded-md text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--accent)] transition-colors"
+              >
+                {language === 'ro' ? 'Continuă Cumpărăturile' : 'Continue Shopping'}
+              </Link>
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-[var(--primary-foreground)] bg-[var(--primary)] hover:bg-[var(--hover-primary)] transition-colors"
+              >
+                {language === 'ro' ? 'Înapoi Acasă' : 'Back to Home'}
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     );

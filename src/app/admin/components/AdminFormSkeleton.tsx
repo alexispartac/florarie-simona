@@ -9,7 +9,6 @@ interface AdminFormSkeletonProps {
 }
 
 export const AdminFormSkeleton: React.FC<AdminFormSkeletonProps> = ({
-  title = 'Loading...',
   fields = 8,
   withImageUpload = true,
   withRichText = true,
