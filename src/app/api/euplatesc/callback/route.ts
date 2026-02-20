@@ -76,6 +76,7 @@ export async function POST(request: Request) {
     
     let finalTrackingNumber = tempTrackingNumber;
     let order = null;
+    let isNewOrder = false; // Track if this is a newly created order
 
     if (isTempTracking && paymentStatus.success) {
 
@@ -93,6 +94,8 @@ export async function POST(request: Request) {
           
           if (existingOrder) {
             order = existingOrder;
+            isNewOrder = false; // This is a duplicate callback
+            console.log('⚠️ Duplicate callback detected - order already exists:', existingOrder.trackingNumber);
             // Skip creating a new order
           } else {
             throw new Error('Pending order data not found and no existing order for this transaction');
@@ -180,6 +183,7 @@ export async function POST(request: Request) {
 
         await db.collection(COLLECTION).insertOne(newOrder);
         order = newOrder;
+        isNewOrder = true; // Mark as new order to send emails
         
         // Clean up pending order data DIRECTLY from database
         await db.collection('pending_orders').deleteOne({
@@ -225,15 +229,26 @@ export async function POST(request: Request) {
 
     console.log('==========================================');
 
-    // Send payment confirmation email ONLY if payment was successful AND order exists
-    if (paymentStatus.success && order) {
+    // Send emails ONLY if payment was successful AND order exists AND it's a NEW order (not duplicate)
+    if (paymentStatus.success && order && isNewOrder) {
       try {
-        const { sendPaymentConfirmationEmail } = await import('@/lib/email');
+        const { sendOrderConfirmationEmail, sendPaymentConfirmationEmail } = await import('@/lib/email');
+        
+        console.log('✅ Sending confirmation emails for new order:', order.trackingNumber);
+        
+        // 1. Send order confirmation email (like cash-on-delivery and bank transfer)
+        await sendOrderConfirmationEmail(order as Order);
+        
+        // 2. Send payment confirmation email (specific to card payments)
         await sendPaymentConfirmationEmail(order as Order);
+        
+        console.log('✅ Confirmation emails sent successfully');
       } catch (emailError) {
-        console.error('Failed to send payment confirmation email:', emailError);
+        console.error('Failed to send confirmation emails:', emailError);
         // Don't fail the callback if email fails
       }
+    } else if (paymentStatus.success && order && !isNewOrder) {
+      console.log('⚠️ Skipping emails - duplicate callback for order:', order.trackingNumber);
     }
 
     // Check if this is a user-facing request (has Accept: text/html) or server-to-server

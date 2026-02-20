@@ -159,6 +159,14 @@ export default function ShippingPage() {
     const timer = setTimeout(() => {
       setIsMounted(true);
     }, 0);
+    
+    // Clear order placed flag when starting a new checkout process
+    // This allows users to place a new order
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('orderPlaced');
+      localStorage.removeItem('lastTrackingNumber');
+    }
+    
     return () => clearTimeout(timer);
   }, []);
 

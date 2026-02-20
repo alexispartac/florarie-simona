@@ -132,6 +132,18 @@ function PaymentPageContent() {
 
   // Create order and get tracking number
   const createOrder = async (paymentMethod: PaymentMethod): Promise<string> => {
+    // Check if an order was already placed (prevent duplicate orders on refresh)
+    const orderAlreadyPlaced = localStorage.getItem('orderPlaced');
+    if (orderAlreadyPlaced) {
+      console.warn('Order already placed, preventing duplicate');
+      // Get the existing tracking number
+      const existingTrackingNumber = localStorage.getItem('lastTrackingNumber');
+      if (existingTrackingNumber) {
+        return existingTrackingNumber;
+      }
+      throw new Error('Order was already placed');
+    }
+
     const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
     const billingData = JSON.parse(localStorage.getItem('billingData') || '{}');
     
@@ -198,6 +210,10 @@ function PaymentPageContent() {
 
     const responseOrder = await axios.post('/api/orders', orderData);
     const order = responseOrder.data.data;
+    
+    // Mark order as placed to prevent duplicates
+    localStorage.setItem('orderPlaced', 'true');
+    localStorage.setItem('lastTrackingNumber', order.trackingNumber);
     
     // Send order confirmation email
     await axios.post('/api/send-email/placed-order', order);
