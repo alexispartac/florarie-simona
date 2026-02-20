@@ -256,17 +256,35 @@ export async function POST(request: Request) {
     const isUserRequest = acceptHeader.includes('text/html');
 
     if (isUserRequest) {
-      // User is being redirected back - redirect to appropriate page
+      // User is being redirected back - redirect to appropriate page using HTML redirect
       // Use NEXT_PUBLIC_BASE_URL for ngrok compatibility, fallback to request origin
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || new URL(request.url).origin;
       
-      if (paymentStatus.success) {
-        return NextResponse.redirect(`${baseUrl}/checkout/success`);
-      } else {
-        return NextResponse.redirect(
-          `${baseUrl}/checkout/cancel?error=payment_failed&message=${encodeURIComponent(paymentStatus.message)}`
-        );
-      }
+      const redirectUrl = paymentStatus.success
+        ? `${baseUrl}/checkout/success`
+        : `${baseUrl}/checkout/cancel?error=payment_failed&message=${encodeURIComponent(paymentStatus.message)}`;
+      
+      // Return HTML with meta refresh and JavaScript redirect (works with POST requests)
+      return new Response(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+            <script>
+              window.location.href = "${redirectUrl}";
+            </script>
+          </head>
+          <body>
+            <p>Redirecting...</p>
+          </body>
+        </html>
+      `, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      });
     } else {
       // Server-to-server callback - return OK
       return new Response('OK', {
@@ -297,40 +315,107 @@ export async function GET(request: Request) {
     searchParams.forEach((value, key) => {
       callbackData[key] = value;
     });
+    
     // If no parameters, redirect to payment page
     if (Object.keys(callbackData).length === 0) {
-      return NextResponse.redirect(`${baseUrl}/checkout/payment?error=no_callback_data`);
+      const redirectUrl = `${baseUrl}/checkout/payment?error=no_callback_data`;
+      return new Response(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+            <script>window.location.href = "${redirectUrl}";</script>
+          </head>
+          <body><p>Redirecting...</p></body>
+        </html>
+      `, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
 
     const secretKey = process.env.EUPLATESC_SECRET_KEY;
 
     if (!secretKey) {
-      return NextResponse.redirect(`${baseUrl}/checkout/payment?error=configuration`);
+      const redirectUrl = `${baseUrl}/checkout/payment?error=configuration`;
+      return new Response(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+            <script>window.location.href = "${redirectUrl}";</script>
+          </head>
+          <body><p>Redirecting...</p></body>
+        </html>
+      `, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
 
     // Verify signature
     const isValid = verifyCallbackSignature(callbackData, secretKey);
 
     if (!isValid) {
-      return NextResponse.redirect(`${baseUrl}/checkout/payment?error=invalid`);
+      const redirectUrl = `${baseUrl}/checkout/payment?error=invalid`;
+      return new Response(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+            <script>window.location.href = "${redirectUrl}";</script>
+          </head>
+          <body><p>Redirecting...</p></body>
+        </html>
+      `, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
 
     // Parse payment status
     const paymentStatus = parsePaymentStatus(callbackData.action);
 
-    if (paymentStatus.success) {
-      // Redirect to success page
-      return NextResponse.redirect(`${baseUrl}/checkout/success`);
-    } else {
-      // Redirect to payment page with error
-      return NextResponse.redirect(
-        `${baseUrl}/checkout/payment?error=payment_failed&message=${encodeURIComponent(paymentStatus.message)}`
-      );
-    }
+    const redirectUrl = paymentStatus.success
+      ? `${baseUrl}/checkout/success`
+      : `${baseUrl}/checkout/payment?error=payment_failed&message=${encodeURIComponent(paymentStatus.message)}`;
+    
+    return new Response(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+          <script>window.location.href = "${redirectUrl}";</script>
+        </head>
+        <body><p>Redirecting...</p></body>
+      </html>
+    `, {
+      status: 200,
+      headers: { 'Content-Type': 'text/html' },
+    });
   } catch (err: unknown) {
     const error = err as Error;
     console.error('Error processing euPlatesc return:', error);
     const baseUrl = new URL(request.url).origin;
-    return NextResponse.redirect(`${baseUrl}/checkout/payment?error=unknown`);
+    const redirectUrl = `${baseUrl}/checkout/payment?error=unknown`;
+    
+    return new Response(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=${redirectUrl}">
+          <script>window.location.href = "${redirectUrl}";</script>
+        </head>
+        <body><p>Redirecting...</p></body>
+      </html>
+    `, {
+      status: 200,
+      headers: { 'Content-Type': 'text/html' },
+    });
   }
 }
