@@ -203,7 +203,7 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-2">
                 <CreditCard className="h-5 w-5 text-muted-foreground" />
-                <CardTitle className="text-lg">Billing Information</CardTitle>
+                <CardTitle className="text-lg">Informații de facturare</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
@@ -256,6 +256,69 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                     </p>
                   </div>
                 </div>
+
+                {/* euPlatesc Transaction Details */}
+                {order.payment.method === 'credit-card' && order.payment.transactionId && (
+                  <div className="mt-4 p-4 bg-[var(--muted)]/50 rounded-lg border border-[var(--border)]">
+                    <p className="text-sm font-semibold text-[var(--foreground)] mb-3 flex items-center">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      euPlatesc Transaction Details
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Transaction ID:</span>
+                        <span className="font-mono text-xs">{order.payment.transactionId}</span>
+                      </div>
+                      {order.payment.euplatescData && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Action Code:</span>
+                            <span className="font-medium">
+                              {order.payment.euplatescData.action === '0' ? '✓ Success (0)' :
+                               order.payment.euplatescData.action === '1' ? '✗ Failed (1)' :
+                               order.payment.euplatescData.action === '2' ? '⏳ Pending (2)' :
+                               order.payment.euplatescData.action === '3' ? '✗ Cancelled (3)' :
+                               order.payment.euplatescData.action}
+                            </span>
+                          </div>
+                          {order.payment.euplatescData.message && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Message:</span>
+                              <span className="text-xs">{order.payment.euplatescData.message}</span>
+                            </div>
+                          )}
+                          {order.payment.euplatescData.approval && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Approval Code:</span>
+                              <span className="font-mono text-xs">{order.payment.euplatescData.approval}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Amount:</span>
+                            <span className="font-medium">{order.payment.euplatescData.amount} {order.payment.euplatescData.curr}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Timestamp:</span>
+                            <span className="text-xs">
+                              {new Date(
+                                order.payment.euplatescData.timestamp.replace(
+                                  /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
+                                  '$1-$2-$3T$4:$5:$6Z'
+                                )
+                              ).toLocaleString('ro-RO')}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Nonce:</span>
+                            <span className="font-mono text-xs truncate max-w-[150px]" title={order.payment.euplatescData.nonce}>
+                              {order.payment.euplatescData.nonce.substring(0, 16)}...
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {order.trackingNumber && (
                   <div className="flex items-center">

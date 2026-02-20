@@ -11,7 +11,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 import { useStoreStatus } from '@/hooks/useStoreStatus';
-import { AlertCircle, Store } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 export default function CartPage() {
   const router = useRouter();
@@ -248,7 +248,7 @@ export default function CartPage() {
               <div className="pt-4">
                 <Button
                   onClick={() => router.push('/checkout/shipping')}
-                  disabled={!storeLoading && storeStatus && !storeStatus.isOpen ? false : true}
+                  disabled={!storeLoading && storeStatus !== null && storeStatus !== undefined && !storeStatus.isOpen}
                 >
                   {t('cart.checkout.proceedToPayment')}
                 </Button>

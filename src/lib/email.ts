@@ -822,3 +822,164 @@ export async function sendOrderFailedDeliveryEmail(order: Order, failureReason?:
     throw new Error('Failed to send failed delivery email');
   }
 }
+
+export async function sendPaymentConfirmationEmail(order: Order) {
+  const itemsHtml = order.items
+    .map((item) => `
+      <tr>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+          ${item.name}<br>
+        </td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${formatPrice(item.price / 100)}</td>
+      </tr>
+    `).join('');
+
+  const subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const discountAmount = order.discount?.amount || 0;
+  const total = subtotal + order.shippingCost - discountAmount;
+
+  const transactionId = order.payment.transactionId || 'N/A';
+  const paymentDate = new Date().toLocaleDateString('ro-RO', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const mailOptions = {
+    from: `"Buchetul Simonei" <${process.env.EMAIL_USER}>`,
+    to: order.shipping.email,
+    subject: `✅ Plata Confirmată - Comanda #${order.orderId}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        <h2 style="color: #28a745;">Plata Ta A Fost Procesată Cu Succes! ✅</h2>
+        <p>Bună ${order.shipping.name.split(' ')[0]},</p>
+        <p>Confirmăm că am primit plata ta pentru comanda #${order.orderId}. Tranzacția ta a fost procesată cu succes prin euPlatesc.</p>
+        
+        <div style="margin: 20px 0; padding: 15px; background-color: #d4edda; border-radius: 5px; border-left: 4px solid #28a745;">
+          <h3 style="margin-top: 0; color: #155724;">💳 Detalii Plată</h3>
+          <p><strong>Status Plată:</strong> <span style="color: #28a745; font-weight: bold;">Plătit</span></p>
+          <p><strong>Sumă Plătită:</strong> ${formatPrice(total / 100)}</p>
+          <p><strong>Metoda de Plată:</strong> Card Bancar (euPlatesc)</p>
+          <p><strong>ID Tranzacție:</strong> ${transactionId}</p>
+          <p><strong>Data Plății:</strong> ${paymentDate}</p>
+        </div>
+        
+        <div style="margin: 20px 0; padding: 15px; background-color: #e8f4fd; border-radius: 5px; border-left: 4px solid #3498db;">
+          <h3 style="margin-top: 0; color: #2c3e50;">📦 Detalii Comandă</h3>
+          <p><strong>Comandă #:</strong> ${order.orderId}</p>
+          <p><strong>Număr de Urmărire:</strong> ${order.trackingNumber || 'Va fi furnizat când comanda este expediată'}</p>
+          <p><strong>Status Comandă:</strong> ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</p>
+          
+          <p style="margin: 15px 0 0;">
+            <a href="${ORDER_URL}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+              Vezi Comanda Ta
+            </a>
+          </p>
+        </div>
+        
+        <h3 style="margin-top: 24px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 8px;">Sumar Comandă</h3>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0 20px;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 10px; border-bottom: 2px solid #2c3e50;">Articol</th>
+              <th style="text-align: center; padding: 10px; border-bottom: 2px solid #2c3e50;">Cantitate</th>
+              <th style="text-align: right; padding: 10px; border-bottom: 2px solid #2c3e50;">Preț</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 2px solid #eee;">Subtotal:</td>
+              <td style="text-align: right; padding: 12px 10px; border-top: 2px solid #eee;">${formatPrice(subtotal / 100)}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold;">Livrare:</td>
+              <td style="text-align: right; padding: 5px 10px;">${formatPrice(order.shippingCost / 100)}</td>
+            </tr>
+            ${order.discount ? `
+            <tr>
+              <td colspan="2" style="text-align: right; padding: 5px 10px; font-weight: bold; color: #28a745;">Reducere (${order.discount.code}):</td>
+              <td style="text-align: right; padding: 5px 10px; color: #28a745;">-${formatPrice(order.discount.amount / 100)}</td>
+            </tr>
+            ` : ''}
+            <tr style="background-color: #d4edda;">
+              <td colspan="2" style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #28a745;">Total Plătit:</td>
+              <td style="text-align: right; padding: 12px 10px; font-weight: bold; border-top: 1px solid #eee; border-bottom: 2px solid #28a745; color: #28a745;">${formatPrice(total / 100)}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div style="display: flex; gap: 20px; margin: 25px 0;">
+          <div style="flex: 1;">
+            <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 8px;">Adresa de Livrare</h3>
+            <p>${formatShippingAddress(order.shipping).replace(/\n/g, '<br>')}</p>
+            <p><strong>Telefon:</strong> ${order.shipping.phone}</p>
+          </div>
+          <div style="flex: 1;">
+            <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 8px;">Adresa de Facturare</h3>
+            <p>${formatBillingAddress(order.billing).replace(/\n/g, '<br>')}</p>
+            ${order.billing?.phone ? `<p><strong>Telefon:</strong> ${order.billing.phone}</p>` : ''}
+          </div>
+        </div>
+        
+        <div style="margin: 30px 0; padding: 15px; background-color: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
+          <h3 style="margin-top: 0; color: #856404;">🎉 Ce Urmează?</h3>
+          <p>Echipa noastră va începe imediat procesarea comenzii tale. Vei primi:</p>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>Un email de confirmare când comanda este pregătită</li>
+            <li>Notificare când comanda este în drum spre tine</li>
+            <li>Număr de urmărire pentru livrare</li>
+          </ul>
+        </div>
+        
+        <div style="margin: 30px 0; padding: 15px; background-color: #e8f4fd; border-radius: 5px;">
+          <h3 style="margin-top: 0; color: #2c3e50;">📄 Factură & Chitanță</h3>
+          <p>Vei primi factura fiscală pentru această achiziție pe email în termen de 24 de ore. Poți să o descarci și din pagina comenzii tale.</p>
+        </div>
+        
+        <div style="margin: 30px 0; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
+          <h3 style="margin-top: 0; color: #2c3e50;">Ai întrebări?</h3>
+          <p>Dacă ai întrebări despre plata sau comanda ta, te rugăm să ne contactezi:</p>
+          <ul style="list-style: none; padding: 0;">
+            <li>📞 Telefon: <a href="tel:0769141250" style="color: #3498db; text-decoration: none;">0769141250</a></li>
+            <li>✉️ Email: <a href="mailto:simonabuzau2@gmail.com" style="color: #3498db; text-decoration: none;">simonabuzau2@gmail.com</a></li>
+            <li>🌐 <a href="${HELP_URL}" style="color: #3498db; text-decoration: none;">Centrul de Ajutor</a></li>
+          </ul>
+        </div>
+        
+        <p style="margin: 30px 0 15px; text-align: center;">
+          <a href="${ORDER_URL}" style="display: inline-block; padding: 12px 25px; background-color: #2c3e50; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+            Vezi Comanda Ta
+          </a>
+        </p>
+        
+        <p style="margin: 30px 0 15px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
+          Mulțumim pentru încrederea acordată Buchetul Simonei!
+        </p>
+        
+        <div style="text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; color: #95a5a6; font-size: 0.8em;">
+          <p>© ${new Date().getFullYear()} Buchetul Simonei. Toate drepturile rezervate.</p>
+          <p>
+            <a href="${BASE_URL}" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Website-ul nostru</a> | 
+            <a href="${CONTACT_URL}" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Contactează-ne</a> | 
+            <a href="${PRIVACY_URL}" style="color: #7f8c8d; text-decoration: none; margin: 0 10px;">Politica de Confidențialitate</a>
+          </p>
+          <p style="margin-top: 10px; font-size: 0.9em;">
+            Plata procesată securizat prin <strong>euPlatesc</strong>
+          </p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending payment confirmation email:', error);
+    throw new Error('Failed to send payment confirmation email');
+  }
+}

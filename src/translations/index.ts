@@ -514,7 +514,27 @@ export const translations: Record<Language, Record<string, string>> = {
     'help.contact.email': 'Email',
     'help.contact.message': 'Send Message',
     'help.contact.sendMessage': 'Contact Us',
-    
+
+    // Checkout cancel
+    'checkout.cancel.title': 'Payment Failed',
+    'checkout.cancel.paymentFailed': 'Payment failed. Please try again.',
+    'checkout.cancel.paymentCancelled': 'Payment cancelled.',
+    'checkout.cancel.defaultError': 'An error occurred with the payment.',
+    'checkout.cancel.whatHappened': 'What happened?',
+    'checkout.cancel.noCharge': 'You were not charged',
+    'checkout.cancel.noOrder': 'The order was not placed',
+    'checkout.cancel.cartSaved': 'Your cart is safe',
+    'checkout.cancel.commonIssues': 'Common issues:',
+    'checkout.cancel.insufficientFunds': 'Insufficient funds on card',
+    'checkout.cancel.incorrectDetails': 'Incorrect card details',
+    'checkout.cancel.cardNotActivated': 'Card not activated for online payments',
+    'checkout.cancel.connectionIssue': 'Connection issues',
+    'checkout.cancel.autoRedirect': 'You will be automatically redirected in',
+    'checkout.cancel.secundă': 'second',
+    'checkout.cancel.secunde': 'seconds',
+    'checkout.cancel.tryAgain': 'Try again',
+    'checkout.cancel.backToCart': 'Back to Cart',
+    'checkout.cancel.contactSupport': 'Contact Support',
   },
   ro: {
     // Theme Switcher
@@ -1034,6 +1054,33 @@ export const translations: Record<Language, Record<string, string>> = {
     'help.contact.email': 'Email',
     'help.contact.message': 'Trimite Mesaj',
     'help.contact.sendMessage': 'Contactează-ne',
+
+    // Checkout cancel
+    'checkout.cancel.title': 'Plata a eșuat',
+    'checkout.cancel.paymentFailed': 'Plata a eșuat. Vă rugăm să încercați din nou.',
+    'checkout.cancel.paymentCancelled': 'Ați anulat plata.',
+    'checkout.cancel.defaultError': 'A apărut o problemă cu plata.',
+    'checkout.cancel.whatHappened': 'Ce s-a întâmplat?',
+    'checkout.cancel.noCharge': 'Nu ați fost taxat',
+    'checkout.cancel.noOrder': 'Comanda nu a fost plasată',
+    'checkout.cancel.cartSaved': 'Coșul dvs. este în siguranță',
+    'checkout.cancel.commonIssues': 'Probleme comune:',
+    'checkout.cancel.insufficientFunds': 'Fonduri insuficiente pe card',
+    'checkout.cancel.incorrectDetails': 'Detalii de card incorecte',
+    'checkout.cancel.cardNotActivated': 'Cardul nu este activat pentru plăți online',
+    'checkout.cancel.connectionIssue': 'Probleme de conexiune',
+    'checkout.cancel.autoRedirect': 'Veți fi redirecționat automat în',
+    'checkout.cancel.secundă': 'secundă',
+    'checkout.cancel.secunde': 'secunde',
+    'checkout.cancel.tryAgain': 'Încearcă din nou plata',
+    'checkout.cancel.backToCart': 'Înapoi la Coș',
+    'checkout.cancel.contactSupport': 'Contactează Suportul',
+    'checkout.cancel.commonIssuesTitle': 'Probleme comune:',
+    'checkout.cancel.alternativePayment': 'Sau alegeți o altă metodă de plată:',
+    'checkout.cancel.bankTransfer': 'Transfer bancar',
+    'checkout.cancel.cashOnDelivery': 'Numerar la livrare',
+    'checkout.cancel.needHelp': 'Aveți nevoie de ajutor?',
+    'checkout.cancel.contactUs': 'Contactați-ne',
   }
 };
 

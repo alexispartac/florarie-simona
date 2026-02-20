@@ -213,19 +213,46 @@ function PaymentPageContent() {
     setPaymentError(null);
 
     try {
-      // First, create the order to get tracking number
-      const trackingNumber = await createOrder('credit-card');
-
-      // Get shipping data
+      // Get shipping and billing data
       const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
+      const billingData = JSON.parse(localStorage.getItem('billingData') || '{}');
+
+      // Validate shipping data before proceeding
+      if (!shippingData.firstName || !shippingData.lastName || !shippingData.email) {
+        throw new Error('Missing shipping information. Please go back and complete your shipping details.');
+      }
+
+      // Validate billing data
+      if (!billingData.firstName || !billingData.lastName) {
+        throw new Error('Missing billing information. Please go back and complete your billing details.');
+      }
+
+      // Generate a temporary tracking number for euPlatesc
+      // The actual order will be created AFTER successful payment in the callback
+      const tempTrackingNumber = `TEMP-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      
+      // Prepare complete order data to store on server
+      const orderDataForCallback = {
+        cart,
+        shippingData,
+        billingData,
+        appliedDiscount,
+        total: getDiscountedTotal(),
+        shippingCost: getPriceShipping(),
+      };
+
+      // Store pending order data on server (not localStorage!)
+      await axios.post('/api/pending-orders', {
+        tempTrackingNumber,
+        orderData: orderDataForCallback,
+      });
 
       // Initialize payment with euPlatesc
       const response = await axios.post('/api/euplatesc/init-payment', {
-        // amount: getDiscountedTotal() + getPriceShipping(), // Amount in cents with discount applied
-        amount: 100,
+        amount: getDiscountedTotal() + getPriceShipping(),
         curr: 'RON',
-        invoice_id: trackingNumber,
-        order_desc: `Order ${trackingNumber} - Buchetul Simonei`,
+        invoice_id: tempTrackingNumber,
+        order_desc: `Order ${tempTrackingNumber} - Buchetul Simonei`,
         customerInfo: {
           firstName: shippingData.firstName || '',
           lastName: shippingData.lastName || '',
@@ -240,6 +267,10 @@ function PaymentPageContent() {
       });
 
       const { paymentParams, paymentUrl } = response.data;
+
+      if (!paymentParams || !paymentUrl) {
+        throw new Error('Invalid payment initialization response. Please try again.');
+      }
 
       // Create a form and submit it to redirect to euPlatesc
       const form = document.createElement('form');
@@ -256,16 +287,19 @@ function PaymentPageContent() {
       });
 
       // Add return URL (where user will be redirected after payment)
+      // Use ngrok URL if available (for local testing), otherwise use window.location.origin
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+      
       const returnUrlInput = document.createElement('input');
       returnUrlInput.type = 'hidden';
       returnUrlInput.name = 'ExtraData[successurl]';
-      returnUrlInput.value = `${window.location.origin}/api/euplatesc/callback`;
+      returnUrlInput.value = `${baseUrl}/api/euplatesc/callback`;
       form.appendChild(returnUrlInput);
 
       const failUrlInput = document.createElement('input');
       failUrlInput.type = 'hidden';
       failUrlInput.name = 'ExtraData[failedurl]';
-      failUrlInput.value = `${window.location.origin}/api/euplatesc/callback`;
+      failUrlInput.value = `${baseUrl}/api/euplatesc/callback`;
       form.appendChild(failUrlInput);
 
       // Add form to document and submit
@@ -273,7 +307,25 @@ function PaymentPageContent() {
       form.submit();
     } catch (error) {
       console.error('Payment initiation error:', error);
-      setPaymentError('Failed to initialize payment. Please try again.');
+      
+      // Provide user-friendly error messages
+      let errorMessage = 'Failed to initialize payment. Please try again.';
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 500) {
+          errorMessage = 'Payment gateway is temporarily unavailable. Please try again in a few moments.';
+        } else if (error.response?.status === 400) {
+          errorMessage = error.response?.data?.error?.message || 'Invalid payment information. Please check your details.';
+        } else if (error.code === 'ERR_NETWORK') {
+          errorMessage = 'Network error. Please check your internet connection and try again.';
+        } else if (error.response?.data?.error?.message) {
+          errorMessage = error.response.data.error.message;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setPaymentError(errorMessage);
       setIsProcessing(false);
     }
   };
@@ -398,15 +450,18 @@ function PaymentPageContent() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <button
                   type="button"
-                  disabled
-                  className="p-4 border rounded-lg text-center cursor-not-allowed transition-colors opacity-50 border-[var(--border)] bg-[var(--secondary)]"
+                  onClick={() => handlePaymentMethodChange('credit-card')}
+                  className={`p-4 border rounded-lg text-center cursor-pointer transition-colors ${paymentMethod === 'credit-card'
+                    ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-2 ring-[var(--primary)]/20'
+                    : 'border-[var(--border)] hover:border-[var(--primary)]/50'
+                    }`}
                 >
                   <div className="flex flex-col items-center">
                     <svg className="h-8 w-8 mb-2 text-[var(--foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
                     <span className="text-sm font-medium text-[var(--foreground)]">Card de credit</span>
-                    <span className="text-xs text-[var(--muted-foreground)] mt-1">(Temporar indisponibil)</span>
+                    <span className="text-xs text-[var(--muted-foreground)] mt-1">(euPlatesc)</span>
                   </div>
                 </button>
 
@@ -580,7 +635,7 @@ function PaymentPageContent() {
                         </div>
 
                         <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6">
-                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Billing Information</h3>
+                          <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Informații de facturare</h3>
                           <div className="mt-4 space-y-2 text-left">
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {billingData.firstName} {billingData.lastName}</p>
                             {billingData.company && (
@@ -665,7 +720,7 @@ function PaymentPageContent() {
                       </div>
 
                       <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-lg p-6 mb-6">
-                        <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Billing Information</h3>
+                        <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">💳 Informații de facturare</h3>
                         <div className="mt-4 space-y-2 text-left">
                           <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.name')}: {billingData.firstName} {billingData.lastName}</p>
                           {billingData.company && (

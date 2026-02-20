@@ -45,6 +45,17 @@ export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
 export type PaymentInfo = {
     method: 'credit-card' | 'bank-transfer' | 'cash-on-delivery';
     status: PaymentStatus;
+    transactionId?: string; // euPlatesc transaction ID (ep_id)
+    euplatescData?: {
+        action: string;
+        message: string;
+        approval?: string;
+        timestamp: string;
+        amount: string;
+        curr: string;
+        nonce: string;
+        ep_id: string;
+    };
 };
 
 export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'out-for-delivery' | 'delivered' | 'cancelled' | 'failed-delivery';
