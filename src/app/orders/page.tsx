@@ -167,24 +167,24 @@ export default function OrderLookupPage() {
                                         <span className="text-sm text-[var(--muted-foreground)]">{t('checkout.shipping')}</span>
                                         <span className="text-sm font-medium text-[var(--foreground)]">{ (order.shippingCost / 100).toFixed(2)} RON</span>
                                     </div>
-                                    {order.discount && (
+                                    {(order.discount && order.discount.amount && order.discount.amount > 0) ? (
                                         <div className="flex justify-between">
                                             <span className="text-sm text-[var(--primary)]">{t('discount.discount')} ({order.discount.code})</span>
                                             <span className="text-sm font-medium text-[var(--primary)]">-{(order.discount.amount / 100).toFixed(2)} RON</span>
                                         </div>
-                                    )}
+                                    ) : null}
                                     <div className="flex justify-between pt-3 border-t border-[var(--border)]">
                                         <span className="text-base font-medium text-[var(--foreground)]">{t('checkout.total')}</span>
-                                        <span className="text-base font-bold text-[var(--foreground)]">{((order.total + order.shippingCost) / 100).toFixed(2)} RON</span>
+                                        <span className="text-base font-bold text-[var(--foreground)]">{((order.total) / 100).toFixed(2)} RON</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="mt-8 border-t border-[var(--border)] pt-6">
-                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">{t('checkout.shipping')} Information</h3>
+                                <h3 className="text-lg font-medium text-[var(--foreground)] mb-4">Informații</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <h4 className="text-sm font-medium text-[var(--foreground)]">{t('checkout.shipping')} Address</h4>
+                                        <h4 className="text-sm font-medium text-[var(--foreground)]">Informații de livrare</h4>
                                         <div className="mt-2 text-sm text-[var(--muted-foreground)] space-y-1">
                                             <p>{order.shipping.name}</p>
                                             <p>{order.shipping.address}</p>
@@ -200,6 +200,19 @@ export default function OrderLookupPage() {
                                             )}
                                         </div>
                                     </div>
+                                    {order.billing && (
+                                        <div>
+                                            <h4 className="text-sm font-medium text-[var(--foreground)]">Informații de facturare</h4>
+                                            <div className="mt-2 text-sm text-[var(--muted-foreground)] space-y-1">
+                                                <p>{order.billing.name}</p>
+                                                <p>{order.billing.address}</p>
+                                                <p>{order.billing.city}, {order.billing.state} {order.billing.postalCode}</p>
+                                                <p>{order.billing.country}</p>
+                                                <p>{order.billing.phone}</p>
+                                                <p>{order.billing.email}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                     <div>
                                         <h4 className="text-sm font-medium text-[var(--foreground)]">{t('checkout.shipping')} Method</h4>
                                         <div className="mt-2 flex items-center">

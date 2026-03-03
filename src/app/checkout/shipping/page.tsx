@@ -14,6 +14,7 @@ import { neamtLocalities } from '@/data/neamt-localities';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useStoreStatus } from '@/hooks/useStoreStatus';
 import { AlertCircle } from 'lucide-react';
+import { validatePhoneNumber, type CountryCode, getSupportedCountries } from '@/utils/phoneValidation';
 
 type ShippingData = {
   firstName: string;
@@ -24,6 +25,7 @@ type ShippingData = {
   country: string;
   state: string;
   postalCode: string;
+  phoneCountryCode: CountryCode;
   phone: string;
   email: string;
   additionalInfo?: string;
@@ -38,6 +40,7 @@ type BillingData = {
   country: string;
   state: string;
   postalCode: string;
+  phoneCountryCode: CountryCode;
   phone: string;
   email: string;
   company?: string;
@@ -100,6 +103,9 @@ export default function ShippingPage() {
   const { language } = useLanguage();
   const t = useTranslation(language);
 
+  // Get supported countries for phone dropdown
+  const supportedCountries = getSupportedCountries();
+
   // Initialize form data from localStorage if available
   const [formData, setFormData] = useState<ShippingData>(() => {
     if (typeof window !== 'undefined') {
@@ -121,6 +127,7 @@ export default function ShippingPage() {
       country: 'România',
       state: 'Neamț',
       postalCode: '',
+      phoneCountryCode: 'RO' as CountryCode,
       phone: '',
       email: '',
       additionalInfo: '',
@@ -148,6 +155,7 @@ export default function ShippingPage() {
       country: 'România',
       state: 'Neamț',
       postalCode: '',
+      phoneCountryCode: 'RO' as CountryCode,
       phone: '',
       email: '',
       company: '',
@@ -234,6 +242,7 @@ export default function ShippingPage() {
         country: 'România',
         state: 'Neamț',
         postalCode: '',
+        phoneCountryCode: 'RO' as CountryCode,
         phone: '',
         email: '',
         company: '',
@@ -253,10 +262,14 @@ export default function ShippingPage() {
     if (!formData.country.trim()) newErrors.country = 'Țara este obligatorie';
     if (!formData.state.trim()) newErrors.state = 'Județul este obligatoriu';
     
+    // Enhanced phone validation with country detection
     if (!formData.phone.trim()) {
       newErrors.phone = 'Numărul de telefon este obligatoriu';
-    } else if (!/^\+?[0-9\s-()]+$/.test(formData.phone)) {
-      newErrors.phone = 'Vă rugăm introduceți un număr de telefon valid';
+    } else {
+      const phoneValidation = validatePhoneNumber(formData.phone, formData.phoneCountryCode);
+      if (!phoneValidation.isValid) {
+        newErrors.phone = phoneValidation.error || 'Număr de telefon invalid';
+      }
     }
     
     if (!formData.email.trim()) {
@@ -283,10 +296,14 @@ export default function ShippingPage() {
     if (!billingData.country.trim()) newBillingErrors.country = 'Țara este obligatorie';
     if (!billingData.state.trim()) newBillingErrors.state = 'Județul este obligatoriu';
     
+    // Enhanced phone validation with country detection
     if (!billingData.phone.trim()) {
       newBillingErrors.phone = 'Numărul de telefon este obligatoriu';
-    } else if (!/^\+?[0-9\s-()]+$/.test(billingData.phone)) {
-      newBillingErrors.phone = 'Vă rugăm introduceți un număr de telefon valid';
+    } else {
+      const phoneValidation = validatePhoneNumber(billingData.phone, billingData.phoneCountryCode);
+      if (!phoneValidation.isValid) {
+        newBillingErrors.phone = phoneValidation.error || 'Număr de telefon invalid';
+      }
     }
     
     if (!billingData.email.trim()) {
@@ -336,6 +353,7 @@ export default function ShippingPage() {
         country: formData.country,
         state: formData.state,
         postalCode: formData.postalCode,
+        phoneCountryCode: formData.phoneCountryCode,
         phone: formData.phone,
         email: formData.email,
         company: '',
@@ -387,6 +405,7 @@ export default function ShippingPage() {
       country: 'România',
       state: 'Neamț',
       postalCode: '',
+      phoneCountryCode: 'RO' as CountryCode,
       phone: '',
       email: '',
       additionalInfo: '',
@@ -401,6 +420,7 @@ export default function ShippingPage() {
       country: 'România',
       state: 'Neamț',
       postalCode: '',
+      phoneCountryCode: 'RO' as CountryCode,
       phone: '',
       email: '',
       company: '',
@@ -657,20 +677,41 @@ export default function ShippingPage() {
                   <label htmlFor="phone" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                     {t('cart.checkout.phone')}
                   </label>
-                  <Input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    fullWidth
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 border bg-[var(--card)] text-[var(--foreground)] ${
-                      errors.phone ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
-                    } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
-                  />
+                  <div className="flex gap-2">
+                    <select
+                      id="phoneCountryCode"
+                      name="phoneCountryCode"
+                      value={formData.phoneCountryCode}
+                      onChange={handleChange}
+                      className="w-32 px-3 py-2 border border-[var(--border)] rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)] text-sm"
+                    >
+                      {supportedCountries.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.countryCode}
+                        </option>
+                      ))}
+                    </select>
+                    <Input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      fullWidth
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className={`flex-1 px-4 py-2 border bg-[var(--card)] text-[var(--foreground)] ${
+                        errors.phone ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                      } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
+                      placeholder="722 123 456"
+                    />
+                  </div>
                   {errors.phone && (
                     <p className="mt-1 text-sm text-[var(--destructive)]">{errors.phone}</p>
+                  )}
+                  {!errors.phone && (
+                    <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                      Ex: 0722 123 456 sau +40 722 123 456
+                    </p>
                   )}
                 </div>
               </div>
@@ -704,7 +745,8 @@ export default function ShippingPage() {
           {/* Billing Information Section */}
           <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg p-6 mb-8 border border-[var(--border)]">
             <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">{t('cart.checkout.billingInfo')}</h2>
-            
+            {/* mesaj cu ce inseamna adresa de facturare */}
+            <p className="text-sm text-[var(--muted-foreground)] mb-4">Adresa de facturare este adresa pentru factura dumneavoastră.</p>
             <form onSubmit={handleSaveBilling} className="space-y-6">
               <div className="mb-6 flex items-start">
                 <input
@@ -949,20 +991,41 @@ export default function ShippingPage() {
                     <label htmlFor="billing-phone" className="block text-sm font-medium text-[var(--foreground)] mb-1">
                       {t('cart.checkout.phone')}
                     </label>
-                    <Input
-                      type="tel"
-                      id="billing-phone"
-                      name="phone"
-                      fullWidth
-                      required
-                      value={billingData.phone}
-                      onChange={handleBillingChange}
-                      className={`w-full px-4 py-2 border bg-[var(--card)] text-[var(--foreground)] ${
-                        billingErrors.phone ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
-                      } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
-                    />
+                    <div className="flex gap-2">
+                      <select
+                        id="billing-phoneCountryCode"
+                        name="phoneCountryCode"
+                        value={billingData.phoneCountryCode}
+                        onChange={handleBillingChange}
+                        className="w-32 px-3 py-2 border border-[var(--border)] rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent bg-[var(--card)] text-[var(--foreground)] text-sm"
+                      >
+                        {supportedCountries.map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.countryCode}
+                          </option>
+                        ))}
+                      </select>
+                      <Input
+                        type="tel"
+                        id="billing-phone"
+                        name="phone"
+                        fullWidth
+                        required
+                        value={billingData.phone}
+                        onChange={handleBillingChange}
+                        className={`flex-1 px-4 py-2 border bg-[var(--card)] text-[var(--foreground)] ${
+                          billingErrors.phone ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
+                        } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
+                        placeholder="722 123 456"
+                      />
+                    </div>
                     {billingErrors.phone && (
                       <p className="mt-1 text-sm text-[var(--destructive)]">{billingErrors.phone}</p>
+                    )}
+                    {!billingErrors.phone && (
+                      <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                        Ex: 722 123 456 sau +40 722 123 456
+                      </p>
                     )}
                   </div>
                 </div>

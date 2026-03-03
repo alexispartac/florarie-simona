@@ -431,7 +431,7 @@ export default function ProductPage() {
             <div className="mt-16">
                 <Tabs defaultValue="details" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 max-w-md mb-8 bg-[var(--secondary)] border border-[var(--border)]">
-                        <TabsTrigger value="details" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Details</TabsTrigger>
+                        <TabsTrigger value="details" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Detalii</TabsTrigger>
                         <TabsTrigger value="reviews" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">{t('product.reviews')} ({product.reviewCount})</TabsTrigger>
                         <TabsTrigger value="care" className="data-[state=active]:bg-[var(--primary)] data-[state=active]:text-[var(--primary-foreground)]">Flower Care</TabsTrigger>
                     </TabsList>
@@ -543,7 +543,7 @@ export default function ProductPage() {
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    Back to Shop
+                    Înapoi la magazin
                 </Button>
             </div>
         </div>

@@ -111,7 +111,7 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               <div className="flex items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Amount</p>
-                  <p>{(((order.total + order.shippingCost) / 100)).toFixed(2)} RON</p>
+                  <p>{(((order.total) / 100)).toFixed(2)} RON</p>
                 </div>
               </div>
             </div>
@@ -144,21 +144,21 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
               <div className="pt-2">
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>{(order.total / 100).toFixed(2)} RON</span>
+                  <span>{(order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) / 100).toFixed(2)} RON</span>
                 </div>
-                {order.discount && (
+                {order.discount && order.discount.amount > 0 ? (
                   <div className="flex justify-between py-1 text-green-600">
                     <span>Discount ({order.discount.code})</span>
                     <span>-{(order.discount.amount / 100).toFixed(2)} RON</span>
                   </div>
-                )}
+                ) : null}
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Shipping</span>
                   <span>{(order.shippingCost / 100).toFixed(2)} RON</span>
                 </div>
                 <div className="flex justify-between py-1 font-medium">
                   <span>Total</span>
-                  <span>{((order.total + order.shippingCost) / 100).toFixed(2)} RON</span>
+                  <span>{((order.total) / 100).toFixed(2)} RON</span>
                 </div>
               </div>
             </div>
