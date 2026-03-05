@@ -24,7 +24,7 @@ interface RateLimitRecord {
 
 interface RateLimitOptions {
   limit: number; // Number of requests allowed
-  windowMs: number; // Time window in milliseconds (default: 60000 = 1 minute)
+  windowMs: number; // Time window in milliseconds (default: 300000 = 5 minutes)
 }
 
 interface RateLimitResult {
@@ -57,7 +57,7 @@ function getClientIp(request: NextRequest): string {
 export async function checkRateLimit(
   request: NextRequest,
   route: string,
-  options: RateLimitOptions = { limit: 100, windowMs: 60000 }
+  options: RateLimitOptions = { limit: 500, windowMs: 300000 }
 ): Promise<RateLimitResult> {
   const ip = getClientIp(request);
   const db = await getDatabase();
@@ -120,7 +120,7 @@ export async function checkRateLimit(
  * Middleware wrapper for rate limiting
  */
 export function rateLimitMiddleware(
-  options: RateLimitOptions = { limit: 100, windowMs: 60000 }
+  options: RateLimitOptions = { limit: 500, windowMs: 300000 }
 ) {
   return async (request: NextRequest, route: string) => {
     const result = await checkRateLimit(request, route, options);
@@ -164,7 +164,7 @@ export function rateLimitMiddleware(
 export async function withRateLimit(
   request: NextRequest,
   handler: (request: NextRequest) => Promise<NextResponse>,
-  options: RateLimitOptions = { limit: 100, windowMs: 60000 }
+  options: RateLimitOptions = { limit: 500, windowMs: 300000 }
 ): Promise<NextResponse> {
   const route = new URL(request.url).pathname;
   const rateLimitCheck = rateLimitMiddleware(options);
