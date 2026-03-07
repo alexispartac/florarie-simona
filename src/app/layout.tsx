@@ -23,8 +23,57 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Buchetul Simonei Poezia Florilor",
+  title: {
+    default: "Buchetul Simonei Poezia Florilor",
+    template: "%s | Buchetul Simonei", // For page-specific titles
+  },
   description: "Simpte poezia flori. Buchetul Simonei este aici pentru tine.",
+  keywords: ["florarie", "buchete", "flori", "Buchetul Simonei", "livrare flori", "flori Romania"],
+  authors: [{ name: "Buchetul Simonei" }],
+  creator: "Buchetul Simonei",
+  publisher: "Buchetul Simonei",
+  
+  icons: {
+    icon: "/Logo V6 Negru.png",
+    apple: "/Logo V6 Negru.png", // For iOS home screen
+  },
+  
+  metadataBase: new URL('https://buchetul-simonei.com'),
+  
+  alternates: {
+    canonical: 'https://buchetul-simonei.com',
+  },
+  
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  
+  openGraph: {
+    type: 'website',
+    locale: 'ro_RO',
+    url: 'https://buchetul-simonei.com',
+    siteName: 'Buchetul Simonei',
+    title: "Buchetul Simonei Poezia Florilor",
+    description: "Simpte poezia flori. Buchetul Simonei este aici pentru tine.",
+    images: [
+      {
+        url: "/Logo V6 Negru.png",
+        width: 1200,
+        height: 630,
+        alt: "Buchetul Simonei Logo",
+      },
+    ],
+  },
+  
+  category: 'business',
 };
 
 export default function RootLayout({
@@ -33,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ro" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
