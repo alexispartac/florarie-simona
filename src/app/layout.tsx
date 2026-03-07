@@ -8,6 +8,7 @@ import { ToastProvider } from "@/context/ToastContext";
 import { QueryProvider } from "./providers/QueryProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SkeletonProvider } from "@/components/providers/SkeletonProvider";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -58,6 +59,7 @@ export default function RootLayout({
                   <ShopProvider>
                     <Navigation />
                     {children}
+                    <Analytics />
                     <CookieConsent />
                   </ShopProvider>
                 </QueryProvider>
