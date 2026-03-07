@@ -188,6 +188,14 @@ export function OrderInfoModal({ isOpen, onClose, order, onStatusChange }: Order
                 <p className="text-muted-foreground">
                   <span className="font-medium">Email:</span> {order.shipping.email}
                 </p>
+                {order.shipping.deliveryDate && (
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="font-medium text-foreground">Data și ora preferată pentru livrare:</p>
+                    <p className="text-muted-foreground mt-1">
+                      {new Date(order.shipping.deliveryDate).toLocaleString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                )}
                 {order.shipping.deliveryInstructions && (
                   <div className="mt-3 pt-3 border-t border-border">
                     <p className="font-medium text-foreground">Informații suplimentare:</p>

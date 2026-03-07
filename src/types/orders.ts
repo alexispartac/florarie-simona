@@ -20,6 +20,7 @@ export type ShippingInfo = {
     recipientPhone?: string; // Recipient's phone for delivery
     deliveryInstructions?: string; // Special delivery instructions
     preferredDeliveryTime?: string; // e.g., "morning", "afternoon", "evening"
+    deliveryDate?: string; // Preferred delivery date (ISO string)
     isGift?: boolean; // Is this a gift delivery?
     createdAt?: Date;
     updatedAt?: Date;

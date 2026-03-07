@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastContext';
 import { Spinner } from '@/components/ui/Spinner';
-import { Input } from '@/components/ui';
+import { Input, DatePicker } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/translations';
 import { neamtLocalities } from '@/data/neamt-localities';
@@ -29,6 +29,7 @@ type ShippingData = {
   phone: string;
   email: string;
   additionalInfo?: string;
+  deliveryDate?: string;
 };
 
 type BillingData = {
@@ -131,6 +132,7 @@ export default function ShippingPage() {
       phone: '',
       email: '',
       additionalInfo: '',
+      deliveryDate: '',
     };
   });
 
@@ -409,6 +411,7 @@ export default function ShippingPage() {
       phone: '',
       email: '',
       additionalInfo: '',
+      deliveryDate: '',
     });
     
     setBillingData({
@@ -702,7 +705,7 @@ export default function ShippingPage() {
                       className={`flex-1 px-4 py-2 border bg-[var(--card)] text-[var(--foreground)] ${
                         errors.phone ? 'border-[var(--destructive)]' : 'border-[var(--border)]'
                       } rounded-md focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent`}
-                      placeholder="722 123 456"
+                      placeholder="0722 123 456"
                     />
                   </div>
                   {errors.phone && (
@@ -714,6 +717,23 @@ export default function ShippingPage() {
                     </p>
                   )}
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="deliveryDate" className="block text-sm font-medium text-[var(--foreground)] mb-1">
+                  Data și ora preferată pentru livrare <span className="text-[var(--muted-foreground)] text-xs">(opțional)</span>
+                </label>
+                <DatePicker
+                  id="deliveryDate"
+                  name="deliveryDate"
+                  value={formData.deliveryDate}
+                  onChange={(date) => setFormData(prev => ({ ...prev, deliveryDate: date }))}
+                  placeholder="Selectează data și ora livrării"
+                  className="w-full"
+                />
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  Alege data și ora la care dorești să primești comanda. Dacă nu este completată, vom livra în cel mai scurt timp posibil.
+                </p>
               </div>
 
               <div>
@@ -1108,7 +1128,10 @@ export default function ShippingPage() {
                   <p className="text-[var(--foreground)]"><strong>Nume:</strong> {formData.firstName} {formData.lastName}</p>
                   <p className="text-[var(--foreground)]"><strong>Email:</strong> {formData.email}</p>
                   <p className="text-[var(--foreground)]"><strong>Telefon:</strong> {formData.phone}</p>
-                  <p className="text-[var(--foreground)]"><strong>Adresă:</strong> {formData.address}{formData.apartment ? `, ${formData.apartment}` : ''}, {formData.city}, {formData.state}, {formData.country}{formData.postalCode ? ` ${formData.postalCode}` : ''}</p>
+                    <p className="text-[var(--foreground)]"><strong>Adresă:</strong> {formData.address}{formData.apartment ? `, ${formData.apartment}` : ''}, {formData.city}, {formData.state}, {formData.country}{formData.postalCode ? ` ${formData.postalCode}` : ''}</p>
+                    {formData.deliveryDate && (
+                      <p className="text-[var(--foreground)] mt-2"><strong>Data și ora preferată pentru livrare:</strong> {new Date(formData.deliveryDate).toLocaleString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                    )}
                   {formData.additionalInfo && (
                     <p className="text-[var(--foreground)] mt-2"><strong>Informații suplimentare:</strong> {formData.additionalInfo}</p>
                   )}

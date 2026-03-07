@@ -27,6 +27,18 @@ function formatPrice(price: number): string {
 function formatShippingAddress(shipping: Order['shipping']): string {
   let address = `${shipping.name}\n${shipping.address}\n${shipping.city}, ${shipping.state} ${shipping.postalCode}\n${shipping.country}`;
   
+  if (shipping.deliveryDate) {
+    const formattedDateTime = new Date(shipping.deliveryDate).toLocaleString('ro-RO', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    address += `\n\nData și ora preferată pentru livrare:\n${formattedDateTime}`;
+  }
+  
   if (shipping.deliveryInstructions) {
     address += `\n\nInformații suplimentare:\n${shipping.deliveryInstructions}`;
   }

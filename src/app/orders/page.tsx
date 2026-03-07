@@ -192,6 +192,12 @@ export default function OrderLookupPage() {
                                             <p>{order.shipping.country}</p>
                                             <p className="mt-2">{order.shipping.phone}</p>
                                             <p>{order.shipping.email}</p>
+                                            {order.shipping.deliveryDate && (
+                                                <div className="mt-3 pt-3 border-t border-[var(--border)]">
+                                                    <p className="font-medium text-[var(--foreground)]">Data și ora preferată pentru livrare:</p>
+                                                    <p className="mt-1">{new Date(order.shipping.deliveryDate).toLocaleString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                                </div>
+                                            )}
                                             {order.shipping.deliveryInstructions && (
                                                 <div className="mt-3 pt-3 border-t border-[var(--border)]">
                                                     <p className="font-medium text-[var(--foreground)]">Informații suplimentare:</p>

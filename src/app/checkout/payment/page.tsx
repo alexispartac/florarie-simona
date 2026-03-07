@@ -165,6 +165,7 @@ function PaymentPageContent() {
       phone: shippingData.phone || '',
       email: shippingData.email || '',
       deliveryInstructions: shippingData.additionalInfo || '',
+      deliveryDate: shippingData.deliveryDate || undefined,
     };
 
     const billingInfo = {
@@ -531,6 +532,11 @@ function PaymentPageContent() {
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {shippingData.address}{shippingData.apartment ? `, ${shippingData.apartment}` : ''}, {shippingData.city}, {shippingData.state}, {shippingData.country}{shippingData.postalCode ? ` ${shippingData.postalCode}` : ''}</p>
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {shippingData.phone}</p>
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {shippingData.email || ''}</p>
+                            {shippingData.deliveryDate && (
+                              <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
+                                <strong>Data și ora preferată pentru livrare:</strong> {new Date(shippingData.deliveryDate).toLocaleString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                            )}
                             {shippingData.additionalInfo && (
                               <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
                                 <strong>Informații suplimentare:</strong> {shippingData.additionalInfo}
@@ -642,6 +648,11 @@ function PaymentPageContent() {
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {shippingData.address}{shippingData.apartment ? `, ${shippingData.apartment}` : ''}, {shippingData.city}, {shippingData.state}, {shippingData.country}{shippingData.postalCode ? ` ${shippingData.postalCode}` : ''}</p>
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {shippingData.phone}</p>
                             <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {shippingData.email || ''}</p>
+                            {shippingData.deliveryDate && (
+                              <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
+                                <strong>Data și ora preferată pentru livrare:</strong> {new Date(shippingData.deliveryDate).toLocaleString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                            )}
                             {shippingData.additionalInfo && (
                               <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
                                 <strong>Informații suplimentare:</strong> {shippingData.additionalInfo}
@@ -727,6 +738,11 @@ function PaymentPageContent() {
                           <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.address')}: {shippingData.address}{shippingData.apartment ? `, ${shippingData.apartment}` : ''}, {shippingData.city}, {shippingData.state}, {shippingData.country}{shippingData.postalCode ? ` ${shippingData.postalCode}` : ''}</p>
                           <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.phone')}: {shippingData.phone}</p>
                           <p className="text-sm text-[var(--muted-foreground)]">{t('checkout.email')}: {shippingData.email || ''}</p>
+                          {shippingData.deliveryDate && (
+                            <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
+                              <strong>Data și ora preferată pentru livrare:</strong> {new Date(shippingData.deliveryDate).toLocaleString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          )}
                           {shippingData.additionalInfo && (
                             <p className="text-sm text-[var(--muted-foreground)] pt-2 border-t border-[var(--border)]">
                               <strong>Informații suplimentare:</strong> {shippingData.additionalInfo}

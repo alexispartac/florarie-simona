@@ -126,6 +126,7 @@ export async function POST(request: Request) {
           phone: orderData.shippingData.phone || '',
           email: orderData.shippingData.email || '',
           deliveryInstructions: orderData.shippingData.additionalInfo || '',
+          deliveryDate: orderData.shippingData.deliveryDate || undefined,
         };
 
         const billingInfo = {

@@ -9,3 +9,4 @@ export * from './Spinner';
 export * from './Toast';
 export * from './Tooltip';
 export * from './Select';
+export * from './DatePicker';
